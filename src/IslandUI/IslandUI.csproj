@@ -1,0 +1,106 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>IslandUI</AssemblyName>
+    <RootNamespace>IslandUI</RootNamespace>
+    <Version>0.3.0</Version>
+    <LangVersion>latest</LangVersion>
+    <!-- Live Steam install: the game that actually runs. BepInEx and our plugin live here;
+         binary/ is only a pristine reference copy for decompilation. -->
+    <GameDir>C:\Program Files (x86)\Steam\steamapps\common\Mad Island</GameDir>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Provides .NET Framework 4.7.2 reference assemblies so no VS install is needed -->
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Shared SOURCE compiled into this DLL: the mods share code, not an assembly -->
+    <Compile Include="..\Shared\PatchCensus.cs" Link="Shared\PatchCensus.cs" />
+    <Compile Include="..\Shared\TitleBadge.cs" Link="Shared\TitleBadge.cs" />
+    <!-- the mod icon, shown on the title screen by Shared/TitleBadge.cs -->
+    <EmbeddedResource Include="icon.png" LogicalName="IslandUI.icon.png" />
+    <EmbeddedResource Include="Data\item-guide.tsv" LogicalName="IslandUI.item-guide.tsv" />
+    <EmbeddedResource Include="Data\story-choices.tsv" LogicalName="IslandUI.story-choices.tsv" />
+    <EmbeddedResource Include="..\..\art\options-visual-kit-v1\03-blank-frame.png" LogicalName="IslandUI.SettingsFrame.png" />
+    <EmbeddedResource Include="..\..\art\options-visual-kit-v1\04-control-parts.png" LogicalName="IslandUI.SettingsParts.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BepInEx">
+      <HintPath>$(GameDir)\BepInEx\core\BepInEx.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(GameDir)\BepInEx\core\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <!-- SpriteDump writes the game's own glyphs out as PNGs to be looked at -->
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <!-- the pickup toast prefab carries an Animator we must switch off -->
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <!-- the kit's typeface is built from an installed OS font at runtime (Theme.KitFont) -->
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextCoreFontEngineModule">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <!-- the waiting-pose grid asks the character's SKELETON which poses it
+         has, because vanilla does (OrderAnimPanelVisible) and there is no fixed
+         list to draw from. That means naming SkeletonAnimation. -->
+    <Reference Include="spine-unity">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\spine-unity.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Every successful build lands in the game, in the folder the release zips use -->
+  <Target Name="CopyToPlugins" AfterTargets="Build" Condition="'$(NoDeploy)' != 'true'">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)\BepInEx\plugins\IslandUI" />
+  </Target>
+
+</Project>

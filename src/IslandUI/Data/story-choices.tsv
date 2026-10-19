@@ -1,0 +1,177 @@
+# Story choice hints: site<TAB>choice id<TAB>option<TAB>plain<TAB>spoiler
+# site = the StoryManager coroutine and the k-th choice call in it (StoryChoices marks them);
+# choice id = the option's index in TextManager.choices, or yes/no. Written from the game's code and
+# the community wiki's event page (madisland.wikiru.jp, イベント一覧). Spoiler = masked until clicked.
+Kana01#1	51	Brag	Kana does not join · her events end · Kana's love route is only on the burial or Cassie revival paths	Cyborg Lulu kills Kana
+Kana01#1	52	Make Excuse	Kana joins as a friend · she cannot be invited · forced H still allowed	Locks Kana into friendship · no further Kana events
+Kana02#1	33	Yes.	Lulu is buried · Lulu's Grave is placed · your next answer decides Kana's route	Lulu can never be revived or rebuilt at the Lab
+Kana02#1	34	No.	No lasting effect · you can bury her later · or revive her at the Lab Basement once Cassie has joined	Only reviving Lulu with Cassie keeps Kana's love route · a Cyborg Lulu closes it
+Kana02#2	41	I love XXXX.	Kana joins · affection -20 · she cannot be invited · Lulu is buried	Locks Kana into friendship · no further Kana events
+Kana02#2	17	Scream.	Three natives attack · lose to retry · win to choose: Agree opens Kana's love route, Deny keeps her a friend	
+Kana02#2	29	Be sarcastic.	Affection -999 · Kana does not join · Lulu is buried	Kana kills herself · Suicidal Kana is left as a placeable object
+Kana02#3	48	Agree	Affection +20 · Kana joins · her house event opens at affection 75, where her route is decided	
+Kana02#3	49	Deny	Affection -20 · Kana joins · she cannot be invited	Locks Kana into friendship · no further Kana events
+Kana03#1	53	Compliment	The date continues · your next answers decide if she becomes a lover, a partner or a friend	
+Kana03#1	29	Be sarcastic.	The event ends · Kana stays a follower who cannot be invited · her house stays but is no longer craftable	Locks Kana into friendship · no further Kana events
+Kana03#2	20	Yes.	Only her reply changes · no lasting effect	
+Kana03#2	21	No.	Only her reply changes · no lasting effect	
+Kana03#3	41	I love XXXX.	Intimate scene with Kana · your last answer then decides lover or casual partner	
+Kana03#3	47	Support	The event ends · she can be invited · forced H allowed · Kana's house craftable	Ends her route without the love scene or becoming lovers
+Kana03#3	49	Deny	The event ends · she cannot be invited · forced H allowed · Kana's house craftable	Locks Kana into friendship
+Kana03#4	23	Persuade.	Affection +20 · invite on · forced H off · Kana's house craftable	Kana becomes your lover
+Kana03#4	49	Deny	Affection -50 · invite and forced H both allowed · Kana's house no longer craftable	Kana becomes a casual partner, not a lover
+Kana03#4	52	Make Excuse	Affection -30 · invite and forced H both allowed · Kana's house no longer craftable	Kana becomes a casual partner, not a lover
+Lulu00#1	33	Yes.	Needs a right arm, right leg and left leg · parts used · Lulu joins · she can no longer be buried	Lulu is rebuilt as a Cyborg without her own mind · closes Kana's love route
+Lulu00#1	34	No.	No lasting effect · you can decide later · burying her stays possible	
+Lulu00#1	50	Talk to Cassie	Quest: 1 Core, 1000 Flesh, 200 Strong Bone, 3 Liquid Fish · then Lulu and Kana join · Kana's route stays open	Lulu is brought back to life with her mind intact
+Little#1	yes	Yes	Gives 1 Fnickers · Little & Nickey join as friends	
+Little#1	no	No	Little & Nickey run off · you keep the Fnickers · you can meet them again after a reload	
+Mermaid01#1	0	Do.	The scene goes on · she does not join · only the swimsuit gift recruits her · she returns after a reload	
+Mermaid01#1	1	Don't.	The scene ends · she does not join · only the swimsuit gift recruits her · she returns after a reload	
+Mermaid01#1	2	Gift the rainbow seashell swimsuit.	Uses up the Rainbow Seashell Swimsuit · the Mermaid joins · one more choice sets her affection	
+Mermaid01#2	0	Do.	The Mermaid joins · affection +75 · the scene continues	
+Mermaid01#2	1	Don't.	The Mermaid joins · affection +50	
+BossHunter00#1	10	Resist.	Only a line changes · you respawn and can fight them again	
+BossHunter00#1	11	Give up.	Only a line changes · you respawn and can fight them again	
+BossHunter00#2	11	Give up.	The defeat scene continues · you respawn and can fight them again	
+BossHunter00#2	12	Bite.	A harsher defeat scene · you respawn and can fight them again	Yona is killed in the scene
+SubGiant00#1	6	Attractive.	Intimate scene · joins as a lover · affection +100 · she can be invited · fights in the Ent King battle	She is later captured by the Ents and dies unless you go back to free her
+SubGiant00#1	7	Uninteresting.	The Giant joins as a friend · affection +51 · she cannot be invited · fights in the Ent King battle	As a friend she is never captured by the Ents or at risk
+SubGiant00#2	4	Kill.	No follower · her body can be butchered (Giant Orb per wiki) · no Giant in the Ent King battle	The Giant dies for good
+SubGiant00#2	8	Tie up.	Places a restrained Giant usable for H scenes · she does not join · no Giant in the Ent King battle	
+EventRuinsDoor#1	yes	Yes	Opens the door · the underground Ruins become reachable	
+EventRuinsDoor#1	no	No	No lasting effect · you can open it later	
+EventGate#1	yes	Yes	Opens the Gate · starts the bridge quest, which leads on to the Prison and the Ent King events	
+EventGate#1	no	No	No lasting effect · you can open it later	
+Cassie00#1	yes	Yes	Cassie's head wakes up · she asks you to find her body · first step to Cassie joining	
+Cassie00#1	no	No	No lasting effect · you can try again	
+Cassie00#2	yes	Yes	Takes her body · return to her head to revive her · she joins · opens Dr. Daruman's event and Lulu's revival	
+Cassie00#2	no	No	No lasting effect · you can try again	
+Labo2Door#1	yes	Yes	Opens the Lab door · unlocks Cassie's event, which leads to Cassie joining and Lulu's revival	
+Labo2Door#1	no	No	No lasting effect · you can open it later	
+MainTakumi00#1	13	Observe.	A scene first, then the Takumi fight · Keigo and Reika join if you win · a win opens Reika's route	Takumi rapes Reika · the win splits Keigo and Reika up at once
+MainTakumi00#1	14	Help.	Straight into the Takumi fight · Keigo and Reika join if you win · Reika's route is decided after the fight	Siding with Keigo after the fight splits them and opens Reika's route · protecting Reika keeps them a couple
+MainTakumi00#2	16	Go along with Keigo.	Unlocks Reika's consoling event, which opens her romance route	Keigo and Reika break up
+MainTakumi00#2	15	Protect Reika.	Keigo and Reika stay a couple · unlocks an event with the two of them where Reika's route can still open	There, making sounds splits them and opens her route · watching keeps them together and closes it
+MainTakumi01#1	23	Persuade.	No lasting effect · the event continues either way	
+MainTakumi01#1	3	Leave.	No lasting effect · the event continues either way	
+MainTakumi01#2	24	Obey Takumi.	Counts as a defeat · you respawn and can redo the event · no lasting effect	Takumi assaults you
+MainTakumi01#2	4	Kill.	Ends Takumi's storyline · the bridge to the Prison can be built straight away	Takumi dies · his radio is lost for good
+MainTakumi01#2	8	Tie up.	Takumi joins tied up · keep food in his bag until he has eaten 10 · the Prison bridge waits for the outcome	Fed, he gives you the radio, is later captured and joins after the Prison rescue · starved, he dies
+MainReika00#1	13	Observe.	Plays Keigo and Reika's scene · no lasting effect · the Takumi event opens either way	
+MainReika00#1	17	Scream.	Skips the scene · no lasting effect · the Takumi event opens either way	
+MainReika01#1	18	Insult Keigo.	Reika affection -50 · she stays a friend who can't be invited	Reika's romance route ends here for good
+MainReika01#1	19	Console Reika.	Reika affection +50 · at 75 affection her next event can make her your lover	
+MainReika01#2	20	Yes.	No lasting effect · Reika asks again next time · only 'I love Reika' moves her on	
+MainReika01#2	21	No.	No lasting effect · Reika asks again next time · only 'I love Reika' moves her on	
+MainReika01#2	22	I love Reika.	Reika becomes your lover and can be invited · unlocks Keigo's confrontation, which decides if she stays	Later, telling Nami you love Yona costs 70 Nami affection instead of none
+Keigo00#1	22	I love Reika.	Keigo asks again · holding firm starts a fight · win it and Reika stays your lover	
+Keigo00#1	11	Give up.	No fight · Reika is a friend again and can no longer be invited	Reika's romance is over for good · she and Keigo pair up again
+Keigo00#1	25	I just wanna fuck her.	Starts a fight with Keigo · a loss lets you retry · whether Reika stays is decided after the win	Spare him and Reika overhears and drops you · kill him and she stays your lover
+Keigo00#2	22	I love Reika.	Starts a fight with Keigo · a loss lets you retry · win it and Reika stays your lover	
+Keigo00#2	11	Give up.	No fight · Reika is a friend again and can no longer be invited	Reika's romance is over for good · she and Keigo pair up again
+Keigo00#3	13	Observe.	Keigo lives and stays a companion · the outcome follows your earlier answer	Said you love her: Reika stays with you, new invite scene · said you want sex: she overheard and drops you
+Keigo00#3	4	Kill.	Reika stays your lover whatever you said · a truth-or-lie choice follows	Keigo dies for good · he leaves Keigo's Locket Pendant behind
+Keigo00#4	0	Do.	Intimate scene with Reika · either way she stays your lover and her invite scene changes	
+Keigo00#4	1	Don't.	No scene · either way Reika stays your lover and her invite scene changes	
+Keigo00#5	26	Tell the truth.	Reika affection -20 · Moral -10 · she stays your lover either way	
+Keigo00#5	27	Lie.	Moral -20 · Reika's affection unchanged · she stays your lover either way	
+Keigo01#1	13	Observe.	Plays Keigo and Reika's scene · they stay a couple	Reika's romance route closes for good
+Keigo01#1	37	Make sounds.	No scene · Keigo sulks · unlocks Reika's consoling event, which opens her romance route	Keigo and Reika break up
+Shino00#1	28	Nothing.	No lasting effect · you leave and the event repeats	
+Shino00#1	29	Be sarcastic.	A prompt follows: click to leave, F to kill, R to assault · Shino's Clothes join the crafting list	Shino can no longer join you
+Shino00#1	30	Present the steak.	Only offered with a steak · apologising next lets Shino join · Shino's Clothes join the crafting list	
+Shino00#2	31	Apologize.	Uses the steak · dinner with Shino · she joins as a friend	
+Shino00#2	32	Demand an apology.	A prompt follows: click to leave, F to kill, R to assault · you keep the steak	Shino can no longer join you
+Shino00#3	33	Yes.	Intimate scene · Shino joins as a friend · the next choice sets her affection	
+Shino00#3	34	No.	No scene · Shino joins as a friend (affection 51)	
+Shino00#4	35	Hold it.	Full scene · Shino joins with +20 extra affection (71)	
+Shino00#4	36	Bust a nut.	Scene ends early · Shino joins, no bonus affection (51)	
+Shino00#5	4	Kill.	Event ends · Shino does not join	Shino dies for good
+Shino00#5	8	Tie up.	You get a restrained Shino to place anywhere and use for scenes	Shino never joins as a follower
+Prison#1	3	Leave.	Sally joins as a friend (affection 51) · crafting memo (new furniture recipes)	
+Prison#1	8	Tie up.	You get a restrained Sally to place and use · crafting memo (new furniture recipes)	Sally never joins as a follower
+Prison#1	4	Kill.	Crafting memo (new furniture recipes) · the event ends	Sally dies for good
+Prison#2	3	Leave.	Sally joins you · affection +51 · she joins whatever you pick next (Punish loses her)	
+Prison#2	38	Punish.	Sex scene · then Tie up or Kill · Sally never joins (only Leave recruits her)	A forced scene, with Takumi joining in if he is there
+Prison#2	8	Tie up.	Sally won't join · you get a bound Sally to place and use · she stays alive (unlike Kill)	
+Prison#2	4	Kill.	Sally won't join · Takumi is upset about it at the bridge building later (if he is with you)	Sally dies
+Prison#3	0	Do.	Sex scene with Sally · then Dildo or Fleshlight: she joins either way, only sex access differs	
+Prison#3	1	Don't.	Sally joins you · affection +51 · sex with her unlocked with no libido limit	
+Prison#4	39	Become a Dildo.	Sally joins you · affection +51 · she accepts sex only at libido 80+ (Fleshlight has no limit)	
+Prison#4	40	Be my fleshlight.	Sally joins you · affection +51 · sex with her unlocked, no libido limit (unlike Dildo)	
+Prison#5	8	Tie up.	Sally won't join · you get a bound Sally to place and use · she stays alive (unlike Kill)	
+Prison#5	4	Kill.	Sally won't join · Takumi is upset about it at the bridge building later (if he is with you)	Sally dies
+Entking02#1	41	I love XXXX.	Nami affection unchanged · −70 if you are dating Reika · no other lasting effect	
+Entking02#1	42	I love Nami.	Nami affection −50 · no other lasting effect	
+Entking02#1	43	I want to help XXXX.	Nami affection +20, the only answer that raises it · no other lasting effect	
+Entking03#1	44	Fight	Ent King rematch, the man fights alone · where you walk after the win decides a captured Giant's fate	Leave without going back into the boss room and the captured Giant dies · going back saves her
+Entking03#1	11	Give up.	Event fails · retry from before the rematch · no lasting effect	The man dies in front of Nami · game over
+Nami#1	41	I love XXXX.	Next: Blackmail unlocks sex with Nami, Apologize doesn't · her event with Yona follows either way	
+Nami#1	7	Uninteresting.	Next: Deceive unlocks sex with Nami, Support doesn't · her event with Yona follows either way	Nami confesses she loves Yona
+Nami#2	45	Blackmail	Nami affection −20 · the man can invite Nami for sex (Apologize can't) · her event with Yona next	He forces Nami into sex to keep quiet
+Nami#2	31	Apologize.	No affection change · no scene · the man can't invite Nami for sex · her event with Yona next	He gives up on Yona and backs Nami
+Nami#3	47	Support	No affection change · no scene · the man can't invite Nami for sex · her event with Yona next	He backs Nami's love for Yona
+Nami#3	46	Deceive	Nami affection +20 · the man can invite Nami for sex (Support can't) · her event with Yona next	He tricks her into "practice" sex
+NamiYona#1	33	Yes.	Yona and Nami become a couple · Yona can invite Nami for sex (No can't) · Do or Don't follows	
+NamiYona#1	34	No.	No affection change · Nami stays in your group · Yona can't invite Nami for sex	Yona turns Nami down and Nami runs off
+NamiYona#2	0	Do.	Love scene · Nami affection +50 · they stay a couple either way	
+NamiYona#2	1	Don't.	No scene · no affection gain (Do gives +50) · they stay a couple, sex still unlocked	
+Yona00#1	54	I don’t know.	Dialogue only · the same cave choices follow either way · Yona can get pregnant after this event	
+Yona00#1	55	Won’t return	Dialogue only · the same cave choices follow either way · Yona can get pregnant after this event	
+Yona00#2	54	I don’t know.	Dialogue only · no lasting effect · the same cave choices follow either way	
+Yona00#2	55	Won’t return	Dialogue only · no lasting effect · the same cave choices follow either way	
+Yona00#3	56	Demand compensation	Yona answers: awkward, very awkward or (not a virgin) fleshlight · only fleshlight unlocks sex	
+Yona00#3	41	I love XXXX.	Yona answers: lovers (sex between them unlocked), his love stays one-sided, or she turns him down	
+Yona00#3	13	Observe.	Yona speaks first · lovers, companions, one-sided, rejected or (not a virgin) sex friends	
+Yona00#4	48	Agree	Their relationship: awkward · no sex between them (only fleshlight unlocks it)	
+Yona00#4	52	Make Excuse	Their relationship: very awkward · no sex between them (only fleshlight unlocks it)	
+Yona00#4	58	Become a fleshlight.	Sex scene · Yona and the man can invite each other for sex · the scene can make Yona pregnant	
+Yona00#5	41	I love XXXX.	They become lovers · they can invite each other for sex · then Do or Don't, lovers either way	
+Yona00#5	47	Support	No romance · the man's love stays one-sided · no sex between them	
+Yona00#5	49	Deny	Yona turns the man down · no sex between them	
+Yona00#6	41	I love XXXX.	The man answers: lovers (sex unlocked), her love stays one-sided, or he turns her down	
+Yona00#6	13	Observe.	They stay companions · no romance · no sex between them · no other lasting effect	
+Yona00#6	57	Seduce	The man answers: Yes makes them sex friends (sex unlocked), No leaves it awkward	
+Yona00#7	41	I love XXXX.	They become lovers · they can invite each other for sex · then Do or Don't, lovers either way	
+Yona00#7	47	Support	No romance · Yona's love stays one-sided · no sex between them	
+Yona00#7	49	Deny	The man turns Yona down · no sex between them	
+Yona00#8	33	Yes.	Sex scene · they become sex friends and can invite each other for sex · can make Yona pregnant	
+Yona00#8	34	No.	Their relationship: awkward · no sex between them	
+Yona00#9	0	Do.	Love scene · can make Yona pregnant · then Continue or Quit · lovers either way	
+Yona00#9	1	Don't.	No scene · still lovers · they can still invite each other for sex	
+Yona00#8	0	Do.	Love scene · can make Yona pregnant · then Continue or Quit · lovers either way	
+Yona00#8	1	Don't.	No scene · still lovers · they can still invite each other for sex	
+Yona00#6	0	Do.	Love scene · can make Yona pregnant · then Continue or Quit · lovers either way	
+Yona00#6	1	Don't.	No scene · still lovers · they can still invite each other for sex	
+Yona00#10	59	Continue	Two more positions · more chances Yona gets pregnant · still lovers	
+Yona00#10	60	Quit	The scene ends · still lovers · nothing else changes	
+Santa#1	33	Yes.	Presents stop spawning in the wild · ask Merry again to turn them back on	
+Santa#1	34	No.	Presents keep spawning · no lasting effect	
+Santa#2	33	Yes.	Presents spawn in the wild again, until the save is next loaded	
+Santa#2	34	No.	No lasting effect · ask Merry again any time	
+Santa#3	33	Yes.	Dialogue only · no lasting effect · the next Yes or No decides the quest	
+Santa#3	34	No.	Dialogue only · no lasting effect · the next Yes or No decides the quest	
+Santa#4	33	Yes.	Starts the quest: bring 20 Santa's Lost Item · presents spawn · then find the Reindeer, and Merry joins	
+Santa#4	34	No.	Quest not started · talk to Merry again to retry · nothing is lost	
+Santa#5	33	Yes.	Only Merry joins · Merry affection +50 · you get Reindeer BBQ · the Reindeer never joins	The Reindeer is cooked · its head goes on a stand
+Santa#5	34	No.	Merry and the Reindeer both join · no Reindeer BBQ and no affection gain (Yes gives both)	
+Sadako#1	yes	Yes	Uses 1 Mandrake · starts a fight · the foe drops a Curse Orb (wiki)	Your Underground Woman dies in the well, returns as hostile Sadako and leaves your group
+Sadako#1	no	No	Nothing happens · no lasting effect	
+# Scene prompts: a control text and a wait for a key, not a panel (StoryManager's
+# ControlTextActive; site = coroutine!k, the k-th ControlTextActive call in it).
+# Ids are the input: click, f, r, q, and "wait" for what waiting brings.
+SubGiant00!1	click	[Left-Click] Leave.	She recovers and joins as a friend · she cannot be invited · fights in the Ent King battle	As a friend she is never captured by the Ents or at risk
+SubGiant00!1	f	[F] Kill.	The event ends · no follower · her body can be butchered (Giant Orb per wiki)	The Giant dies for good
+SubGiant00!1	r	[R] (hidden)	A hidden option · a choice to Kill or Tie her up follows · she never joins	Assault scene
+SubGiant00!1	wait	Wait about 30 s	A fourth option appears: [Q] Seduce · the only way to make her your lover	
+SubGiant00!2	click	[Left-Click] Leave.	She recovers and joins as a friend · she cannot be invited · fights in the Ent King battle	As a friend she is never captured by the Ents or at risk
+SubGiant00!2	f	[F] Kill.	The event ends · no follower · her body can be butchered (Giant Orb per wiki)	The Giant dies for good
+SubGiant00!2	r	[R] (hidden)	A hidden option · a choice to Kill or Tie her up follows · she never joins	Assault scene
+SubGiant00!2	q	[Q] Seduce.	Talk her round · then Attractive makes her a lover you can invite, Uninteresting a friend	A lover Giant is later captured by the Ents and dies unless you free her
+Shino00!1	click	[Left-Click] Leave.	Walk away · Shino stays, but only talks and ignores you	She never joins · she can still be assaulted later
+Shino00!1	f	[F] Kill.	The event ends · Shino never joins	Shino dies for good
+Shino00!1	r	[R] (hidden)	A hidden option	Assault scene, then Kill or Tie up · tied, you get a restrained Shino · she never joins
+Shino00!5	click	[Left-Click] Leave.	Walk away · Shino stays, but only talks and ignores you	She never joins · she can still be assaulted later
+Shino00!5	f	[F] Kill.	The event ends · Shino never joins	Shino dies for good
+Shino00!5	r	[R] (hidden)	A hidden option	Assault scene, then Kill or Tie up · tied, you get a restrained Shino · she never joins
