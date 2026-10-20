@@ -59,12 +59,43 @@ namespace IslandUI
             // held button would otherwise be read as "walk there". The tool belt's
             // take-down is the same gesture and joins for the same reason.
             // InventoryWindow.MatrixOwnsPointer: the relations matrix is modal, and
-            // the press that closes it must not land in the world after it
-            if (InventoryWindow.IsDragging || ActionBar.IsDragging || InventoryWindow.BoardDragging
-                || ReachButton.PointerOver || SettingsWindow.PointerOver
-                || InventoryWindow.MatrixOwnsPointer)
+            // the press that closes it must not land in the world after it.
+            // InventoryWindow.OfferUnderPointer: an item held over someone is given
+            // to them on release, not dropped on the ground on the press
+            if (Ours())
             {
                 __instance.OnUI = true;
+            }
+        }
+
+        internal static bool Ours()
+        {
+            return InventoryWindow.IsDragging || ActionBar.IsDragging || InventoryWindow.BoardDragging
+                || ReachButton.PointerOver || SettingsWindow.PointerOver
+                || InventoryWindow.MatrixOwnsPointer || InventoryWindow.OfferUnderPointer;
+        }
+    }
+
+    // ...AND THE WALK STILL SETTLES WHEN YOU STOP. PlayerMove.Update returns early
+    // on a held button over UI - before the branch that turns the walk cycle back
+    // to idle - so with the pointer ours for a drag, letting go of WASD stopped
+    // the body and left its legs walking in place. The same idle vanilla adds in
+    // that branch, added here for exactly that case.
+    [HarmonyPatch(typeof(PlayerMove), "Update")]
+    internal static class DragLetsTheWalkSettle
+    {
+        [HarmonyPostfix]
+        private static void Postfix(PlayerMove __instance)
+        {
+            if (!Input.GetMouseButton(0) || __instance.xInput != 0f || __instance.yInput != 0f
+                || __instance.toolAction || __instance.target != null || !DragOwnsThePointer.Ours()
+                || __instance.common == null || __instance.common.anim == null)
+            {
+                return;
+            }
+            if (__instance.CheckWalking() || __instance.CheckRunning())
+            {
+                __instance.common.anim.state.AddAnimation(0, __instance.GetMoveAnim(0), loop: true, 0f);
             }
         }
     }

@@ -13,10 +13,14 @@ namespace IslandUI.UI
     internal sealed class EquipBrackets
     {
         internal static readonly Color Gold = new Color32(226, 178, 74, 255);
+        // the off hand: the same mark in blue, so the two hands read apart
+        internal static readonly Color OffHand = new Color32(92, 162, 230, 255);
         private static readonly Color Rim = new Color32(24, 18, 12, 255);
         private const float RimWidth = 0.5f;
 
         private readonly GameObject _root;
+        private readonly System.Collections.Generic.List<Image> _arms = new System.Collections.Generic.List<Image>();
+        private Color _colour = Gold;
 
         // x, y, w, h: the box the corners stand on, top-left based like Theme.Place
         internal EquipBrackets(Transform parent, float x, float y, float w, float h,
@@ -41,6 +45,7 @@ namespace IslandUI.UI
             {
                 Image gold = Theme.KitImage(_root.transform, "Arm", null, 0, Gold);
                 Theme.Place(gold, a[0], a[1], a[2], a[3]);
+                _arms.Add(gold);
             }
             _root.SetActive(false);
         }
@@ -52,6 +57,22 @@ namespace IslandUI.UI
                 if (_root.activeSelf != value)
                 {
                     _root.SetActive(value);
+                }
+            }
+        }
+
+        internal Color Colour
+        {
+            set
+            {
+                if (_colour == value)
+                {
+                    return;
+                }
+                _colour = value;
+                foreach (Image arm in _arms)
+                {
+                    arm.color = value;
                 }
             }
         }

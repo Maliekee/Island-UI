@@ -30,7 +30,7 @@ namespace IslandUI
     {
         public const string PluginGuid = "madisland.islandui";
         public const string PluginName = "Island UI";
-        public const string PluginVersion = "0.3.0";
+        public const string PluginVersion = "0.3.1";
 
         internal static ManualLogSource Log;
 
@@ -275,6 +275,8 @@ namespace IslandUI
             InventoryWindow.TickPlayerVitals(Mn);
             // after the bar: the unit stands on the bar's rect (D108)
             InventoryWindow.TickUnit(Mn);
+            // a give waiting on a walk lands the frame you are in reach
+            InventoryWindow.TickWalkGive(Mn);
             SettingsWindow.Tick(Mn);
             MoodReport.Tick(Mn);
             UI.MapMood.Tick(Mn);

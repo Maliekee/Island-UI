@@ -272,6 +272,11 @@ namespace IslandUI
                 return;
             }
             EmblemOf(who, out _, out Color ringColour);
+            // an item held over them: the ring says who it goes to (Drop.cs)
+            if (ReferenceEquals(_dropOver, who) && !HandEmpty())
+            {
+                ringColour = OfferGold;
+            }
             PaintGroundRing(who.transform, ringColour, PersonRadius);
             var position = who.transform.position + Vector3.up * 3f;
             var body = who.GetComponentInChildren<Renderer>();
@@ -279,7 +284,11 @@ namespace IslandUI
             var screen = camera.WorldToScreenPoint(position);
             bool visible = screen.z > 0;
             _worldMarker.gameObject.SetActive(visible);
-            if (!visible) { return; }
+            if (!visible)
+            {
+                if (_markerUnder != null) { _markerUnder.gameObject.SetActive(false); }
+                return;
+            }
             string kind = KindName(_mn != null ? _mn.npcMN : null, who);
             string called = !string.IsNullOrEmpty(_unitName.text) ? _unitName.text : kind;
             _worldName.text = _unitDead ? CorpseWords(who) : Hostile(who) ? "Hostile" : called;
@@ -311,6 +320,144 @@ namespace IslandUI
             EmblemOf(who, out string glyph, out Color colour);
             if (status) { colour = new Color(.16f, .70f, .45f, 1f); }
             PaintEmblem(glyph, colour, who.level, width, height, _sheetOpen, status);
+            PaintMarkerOffer(width, height, status ? MarkerFooterExtra : 0f, _sheetOpen, GiftOffered(who));
+        }
+
+        // THE MARKER AS A DROP PLACE (Drop.cs). Its whole silhouette - medallion,
+        // plate, footer - is where an item is dropped on the target: an invisible
+        // hit rect, laid out every paint whether or not anything is held. With a
+        // gift in hand the indicator is outlined in gold. (A chevron tab hung under
+        // it at first, and was one thing too many.)
+        //
+        // THE OUTLINE FOLLOWS THE CONTOUR (a rectangle around the whole silhouette
+        // came first, and floated loose of the shape). Each piece - the plate
+        // or the status header, the footer, the medallion - gets a gold copy a
+        // little larger, BEHIND the indicator, so only the outer edge of their
+        // union shows and where pieces overlap the gold is hidden under them. The
+        // copies live in their own layer, a sibling before the marker that mirrors
+        // its rect: a child of the marker would draw over the plate, which is the
+        // marker's own image.
+        private static Image _markerHit;
+        private static RectTransform _markerUnder;
+        private static Image _underPlate, _underFooter, _underEmblem;
+        private const float UnderPad = 1.5f;
+
+        private static void PaintMarkerOffer(float width, float height, float footer, bool folded, bool offer)
+        {
+            if (_markerHit == null)
+            {
+                _markerHit = Theme.KitImage(_worldMarker.transform, "GiveHit", "kit_paper", 8, Color.white);
+                _markerHit.enabled = false;   // a rect to hit, never drawn
+                var under = Owned.New("IslandUI_GiveOutline");
+                under.transform.SetParent(_worldMarker.transform.parent, false);
+                _markerUnder = (RectTransform)under.transform;
+                _underPlate = UnderPiece("Plate");
+                _underFooter = UnderPiece("Footer");
+                _underEmblem = UnderPiece("Emblem");
+            }
+            float overhang = folded ? 0f : EmblemD * .5f - 2f;
+            float top = Mathf.Min(0f, height * .5f - EmblemD * .5f) - 3f;
+            float bottom = Mathf.Max(height + footer, height * .5f + EmblemD * .5f) + 3f;
+            float left = -overhang - 3f;
+            Theme.Place(_markerHit, left, top, width + 3f - left, bottom - top);
+            bool outline = offer && _worldMarker.gameObject.activeSelf;
+            if (_markerUnder.gameObject.activeSelf != outline)
+            {
+                _markerUnder.gameObject.SetActive(outline);
+            }
+            if (!offer)
+            {
+                return;
+            }
+            // the layer stands exactly where the marker stands, just under it
+            RectTransform m = _worldMarker.rectTransform;
+            _markerUnder.anchorMin = m.anchorMin;
+            _markerUnder.anchorMax = m.anchorMax;
+            _markerUnder.pivot = m.pivot;
+            _markerUnder.sizeDelta = m.sizeDelta;
+            _markerUnder.localScale = m.localScale;
+            _markerUnder.position = m.position;
+            _markerUnder.SetAsFirstSibling();
+            // the plate: the marker's own image, or the status header in its place
+            bool header = _markerStatusHeader != null && _markerStatusHeader.gameObject.activeSelf;
+            if (header)
+            {
+                Under(_underPlate, _markerStatusHeader);
+            }
+            else
+            {
+                Under(_underPlate, _worldMarker, _worldMarker.enabled, 0f, 0f, width, height);
+            }
+            Under(_underFooter, _markerStatusFooter);
+            Under(_underEmblem, _emblemRim);
+        }
+
+        // ...of a piece placed with Theme.Place, read back from its rect
+        private static void Under(Image under, Image piece)
+        {
+            bool on = piece != null && piece.gameObject.activeSelf;
+            RectTransform r = on ? piece.rectTransform : null;
+            Under(under, piece, on, on ? r.anchoredPosition.x : 0f, on ? -r.anchoredPosition.y : 0f,
+                on ? r.sizeDelta.x : 0f, on ? r.sizeDelta.y : 0f);
+        }
+
+        private static Image UnderPiece(string name)
+        {
+            var go = Owned.New(name);
+            go.transform.SetParent(_markerUnder, false);
+            var image = go.AddComponent<Image>();
+            image.color = OfferGold;
+            image.raycastTarget = false;
+            return image;
+        }
+
+        // A piece's own shape in white - the kit's plates have cut corners, which a
+        // rounded rect only guessed at - keeping its 9-slice border and density, so
+        // the copy slices exactly as the piece does and only grows at the edges.
+        private static readonly System.Collections.Generic.Dictionary<Sprite, Sprite> Silhouettes =
+            new System.Collections.Generic.Dictionary<Sprite, Sprite>();
+
+        private static Sprite SilhouetteOf(Sprite source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+            if (Silhouettes.TryGetValue(source, out Sprite hit) && hit != null)
+            {
+                return hit;
+            }
+            Sprite mask = Theme.MaskOf(source);
+            Sprite shape = mask;
+            if (mask != null && mask != source)
+            {
+                shape = Sprite.Create(mask.texture, mask.rect, new Vector2(.5f, .5f), source.pixelsPerUnit, 0,
+                    SpriteMeshType.FullRect, source.border);
+                shape.hideFlags = HideFlags.HideAndDontSave;
+            }
+            Silhouettes[source] = shape;
+            return shape;
+        }
+
+        // a gold copy of one piece, UnderPad larger all round
+        private static void Under(Image under, Image piece, bool on, float x, float y, float w, float h)
+        {
+            if (under.gameObject.activeSelf != on)
+            {
+                under.gameObject.SetActive(on);
+            }
+            if (on)
+            {
+                Sprite shape = SilhouetteOf(piece.sprite);
+                if (under.sprite != shape)
+                {
+                    under.sprite = shape;
+                }
+                under.type = piece.type;
+                under.pixelsPerUnitMultiplier = piece.pixelsPerUnitMultiplier;
+                under.preserveAspect = piece.preserveAspect;
+                Theme.Place(under, x - UnderPad, y - UnderPad, w + UnderPad * 2f, h + UnderPad * 2f);
+            }
         }
 
         private static string CorpseWords(CommonStates who)

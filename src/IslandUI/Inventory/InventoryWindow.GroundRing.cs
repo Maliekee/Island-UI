@@ -20,32 +20,7 @@ namespace IslandUI
 
         private static void PaintGroundRing(Transform target, Color colour, float radius)
         {
-            if (target == null || !Settings.TargetRing.Value)
-            {
-                HideGroundRing();
-                return;
-            }
-            if (_ring == null)
-            {
-                _ring = Owned.New("IslandUI_TargetRing");
-                _ringSprite = _ring.AddComponent<SpriteRenderer>();
-                _ringSprite.sprite = RingArt();
-                // under whatever stands on it: people and props draw after
-                _ringSprite.sortingOrder = -50;
-                _ring.transform.rotation = Quaternion.Euler(90f, 0f, 0f);   // flat on the ground
-            }
-            if (!_ring.activeSelf)
-            {
-                _ring.SetActive(true);
-            }
-            Vector3 at = target.position;
-            at.y += RingLift;
-            _ring.transform.position = at;
-            // the art is one unit across at scale 1
-            float size = Mathf.Clamp(radius, 0.4f, 4f) * 2f * Settings.TargetRingScale.Value;
-            _ring.transform.localScale = new Vector3(size, size, 1f);
-            colour.a = Mathf.Clamp01(Settings.TargetRingAlpha.Value);
-            _ringSprite.color = colour;
+            PaintRing(ref _ring, ref _ringSprite, "IslandUI_TargetRing", target, colour, radius);
         }
 
         private static void HideGroundRing()
@@ -54,6 +29,42 @@ namespace IslandUI
             {
                 _ring.SetActive(false);
             }
+        }
+
+        // One ring, whoever it marks: the target's, and the one under a person you
+        // hold an item over (InventoryWindow.Drop.cs) - the same art, its own object.
+        private static void PaintRing(ref GameObject ring, ref SpriteRenderer sprite, string name,
+            Transform target, Color colour, float radius)
+        {
+            if (target == null || !Settings.TargetRing.Value)
+            {
+                if (ring != null && ring.activeSelf)
+                {
+                    ring.SetActive(false);
+                }
+                return;
+            }
+            if (ring == null)
+            {
+                ring = Owned.New(name);
+                sprite = ring.AddComponent<SpriteRenderer>();
+                sprite.sprite = RingArt();
+                // under whatever stands on it: people and props draw after
+                sprite.sortingOrder = -50;
+                ring.transform.rotation = Quaternion.Euler(90f, 0f, 0f);   // flat on the ground
+            }
+            if (!ring.activeSelf)
+            {
+                ring.SetActive(true);
+            }
+            Vector3 at = target.position;
+            at.y += RingLift;
+            ring.transform.position = at;
+            // the art is one unit across at scale 1
+            float size = Mathf.Clamp(radius, 0.4f, 4f) * 2f * Settings.TargetRingScale.Value;
+            ring.transform.localScale = new Vector3(size, size, 1f);
+            colour.a = Mathf.Clamp01(Settings.TargetRingAlpha.Value);
+            sprite.color = colour;
         }
 
         // a thing's footprint, from what it draws: half its wider side, a little proud

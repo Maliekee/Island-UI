@@ -103,14 +103,35 @@ https://github.com/user-attachments/assets/0849319c-b034-418c-b20f-7e249fc9da82
 <td width="40%">
 
 The bar on `1`–`0` holds what an item *does*: a weapon, a shield or a torch for the off
-hand, meat to eat. Press a key and it is in your hand, gold brackets mark what you hold,
-and the item itself stays in your bag.
+hand, meat to eat. Press a key and it is in your hand, gold brackets mark your main hand
+and blue your off hand, and the item itself stays in your bag.
 
 </td>
 <td>
 
-<!-- clip 23-action-bar-hands -->
-https://github.com/user-attachments/assets/d0fac9b8-3178-46b8-a164-d2a176950df0
+<!-- clip 23-action-bar-hands-v2-zoom -->
+https://github.com/user-attachments/assets/0303a78b-aa5a-4271-884c-b4a6d3a12927
+
+</td>
+</tr>
+</table>
+
+## Giving is a drop
+
+<table>
+<tr>
+<td width="40%">
+
+A right-click uses an item on you, whoever you are targeting. To give one, drag it onto
+the person, or onto the badge over your target's head, which lights up gold while you
+hold something to give. Out of reach, you walk over first. One of the stack goes; the rest
+stays in your hand.
+
+</td>
+<td>
+
+<!-- clip 24-give -->
+https://github.com/user-attachments/assets/67cb8396-4050-48ff-ba70-7d870283fd8d
 
 </td>
 </tr>

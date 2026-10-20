@@ -4,7 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>IslandUI</AssemblyName>
     <RootNamespace>IslandUI</RootNamespace>
-    <Version>0.3.0</Version>
+    <Version>0.3.1</Version>
     <LangVersion>latest</LangVersion>
     <!-- Live Steam install: the game that actually runs. BepInEx and our plugin live here;
          binary/ is only a pristine reference copy for decompilation. -->

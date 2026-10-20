@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.1
+
+- Giving: drag an item onto a person, or onto the badge over your target's head, which lights up gold while you hold something to give. Out of reach, you walk over first. One of the stack goes, flies to them, and the rest stays in your hand. Only someone the game lets you give to can take it; anyone else says so, and the item stays in your hand.
+- Love and hate potions are no longer used up on yourself by a right-click: they say to drag them onto someone instead.
+- A potion or other consumable used from your own bag goes back to its slot, and nothing is moved out of the Shared Bag for it.
+- The action bar marks your off hand with blue brackets, your main hand with gold.
+- A warning repeated within a few seconds stays up its full time.
+- Your character no longer keeps walking in place when you stop while dragging an item.
+
 ## 0.3.0
 
 First public release.

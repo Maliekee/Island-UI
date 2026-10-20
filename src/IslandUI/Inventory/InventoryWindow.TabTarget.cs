@@ -369,8 +369,9 @@ namespace IslandUI
             _tabSayUntil = Time.unscaledTime + 1.2f;
         }
 
-        // For the harness (D159): Tab onto the nearest "body" or "enemy" (anyone
-        // standing who is not yours), as if it were the one nearest the cursor
+        // For the harness (D159): Tab onto the nearest "body", "enemy" (anyone
+        // standing who is not yours) or "friend" (one of yours), as if it were the
+        // one nearest the cursor
         internal static string TabPickNearest(string kind)
         {
             PlayerMove p = _mn != null && _mn.gameMN != null ? _mn.gameMN.pMove : null;
@@ -388,7 +389,8 @@ namespace IslandUI
                 }
                 bool body = ReachRule.Body(c) && !(c.Employed() && c.life > 0.0);
                 bool enemy = c.dead == 0 && !Yours(c, p);
-                if (kind == "body" ? !body : !enemy)
+                bool friend = c.dead == 0 && Yours(c, p);
+                if (kind == "body" ? !body : kind == "friend" ? !friend : !enemy)
                 {
                     continue;
                 }

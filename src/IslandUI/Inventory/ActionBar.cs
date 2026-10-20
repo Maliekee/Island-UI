@@ -354,6 +354,8 @@ namespace IslandUI
                 // The frame stays as a bound cell's: the ghost is the one signal.
                 cell.Box.color = Color.white;
                 cell.Worn.Shown = worn != null;
+                // the off hand's corners are blue, so the two hands read apart
+                cell.Worn.Colour = InOffHand(worn) ? EquipBrackets.OffHand : EquipBrackets.Gold;
             }
 
             // Applied AFTER the loop, not inside it: Refresh repaints every cell
@@ -699,6 +701,11 @@ namespace IslandUI
             // is always allowed here: both containers are yours. That is the whole
             // reason the bar may not reach an NPC's bag — staging out of one would
             // move their item into yours and use it as you.
+            if (ItemUse.RefusedOnYou(_mn, hit.Slot))
+            {
+                Flash(index, RefuseFlash);
+                return;
+            }
             if (!ItemUse.Use(_mn, hit.Slot, hit.SlotID, Guarded, true))
             {
                 Plugin.Log.LogInfo("Action bar: " + key + " could not be used from here");
@@ -757,6 +764,18 @@ namespace IslandUI
                 }
             }
             return null;
+        }
+
+        // equip[6] is the off hand - a shield or a second tool (CommonStates reads
+        // its shieldType there); equip[1] is the main hand
+        private const int OffHandSlot = 6;
+
+        private static bool InOffHand(ItemSlot worn)
+        {
+            CommonStates player = _mn != null && _mn.gameMN != null && _mn.gameMN.pMove != null
+                ? _mn.gameMN.pMove.common : null;
+            return worn != null && player != null && player.equip != null && player.equip.Length > OffHandSlot
+                && ReferenceEquals(player.equip[OffHandSlot], worn);
         }
 
         private static ItemSlot[] CharacterBag()

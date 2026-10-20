@@ -76,5 +76,31 @@ namespace IslandUI
         {
             return false;
         }
+
+        // A caution raised, counted: a give that raises one was refused (Drop.cs).
+        // Both run their first segment inside StartCoroutine, so the count moves
+        // inside the call that caused it.
+        [HarmonyPatch(typeof(EventManager), nameof(EventManager.GoCaution))]
+        [HarmonyPrefix]
+        private static void GoCaution_Prefix()
+        {
+            InventoryWindow.CautionsRaised++;
+        }
+
+        [HarmonyPatch(typeof(EventManager), nameof(EventManager.GoCautionSt))]
+        [HarmonyPrefix]
+        private static void GoCautionSt_Prefix()
+        {
+            InventoryWindow.CautionsRaised++;
+        }
+
+        // A walk to give (InventoryWindow.Drop.cs) ends in the give, not in their
+        // menu: should vanilla arrive at 1 m before reach was seen at 3 m
+        [HarmonyPatch(typeof(PlayerMove), nameof(PlayerMove.InteractNPC))]
+        [HarmonyPrefix]
+        private static bool InteractNPC_Prefix(PlayerMove __instance)
+        {
+            return !InventoryWindow.ArrivedToGive(__instance);
+        }
     }
 }

@@ -104,6 +104,11 @@ namespace IslandUI
                     BindThing(thing, focus, fresh);
                 }
                 _unitRow.Paint();
+                if (_markerHit != null)
+                {
+                    // the marker is the thing's now: no offer on it
+                    _markerUnder.gameObject.SetActive(false);
+                }
                 PaintThingMarker(thing);
                 ReadUnitInput();
                 HideCursorName(mn);
@@ -161,6 +166,10 @@ namespace IslandUI
             _unitRow = null;
             _unitTip = null;
             _unitFor = null;
+            _markerHit = null;
+            _markerUnder = null;
+            _underPlate = _underFooter = _underEmblem = null;
+            _offerRing = null;
             _worldMarker = null;
             _ring = null;
             ResetThingForSceneLoad();

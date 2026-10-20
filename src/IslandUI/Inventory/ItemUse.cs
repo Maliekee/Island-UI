@@ -70,6 +70,37 @@ namespace IslandUI
             }
         }
 
+        // NOT ON YOU. Vanilla consumes a consumable only when it took (the flag in
+        // UseConsumables), so most wrong recipients are refused by the game itself
+        // and the item is kept. These two always take: on the player they set your
+        // affection toward yourself, and the potion is spent for nothing (reported
+        // after 0.3.0). A plain use refuses them and says how to give one - the rule
+        // stays "on you, unless dropped on someone", and the refusal teaches the drop.
+        private static readonly System.Collections.Generic.HashSet<string> NotOnYou =
+            new System.Collections.Generic.HashSet<string> { "potion_love_01", "potion_hate_01" };
+
+        /// <summary>
+        /// True, with the hint shown, when <paramref name="slot"/> holds an item
+        /// that does nothing for you. Asked by every plain use before it fires.
+        /// </summary>
+        internal static bool RefusedOnYou(ManagersScript mn, ItemSlot slot)
+        {
+            if (mn == null || slot == null || string.IsNullOrEmpty(slot.itemKey)
+                || !NotOnYou.Contains(slot.itemKey))
+            {
+                return false;
+            }
+            string name = InventoryWindow.GiveName();
+            string hint = "You can't use this on yourself. Drag it onto "
+                + (name ?? "someone") + " to give it.";
+            if (mn.eventMN != null)
+            {
+                mn.eventMN.StartCoroutine(mn.eventMN.GoCautionSt(hint));
+            }
+            Plugin.Log.LogInfo("Use: " + slot.itemKey + " refused on you");
+            return true;
+        }
+
         /// <summary>
         /// Use <paramref name="slot"/> through <paramref name="aim"/>, which is the
         /// caller's own menuNPC guard and therefore decides WHO acts (D25).
@@ -123,16 +154,23 @@ namespace IslandUI
             // Food and Bottle go through UseFood, which is synchronous: by the time
             // UseItem returns the stack is already decremented and nothing holds
             // the index, so the remainder goes straight back where it came from and
-            // the item was never anywhere else. The rest hand the index to a
-            // coroutine (UseConsumables) or a placement flow (BuildStart,
-            // SummonNPC) that re-reads it long afterwards — putting the item back
-            // under them would have them consume an empty slot, so the remainder
-            // must be LEFT in the Shared Bag.
+            // the item was never anywhere else. Consumables are the same, though
+            // they look otherwise: UseConsumables is a coroutine, but one with no
+            // `yield return` in it - every case, the pocket and the figure box
+            // included, runs to its ConsumeItem (or its refusal) inside the
+            // StartCoroutine call, and Drone takes no index. They were left staged
+            // once, and a refused rejuvenation potion right-clicked in your pack
+            // stayed in the Shared Bag, with what made room for it moved out.
+            // Props (BuildStart) and creatures (SummonNPC) do hand the index to a
+            // flow that re-reads it long afterwards - putting the item back under
+            // them would have them consume an empty slot, so their remainder must
+            // be LEFT in the Shared Bag.
             //
             // The Shared Bag is the player's (D25). Leaving someone else's goods in
             // it is a transfer, so it is allowed only when the holder is you.
             bool synchronous = data.itemType == ItemData.ItemType.Food
-                || data.itemType == ItemData.ItemType.Bottle;
+                || data.itemType == ItemData.ItemType.Bottle
+                || data.itemType == ItemData.ItemType.Consumables;
             if (!synchronous && !mayLeaveStaged)
             {
                 return false;
@@ -209,6 +247,33 @@ namespace IslandUI
                 }
             }
             return true;
+        }
+
+        // The refusal, through the harness (it cannot right-click): the first
+        // NotOnYou item in the Shared Bag is refused with the hint and keeps its
+        // stack. Changes nothing; the hint shows as it would in play.
+        internal static string RefusalSelfTest()
+        {
+            ManagersScript mn = GameObject.Find("Managers")?.GetComponent<ManagersScript>();
+            InventoryManager inv = mn != null ? mn.inventory : null;
+            if (inv == null)
+            {
+                return "skipped: no inventory";
+            }
+            for (int i = 0; i < inv.baseCount; i++)
+            {
+                ItemSlot s = inv.itemSlot[i];
+                if (s == null || string.IsNullOrEmpty(s.itemKey) || !NotOnYou.Contains(s.itemKey))
+                {
+                    continue;
+                }
+                int stack = s.stack;
+                bool refused = RefusedOnYou(mn, s);
+                return (refused && s.stack == stack ? "ok: " : "FAIL: ") + s.itemKey
+                    + " refused=" + refused + " stack " + stack + "->" + s.stack
+                    + " target=" + (InventoryWindow.GiveName() ?? "none");
+            }
+            return "skipped: no love or hate potion in the Shared Bag";
         }
 
         // Harness door: the chest case with the Shared Bag full. One food item in a

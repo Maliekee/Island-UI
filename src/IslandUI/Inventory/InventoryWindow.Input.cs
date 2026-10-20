@@ -654,6 +654,10 @@ namespace IslandUI
                 || ReferenceEquals(sourceOwner, _mn.gameMN.pMove.common);
             // D141: on YOU, whatever is targeted - to use it on
             // someone, drop it on them
+            if (ItemUse.RefusedOnYou(_mn, slot))
+            {
+                return;   // it does nothing for you, and the hint says how to give it
+            }
             if (!ItemUse.Use(_mn, slot, cell.VanillaSlotId, use => ItemUse.OnYou(_mn, use), mine))
             {
                 // Refused rather than done, and it must SAY so — a silent no-op is
