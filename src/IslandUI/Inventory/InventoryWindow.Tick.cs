@@ -138,6 +138,7 @@ namespace IslandUI
                 VeilVanilla(_mn, focus as CommonStates, FocusProp(focus));
             }
             NormalizeHover();
+            TickPlaceFactors();   // the Set place pointer's factors, after vanilla moved its point
             ProbeFlash();
         }
 
@@ -242,6 +243,7 @@ namespace IslandUI
             ReconcileTarget(mn);
             ReleaseOrphanMenu(mn);
             TickTabTarget(mn);
+            ArcIdle();   // before any return: an arc nobody draws this frame goes
 
             KeyCode key = Settings.InventoryKey.Value;
             if (key != KeyCode.None && Input.GetKeyDown(key) && !GameManager.nowEvent)
@@ -253,6 +255,7 @@ namespace IslandUI
             // container raises it whether or not your own bags are up. That is what
             // replaces the vanilla container UI rather than merely hiding it.
             object focus = ResolveTarget(mn);
+            TickWorldArc(focus);   // your target and the villager under the pointer (Links.cs)
             // The target ending HIDES the sheet and the bag window but no longer
             // closes them (D107 amended: an inventory open with the last NPC
             // starts open for the next as well):
@@ -348,6 +351,10 @@ namespace IslandUI
                 if (due)
                 {
                     _signature = sig;
+                    // a forced refresh is a door opened or closed: the bar re-reads
+                    // now, so the door's strip goes green with the window, not on
+                    // the bar's next quarter-second read
+                    if (_forceRefresh) { _unitBoundAt = 0f; }
                     _forceRefresh = false;
                     _fullRefreshBy = Time.unscaledTime + 2f;
                     float began = Time.realtimeSinceStartup;
@@ -360,10 +367,22 @@ namespace IslandUI
             // so it renders before anything below can return out of the tick
             TickPortraits();
             TickSnapshots();
+            TickFloat();
+            // the leather's rims from what the last input pass found, before anything
+            // below can return; the pass sets the pointer's cell again if it gets there
+            PaintLeatherRims();
+            _leatherHover = null;
             Canvas canvas = _root.GetComponentInParent<Canvas>();
             Camera cam = canvas != null && canvas.rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay
                 ? canvas.rootCanvas.worldCamera
                 : null;
+            // a name being retyped on a sheet reads its keys first, and the sheet
+            // repaints every frame while it does, so each letter shows as typed
+            _renameCam = cam;
+            if (UI.NameEdit.Tick())
+            {
+                _nextSheetPaint = 0f;
+            }
             // the split dialog is modal over the window while it is up (ClickMap)
             if (SplitDialog.Tick(cam))
             {
@@ -434,6 +453,16 @@ namespace IslandUI
             {
                 return;
             }
+            // the sheet's dock chip, beside its close on the rim, before the sheet's rows
+            if (TickFloatTab(cam))
+            {
+                return;
+            }
+            // ...and the sheet dragged by its tabs, asked before the tabs themselves
+            if (TickSheetDrag(cam))
+            {
+                return;
+            }
             // ...and the columns' aspect tabs, hanging under the frames (§6.20)
             for (int g = 1; g < GroupCount; g++)
             {
@@ -465,11 +494,8 @@ namespace IslandUI
                 return;
             }
             Plate closeHot = TickCloseChips(cam);
-            if (closeHot == null && ClickSectionHeaders(cam))
-            {
-                return;
-            }
             CellView hoveredCell = closeHot != null ? null : HitCell(cam);
+            _leatherHover = hoveredCell;
             ItemSlot hoveredSlot = hoveredCell != null && hoveredCell.Slot != null
                 && !string.IsNullOrEmpty(hoveredCell.Slot.itemKey) ? hoveredCell.Slot : null;
             _hover.text = ApplyEquipPreview(hoveredSlot, hoveredCell);
@@ -605,6 +631,7 @@ namespace IslandUI
             PaintButtons();
             PaintTiles();
             PaintActRows();
+            PaintLeatherRims();
 
             // Refresh repaints every cell from Bind's rule, so the press tint has
             // to be restated after it rather than set once on mouse-down.
@@ -678,30 +705,6 @@ namespace IslandUI
         // Acting on release left the press itself silent, which read as lag rather
         // than as care. The cell darkens under the finger and returns on release —
         // reapplied every frame because Refresh repaints the cell out from under it.
-        // OCCUPANCY, at last, as a tint on the slot frame itself. Four earlier
-        // shapes were reverted — vanilla's empty-slot sprite (a blank), a lighter
-        // well behind the art (brown on the loadout's green), and an Outline on the
-        // art (four offset copies, so everything read blurry). What they had in
-        // common is that they added something; this changes what is already there,
-        // which is why it cannot fight a plate or smear a sprite.
-        //
-        // The look is borrowed rather than invented: the browser's recipe grid is
-        // this same frame — its cells are clones of itemSlot[100], which is exactly
-        // where Theme.SlotFrame comes from — reading darker because of what sits
-        // behind it. A filled slot is drawn at full strength, as vanilla does.
-        private static Color BaseCellColor(bool filled)
-        {
-            if (filled)
-            {
-                return Color.white;
-            }
-            // ...but the slot sprite's interior is DARK, and a grid of it on a
-            // light group frame reads as holes punched in the panel rather than
-            // as places to put something. Alpha lets the parchment through, so an
-            // empty slot reads as recessed instead of missing.
-            return new Color(1f, 1f, 1f, EmptySlotAlpha);
-        }
-
         private static void SetPressed(CellView cell, bool pressed)
         {
             if (cell == null || cell.Box == null)
@@ -712,6 +715,18 @@ namespace IslandUI
             // the bind thinks it drew, or the memo will skip the repaint that
             // puts the cell back. The tint is cheap; being wrong about it is not.
             cell.DrewKey = null;
+            // the vicinity's cell wears its pressed face instead (PaintVicinityCells)
+            if (cell.Vicinity)
+            {
+                return;
+            }
+            // on the leather a press is the proof's selection, a lit rim
+            // (PaintLeatherRims): the bed keeps its colour
+            if (cell.Leather)
+            {
+                cell.Box.color = Color.white;
+                return;
+            }
             // a crate's compartment is drawn whole, empty or not (ShedCell): the
             // parchment's half-alpha empty slot would let the crate's boards through
             Color under = Color.white;

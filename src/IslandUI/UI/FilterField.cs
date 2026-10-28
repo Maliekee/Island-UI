@@ -171,6 +171,15 @@ namespace IslandUI.UI
             {
                 return false;
             }
+            // A REBUILT WIDGET IS PAPER AGAIN. The instance outlives a scene load
+            // (the note above the key patches), so the look it last wore is still
+            // recorded while the new widget below is built plain - and Wear, Carve,
+            // Shed and Sheet all skip a look already recorded: the vicinity's well
+            // came back with ink text on the leather and the paper's rim on.
+            _carved = -1;
+            _wornFamily = null;
+            _border = 12f;
+            _laidOut = new Vector3(-1f, -1f, -1f);
             // THE KIT'S TEXT FIELD (docs/ui-kit.md §3): kit_paper cream with
             // kit_paper_rim ink over it, ink text, placeholder #967D5F. Two layers
             // rather than one so the body and its rim tint separately -- the same
@@ -422,6 +431,58 @@ namespace IslandUI.UI
             _clear.color = Blueprint.Dim;
         }
 
+        // THE WINDOW FACELIFT'S FIELD (Facelift.cs): a blank painted well - the
+        // vicinity's leather inset, crafting's blueprint box - wearing its focus face
+        // while typed in, the query, hint and count in the window's own inks and the
+        // HUD's serif. Sizes in reference pixels.
+        private string _wornFamily;
+
+        public void Wear(string family, Color query, Color hint, Color count, float queryPx, float countPx)
+        {
+            int want = family == "craft-filter" ? 31 : 30;
+            if (_well == null || _carved == want)
+            {
+                return;
+            }
+            if (_plainFont == null && _field.textComponent != null)
+            {
+                _plainFont = _field.textComponent.font;
+                _plainHintFont = _field.placeholder is TMP_Text was ? was.font : _plainFont;
+                _plainCountFont = _count.font;
+            }
+            _carved = want;
+            _wornFamily = family;
+            _border = 2f;
+            _laidOut = Vector3.zero;
+            Facelift.Skin(_well, family + "-idle");
+            _well.color = Color.white;
+            _rim.enabled = false;
+            TMP_FontAsset face = InventoryWindow.HudBodyFont;
+            if (_field.textComponent != null)
+            {
+                ToolShed.Hand(_field.textComponent, face, query);
+                _field.textComponent.fontSize = queryPx * Facelift.Px;
+            }
+            if (_field.placeholder is TMP_Text ph)
+            {
+                ToolShed.Hand(ph, face, hint);
+                ph.fontSize = queryPx * Facelift.Px;
+            }
+            ToolShed.Hand(_count, face, count);
+            _count.fontSize = countPx * Facelift.Px;
+            _clear.color = hint;
+        }
+
+        // the worn well's focus face, every frame (Tick)
+        internal void PaintWorn()
+        {
+            if (_wornFamily == null || _carved < 30 || _well == null)
+            {
+                return;
+            }
+            Facelift.Skin(_well, _wornFamily + (IsFocused ? "-focus" : "-idle"));
+        }
+
         private void Unshed()
         {
             if (_plainFont != null && _field.textComponent != null)
@@ -471,6 +532,15 @@ namespace IslandUI.UI
         // Stretch the field inside the well and park the count at its right end.
         // Called after every geometry change rather than once, because both
         // windows resize under it.
+        // the hint in the empty well, set at each show so a language switch reaches it
+        public void SetPlaceholder(string text)
+        {
+            if (_field != null && _field.placeholder is TMP_Text ph && ph.text != text)
+            {
+                ph.text = text;
+            }
+        }
+
         public void Layout(float countWidth)
         {
             if (_field == null)
@@ -495,7 +565,7 @@ namespace IslandUI.UI
             // corners, which are not scaled on both axes, keep their weight. The
             // result reads as a box with strong corners and a faint lid.
             // the blueprint's box is a rule, not a paper edge: the kit's own weight
-            float ppu = _carved == 20 ? Theme.KitPpu : Mathf.Max(1f, _border / (h / 3f));
+            float ppu = _carved >= 20 ? Theme.KitPpu : Mathf.Max(1f, _border / (h / 3f));
             _well.pixelsPerUnitMultiplier = ppu;
             _rim.pixelsPerUnitMultiplier = ppu;
             // THE TEXT RECT IS LAID OUT ONCE PER GEOMETRY, NOT PER CALL. TMP scrolls
@@ -707,6 +777,11 @@ namespace IslandUI.UI
         {
             get
             {
+                // the sheet's rename field is typing too (NameEdit)
+                if (NameEdit.IsFocused)
+                {
+                    return true;
+                }
                 for (int i = 0; i < Fields.Count; i++)
                 {
                     if (Fields[i].IsFocused)
@@ -794,7 +869,10 @@ namespace IslandUI.UI
         }
 
         // WHO OWNS THE KEYBOARD: a focused field, the open console, or the game's
-        // rename box. Every key read below answers "not pressed" while one does.
+        // rename box. Every key read below answers "not pressed" while one does. The
+        // Talk bubble and the Manage key's stem own one key, Escape, and only that one
+        // answers so while one is up (TalkBubble.Swallows, ManageFan.Swallows): the walk,
+        // the swing and the hotkeys stay live.
         internal static bool Captured
         {
             get { return AnyFocused || DevConsole.Swallowing || VanillaTyping; }
@@ -848,6 +926,10 @@ namespace IslandUI.UI
             _buildSizes = mn.buildMN != null ? mn.buildMN.sizeValueTexts : null;
             _buildScales = mn.buildMN != null ? mn.buildMN.scaleValueTexts : null;
             bool focused = AnyFocused;
+            for (int i = 0; i < Fields.Count; i++)
+            {
+                Fields[i].PaintWorn();
+            }
             // ESCAPE LEAVES THE FIELD, and never reaches the window under it. One
             // rule, one place, however many fields — D28a's second cost, paid once.
             if (focused && KeyDown(KeyCode.Escape))
@@ -903,9 +985,9 @@ namespace IslandUI.UI
         // a separate API and stay live.
         [HarmonyPatch(typeof(Input), nameof(Input.GetKey), typeof(KeyCode))]
         [HarmonyPrefix]
-        private static bool GetKey_Suppress(ref bool __result)
+        private static bool GetKey_Suppress(KeyCode key, ref bool __result)
         {
-            if (_bypass || !Captured)
+            if (_bypass || !(Captured || TalkBubble.Swallows(key) || ManageFan.Swallows(key)))
             {
                 return true;
             }
@@ -915,9 +997,9 @@ namespace IslandUI.UI
 
         [HarmonyPatch(typeof(Input), nameof(Input.GetKeyDown), typeof(KeyCode))]
         [HarmonyPrefix]
-        private static bool GetKeyDown_Suppress(ref bool __result)
+        private static bool GetKeyDown_Suppress(KeyCode key, ref bool __result)
         {
-            if (_bypass || !Captured)
+            if (_bypass || !(Captured || TalkBubble.Swallows(key) || ManageFan.Swallows(key)))
             {
                 return true;
             }
@@ -927,9 +1009,9 @@ namespace IslandUI.UI
 
         [HarmonyPatch(typeof(Input), nameof(Input.GetKeyUp), typeof(KeyCode))]
         [HarmonyPrefix]
-        private static bool GetKeyUp_Suppress(ref bool __result)
+        private static bool GetKeyUp_Suppress(KeyCode key, ref bool __result)
         {
-            if (_bypass || !Captured)
+            if (_bypass || !(Captured || TalkBubble.Swallows(key) || ManageFan.Swallows(key)))
             {
                 return true;
             }

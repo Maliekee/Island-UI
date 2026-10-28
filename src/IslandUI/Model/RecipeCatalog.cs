@@ -248,7 +248,7 @@ namespace IslandUI
             if (AggregatedCrafting.NpcOfPanel.TryGetValue(panelID, out int npcID))
             {
                 StatsData stats = mn.npcMN != null ? mn.npcMN.GetStatsData(npcID) : null;
-                return stats != null ? stats.GetLocalizedCharaName() : $"NPC {npcID}";
+                return stats != null ? stats.GetLocalizedCharaName() : Shared.Loc.Get("card.npc_numbered", "NPC {0}", npcID);
             }
             string benchKey = AggregatedCrafting.BenchKeyOf(panelID);
             ItemData bench = benchKey != null ? mn.itemMN.FindItem(benchKey) : null;

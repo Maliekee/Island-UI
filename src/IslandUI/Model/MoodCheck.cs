@@ -74,9 +74,10 @@ namespace IslandUI
                 found.Add(new MoodFinding
                 {
                     Key = "rebel", Severity = MoodSeverity.Bad,
-                    Short = "rebelling", Effect = "fights",
-                    Text = "Rebelling: fights you and the villagers",
-                    Fix = "Knock them down (+20 mood), then fix what drains them",
+                    Short = Shared.Loc.Get("mood.check.rebelling", "rebelling"),
+                    Effect = Shared.Loc.Get("mood.check.rebelling.effect", "fights"),
+                    Text = Shared.Loc.Get("mood.check.rebelling.text", "Rebelling: fights you and the villagers"),
+                    Fix = Shared.Loc.Get("mood.check.rebelling.fix", "Knock them down (+20 mood), then fix what drains them"),
                 });
             }
             else if (level == 3)
@@ -84,10 +85,12 @@ namespace IslandUI
                 found.Add(new MoodFinding
                 {
                     Key = "rebel", Severity = MoodSeverity.Bad,
-                    Short = who.moral <= -100f ? "held by Survivor" : "near rebellion",
-                    Effect = who.moral <= -100f ? "at -100" : "rebels at -100",
-                    Text = who.moral <= -100f ? "Held back from rebelling only by the Survivor order"
-                        : "One step from rebelling (they rebel at -100)",
+                    Short = who.moral <= -100f ? Shared.Loc.Get("mood.check.survivor", "held by Survivor")
+                        : Shared.Loc.Get("mood.check.near_rebellion", "near rebellion"),
+                    Effect = who.moral <= -100f ? Shared.Loc.Get("mood.check.survivor.effect", "at -100")
+                        : Shared.Loc.Get("mood.check.near_rebellion.effect", "rebels at -100"),
+                    Text = who.moral <= -100f ? Shared.Loc.Get("mood.check.survivor.text", "Held back from rebelling only by the Survivor order")
+                        : Shared.Loc.Get("mood.check.near_rebellion.text", "One step from rebelling (they rebel at -100)"),
                 });
             }
         }
@@ -101,42 +104,42 @@ namespace IslandUI
             bool never = false;
             if (move.npcType == NPCMove.NPCType.Follow)
             {
-                blocker = "Following you, so never sleeps";
-                brief = "no sleep: following";
-                fix = "Leave them at home for the night";
+                blocker = Shared.Loc.Get("mood.check.following.text", "Following you, so never sleeps");
+                brief = Shared.Loc.Get("mood.check.following", "no sleep: following");
+                fix = Shared.Loc.Get("mood.check.following.fix", "Leave them at home for the night");
             }
             else if (move.orderType == NPCMove.OrderType.Guards)
             {
-                blocker = "On guard duty, so never sleeps";
-                brief = "no sleep: guard duty";
-                fix = "Give them another combat order";
+                blocker = Shared.Loc.Get("mood.check.guard.text", "On guard duty, so never sleeps");
+                brief = Shared.Loc.Get("mood.check.guard", "no sleep: guard duty");
+                fix = Shared.Loc.Get("mood.check.guard.fix", "Give them another combat order");
             }
             else if (move.territoryRad <= 0f)
             {
-                blocker = "Their area is 0, so never sleeps";
-                brief = "no sleep: area 0";
-                fix = "Give them an area with a house in it";
+                blocker = Shared.Loc.Get("mood.check.area_zero.text", "Their area is 0, so never sleeps");
+                brief = Shared.Loc.Get("mood.check.area_zero", "no sleep: area 0");
+                fix = Shared.Loc.Get("mood.check.area_zero.fix", "Give them an area with a house in it");
             }
             else if (who.npcID == 88 || !HasSleep(who))
             {
-                blocker = "Their kind never sleeps";
-                brief = "never sleeps";
-                fix = "Only foods, sex and relief raise their mood: keep the drains away";
+                blocker = Shared.Loc.Get("mood.check.never_sleeps.text", "Their kind never sleeps");
+                brief = Shared.Loc.Get("mood.check.never_sleeps", "never sleeps");
+                fix = Shared.Loc.Get("mood.check.never_sleeps.fix", "Only foods, sex and relief raise their mood: keep the drains away");
                 never = true;
             }
             else if (move.house == null && who.houseID == 0)
             {
                 if (who.sexInfo[7] != 0)
                 {
-                    blocker = "Not allowed into houses, so sleeps outside";
-                    brief = "sleeps outside";
-                    fix = "Allow them to enter houses (Orders)";
+                    blocker = Shared.Loc.Get("mood.check.outside.text", "Not allowed into houses, so sleeps outside");
+                    brief = Shared.Loc.Get("mood.check.outside", "sleeps outside");
+                    fix = Shared.Loc.Get("mood.fix.allow_houses", "Allow them to enter houses (Orders, Permissions)");
                 }
                 else if (mn.npcMN.FindFriendHouse(who) == null)
                 {
-                    blocker = "No house door inside their area";
-                    brief = "no house in area";
-                    fix = "Widen their area to take in a house, or build one in it";
+                    blocker = Shared.Loc.Get("mood.check.no_house.text", "No house door inside their area");
+                    brief = Shared.Loc.Get("mood.check.no_house", "no house in area");
+                    fix = Shared.Loc.Get("mood.check.no_house.fix", "Widen their area to take in a house, or build one in it");
                 }
             }
             if (blocker != null)
@@ -146,8 +149,8 @@ namespace IslandUI
                     Key = "sleep",
                     // costing them now only once there is something to win back
                     Severity = never ? MoodSeverity.Info : who.moral < 0f ? MoodSeverity.Bad : MoodSeverity.Warn,
-                    Short = brief, Effect = "no recovery",
-                    Text = blocker + " - no mood back at dawn",
+                    Short = brief, Effect = Shared.Loc.Get("mood.check.no_recovery", "no recovery"),
+                    Text = Shared.Loc.Get("mood.check.no_recovery.text", "{0} - no mood back at dawn", blocker),
                     Fix = fix,
                 });
                 return;
@@ -162,17 +165,21 @@ namespace IslandUI
                     // being away from you is the normal state of a base you are not
                     // at; it is news only for someone who needs the night
                     Key = "far", Severity = who.moral < 0f ? MoodSeverity.Warn : MoodSeverity.Info,
-                    Short = "out of range", Effect = "no sleep here",
-                    Text = "Out of your range: villagers sleep only while you are near",
-                    Fix = "Spend the night near them",
+                    Short = Shared.Loc.Get("mood.check.far", "out of range"),
+                    Effect = Shared.Loc.Get("mood.check.far.effect", "no sleep here"),
+                    Text = Shared.Loc.Get("mood.check.far.text", "Out of your range: villagers sleep only while you are near"),
+                    Fix = Shared.Loc.Get("mood.check.far.fix", "Spend the night near them"),
                 });
                 return;
             }
             found.Add(new MoodFinding
             {
                 Key = "sleep", Severity = MoodSeverity.Good,
-                Short = "sleeps indoors", Effect = who.moral < 0f ? "+20 at dawn" : "+10 at dawn",
-                Text = who.moral < 0f ? "Sleeps indoors: +20 at dawn, up to 10" : "Sleeps indoors: +10 at dawn",
+                Short = Shared.Loc.Get("mood.check.sleeps", "sleeps indoors"),
+                Effect = who.moral < 0f ? Shared.Loc.Get("mood.check.sleeps.effect_low", "+20 at dawn")
+                    : Shared.Loc.Get("mood.check.sleeps.effect", "+10 at dawn"),
+                Text = who.moral < 0f ? Shared.Loc.Get("mood.check.sleeps.text_low", "Sleeps indoors: +20 at dawn, up to 10")
+                    : Shared.Loc.Get("mood.check.sleeps.text", "Sleeps indoors: +10 at dawn"),
             });
         }
 
@@ -214,11 +221,14 @@ namespace IslandUI
                     found.Add(new MoodFinding
                     {
                         Key = "company", Severity = MoodSeverity.Bad, Other = other,
-                        Short = "can't stand " + other.charaName, Effect = disliked ? "-6/day" : "-1 a check",
+                        Short = Shared.Loc.Get("mood.check.cant_stand", "can't stand {0}", other.charaName),
+                        Effect = disliked ? Shared.Loc.Get("mood.check.cant_stand.effect", "-6/day")
+                            : Shared.Loc.Get("mood.check.sore.effect", "-1 a check"),
                         Text = disliked
-                            ? "Can't stand " + other.charaName + ": -1 mood six times a day"
-                            : "Still sore at " + other.charaName + " (love " + love.ToString("0") + "): -1 mood a check until it passes -10",
-                        Fix = disliked ? "Move their areas apart, or turn off Love for one of them" : null,
+                            ? Shared.Loc.Get("mood.check.cant_stand.text", "Can't stand {0}: -1 mood six times a day", other.charaName)
+                            : Shared.Loc.Get("mood.check.sore.text", "Still sore at {0} (love {1}): -1 mood a check until it passes -10",
+                                other.charaName, love.ToString("0")),
+                        Fix = disliked ? Shared.Loc.Get("mood.check.apart.fix", "Move their areas apart, or turn off Love for one of them") : null,
                     });
                 }
                 else if (disliked)
@@ -227,11 +237,18 @@ namespace IslandUI
                     found.Add(new MoodFinding
                     {
                         Key = "company", Severity = MoodSeverity.Warn, Other = other,
-                        Short = "dislikes " + other.charaName,
-                        Effect = checks <= 6 ? "sours in " + (checks * 4) + "h" : "sours in " + Mathf.CeilToInt(checks / 6f) + "d",
-                        Text = "Dislikes " + other.charaName + "'s type, areas overlap: drains from "
-                            + (checks <= 6 ? "about " + (checks * 4) + " hours" : "about " + Mathf.CeilToInt(checks / 6f) + " days") + " on",
-                        Fix = "Move their areas apart, or turn off Love for one of them",
+                        Short = Shared.Loc.Get("mood.check.dislikes", "dislikes {0}", other.charaName),
+                        Effect = checks <= 6 ? Shared.Loc.Get("mood.check.dislikes.hours", "sours in {0}h", checks * 4)
+                            : Shared.Loc.Get("mood.check.dislikes.days", "sours in {0}d", Mathf.CeilToInt(checks / 6f)),
+                        Text = checks <= 6
+                            ? Shared.Loc.Plural("mood.check.dislikes.text_hours",
+                                "Dislikes {1}'s type, areas overlap: drains from about {0} hour on",
+                                "Dislikes {1}'s type, areas overlap: drains from about {0} hours on", checks * 4, other.charaName)
+                            : Shared.Loc.Plural("mood.check.dislikes.text_days",
+                                "Dislikes {1}'s type, areas overlap: drains from about {0} day on",
+                                "Dislikes {1}'s type, areas overlap: drains from about {0} days on", Mathf.CeilToInt(checks / 6f),
+                                other.charaName),
+                        Fix = Shared.Loc.Get("mood.check.apart.fix", "Move their areas apart, or turn off Love for one of them"),
                     });
                 }
             }
@@ -253,7 +270,8 @@ namespace IslandUI
                 return;
             }
             bool urgent = who.libido >= 90f;
-            string when = urgent ? ": -5 mood, several times a day" : ": -5 mood once libido reaches 90 (every morning)";
+            string when = urgent ? Shared.Loc.Get("mood.check.when.urgent", "-5 mood, several times a day")
+                : Shared.Loc.Get("mood.check.when.morning", "-5 mood once libido reaches 90 (every morning)");
             SexManager.SexInviteState answer = npcs.ShallWeSex(who, partner);
             if (answer == SexManager.SexInviteState.No)
             {
@@ -262,16 +280,17 @@ namespace IslandUI
                 {
                     return;
                 }
-                string why = who.houseID != partner.houseID ? partner.charaName + " lives in another house"
-                    : !npcs.LoveLoveCheck(who, partner) ? partner.charaName + " doesn't love them back"
-                    : partner.libido < 20f ? partner.charaName + " isn't in the mood"
-                    : partner.charaName + " says no";
+                string why = who.houseID != partner.houseID ? Shared.Loc.Get("mood.check.why.house", "{0} lives in another house", partner.charaName)
+                    : !npcs.LoveLoveCheck(who, partner) ? Shared.Loc.Get("mood.check.why.unloved", "{0} doesn't love them back", partner.charaName)
+                    : partner.libido < 20f ? Shared.Loc.Get("mood.check.why.not_in_mood", "{0} isn't in the mood", partner.charaName)
+                    : Shared.Loc.Get("mood.check.why.no", "{0} says no", partner.charaName);
                 found.Add(new MoodFinding
                 {
                     Key = "crush", Severity = urgent ? MoodSeverity.Bad : MoodSeverity.Warn, Other = partner,
-                    Short = "pining for " + partner.charaName, Effect = "-5 a time",
-                    Text = "Pining for " + partner.charaName + " - " + why + when,
-                    Fix = "Put both in one house, an occupied toilet within 10 m, or turn off Sex",
+                    Short = Shared.Loc.Get("mood.check.pining", "pining for {0}", partner.charaName),
+                    Effect = Shared.Loc.Get("mood.check.a_time", "-5 a time"),
+                    Text = Shared.Loc.Get("mood.check.pining.text", "Pining for {0} - {1}: {2}", partner.charaName, why, when),
+                    Fix = Shared.Loc.Get("mood.check.pining.fix", "Put both in one house, an occupied toilet within 10 m, or turn off Sex"),
                 });
             }
             else if (answer == SexManager.SexInviteState.Yes)
@@ -284,9 +303,10 @@ namespace IslandUI
                     found.Add(new MoodFinding
                     {
                         Key = "bed", Severity = urgent ? MoodSeverity.Bad : MoodSeverity.Warn, Other = partner,
-                        Short = "no bed with " + partner.charaName, Effect = "-5 a time",
-                        Text = "No free bed for them and " + partner.charaName + when,
-                        Fix = "Place a bed within 10 m of them, in their house",
+                        Short = Shared.Loc.Get("mood.check.no_bed", "no bed with {0}", partner.charaName),
+                        Effect = Shared.Loc.Get("mood.check.a_time", "-5 a time"),
+                        Text = Shared.Loc.Get("mood.check.no_bed.text", "No free bed for them and {0}: {1}", partner.charaName, when),
+                        Fix = Shared.Loc.Get("mood.check.no_bed.fix", "Place a bed within 10 m of them, in their house"),
                     });
                 }
             }
@@ -294,7 +314,7 @@ namespace IslandUI
 
         // NPCManager.GetSexableLover, without its clean-up (it drops lovers whose
         // record is gone, which a read must not do)
-        private static CommonStates SexableLover(ManagersScript mn, CommonStates who)
+        internal static CommonStates SexableLover(ManagersScript mn, CommonStates who)
         {
             NPCManager npcs = mn.npcMN;
             int best = -1;
@@ -331,9 +351,10 @@ namespace IslandUI
                 found.Add(new MoodFinding
                 {
                     Key = "you", Severity = MoodSeverity.Info,
-                    Short = "dislikes you", Effect = "-1 a change",
-                    Text = "Dislikes you (love " + love.ToString("0") + "): each change to it costs 1 mood",
-                    Fix = "Take them along: following raises their love for you",
+                    Short = Shared.Loc.Get("mood.check.you", "dislikes you"),
+                    Effect = Shared.Loc.Get("mood.check.you.effect", "-1 a change"),
+                    Text = Shared.Loc.Get("mood.check.you.text", "Dislikes you (love {0}): each change to it costs 1 mood", love.ToString("0")),
+                    Fix = Shared.Loc.Get("mood.check.you.fix", "Take them along: following raises their love for you"),
                 });
             }
         }
@@ -423,11 +444,14 @@ namespace IslandUI
                 string name = other != null ? other.charaName : null;
                 switch (drain.Cause)
                 {
-                    case MoodCause.BadCompany: return name != null ? "can't stand " + name : "bad company";
-                    case MoodCause.Crush: return name != null ? "pining for " + name : "heartbroken";
-                    case MoodCause.NoBed: return name != null ? "no bed with " + name : "no bed";
-                    case MoodCause.Execution: return "saw an execution";
-                    case MoodCause.Food: return "bad food";
+                    case MoodCause.BadCompany: return name != null ? Shared.Loc.Get("mood.check.cant_stand", "can't stand {0}", name)
+                        : Shared.Loc.Get("mood.word.company", "bad company");
+                    case MoodCause.Crush: return name != null ? Shared.Loc.Get("mood.check.pining", "pining for {0}", name)
+                        : Shared.Loc.Get("mood.word.heartbroken", "heartbroken");
+                    case MoodCause.NoBed: return name != null ? Shared.Loc.Get("mood.check.no_bed", "no bed with {0}", name)
+                        : Shared.Loc.Get("mood.word.no_bed", "no bed");
+                    case MoodCause.Execution: return Shared.Loc.Get("mood.word.execution", "saw an execution");
+                    case MoodCause.Food: return Shared.Loc.Get("mood.word.food", "bad food");
                 }
             }
             foreach (MoodFinding f in found)
@@ -436,11 +460,11 @@ namespace IslandUI
             }
             switch (who.lastMoralCause)
             {
-                case NPCManager.MoralCause.Crush: return "heartbroken";
-                case NPCManager.MoralCause.Relation: return "bad company";
-                case NPCManager.MoralCause.NoBed: return "no bed";
+                case NPCManager.MoralCause.Crush: return Shared.Loc.Get("mood.word.heartbroken", "heartbroken");
+                case NPCManager.MoralCause.Relation: return Shared.Loc.Get("mood.word.company", "bad company");
+                case NPCManager.MoralCause.NoBed: return Shared.Loc.Get("mood.word.no_bed", "no bed");
             }
-            return "unhappy";
+            return Shared.Loc.Get("mood.word.unhappy", "unhappy");
         }
 
         // ---------- the census ----------

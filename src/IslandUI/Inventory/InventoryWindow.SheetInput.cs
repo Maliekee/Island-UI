@@ -133,7 +133,11 @@ namespace IslandUI
                             hot = null;
                             break;
                         }
-                        continue;
+                        if (row.Planks == null)
+                        {
+                            continue;
+                        }
+                        // ...the facing arrows beside the pose's field are planks
                     }
                     // the header run: each icon answers for itself, and the two
                     // bars for the pair
@@ -194,8 +198,11 @@ namespace IslandUI
                     if (row.DrewKind == LineActions || row.DrewKind == LineActs
                         || row.DrewKind == LinePlace || row.DrewKind == LinePose
                         || row.DrewKind == LineMore || row.DrewKind == LineRosterBar
-                        || row.DrewKind == LineBoxes || row.DrewKind == LineChecks
-                        || row.DrewKind == LineMoodCause)
+                        || row.DrewKind == LineBoxes || row.DrewKind == LineChecks || row.DrewKind == LineFormHead
+                        || row.DrewKind == LineMoodCause || row.DrewKind == LineMetPerson || row.DrewKind == LineMetWhy
+                        || row.DrewKind == LineMetFold || row.DrewKind == LineBond || RecordKind(row.DrewKind)
+                        || row.DrewKind == LineFormBand || row.DrewKind == LineMetHead
+                        || OrdersKind(row.DrewKind) || row.DrewKind == LineDropdown)
                     {
                         for (int k = 0; row.Planks != null && k < row.Planks.Length; k++)
                         {
@@ -239,7 +246,8 @@ namespace IslandUI
                     }
                 }
             }
-            LoveTipTick(tip, cam);
+            LoveTipTick(_tipPreview ?? tip, cam);
+            TickArc(hot, hotPlate);   // the hovered person, in the world (Links.cs)
             if (!ReferenceEquals(hot, _sheetHot) || hotSub != _sheetHotSub
                 || Input.GetMouseButtonDown(0) || Input.GetMouseButtonUp(0))
             {
@@ -341,7 +349,10 @@ namespace IslandUI
                     || row.DrewKind == LineOption || row.DrewKind == LineActions
                     || row.DrewKind == LineActs || row.DrewKind == LinePlace
                     || row.DrewKind == LinePose || row.DrewKind == LineMore
-                    || row.DrewKind == LineBoxes || row.DrewKind == LineChecks)
+                    || row.DrewKind == LineBoxes || row.DrewKind == LineChecks || row.DrewKind == LineFormHead
+                    || row.DrewKind == LineMetPerson || row.DrewKind == LineMetWhy || row.DrewKind == LineMetFold
+                    || row.DrewKind == LineBond || RecordKind(row.DrewKind) || row.DrewKind == LineMoodCause
+                    || row.DrewKind == LineFormBand || row.DrewKind == LineMetHead || OrdersKind(row.DrewKind))
                 {
                     PressSheetRow(plate, row, Mathf.RoundToInt(frac));   // ...or the plank
                     return true;
@@ -413,11 +424,35 @@ namespace IslandUI
                     }
                     break;
                 case LineMore:
-                    MatrixOpen(plate.Owner, plate.Group != GroupNone && IsDossier(plate.Group));
+                    if (sub == 1)
+                    {
+                        PressForm(who, row, sub);   // the Social foot's checkbox
+                        break;
+                    }
+                    if (plate.Group != GroupNone && IsDossier(plate.Group))
+                    {
+                        ToggleAllRelations(plate.Owner);   // opened under the foot (Bonds.cs)
+                        break;
+                    }
+                    MatrixOpen(plate.Owner);
                     return;
                 case LineRoster:
+                {
+                    // the star on the photo is the favourite's switch, as on the
+                    // Character page; the rest of the row opens them
+                    Canvas canvas = row.Go.GetComponentInParent<Canvas>();
+                    Camera cam = canvas != null && canvas.rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay
+                        ? canvas.rootCanvas.worldCamera : null;
+                    if (CanFavourite(who) && OnPhotoStar(row, cam))
+                    {
+                        ToggleMark(who, ToggleFavourite);
+                        _forceRefresh = true;
+                        _nextRefresh = 0f;
+                        return;
+                    }
                     PressRosterRow(who);
                     return;   // the opener rebinds on its own terms
+                }
                 case LineRosterBar:
                     PressRosterBar(sub);
                     break;
@@ -430,13 +465,74 @@ namespace IslandUI
                 case LineToggle:
                     PressToggle(who, row.Arg);
                     break;
+                case LineSegments:
+                case LineStand:
+                case LineTiles:
+                case LineDropdown:
+                case LinePlaceFoot:
+                    // the Orders page's tiles, segments and facing arrows (OrdersForm.cs)
+                    PressOrdersForm(plate, row, sub);
+                    break;
                 case LineBoxes:
                 case LineChecks:
-                    // the printed form's boxes and checkboxes: which one is the sub
+                case LineFormHead:
+                    // the printed form's boxes, checkboxes and head marks: which one is the sub
                     PressForm(who, row, sub);
                     break;
                 case LineMoodCause:
-                    MoodAction(row.Arg);   // the cause's one fix
+                    if (sub == 0)
+                    {
+                        PressLink(who, row.Link);   // the name in the cause
+                    }
+                    else if (row.FormArgs != null && row.FormArgs.Length > 1 && row.FormArgs[0] == 0)
+                    {
+                        ToggleMoodFix(who, row.FormArgs[1]);   // the Social page's lane: its fix unfolds, or folds
+                    }
+                    else if (row.FormArgs != null && row.FormArgs.Length > 1 && row.FormArgs[0] == 1)
+                    {
+                        // the unfolded fix's row: its buttons from 1
+                        if (sub < row.FormArgs.Length) { MoodAction(row.FormArgs[sub]); }
+                    }
+                    else
+                    {
+                        MoodAction(row.Arg);   // the cause's one fix
+                    }
+                    break;
+                case LineFormBand:
+                    if (sub == 1) { OpenRosterAt(row.LinkType); }
+                    else if (sub == 2 && CanFavourite(who)) { ToggleMark(who, ToggleFavourite); }   // the star on the photo
+                    else { PressLinkBack(); }   // the way back
+                    break;
+                case LineTraits:
+                case LinePartner:
+                    PressRecordRow(plate, who, row, sub);   // Record.cs
+                    break;
+                case LineMetPerson:
+                    if (sub == 0) { OpenRosterAt(row.LinkType); }
+                    else if (sub == 1) { PressLink(who, row.Link); }
+                    else { ToggleMetOpen(who, row.Arg); }   // the row opens to why, or closes
+                    break;
+                case LineMetWhy:
+                    MetAction(row.Arg);
+                    break;
+                case LineMetFold:
+                    if (row.Arg == RelFoldArg)
+                    {
+                        ToggleAllRelations(who);   // All relations: every row, or back to the first (Bonds.cs)
+                        break;
+                    }
+                    if (row.Arg >= PartnerFoldArg)
+                    {
+                        PressPartnersMore(who, row.Arg - PartnerFoldArg, sub);   // Partners: its own page (Record.cs)
+                        break;
+                    }
+                    PressMetMore(who, row.Arg, sub);   // a page more, or back to the first
+                    break;
+                case LineBond:
+                    if (sub == 0) { OpenRosterAt(row.LinkType); }
+                    else if (sub == 1) { PressLink(who, row.Link); }
+                    else if (row.Arg / 1000000 == BondFamily) { PressLink(who, row.Link); }   // family: the person
+                    else { ToggleBondOpen(who, row.Arg); }   // opens to why, as a met row does
                     break;
             }
             _forceRefresh = true;
@@ -446,7 +542,7 @@ namespace IslandUI
 
         private static void PressToggle(CommonStates who, int which)
         {
-            if (which == 91)
+            if (which == ToggleRun)
             {
                 _mn.gameMN.ToggleRunChange();
             }
@@ -521,7 +617,8 @@ namespace IslandUI
             }
         }
 
-        private static readonly string[] StatNames = { "Health", "Strength", "Speed" };
+        // the attributes by status index, read at use (the vitals sheet owns the words)
+        private static string[] StatNames => new[] { Shared.Loc.Get("vitals.health", "Health"), Shared.Loc.Get("vitals.strength", "Strength"), Shared.Loc.Get("vitals.speed", "Speed") };
 
         // UIManager.StatusChange's guard: the shield's own value when one is
         // worn, else 25 with a weapon in hand and 10 without.

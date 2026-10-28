@@ -30,6 +30,7 @@ namespace IslandUI
             public Button Button;      // pressed through, so vanilla's own handler runs
             public bool Deep;          // it opens a sub-panel rather than acting (talk, position)
             public Sprite Icon;        // vanilla's own art, for the buttons that carry no words
+            public bool Foreign;       // another mod's button on vanilla's panel, not in npcPanelState
         }
 
         private static readonly List<Verb> Live = new List<Verb>();
@@ -57,7 +58,7 @@ namespace IslandUI
         // "talkedit" joins them, which is where the destination
         // map sent it: authoring what someone will SAY is a standing setting about
         // them, not an act performed on them. It is the last of the four verbs
-        // that map moved, and Orders draws it under Communication - beside the
+        // that map moved, and Orders draws it under Permissions - beside the
         // three flags that decide what they may do, since what they may say is the
         // same kind of fact.
         private static bool Elsewhere(string name)
@@ -113,16 +114,77 @@ namespace IslandUI
             // get the person half. Either way we re-derive NOTHING.
             bool ownPanelUp = mn.uiMN.npcPanel.activeSelf
                 && mn.gameMN != null && ReferenceEquals(mn.gameMN.menuNPC, who);
+            GameObject[] set = mn.uiMN.npcPanelState;
             if (!ownPanelUp)
             {
+                Keep(set);
                 try { mn.uiMN.NPCPanelStateChange(who, statusChange: false); }
-                catch (System.Exception e) { Plugin.Log.LogWarning("verb read: " + e.Message); return; }
+                catch (System.Exception e) { Plugin.Log.LogWarning("verb read: " + e.Message); PutBack(set, null); return; }
             }
-            GameObject[] set = mn.uiMN.npcPanelState;
+            try { ReadLit(mn, who, set); }
+            finally
+            {
+                if (!ownPanelUp) { PutBack(set, null); }
+            }
+        }
+
+        // ASKING SWITCHES THE ONE SHARED PANEL, SO THE ANSWER IS PUT BACK (Forgejo
+        // #127). NPCPanelStateChange answers by SetActive on npcPanelState, and that
+        // is one set of buttons for the whole game, not one per person: asking about
+        // anyone vanilla's menu is not up for (seen in game: the Orders page writing
+        // its new owner while the menu was still the last one's) left that menu lit
+        // for THEM, and whatever read it next - the talk bubble's rows - read someone
+        // else's answer. Sex showed for a man it is never offered to, and pressed did
+        // nothing, because NPCManager.SexButton asks SexCheck again of menuNPC. So
+        // the answer is read and the panel left as vanilla last lit it.
+        private static bool[] _kept = new bool[0];
+
+        private static void Keep(GameObject[] set)
+        {
+            if (_kept.Length != set.Length) { _kept = new bool[set.Length]; }
+            for (int i = 0; i < set.Length; i++) { _kept[i] = set[i] != null && set[i].activeSelf; }
+        }
+
+        // ...all of it, or all but what stands under `fresh`, which keeps the answer
+        private static void PutBack(GameObject[] set, Transform fresh)
+        {
+            for (int i = 0; i < set.Length && i < _kept.Length; i++)
+            {
+                GameObject go = set[i];
+                if (go == null || go.activeSelf == _kept[i] || (fresh != null && go.transform.IsChildOf(fresh)))
+                {
+                    continue;
+                }
+                go.SetActive(_kept[i]);
+            }
+        }
+
+        // THE TALK PANEL LIT FOR THIS PERSON, AND NOTHING ELSE TOUCHED (Forgejo #127):
+        // vanilla lights it in NPCMenuOpen and the dock holds a target long after -
+        // held by menuNPC alone it was never lit for them at all, and lit, it is as
+        // old as the click (a due date, a quest step). TalkBubble asks once as it
+        // opens: NPCPanelStateChange's answer is kept under the talk panel, and the
+        // rest of NPCPanel - the npcID acts NPCMenuOpen lit, which the ask clears -
+        // goes back as it was.
+        internal static void LightTalkPanel(ManagersScript mn, CommonStates who)
+        {
+            UIManager ui = mn != null ? mn.uiMN : null;
+            if (ui == null || who == null || ui.npcPanelState == null || ui.talkPanel == null)
+            {
+                return;
+            }
+            Keep(ui.npcPanelState);
+            try { ui.NPCPanelStateChange(who, statusChange: false); }
+            catch (System.Exception e) { Plugin.Log.LogWarning("talk panel ask: " + e.Message); PutBack(ui.npcPanelState, null); return; }
+            PutBack(ui.npcPanelState, ui.talkPanel.transform);
+        }
+
+        private static void ReadLit(ManagersScript mn, CommonStates who, GameObject[] set)
+        {
             for (int i = 0; i < set.Length; i++)
             {
                 GameObject go = set[i];
-                if (go == null || !go.activeSelf || !Reachable(go, mn.uiMN.npcPanel))
+                if (go == null || !go.activeSelf || !Reachable(go, mn.uiMN.npcPanel) || OnTalkPanel(go, mn.uiMN))
                 {
                     continue;
                 }
@@ -139,7 +201,76 @@ namespace IslandUI
                     Icon = IconOf(go.transform),
                 });
             }
+            ReadForeign(mn.uiMN.npcPanel, set, mn.uiMN);
             ReadSearchPanel(mn, who);
+        }
+
+        // THE TALK PANEL'S CHOICES ARE THE BUBBLE'S (Forgejo #58). Sex, and what a mod
+        // adds beside it, stand on vanilla's Talk sub-panel; once Talk had opened it
+        // they were read here as acts, and Sex - no glyph - waited in More actions, a
+        // step between Talk and its choices. TalkBubble reads that panel now.
+        private static bool OnTalkPanel(GameObject go, UIManager ui)
+        {
+            return ui.talkPanel != null && go.transform.IsChildOf(ui.talkPanel.transform);
+        }
+
+        // WHAT OTHER MODS ADD (Forgejo #11). A mod such as UnlockSS puts its own
+        // buttons on vanilla's menu - into the Talk sub-panel, beside Sex - and
+        // has no reason to register them in npcPanelState, which is vanilla's own
+        // list for its own switch. The game's menu shows them because they are
+        // there; ours must for the same reason, so the panel itself is read too.
+        //
+        // What tells such a button from vanilla's is how it is WIRED, not its
+        // name or its place: every vanilla button on this panel is wired in the
+        // scene, so its onClick carries a persistent listener (PanelCensus says
+        // so for all 45 of them: Talk, Want, Present, the Move and Order panels'
+        // rows), and none of those becomes an act here - what our row offered
+        // from vanilla before is exactly what it offers now. A button made at run
+        // time is wired at run time, with AddListener, and has none - a clone
+        // of a vanilla button included, since a clone keeps vanilla's handler
+        // until its maker replaces the event. So: a button under the panel, not
+        // in npcPanelState, lit and reachable by the same chain test as
+        // vanilla's, with no persistent listener, is an act. It wears its own
+        // words and is pressed through its own onClick. One on the Talk
+        // sub-panel is a conversation choice, and TalkBubble's (OnTalkPanel).
+        private static readonly List<Button> Scan = new List<Button>();
+
+        private static void ReadForeign(GameObject panel, GameObject[] set, UIManager ui)
+        {
+            panel.GetComponentsInChildren(true, Scan);
+            for (int i = 0; i < Scan.Count; i++)
+            {
+                Button b = Scan[i];
+                GameObject go = b.gameObject;
+                if (go == panel || !go.activeSelf || System.Array.IndexOf(set, go) >= 0
+                    || b.onClick.GetPersistentEventCount() > 0 || !Reachable(go, panel) || OnTalkPanel(go, ui))
+                {
+                    continue;
+                }
+                Live.Add(new Verb
+                {
+                    Name = ForeignName(go.transform, panel.transform),
+                    Label = LabelOf(go),
+                    Button = b,
+                    Icon = IconOf(go.transform),
+                    Foreign = true,
+                });
+            }
+            Scan.Clear();
+        }
+
+        // A foreign act is pressed by NAME like every other (the press re-reads),
+        // so its name must be unique and must never be one of vanilla's: its path
+        // under the panel, and its place among its siblings, since a mod may well
+        // give several buttons one name ("Sex(Clone)" twice).
+        private static string ForeignName(Transform t, Transform panel)
+        {
+            string name = t.name + "#" + t.GetSiblingIndex();
+            for (Transform up = t.parent; up != null && up != panel; up = up.parent)
+            {
+                name = up.name + "/" + name;
+            }
+            return name;
         }
 
         // A BODY'S ACTS ARE ON A DIFFERENT PANEL. NPCPanel answers for
@@ -235,10 +366,26 @@ namespace IslandUI
         // The verb's own words, so a name we have no glyph for can still be drawn.
         // LocalizeStringEvent has already run on these, so this is the player's
         // language without us knowing anything about languages.
+        // A mod's button may carry a legacy Text instead. In the mods' language where the
+        // game has it (Forgejo #92), in a key of ours where it has none (Forgejo #110).
         private static string LabelOf(GameObject go)
         {
             var text = go.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
-            return text != null && !string.IsNullOrEmpty(text.text) ? text.text : go.name;
+            if (text != null && !string.IsNullOrEmpty(text.text))
+            {
+                try
+                {
+                    string ours = GameWords.Lacking && GameWords.ShowsEntry(text.gameObject, text.text)
+                        ? ControlWords.Verb(go.name) : null;
+                    return ours ?? GameWords.Translate(text.gameObject, text.text);
+                }
+                catch (System.Exception)
+                {
+                    return text.text;   // no string table to ask: the words on the button
+                }
+            }
+            var legacy = go.GetComponentInChildren<Text>(true);
+            return legacy != null && !string.IsNullOrEmpty(legacy.text) ? legacy.text : go.name;
         }
 
         // "CarryButton" is an object name, not a caption. A verb whose label is
@@ -271,7 +418,44 @@ namespace IslandUI
             {
                 sb.Append(" | ").Append(Live[i].Name).Append(" \"").Append(Live[i].Label).Append('"');
                 if (Live[i].Deep) { sb.Append(" (deep)"); }
+                if (Live[i].Foreign) { sb.Append(" (foreign)"); }
                 if (Live[i].Button == null) { sb.Append(" [no button]"); }
+            }
+            return sb.ToString();
+        }
+
+        // For the harness: every button on vanilla's NPC panel and how the
+        // foreign read sees it - lit, reachable, in npcPanelState, and how many
+        // listeners the scene wired - the evidence behind ReadForeign's rule.
+        internal static string PanelCensus(ManagersScript mn)
+        {
+            if (mn == null || mn.uiMN == null || mn.uiMN.npcPanel == null || mn.uiMN.npcPanelState == null)
+            {
+                return "no panel";
+            }
+            GameObject panel = mn.uiMN.npcPanel;
+            var sb = new System.Text.StringBuilder();
+            foreach (Button b in panel.GetComponentsInChildren<Button>(true))
+            {
+                GameObject go = b.gameObject;
+                string path = go.name;
+                for (Transform up = go.transform.parent; up != null && up != panel.transform; up = up.parent)
+                {
+                    path = up.name + "/" + path;
+                }
+                sb.Append(path).Append(" wired ").Append(b.onClick.GetPersistentEventCount())
+                    .Append(System.Array.IndexOf(mn.uiMN.npcPanelState, go) >= 0 ? " state" : "")
+                    .Append(go.activeSelf ? " lit" : "")
+                    .Append(Reachable(go, panel) ? " reachable" : "");
+                // ...and what each wired listener calls, so a verb's vanilla handler
+                // is read from the scene rather than guessed from its name
+                for (int i = 0; i < b.onClick.GetPersistentEventCount(); i++)
+                {
+                    Object target = b.onClick.GetPersistentTarget(i);
+                    sb.Append(" -> ").Append(target != null ? target.GetType().Name : "null")
+                        .Append('.').Append(b.onClick.GetPersistentMethodName(i));
+                }
+                sb.Append('\n');
             }
             return sb.ToString();
         }

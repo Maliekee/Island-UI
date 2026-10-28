@@ -12,14 +12,12 @@ namespace IslandUI
     //   5 m  a bench links your special crafting storages (Type.Material)
     //        within 5 m of itself (InventoryManager.FindCraftReference);
     //   3 m  E looks for the nearest interactable within 3 m (PlayerMove.Update);
-    //   construction range - vanilla's Ctrl reached your own props from
-    //        buildableDist + 0.5, which the construction skill grows
-    //        (SkillManager: buildableDist = 2 + 2 x level). Ctrl+click is
-    //        gone (D158); the range is Tab's now, and alone it gates the
-    //        building's own acts (LivePlacement).
+    //   construction range - buildableDist + 0.5, which the construction
+    //        skill grows (SkillManager: buildableDist = 2 + 2 x level). It
+    //        gates the building's own acts alone (LivePlacement): using a
+    //        prop from it read as cheating.
     // Two vicinities: the special crafting chests keep 5 m, "normal" chests and
-    // NPCs are reduced to 3 m - and the construction skill stretches your own
-    // props. People take
+    // NPCs are reduced to 3 m - the construction skill moves neither. People take
     // 3 m and nothing else: vanilla's Ctrl range is one modifier for props and
     // people alike, and the follow distance is a slider, not a rule.
     //
@@ -47,16 +45,20 @@ namespace IslandUI
         // ...and any prop of yours, a container or not (a bed, a bench, a well).
         internal static float OfProp(ManagersScript mn, ItemInfo prop)
         {
+            if (BossBench.Is(prop))
+            {
+                return Workshop;   // the last boss's bench, yours for the fight
+            }
             if (prop == null || mn == null || mn.buildMN == null || !mn.buildMN.OwnCheck(prop))
             {
                 return 0f;
             }
             InventorySlot container = prop.GetComponent<InventorySlot>();
-            float own = container != null && container.type == InventorySlot.Type.Material ? Workshop : Near;
-            return Mathf.Max(own, Construction(mn));
+            return container != null && container.type == InventorySlot.Type.Material ? Workshop : Near;
         }
 
-        // The sphere a scan must cover to see everything of yours that may be live.
+        // The sphere a scan must cover to see everything of yours that may be live,
+        // for use or for building.
         internal static float Widest(ManagersScript mn)
         {
             return Mathf.Max(Workshop, Construction(mn));

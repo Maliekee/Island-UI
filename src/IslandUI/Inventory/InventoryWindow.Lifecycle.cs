@@ -166,6 +166,36 @@ namespace IslandUI
 
         private const int WarmCells = 20;
 
+        // YOUR SHEET'S PAGES, BOUND ONCE INSIDE THE LOAD. The Social page's first
+        // bind cost 163 ms (FirstOpenTimer): its bond and partner rows build their
+        // planks and form pieces on first need, and its writers fill their caches -
+        // all of it once per row, cheap ever after (8 ms). WarmPool's one-a-frame
+        // answer does not reach it, since what a page builds is only known by
+        // binding it. So each page is bound for real, right after the save loads,
+        // where frames already run to seconds and one more piece goes unseen, and
+        // the sheet is put back as it was in the same frame: nothing is drawn.
+        // The rows stay on the plates your sheet takes when it opens alone.
+        internal static void WarmSheetPages(ManagersScript mn)
+        {
+            if (mn == null || !EnsureBuilt(mn) || mn.gameMN == null || mn.gameMN.pMove == null)
+            {
+                return;
+            }
+            long spanAt = UI.FirstOpenTimer.Now();
+            bool open = _ownSheetOpen;
+            Aspect aspect = _ownAspect;
+            _ownSheetOpen = true;
+            foreach (Aspect a in OwnAspects)
+            {
+                _ownAspect = a;
+                Refresh();
+            }
+            _ownSheetOpen = open;
+            _ownAspect = aspect;
+            Refresh();
+            UI.FirstOpenTimer.Span("warm sheet pages", spanAt);
+        }
+
         // For a plate that draws no cells at all. The bind paths that DO draw
         // them switch off their own surplus, which is cheaper because it touches
         // only the difference.
@@ -177,6 +207,41 @@ namespace IslandUI
                 if (c.Go.activeSelf)
                 {
                     c.Go.SetActive(false);
+                }
+            }
+        }
+
+        // WHAT A REFRESH TOOK AND DID NOT USE, let go once every bind has run: a
+        // row past what its plate shows, and a sheet's mask on a plate no sheet
+        // claimed. Done here rather than in TakePlate, because a plate bound to
+        // the same sheet again would otherwise switch its rows off and back on
+        // (TakePlate).
+        private static void ReleaseUnclaimed()
+        {
+            for (int pass = 0; pass < 2; pass++)
+            {
+                List<Plate> pool = pass == 0 ? Plates : ReachPlates;
+                int used = pass == 0 ? _platesUsed : _reachPlatesUsed;
+                for (int p = 0; p < used && p < pool.Count; p++)
+                {
+                    Plate plate = pool[p];
+                    // a holder's portrait and summary, unless a vicinity bind claimed
+                    // the plate this refresh
+                    if (!plate.WasVicinity && (plate.VicMount != null || plate.FreeBack != null))
+                    {
+                        ShedVicinity(plate);
+                    }
+                    if (!plate.SheetMasked && plate.SheetMask != null && plate.SheetMask.enabled)
+                    {
+                        plate.SheetMask.enabled = false;
+                    }
+                    for (int i = plate.RowsShown; plate.Rows != null && i < plate.Rows.Count; i++)
+                    {
+                        if (plate.Rows[i].Go.activeSelf)
+                        {
+                            plate.Rows[i].Go.SetActive(false);
+                        }
+                    }
                 }
             }
         }
@@ -200,7 +265,8 @@ namespace IslandUI
             plate.IsSharedBag = false;
             plate.IsLoadout = false;
             plate.Owner = null;
-            if (plate.SheetMask != null) { plate.SheetMask.enabled = false; }
+            plate.SheetMasked = false;   // the mask goes at the refresh's end, unless a sheet claims it (ReleaseUnclaimed)
+            plate.WasVicinity = false;   // ...and so do a holder's portrait and summary
             if (plate.SheetTrack != null) { plate.SheetTrack.gameObject.SetActive(false); }
             plate.SheetContentH = 0f;
             plate.Window.Content.anchoredPosition = Vector2.zero;
@@ -216,11 +282,7 @@ namespace IslandUI
             {
                 plate.Close.gameObject.SetActive(false);   // likewise its close chip
             }
-            if (plate.SectionArrow != null && plate.SectionArrow.gameObject.activeSelf)
-            {
-                plate.SectionArrow.gameObject.SetActive(false);   // a section's arrow and hit row
-                plate.HeaderHit.gameObject.SetActive(false);
-            }
+            ShedLeather(plate);   // ...and the leather's head and section parts
             // A POOLED PLATE MUST NOT ARRIVE WEARING THE LAST ONE'S DECORATION.
             // The badge is turned on by exactly one bind path (the style-5 title
             // pill) and was turned off by that same path — which is no protection
@@ -332,17 +394,12 @@ namespace IslandUI
             // roster's control row, which never sets it, repainted itself as the
             // Water line of the well the plate had last been
             plate.Prop = null;
+            // ...and its rows are let go at the refresh's END, not here
+            // (ReleaseUnclaimed): a sheet bound onto the plate it had keeps the
+            // rows it shows, where switching them off here and on again in
+            // BindSheet re-registered every graphic of a Social page - ninety
+            // milliseconds a refresh (Forgejo #12)
             plate.RowsShown = 0;
-            if (plate.Rows != null)
-            {
-                for (int i = 0; i < plate.Rows.Count; i++)
-                {
-                    if (plate.Rows[i].Go.activeSelf)
-                    {
-                        plate.Rows[i].Go.SetActive(false);
-                    }
-                }
-            }
             // ...and the CELLS, for the fifth time and the last. Every bind path
             // that draws cells switches off the ones past its own count - and that
             // is no protection at all, because the paths that draw NO cells never
@@ -404,6 +461,11 @@ namespace IslandUI
         private static CellView CreateCell(Plate plate)
         {
             _cellsMade++;
+            return NewCellView(plate.Window.Content);
+        }
+
+        private static CellView NewCellView(Transform parent)
+        {
             var cell = new CellView();
             // A NEW CELL HAS DRAWN NOTHING, and the memo must be able to say so.
             // Left at its default the record reads key null, stack 0, life 0, not
@@ -415,19 +477,12 @@ namespace IslandUI
             cell.DrewStack = -1;
             cell.Go = Owned.New("Cell");
             cell.Rect = (RectTransform)cell.Go.transform;
-            cell.Rect.SetParent(plate.Window.Content, false);
+            cell.Rect.SetParent(parent, false);
             cell.Box = cell.Go.AddComponent<Image>();
+            // the game's slot frame until the first bind skins the cell as its
+            // window wears it: the leather (LeatherCell), the vicinity's, a crate
             cell.Box.sprite = Theme.SlotFrame;
             cell.Box.raycastTarget = false;
-            // The occupancy shade, from the shared tile helper
-            // so a cell is built out of exactly what the cursor and the pickup
-            // toast are. Refresh sets Box.color per slot immediately after, which
-            // is why it does not matter that ApplyItemTile paints it as filled.
-            cell.Fill = ApplyItemTile(cell.Box);
-            if (cell.Fill != null)
-            {
-                cell.Fill.enabled = false;   // Refresh turns it on for a full slot
-            }
             var iconGo = Owned.New("Icon");
             iconGo.transform.SetParent(cell.Go.transform, false);
             cell.Icon = iconGo.AddComponent<Image>();
@@ -699,6 +754,13 @@ namespace IslandUI
         private static float _layoutMs;
         private static int _signature;
         private static bool _forceRefresh = true;
+
+        // UI.LocLabels: the language changed - every open plate, sheet and row re-renders
+        internal static void LanguageChanged()
+        {
+            _forceRefresh = true;
+            _nextRefresh = 0f;
+        }
         private static float _fullRefreshBy;
 
         // What the window would DRAW, as an int. Reads the same slots a rebind
@@ -827,8 +889,8 @@ namespace IslandUI
         // What CloseOwnedWindows would take off the screen, asked before it runs: a
         // press that closes something is not also vanilla's attack (CloseAll.Spent).
         // Keep the two in step. The target's sheet counts only on a person - the
-        // flags are a standing choice, remembered while no one is targeted (D107),
-        // and a container's window is the target's own.
+        // flags outlive a target for a tick (LapseDoors) - and a
+        // container's window is the target's own.
         internal static bool OwnedWindowsShown()
         {
             return SplitDialog.IsOpen || MatrixShown || _moreActsOpen
@@ -889,9 +951,9 @@ namespace IslandUI
                 ToggleOwnDetails();
                 return true;
             }
-            // the target windows are remembered while no one is targeted (D107
-            // amended), so Escape answers to them only while a person is up -
-            // otherwise it would fold a window nobody can see and eat the key
+            // the target windows' flags can outlive a target for a beat
+            // (CloseTargetDoors), so this answers to them only while a person is
+            // up - otherwise it would fold a window nobody can see and eat the key
             bool person = _focusShown && _target is CommonStates;
             if (_sheetOpen && person)
             {
@@ -966,7 +1028,7 @@ namespace IslandUI
             }
             frame.sprite = Theme.SlotFrame;
             frame.type = Image.Type.Simple;
-            frame.color = BaseCellColor(true);
+            frame.color = Color.white;
             Transform found = frame.transform.Find(TileShadeName);
             Image shade = found != null ? found.GetComponent<Image>() : null;
             if (shade == null)
@@ -1266,14 +1328,139 @@ namespace IslandUI
         // interior is already near-opaque
         internal static readonly Color TileShadeColor = Color.clear;
 
+        // THE ITEM ON THE CURSOR IS DRAWN AS OURS: its icon and its count as every
+        // window prints it (BarCount, SetCellReadout), with no cell under it, half
+        // as large again for being lifted. The game's hoverSlot still carries the
+        // item and follows the pointer; its frame, its art and its number
+        // (StackTextChange's own colours) are hidden.
+        private const float HeldScale = 1.5f;
+        private static CellView _held;
+
         private static void StyleHeldItem(ManagersScript mn)
         {
             ItemSlot hover = mn.inventory != null ? mn.inventory.hoverSlot : null;
-            if (hover == null)
+            if (hover == null || !hover.gameObject.activeSelf)
             {
                 return;
             }
-            ApplyItemTile(hover.GetComponent<Image>());
+            if (_held == null || _held.Go == null)
+            {
+                _held = NewHeldCell(hover.transform);
+            }
+            HideVanillaHeld(hover);
+            bool filled = !string.IsNullOrEmpty(hover.itemKey);
+            int life = filled ? (int)hover.itemLife : 0;
+            int stack = filled ? hover.stack : 0;
+            if (ReferenceEquals(_held.DrewKey, hover.itemKey) && _held.DrewStack == stack
+                && _held.DrewLife == life)
+            {
+                return;
+            }
+            _held.DrewKey = hover.itemKey;
+            _held.DrewStack = stack;
+            _held.DrewLife = life;
+            Sprite sprite = null;
+            if (filled)
+            {
+                sprite = hover.itemImage;
+                if (sprite == null && mn.itemMN != null)
+                {
+                    ItemData data = mn.itemMN.FindItem(hover.itemKey);
+                    sprite = data != null ? data.itemSprite : null;
+                }
+            }
+            _held.Icon.sprite = sprite;
+            _held.Icon.enabled = sprite != null;
+            _held.Icon.color = Color.white;
+            // the item and its count, never the cell's bed: the bed is where an item
+            // lies in a window, and this one is in your hand
+            _held.Box.enabled = false;
+            BarCount(_held, true);
+            if (filled)
+            {
+                SetCellReadout(_held, hover, true);
+            }
+            else
+            {
+                _held.Count.text = string.Empty;
+            }
+        }
+
+        // centred on its parent, which follows the pointer
+        private static CellView NewHeldCell(Transform parent)
+        {
+            CellView cell = NewCellView(parent);
+            cell.Rect.anchorMin = cell.Rect.anchorMax = new Vector2(0.5f, 0.5f);
+            cell.Rect.pivot = new Vector2(0.5f, 0.5f);
+            cell.Rect.anchoredPosition = Vector2.zero;
+            cell.Rect.sizeDelta = new Vector2(CellBox, CellBox);
+            cell.Rect.localScale = new Vector3(HeldScale, HeldScale, 1f);
+            cell.Go.SetActive(true);
+            return cell;
+        }
+
+        // A BINDING LIFTED OFF THE ACTION BAR is drawn as the held item is: the
+        // same cell, scale and outlined count, centred on the pointer (Forgejo
+        // #173). It is not routed through hoverSlot - a binding is not an item -
+        // so the bar places it; this only paints it, with what the bar's cell
+        // showed when it was lifted.
+        private static CellView _barGhost;
+
+        internal static RectTransform PaintBarGhost(Transform parent, Sprite sprite, Color tint,
+            string count, Color countColor)
+        {
+            if (_barGhost == null || _barGhost.Go == null)
+            {
+                _barGhost = NewHeldCell(parent);
+                _barGhost.Box.enabled = false;
+                BarCount(_barGhost, true);
+            }
+            else if (_barGhost.Rect.parent != parent)
+            {
+                _barGhost.Rect.SetParent(parent, false);
+            }
+            _barGhost.Icon.sprite = sprite;
+            _barGhost.Icon.enabled = sprite != null;
+            _barGhost.Icon.color = tint;
+            _barGhost.Count.text = count ?? string.Empty;
+            _barGhost.Count.color = countColor;
+            if (!_barGhost.Go.activeSelf)
+            {
+                _barGhost.Go.SetActive(true);
+            }
+            return _barGhost.Rect;
+        }
+
+        internal static void HideBarGhost()
+        {
+            if (_barGhost != null && _barGhost.Go != null && _barGhost.Go.activeSelf)
+            {
+                _barGhost.Go.SetActive(false);
+            }
+        }
+
+        // the game's own parts of the held item: its frame, its art and its number
+        // (and the occupancy shade an older build of ours gave it)
+        private static void HideVanillaHeld(ItemSlot hover)
+        {
+            Image frame = hover.GetComponent<Image>();
+            if (frame != null && frame.enabled)
+            {
+                frame.enabled = false;
+            }
+            for (int i = 0; i < hover.transform.childCount; i++)
+            {
+                Transform child = hover.transform.GetChild(i);
+                if (child == _held.Rect)
+                {
+                    continue;
+                }
+                Graphic art = child.GetComponent<Graphic>();
+                if (art != null && art.enabled)
+                {
+                    art.enabled = false;
+                }
+            }
         }
 
         private static void KeepHeldItemOnTop(ManagersScript mn)

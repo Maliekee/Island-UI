@@ -30,7 +30,7 @@ namespace IslandUI
     {
         public const string PluginGuid = "madisland.islandui";
         public const string PluginName = "Island UI";
-        public const string PluginVersion = "0.3.1";
+        public const string PluginVersion = "0.9.0";
 
         internal static ManualLogSource Log;
 
@@ -85,6 +85,7 @@ namespace IslandUI
                 return;
             }
             Settings.Bind(Config);
+            Shared.Loc.Init("IslandUI", () => Settings.Language.Value);
             QoL.Bind(Config);   // the keymap, hotkeys and tweaks that were QoLTweaks
             Log.LogInfo($"{PluginName} v{PluginVersion} loaded.");
 
@@ -112,7 +113,7 @@ namespace IslandUI
             UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
             Application.quitting += OnQuitting;
             // a hot reload's predecessor left the bar, favourites and hooks behind
-            try { SaveBlock.TakeOver(); MoodLedger.TakeOver(); }
+            try { SaveBlock.TakeOver(); MoodLedger.TakeOver(); LoveLedger.TakeOver(); AutoUse.TakeOver(); }
             catch (System.Exception e) { Log.LogWarning("Reload: taking over the UI state threw: " + e); }
 
             // The innate menu's chest scan is anchored to the player, so unlike a bench
@@ -143,9 +144,7 @@ namespace IslandUI
                     return;
                 }
                 _nextMoveRefresh = Time.unscaledTime + Mathf.Max(0.25f, Settings.MoveRefreshCooldown.Value);
-                // a scoped menu (clicked bench) shows a fixed panel — the
-                // nearby-bench set doesn't apply; counts still refresh below
-                if (AggregatedCrafting.BenchScope == 0 && AggregatedCrafting.NearbyBenchSetChanged(mn))
+                if (AggregatedCrafting.NearbyBenchSetChanged(mn))
                 {
                     mn.inventory.CraftOpen(0);
                 }
@@ -160,7 +159,6 @@ namespace IslandUI
 
         private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
         {
-            AggregatedCrafting.BenchScope = 0;
             VanillaContainerUI.ResetForSceneLoad();
             ReasonTip.ResetForSceneLoad();
             CursorBadge.ResetForSceneLoad();
@@ -176,7 +174,10 @@ namespace IslandUI
             // the save's marks back afterwards (SaveBlock)
             Favourites.ResetForSceneLoad();
             ToolBelt.ResetForSceneLoad();   // the same, for the tool belt's hooks
+            AutoUse.ResetForSceneLoad();    // ...and for the buildings' auto-use switches
             SplitDialog.ResetForSceneLoad();
+            TalkBubble.ResetForSceneLoad();
+            ManageFan.ResetForSceneLoad();
             UI.DevConsole.ResetForSceneLoad();
             FavouriteRules.ResetForSceneLoad();
             StoryChoices.ResetForSceneLoad();
@@ -216,6 +217,8 @@ namespace IslandUI
             // ahead of this frame's window ticks, as they did when the IslandEvents
             // plugin's own Update ran before ours.
             TickPlayerMoved();
+            // a -Harness launch only: what each window's first open costs
+            UI.FirstOpenTimer.Tick(Mn);
             if (Input.GetKeyDown(KeyCode.F10))
             {
                 DumpPlayerState();
@@ -238,6 +241,8 @@ namespace IslandUI
             }
             GameCursor.Tick();
             QoL.Tick(Mn);
+            // the language moved (the game's dropdown, the override): the open windows follow
+            UI.LocLabels.Tick();
             // FindItem's first lookup per item is a synchronous Resources.Load — cold,
             // ~500 of them land inside the first browser open of a session and stutter.
             // Warm the cache in the background right after a save loads (per
@@ -249,6 +254,7 @@ namespace IslandUI
                 _warmedItemMN = mnWarm.itemMN;
                 CanvasIsolation.Apply(mnWarm);
                 BrowserShell.Prewarm(mnWarm);
+                InventoryWindow.WarmSheetPages(mnWarm);
                 StartCoroutine(WarmFindItemCache(mnWarm, mnWarm.itemMN));
             }
             CraftLazyFill.TryPostOpenRefresh(Mn);
@@ -269,17 +275,33 @@ namespace IslandUI
             // before the window: it decides whether a container is intercepted,
             // which is what the window's hide/read rules key off this frame
             VanillaContainerUI.Tick(Mn);
+            // before the window and the bar: the belt they draw is the played character's
+            ToolBelt.Follow(Mn);
             InventoryWindow.Tick(Mn);
             InventoryWindow.TickHud(Mn);
+            UI.MapQuestsLook.Tick();
             ActionBar.Tick(Mn);
             InventoryWindow.TickPlayerVitals(Mn);
             // after the bar: the unit stands on the bar's rect (D108)
             InventoryWindow.TickUnit(Mn);
+            // after the unit: the Talk bubble is the dock's, and asks it who is still up
+            TalkBubble.Tick(Mn);
+            // ...and so is the Manage key's stem
+            ManageFan.Tick(Mn);
+            // after the unit: the enemy you target wears its own marker
+            InventoryWindow.TickCombatMarkers(Mn);
+            // the game's log, as a feed under the counts
+            InventoryWindow.TickLogFeed(Mn);
             // a give waiting on a walk lands the frame you are in reach
             InventoryWindow.TickWalkGive(Mn);
+            // the well and the food box you switched to auto-use (Forgejo #119)
+            AutoUse.Tick(Mn);
+            // ...and what a drink or a meal from one sends flying to you, pressed or not
+            UseFlight.Tick(Mn);
             SettingsWindow.Tick(Mn);
             MoodReport.Tick(Mn);
-            UI.MapMood.Tick(Mn);
+            // favourites on the map as photo pins (Forgejo #14)
+            InventoryWindow.TickMapPins(Mn);
             // after every surface has had its say about what the cursor is over
             InventoryWindow.CommitBadge();
             // PageUp/PageDown page through the recipe grid (blocked automatically
@@ -302,7 +324,6 @@ namespace IslandUI
                 // fires). Poll the set once a second; rebuild only on change.
                 if (mnNow.inventory != null
                     && mnNow.inventory.craftPanelID == 0
-                    && AggregatedCrafting.BenchScope == 0 // scoped menu: fixed panel
                     && Time.unscaledTime >= _nextPanelSetCheck)
                 {
                     _nextPanelSetCheck = Time.unscaledTime + 1f;
@@ -326,7 +347,7 @@ namespace IslandUI
             if (reachKey != KeyCode.None && Input.GetKeyDown(reachKey)
                 && Settings.ShowNearby.Value)
             {
-                InventoryWindow.ToggleReach();
+                InventoryWindow.ToggleVicinity();
             }
             // close-all: unbound by default, see [Window] CloseAllKey
             CloseAll.Tick(Mn);
@@ -472,7 +493,7 @@ namespace IslandUI
             catch (System.Exception e) { Log.LogWarning("Teardown: close-all threw: " + e); }
             // ...and the bar, favourites and hooks go to the next generation
             StoryChoices.HandOver();
-            try { SaveBlock.HandOver(); MoodLedger.HandOver(); }
+            try { SaveBlock.HandOver(); MoodLedger.HandOver(); LoveLedger.HandOver(); AutoUse.HandOver(); }
             catch (System.Exception e) { Log.LogWarning("Teardown: handover threw: " + e); }
             // ...and the one vanilla rect the mod moves RELATIVELY goes back where it
             // was, or the next generation lifts it from a lifted place
@@ -484,6 +505,12 @@ namespace IslandUI
             // ...and the vanilla panels the unit veils show again
             try { InventoryWindow.UnveilVanilla(Mn); }
             catch (System.Exception e) { Log.LogWarning("Teardown: unveil threw: " + e); }
+            // ...and the map's favourite dots, which the pins hide
+            try { InventoryWindow.MapPinsOff(); }
+            catch (System.Exception e) { Log.LogWarning("Teardown: map pins threw: " + e); }
+            // ...and the map's and the quests' own colours, which their look re-tints
+            try { UI.MapQuestsLook.Restore(); }
+            catch (System.Exception e) { Log.LogWarning("Teardown: map and quests look threw: " + e); }
             // 2. nothing of ours stays subscribed to anything that outlives us
             UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
             UI.DevConsole.Teardown();

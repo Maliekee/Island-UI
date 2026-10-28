@@ -32,19 +32,66 @@ namespace IslandUI.UI
 
         public static TMP_FontAsset Build(string file, string name, TMP_FontAsset fallback)
         {
+            string path = System.IO.Path.Combine(
+                System.Environment.GetFolderPath(System.Environment.SpecialFolder.Fonts), file);
+            if (!System.IO.File.Exists(path))
+            {
+                Plugin.Log.LogWarning($"SystemFont: {path} not found");
+                return null;
+            }
+            return Build(() => FontEngine.LoadFontFace(path, PointSize), file, name, fallback);
+        }
+
+        // The same from a face the mod carries (an embedded OFL font), so a look does
+        // not hang on what a player's Windows happens to have installed. It is written
+        // to BepInEx's cache and loaded as a file: loaded from a byte array, FreeType
+        // went on reading the array after the call, and the second build after a
+        // reload rendered no glyphs at all.
+        public static TMP_FontAsset BuildEmbedded(string resource, string name, TMP_FontAsset fallback)
+        {
+            string path;
             try
             {
-                string path = System.IO.Path.Combine(
-                    System.Environment.GetFolderPath(System.Environment.SpecialFolder.Fonts), file);
-                if (!System.IO.File.Exists(path))
+                using (var stream = typeof(SystemFont).Assembly.GetManifestResourceStream(resource))
                 {
-                    Plugin.Log.LogWarning($"SystemFont: {path} not found");
-                    return null;
+                    if (stream == null)
+                    {
+                        Plugin.Log.LogWarning($"SystemFont: no embedded {resource}");
+                        return null;
+                    }
+                    var data = new byte[stream.Length];
+                    int offset = 0, read;
+                    while (offset < data.Length && (read = stream.Read(data, offset, data.Length - offset)) > 0) offset += read;
+                    string folder = System.IO.Path.Combine(BepInEx.Paths.CachePath, "IslandUI");
+                    System.IO.Directory.CreateDirectory(folder);
+                    // named by content, so a changed font is a new file, never a stale one
+                    path = System.IO.Path.Combine(folder, resource + "." + Hash(data) + ".ttf");
+                    if (!System.IO.File.Exists(path)) System.IO.File.WriteAllBytes(path, data);
                 }
+            }
+            catch (System.Exception e)
+            {
+                Plugin.Log.LogWarning($"SystemFont: could not stage {resource}: {e.Message}");
+                return null;
+            }
+            return Build(() => FontEngine.LoadFontFace(path, PointSize), resource, name, fallback);
+        }
+
+        private static string Hash(byte[] data)
+        {
+            uint h = 2166136261;
+            foreach (byte b in data) h = (h ^ b) * 16777619;
+            return h.ToString("x8");
+        }
+
+        private static TMP_FontAsset Build(System.Func<FontEngineError> load, string file, string name, TMP_FontAsset fallback)
+        {
+            try
+            {
                 FontEngine.InitializeFontEngine();
-                if (FontEngine.LoadFontFace(path, PointSize) != FontEngineError.Success)
+                if (load() != FontEngineError.Success)
                 {
-                    Plugin.Log.LogWarning($"SystemFont: FontEngine could not load {path}");
+                    Plugin.Log.LogWarning($"SystemFont: FontEngine could not load {file}");
                     return null;
                 }
                 FaceInfo face = FontEngine.GetFaceInfo();

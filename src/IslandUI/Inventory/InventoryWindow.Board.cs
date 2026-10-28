@@ -30,6 +30,7 @@ namespace IslandUI
             public string ShownKey;
             public ItemData ShownData;
             public int ShownLife = -1;
+            public bool WearOutlined;   // the cell count's dark edge (Theme.OutlineCount)
         }
 
         private static RectTransform _board;
@@ -253,9 +254,10 @@ namespace IslandUI
                 view.WearText.text = value.ToString();
             }
             float fraction = maximum > 0f ? Mathf.Clamp01(remaining / maximum) : 1f;
-            Color ink = Theme.WearInk(fraction);
-            view.WearFill.color = ink;
-            view.WearText.color = ink;
+            view.WearFill.color = Theme.WearInk(fraction);
+            // the number reads as a cell's count: its brighter ink on its dark edge
+            view.WearText.color = Theme.CountInk(fraction);
+            if (!view.WearOutlined) { view.WearOutlined = Theme.OutlineCount(view.WearText); }
             view.WearFill.rectTransform.sizeDelta = new Vector2(WearWidth * fraction, 1.5f);
         }
 
@@ -311,8 +313,9 @@ namespace IslandUI
                 _boardPressed = hover;
                 _boardPressPos = Input.mousePosition;
             }
-            // the lift, at the threshold as the bar's is, and only with shift
-            if (_boardLifted < 0 && _boardPressed >= 0 && Input.GetMouseButton(0) && ClickMap.Shift
+            // the lift, at the threshold as the bar's is, and with shift when the bar wants it
+            if (_boardLifted < 0 && _boardPressed >= 0 && Input.GetMouseButton(0)
+                && (ClickMap.Shift || !Settings.ActionBarShiftToMove.Value)
                 && ToolBelt.Hung(_boardPressed) != null
                 && ((Vector2)Input.mousePosition - _boardPressPos).sqrMagnitude > DragThreshold * DragThreshold)
             {
@@ -423,27 +426,38 @@ namespace IslandUI
             {
                 return null;
             }
-            string hook = BoardNames[hover];
+            // one sentence per loop: the tool's name and its article are the sentence's
+            bool axe = hover == ToolBelt.Axe, pick = hover == ToolBelt.Pick;
             if (HandHolds())
             {
                 bool fits = hand != null && ToolBelt.Fits(hover, hand.toolType);
-                CursorBadge.Show(fits ? "assign  →  " + hook + " loop"
-                    : hand == null ? "choose a tool from your own bags"
-                    : "the " + hook + " loop takes " + (hover == ToolBelt.Axe ? "an axe" : "a " + hook));
+                CursorBadge.Show(fits
+                    ? (axe ? Shared.Loc.Get("board.assign.axe", "assign  →  axe loop")
+                        : pick ? Shared.Loc.Get("board.assign.pickaxe", "assign  →  pickaxe loop")
+                        : Shared.Loc.Get("board.assign.knife", "assign  →  knife loop"))
+                    : hand == null ? Shared.Loc.Get("board.choose", "choose a tool from your own bags")
+                    : axe ? Shared.Loc.Get("board.takes.axe", "the axe loop takes an axe")
+                    : pick ? Shared.Loc.Get("board.takes.pickaxe", "the pickaxe loop takes a pickaxe")
+                    : Shared.Loc.Get("board.takes.knife", "the knife loop takes a knife"));
                 return null;
             }
             ItemSlot hung = ToolBelt.Hung(hover);
             ItemData data = hung != null && _mn.itemMN != null ? _mn.itemMN.FindItem(hung.itemKey) : null;
             if (data == null)
             {
-                return "Drop " + (hover == ToolBelt.Axe ? "an axe" : "a " + hook) + " from your bag here";
+                return axe ? Shared.Loc.Get("board.drop.axe", "Drop an axe from your bag here")
+                    : pick ? Shared.Loc.Get("board.drop.pickaxe", "Drop a pickaxe from your bag here")
+                    : Shared.Loc.Get("board.drop.knife", "Drop a knife from your bag here");
             }
-            string wear = "  ·  Durability " + Mathf.Max(0f, hung.itemLife).ToString("0.#");
+            // the tool's name over its facts: the tip's title, then a row each
+            string wear = "\n" + Shared.Loc.Get("board.durability", "Durability") + "  " + Mathf.Max(0f, hung.itemLife).ToString("0.#");
             if (data.itemLife > 0f) { wear += " / " + data.itemLife.ToString("0.#"); }
             CommonStates owner = _mn.gameMN.pMove != null ? _mn.gameMN.pMove.common : null;
-            string equipped = ToolBelt.IsEquipped(hover, owner) ? "  ·  Equipped" : "";
-            return data.GetItemName() + equipped + wear + "  ·  used when a job needs "
-                + (hover == ToolBelt.Axe ? "an axe" : "a " + hook);
+            string equipped = ToolBelt.IsEquipped(hover, owner) ? "\n" + Shared.Loc.Get("board.equipped", "Equipped") : "";
+            return "<b>" + data.GetItemName() + "</b>" + equipped + wear + "\n"
+                + (axe ? Shared.Loc.Get("board.used.axe", "Used when a job needs an axe")
+                    : pick ? Shared.Loc.Get("board.used.pickaxe", "Used when a job needs a pickaxe")
+                    : Shared.Loc.Get("board.used.knife", "Used when a job needs a knife"));
         }
     }
 }

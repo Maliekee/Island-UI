@@ -12,9 +12,10 @@ namespace IslandUI
         // ---- the Orders aspect: theirs only, the standing settings about an NPC ----
         //
         // Vanilla's order tab, redistributed: combat role and job as dropdowns
-        // (a radio per option would be seventeen rows), the communication
-        // toggles as check chips, and the three buttons vanilla hangs under
-        // the sheet - Return, Call, Banish - as planks. Labels are the game's
+        // (a radio per option would be seventeen rows), the permission
+        // toggles as check chips, and the buttons vanilla hangs under the
+        // sheet - Call, Banish - as planks (its Return is Warp to place, in
+        // WHERE THEY STAND: Forgejo #133). Labels are the game's
         // own, read off the buttons that call OrderChange / WorkChange /
         // NPCOptionChange, which also says which options exist (there is no
         // Fishing button, though WorkType has the value).
@@ -25,27 +26,68 @@ namespace IslandUI
         private static string[] _optionLabels;
         private static int[] _optionValues;
         private static Sprite[] _workIcons;
-        private static readonly string[] CombatFallback = { "Aggressor", "Defender", "Survivor", "Guarder" };
-        private static readonly string[] WorkFallback =
-            { "None", "Food", "Log", "Mine", "Harvest", "Farm", "Livestock", "Excavate", "Train", "Fishing", "Repair" };
-        private static readonly string[] OptionFallback = { "Enter/Exit house", "Allow love", "Allow sex" };
-        private static readonly string[] ActionLabels = { "Return", "Call", "Banish" };
+        private static int _orderLabelsGeneration = -1;
+
+        // read at use, not held: a language switch must reach them
+        private static string[] CombatFallback => new[]
+        {
+            Shared.Loc.Get("orders.combat.name.aggressor", "Aggressor"),
+            Shared.Loc.Get("orders.combat.name.defender", "Defender"),
+            Shared.Loc.Get("orders.combat.name.survivor", "Survivor"),
+            Shared.Loc.Get("orders.combat.name.guarder", "Guarder"),
+        };
+
+        private static string[] WorkFallback => new[]
+        {
+            Shared.Loc.Get("orders.job.name.none", "None"),
+            Shared.Loc.Get("orders.job.name.food", "Food"),
+            Shared.Loc.Get("orders.job.name.log", "Log"),
+            Shared.Loc.Get("orders.job.name.mine", "Mine"),
+            Shared.Loc.Get("orders.job.name.harvest", "Harvest"),
+            Shared.Loc.Get("orders.job.name.farm", "Farm"),
+            Shared.Loc.Get("orders.job.name.livestock", "Livestock"),
+            Shared.Loc.Get("orders.job.name.excavate", "Excavate"),
+            Shared.Loc.Get("orders.job.name.train", "Train"),
+            Shared.Loc.Get("orders.job.name.fishing", "Fishing"),
+            Shared.Loc.Get("orders.job.name.repair", "Repair"),
+        };
+
+        private static string[] OptionFallback => new[]
+        {
+            Shared.Loc.Get("orders.option.house", "Enter/Exit house"),
+            Shared.Loc.Get("orders.option.love", "Allow love"),
+            Shared.Loc.Get("orders.option.sex", "Allow sex"),
+        };
+
+        private static string[] ActionLabels => new[]
+        {
+            Shared.Loc.Get("orders.action.call", "Call"),
+            Shared.Loc.Get("orders.action.banish", "Banish"),
+        };
 
         private static void HarvestOrderLabels()
         {
-            if (_combatLabels != null)
+            // harvested again after a language switch: the fallbacks are ours, the
+            // buttons' words the game's, and either may have changed
+            if (_combatLabels != null && _orderLabelsGeneration == Shared.Loc.Generation)
             {
                 return;
             }
+            _orderLabelsGeneration = Shared.Loc.Generation;
+            string[] combatFallback = CombatFallback;
+            string[] workFallback = WorkFallback;
+            string[] optionFallback = OptionFallback;
             Canvas root = _mn != null && _mn.uiMN != null && _mn.uiMN.itemDescPanel != null
                 ? _mn.uiMN.itemDescPanel.GetComponentInParent<Canvas>() : null;
             root = root != null ? root.rootCanvas : null;
+            // the buttons speak the game's language: in another, ours (Forgejo #92)
+            bool theirs = GameWords.SpeaksOurs;
             int combatCount = System.Enum.GetValues(typeof(NPCMove.OrderType)).Length;
             _combatLabels = new string[combatCount];
             for (int i = 0; i < combatCount; i++)
             {
-                _combatLabels[i] = ButtonLabel(root, "OrderChange", i)
-                    ?? (i < CombatFallback.Length ? CombatFallback[i] : "Role " + i);
+                _combatLabels[i] = (theirs ? ButtonLabel(root, "OrderChange", i) : null)
+                    ?? (i < combatFallback.Length ? combatFallback[i] : Shared.Loc.Get("orders.combat.name.other", "Role {0}", i));
             }
             int workCount = System.Enum.GetValues(typeof(NPCMove.WorkType)).Length;
             var works = new List<int>();
@@ -57,12 +99,16 @@ namespace IslandUI
                 {
                     continue;   // no button for it: the game does not offer this job
                 }
+                if (!theirs)
+                {
+                    label = null;
+                }
                 works.Add(i);
-                workLabels.Add(label ?? (i < WorkFallback.Length ? WorkFallback[i] : "Job " + i));
+                workLabels.Add(label ?? (i < workFallback.Length ? workFallback[i] : Shared.Loc.Get("orders.job.name.other", "Job {0}", i)));
             }
             if (works.Count == 0)
             {
-                for (int i = 0; i < WorkFallback.Length; i++) { works.Add(i); workLabels.Add(WorkFallback[i]); }
+                for (int i = 0; i < workFallback.Length; i++) { works.Add(i); workLabels.Add(workFallback[i]); }
             }
             _workValues = works.ToArray();
             _workLabels = workLabels.ToArray();
@@ -80,7 +126,7 @@ namespace IslandUI
             }
             if (opts.Count == 0)
             {
-                for (int i = 0; i < OptionFallback.Length; i++) { opts.Add(i); optLabels.Add(OptionFallback[i]); }
+                for (int i = 0; i < optionFallback.Length; i++) { opts.Add(i); optLabels.Add(optionFallback[i]); }
             }
             _optionValues = opts.ToArray();
             _optionLabels = optLabels.ToArray();
@@ -123,36 +169,59 @@ namespace IslandUI
         // shown by UIManager.OrderInfo / WorkInfo), which ship only in Japanese,
         // translated. By NPCMove.OrderType and NPCMove.WorkType; Fishing has no
         // entry in vanilla's list.
-        private static readonly string[] CombatTips =
+        // read at use, not held: a language switch must reach them
+        private static string[] CombatTips => new[]
         {
-            "<b>Aggressive</b>\nAttacks every enemy on sight.",
-            "<b>Defensive</b>\nFights back when attacked, and does not chase.\nWhile following: attacks whoever is hostile to you.",
-            "<b>Survival</b>\nDoes not fight. Takes no damage.",
-            "<b>Guard</b>\nAttacks scouts and raiders on sight, and does not sleep at night.\nWhile following: as Aggressive.",
+            OrderTip(Shared.Loc.Get("orders.combat.aggressive", "Aggressive"), null,
+                Shared.Loc.Get("orders.combat.aggressive.help", "Attacks every enemy on sight.")),
+            OrderTip(Shared.Loc.Get("orders.combat.defensive", "Defensive"), null,
+                Shared.Loc.Get("orders.combat.defensive.help", "Fights back when attacked, and does not chase.\nWhile following: attacks whoever is hostile to you.")),
+            OrderTip(Shared.Loc.Get("orders.combat.survival", "Survival"), null,
+                Shared.Loc.Get("orders.combat.survival.help", "Does not fight. Takes no damage.")),
+            OrderTip(Shared.Loc.Get("orders.combat.guard", "Guard"), null,
+                Shared.Loc.Get("orders.combat.guard.help", "Attacks scouts and raiders on sight, and does not sleep at night.\nWhile following: as Aggressive.")),
         };
 
-        private static readonly string[] WorkTips =
+        private static string[] WorkTips => new[]
         {
-            "<b>No job</b>\nDoes no work. Libido recovers faster.",
-            "<b>Food</b> (needs a food box)\nGathers food and stores it in the food box.",
-            "<b>Wood</b> (needs a lumber yard)\nFells wood and stores it at the lumber yard.",
-            "<b>Stone</b> (needs a quarry)\nMines stone and stores it at the quarry.",
-            "<b>Gathering</b> (needs a harvest box)\nGathers branches, leaves, fibre and the like into the harvest box.",
-            "<b>Farming</b> (needs planters and a harvest box)\nTends the planters nearby and puts the harvest in the harvest box.",
-            "<b>Breeding</b> (needs a pig farm or pen, a harvest box, a milker)\nLooks after the breeding facilities nearby.",
-            "<b>Digging</b> (needs a dig site)\nDigs up soil and stores it at the dig site.",
-            "<b>Training</b> (needs a sandbag)\nTrains on the sandbag and gains experience.",
+            OrderTip(Shared.Loc.Get("orders.job.none", "No job"), null,
+                Shared.Loc.Get("orders.job.none.help", "Does no work. Libido recovers faster.")),
+            OrderTip(Shared.Loc.Get("orders.job.food", "Food"), Shared.Loc.Get("orders.job.food.needs", "a food box"),
+                Shared.Loc.Get("orders.job.food.help", "Gathers food and stores it in the food box.")),
+            OrderTip(Shared.Loc.Get("orders.job.wood", "Wood"), Shared.Loc.Get("orders.job.wood.needs", "a lumber yard"),
+                Shared.Loc.Get("orders.job.wood.help", "Fells wood and stores it at the lumber yard.")),
+            OrderTip(Shared.Loc.Get("orders.job.stone", "Stone"), Shared.Loc.Get("orders.job.stone.needs", "a quarry"),
+                Shared.Loc.Get("orders.job.stone.help", "Mines stone and stores it at the quarry.")),
+            OrderTip(Shared.Loc.Get("orders.job.gathering", "Gathering"), Shared.Loc.Get("orders.job.gathering.needs", "a harvest box"),
+                Shared.Loc.Get("orders.job.gathering.help", "Gathers branches, leaves, fibre and the like into the harvest box.")),
+            OrderTip(Shared.Loc.Get("orders.job.farming", "Farming"), Shared.Loc.Get("orders.job.farming.needs", "planters and a harvest box"),
+                Shared.Loc.Get("orders.job.farming.help", "Tends the planters nearby and puts the harvest in the harvest box.")),
+            OrderTip(Shared.Loc.Get("orders.job.breeding", "Breeding"), Shared.Loc.Get("orders.job.breeding.needs", "a pig farm or pen, a harvest box, a milker"),
+                Shared.Loc.Get("orders.job.breeding.help", "Looks after the breeding facilities nearby.")),
+            OrderTip(Shared.Loc.Get("orders.job.digging", "Digging"), Shared.Loc.Get("orders.job.digging.needs", "a dig site"),
+                Shared.Loc.Get("orders.job.digging.help", "Digs up soil and stores it at the dig site.")),
+            OrderTip(Shared.Loc.Get("orders.job.training", "Training"), Shared.Loc.Get("orders.job.training.needs", "a sandbag"),
+                Shared.Loc.Get("orders.job.training.help", "Trains on the sandbag and gains experience.")),
             null,
-            "<b>Repair</b>\nRepairs damaged buildings, nearest their waiting place first.",
+            OrderTip(Shared.Loc.Get("orders.job.repair", "Repair"), null,
+                Shared.Loc.Get("orders.job.repair.help", "Repairs damaged buildings, nearest their waiting place first.")),
         };
+
+        // a stance or job tip: the name in bold, the "Needs  what" row, what it does
+        private static string OrderTip(string name, string needs, string does)
+        {
+            return "<b>" + name + "</b>\n"
+                + (needs != null ? Shared.Loc.Get("orders.job.needs", "Needs") + "  " + needs + "\n" : string.Empty)
+                + does;
+        }
 
         private static void WriteOrders(List<SheetLine> lines, CommonStates who)
         {
             HarvestOrderLabels();
             NPCMove move = who != null ? who.GetComponent<NPCMove>() : null;
-            lines.Add(Head("Orders", string.Empty, VanillaTabIcon(3)));
+            lines.Add(Head(Shared.Loc.Get("orders.title", "Orders"), string.Empty, VanillaTabIcon(3)));
             int combat = move != null ? (int)move.orderType : 0;
-            lines.Add(new SheetLine { Label = "Combat", Kind = LineDropdown, Arg = 0,
+            lines.Add(new SheetLine { Label = Shared.Loc.Get("orders.combat", "Combat"), Kind = LineDropdown, Arg = 0,
                 Options = _combatLabels, Index = Mathf.Clamp(combat, 0, _combatLabels.Length - 1), Enabled = true,
                 Tip = combat >= 0 && combat < CombatTips.Length ? CombatTips[combat] : null });
             int work = move != null ? System.Array.IndexOf(_workValues, (int)move.workType) : 0;
@@ -168,7 +237,7 @@ namespace IslandUI
                 }
             }
             int job = move != null ? (int)move.workType : 0;
-            lines.Add(new SheetLine { Label = "Job", Kind = LineDropdown, Arg = 1,
+            lines.Add(new SheetLine { Label = Shared.Loc.Get("orders.job", "Job"), Kind = LineDropdown, Arg = 1,
                 Options = _workLabels, Icons = _workIcons, Index = Mathf.Max(0, work), Enabled = true,
                 Tip = job >= 0 && job < WorkTips.Length ? WorkTips[job] : null });
             // THE SPEED LIMIT IS GONE from target NPCs. It was moved here from
@@ -183,7 +252,7 @@ namespace IslandUI
             // re-checkable if a patch moves the slider's floor.
             WriteStanding(lines, who, move);
             WritePoses(lines, who, move);
-            lines.Add(Head("Communication", string.Empty));
+            lines.Add(Head(Shared.Loc.Get("orders.permissions", "Permissions"), string.Empty));
             for (int i = 0; i < _optionValues.Length; i++)
             {
                 int id = _optionValues[i];
@@ -208,9 +277,10 @@ namespace IslandUI
                     Arg = ActionsTalkEdit, Options = new[] { editLabel }, Tips = new[] { TipEditDialogue } });
             }
             lines.Add(new SheetLine { Kind = LineSpace });
+            string[] actions = ActionLabels;
             bool canFire = _mn != null && _mn.npcMN != null && _mn.npcMN.FireNPCCheck(who.npcID);
             lines.Add(new SheetLine { Kind = LineActions, Enabled = true,
-                Options = canFire ? ActionLabels : new[] { ActionLabels[0], ActionLabels[1] }, Tips = TipOrderActions });
+                Options = canFire ? actions : new[] { actions[0] }, Tips = TipOrderActions });
         }
 
         // UIManager.OrderChange / WorkChange, on the sheet's carrier
@@ -247,7 +317,7 @@ namespace IslandUI
             _nextSheetPaint = 0f;
         }
 
-        // Return, Call and Banish are vanilla coroutines that read menuNPC as
+        // Call and Banish are vanilla coroutines that read menuNPC as
         // they run - Banish across a yes/no dialog - so rather than swap the
         // field around a call, the Focus is made explicit: this column IS the
         // character in focus, and menuNPC is where vanilla keeps that.
@@ -263,9 +333,8 @@ namespace IslandUI
             }
             switch (which)
             {
-                case 0: _mn.npcMN.WarpToTerritory(); break;
-                case 1: _mn.npcMN.WarpToPlayer(); break;
-                case 2: _mn.npcMN.FireNPCButton(); break;
+                case 0: _mn.npcMN.WarpToPlayer(); break;
+                case 1: _mn.npcMN.FireNPCButton(); break;
             }
         }
 
@@ -317,33 +386,38 @@ namespace IslandUI
             // or [6] and never both, so the pair is already a single state wearing
             // two buttons - which is why it reads as a toggle here and pressed
             // through whichever of the two vanilla currently offers.
-            lines.Add(Head("Where they stand", string.Empty));
+            lines.Add(Head(Shared.Loc.Get("orders.standing", "Where they stand"), string.Empty));
             NPCMove nm = move;
             bool following = nm != null && nm.npcType == NPCMove.NPCType.Follow;
             lines.Add(new SheetLine
             {
-                Label = "Following", Kind = LineToggle, Arg = ToggleFollow,
-                Value = following ? "yes" : "no", On = following, Enabled = true, Tip = TipFollowing,
+                Label = Shared.Loc.Get("orders.following", "Following"), Kind = LineToggle, Arg = ToggleFollow,
+                Value = following ? Shared.Loc.Get("orders.following.yes", "yes") : Shared.Loc.Get("orders.following.no", "no"), On = following, Enabled = true, Tip = TipFollowing,
             });
             // a click that arms a world pointer: vanilla's own coroutine, which
             // takes the controls for the length of the pick and gives them back
             lines.Add(new SheetLine
             {
-                Kind = LineActions, Enabled = true, Arg = ActionsStanding,
-                Options = new[] { "Set place", "Go there" }, Tips = TipStanding,
+                Kind = LineActions, Enabled = !following, Arg = ActionsStanding,
+                Options = new[] { Shared.Loc.Get("orders.set_place", "Set place"), Shared.Loc.Get("orders.warp_to_place", "Warp to place") }, Tips = TipStanding,
             });
             Slider ter = _mn.uiMN.territorySlider;
             Slider chase = _mn.uiMN.chaseSlider;
             lines.Add(new SheetLine
             {
-                Label = "Territory", Kind = LineSlider, Arg = SliderTerritory, Enabled = true, Tip = TipTerritory,
+                Label = Shared.Loc.Get("orders.territory", "Territory"), Kind = LineSlider, Arg = SliderTerritory, Enabled = !following,
+                Tip = following ? TipTerritory + "\n" + TipPlaceWhileFollowing : TipTerritory,
                 Value = move.territoryRad.ToString("0.0"),
+                Value2 = Shared.Loc.Get("orders.territory.line", "how far they wander around their place"),
                 Frac = Mathf.InverseLerp(ter.minValue, ter.maxValue, move.territoryRad),
             });
             lines.Add(new SheetLine
             {
-                Label = "Combat area", Kind = LineSlider, Arg = SliderChase, Enabled = true, Tip = TipCombatArea,
-                Value = move.chaseDist.ToString("0.0"),
+                // the chase counts on from the territory's edge - the outer ring is
+                // drawn at territory + chase - so its reading says "+"
+                Label = Shared.Loc.Get("orders.chase_range", "Chase range"), Kind = LineSlider, Arg = SliderChase, Enabled = !following, Tip = TipChaseRange,
+                Value = "+" + move.chaseDist.ToString("0.0"),
+                Value2 = Shared.Loc.Get("orders.chase_range.line", "how far past that they chase an enemy, then turn back"),
                 Frac = Mathf.InverseLerp(chase.minValue, chase.maxValue, move.chaseDist),
             });
             _wantTerritoryPreview = who;
@@ -392,7 +466,9 @@ namespace IslandUI
             }
             if (which == 0)
             {
-                _mn.npcMN.SetTerritoryButton();     // arms the world pointer
+                // arms the world pointer: vanilla's SetTerritoryButton, with the
+                // placement factors drawn while it is up (PlaceFactors.cs)
+                StartPlacing(who);
             }
             else
             {
@@ -489,7 +565,8 @@ namespace IslandUI
         internal sealed class Pose
         {
             public string Name;        // the OrderAnim name, which is the object's name
-            public string Label;       // vanilla's own words for it
+            public int Id;             // its NPCManager.OrderAnim, -1 for one the enum lacks
+            public string Label;       // vanilla's own words for it, as the button was lettered
             public UnityEngine.UI.Button Button;
         }
 
@@ -546,9 +623,12 @@ namespace IslandUI
                     continue;
                 }
                 var text = t.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
+                int id = System.Enum.IsDefined(typeof(NPCManager.OrderAnim), t.name)
+                    ? (int)System.Enum.Parse(typeof(NPCManager.OrderAnim), t.name) : -1;
                 _poses.Add(new Pose
                 {
                     Name = t.name,
+                    Id = id,
                     Label = text != null && !string.IsNullOrEmpty(text.text) ? text.text : t.name,
                     Button = t.GetComponent<UnityEngine.UI.Button>(),
                 });
@@ -576,14 +656,23 @@ namespace IslandUI
             string current = move.orderAnim.ToString();
             var labels = new string[_poses.Count];
             int mark = 0;
+            // the words read now, not off the buttons: vanilla letters them once, at
+            // the scene's start, and a language switch never reaches them (Forgejo #92);
+            // ours in a language the game has no text for (Forgejo #110)
+            TextManager tm = GameWords.Text(_mn);
+            string[] names = tm != null ? tm.orderAnimName : null;
+            bool lacking = GameWords.Lacking;
             for (int i = 0; i < _poses.Count; i++)
             {
-                labels[i] = _poses[i].Label;
+                int id = _poses[i].Id;
+                labels[i] = (lacking ? ControlWords.Pose(id) : null)
+                    ?? (names != null && id >= 0 && id < names.Length && !string.IsNullOrEmpty(names[id])
+                        ? names[id] : _poses[i].Label);
                 if (_poses[i].Name == current) { mark = i; }
             }
             lines.Add(new SheetLine
             {
-                Label = "Waiting pose", Kind = LineDropdown, Arg = DropPose,
+                Label = Shared.Loc.Get("orders.waiting_pose", "Waiting pose"), Kind = LineDropdown, Arg = DropPose,
                 Options = labels, Index = mark, Enabled = true, Tip = TipWaitingPose,
             });
             // ORIENTATION, AND THE COUPLING VANILLA'S LAYOUT HIDES: fixedRot is
@@ -609,7 +698,7 @@ namespace IslandUI
             {
                 Kind = LineActions, Arg = ActionsRot, Enabled = bites,
                 Index = move.fixedRot == -1 ? 0 : move.fixedRot == 1 ? 1 : -1,
-                Options = new[] { "Face left", "Face right" }, Tips = new[] { TipFacing, TipFacing },
+                Options = new[] { Shared.Loc.Get("orders.face_left", "Face left"), Shared.Loc.Get("orders.face_right", "Face right") }, Tips = new[] { TipFacing, TipFacing },
             });
         }
 
@@ -681,7 +770,7 @@ namespace IslandUI
             {
                 if (live[i].Name == "talkedit")
                 {
-                    return string.IsNullOrEmpty(live[i].Label) ? "Edit dialogue" : live[i].Label;
+                    return string.IsNullOrEmpty(live[i].Label) ? Shared.Loc.Get("orders.edit_dialogue", "Edit dialogue") : live[i].Label;
                 }
             }
             return null;

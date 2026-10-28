@@ -103,7 +103,7 @@ namespace IslandUI
             // `CraftableCheckSlot` both take a `craftPanelID != 0` branch that
             // reads `itemSlot[50 + j]` — so intercepting while that path is live
             // would craft from an empty grid. It is not live: the bench redirect turns every
-            // `CraftOpen(id != 0)` into a scoped `CraftOpen(0)`, so craftPanelID is
+            // `CraftOpen(id != 0)` into the whole menu's `CraftOpen(0)`, so craftPanelID is
             // always 0 and vanilla's bench branch never runs. That holds only while
             // the custom grid is on, which is exactly this condition — with it off
             // the vanilla panels are back and the mirror is load-bearing again.
@@ -227,8 +227,8 @@ namespace IslandUI
         // A BENCH instead opens ITS panel, chosen by a switch on the bench's item
         // key. We have to run that switch ourselves now, and
         // AggregatedCrafting.BenchPanels already mirrors it entry for entry — the
-        // bench redirect then turns whatever we ask for into a scoped innate open, so the
-        // browser comes up filtered to that bench. A key the switch does not list
+        // bench redirect then turns whatever we ask for into the whole menu, so the
+        // browser comes up at that bench's section. A key the switch does not list
         // opens NOTHING, which is vanilla falling out of its own switch rather
         // than an oversight worth correcting.
         private static void OpenLeftPanel(InventoryManager inv, InventorySlot chest, ItemData tmpData)
@@ -356,14 +356,15 @@ namespace IslandUI
             {
                 result.Container = npc.bag;
                 result.Owner = npc;
-                result.Name = (string.IsNullOrEmpty(npc.charaName) ? "their" : npc.charaName + "'s") + " Bag";
+                result.Name = string.IsNullOrEmpty(npc.charaName) ? Shared.Loc.Get("inv.pocket.their_bag", "their Bag")
+                    : Shared.Loc.Get("inv.pocket.bag_of", "{0}'s Bag", npc.charaName);
             }
             else if (focus is InventorySlot container)
             {
                 result.Container = container;
                 var info = container.GetComponent<ItemInfo>();
                 ItemData data = info != null ? mn.itemMN.FindItem(info.itemKey) : null;
-                result.Name = data != null ? data.GetItemName() : "that container";
+                result.Name = data != null ? data.GetItemName() : Shared.Loc.Get("inv.pocket.that_container", "that container");
                 // vanilla only ever grew real chests, never material storages or
                 // treasure — keep that, an expanding storage is a different feature
                 if (info == null || !mn.itemMN.IsChest(info.itemKey))
@@ -381,7 +382,7 @@ namespace IslandUI
                 }
                 result.Container = player.bag;
                 result.Owner = player;
-                result.Name = "your Bag";
+                result.Name = Shared.Loc.Get("inv.pocket.your_bag", "your Bag");
             }
 
             InventorySlot target = result.Container;

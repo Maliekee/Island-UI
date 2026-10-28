@@ -17,16 +17,21 @@ namespace IslandUI.UI
         // THE SLOT'S THREE OCCUPANTS (D53): the bench, the containers around you,
         // and the people you employ. One row of tabs, one array, read by both
         // windows that can hold the slot - the crafting shell and this one - so a
-        // tab cannot exist on one and not the other.
+        // tab cannot exist on one and not the other. The names are the tabs' ids
+        // (their GameObjects); TabLabel is what the player reads.
         public static readonly string[] TabNames = { "Crafting", "In reach", "Roster" };
+        public static readonly string[] TabGlyphs = { "craft", "vicinity", "roster" };
+
+        public static string TabLabel(int index)
+        {
+            return index == 0 ? Shared.Loc.Get("hud.chip.crafting", "Crafting")
+                : index == 1 ? Shared.Loc.Get("reach.title", "In reach")
+                : Shared.Loc.Get("roster.title", "Roster");
+        }
         // the tabs' woods, in TabNames order: the bench's walnut, then the two
         // ledgers' oak - the vicinity list and the roster are the same parchment
         // (D46), so they wear the same wood and only their height says which is up
         public static readonly string[] TabWoods = { "kit_plank_walnut", "kit_plank_oak", "kit_plank_oak" };
-        // Compact container rows keep their icons in a gutter instead of adding
-        // per-container title rows. Scrollbars are independent of this choice.
-        public static readonly bool CompactContainers = true;
-
         public static bool Known { get; private set; }
         public static float Left { get; private set; }
         public static float Bottom { get; private set; }
@@ -42,7 +47,7 @@ namespace IslandUI.UI
         // THE GUTTER IS EXTRA WIDTH, NOT A CELL: ten cells is good, so the window
         // grows wider rather than losing a cell. The vicinity's plates carry their
         // icon in a gutter left of the cells, so the slot is ten cells AND a gutter.
-        public static float GutterW => CompactContainers ? InventoryWindow.GutterWidth : 0f;
+        public static float GutterW => InventoryWindow.GutterWidth;
         public static float InnerW => GutterW + ContentW;
         // THE CRAFTING GRID KEEPS VANILLA'S PITCH (the original space between
         // cells, even though it then differs from the other windows) and

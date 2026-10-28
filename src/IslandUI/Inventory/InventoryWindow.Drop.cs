@@ -8,10 +8,15 @@ namespace IslandUI
 {
     // AN ITEM DROPPED ON SOMEONE IS USED ON THEM (window-system.md 6.31, D141).
     // A plain use is yours; to feed, dress or treat someone you drop the item on
-    // them - on their bag window, their sheet, their roster strip, the indicator
+    // them - on their roster strip, the portrait on the target dock, the indicator
     // over the target's head, or the person in the world. A cell under the
     // pointer is always asked first: a cell of their bag is a TRANSFER into it, as it
-    // has always been, and only the rest of their window means "use it on them".
+    // has always been.
+    //
+    // NOT THEIR BAG WINDOW'S FRAME, NOR THEIR SHEET (Forgejo #89): a release a
+    // little off a cell, while placing an item in their bag, landed on the frame
+    // and gave the item away - it happened a lot. A release there now does what
+    // it does over any panel: the item stays in hand.
     //
     // Asked early in the Tick, above the sheets: a roster row and a sheet control
     // claim the pointer (TickSheets returns out of the input chain), so a drop there
@@ -45,7 +50,7 @@ namespace IslandUI
                 PaintOfferRing(null);
                 return false;
             }
-            CommonStates who = PersonUnderPointer(cam);
+            CommonStates who = RosterUnderPointer(cam) ?? PortraitUnderPointer();
             InventorySlot chest = who == null ? ChestUnderPointer(cam) : null;
             // Out over the world, the target's marker first - it is UI, above the
             // clutter of a camp - then a person, picked as Tab picks
@@ -60,18 +65,19 @@ namespace IslandUI
                 return false;
             }
             _dropOver = who;
-            string name = who == null ? "this chest"
-                : Hostile(who) || string.IsNullOrEmpty(who.charaName) ? "them" : who.charaName;
+            string name = who == null ? Shared.Loc.Get("drop.this_chest", "this chest")
+                : Hostile(who) || string.IsNullOrEmpty(who.charaName) ? Shared.Loc.Get("drop.them", "them") : who.charaName;
             // Using an item on someone is an act, and acts want reach (D145): the
             // roster lists people across the map, and a drop on a strip there used
             // to feed them from wherever you stood.
             bool near = who == null || InReach(who);
             // out of reach but in walking distance: you walk over and give it
             bool walk = !near && CanWalkTo(who);
-            string verb = who != null && HeldIsGift() ? "give to  →  " : "use on  →  ";
-            CursorBadge.Show(!takes ? name + "  ·  can't take this"
-                : near ? verb + name : walk ? "walk over and " + verb + name
-                : name + "  ·  out of reach");
+            bool gift = who != null && HeldIsGift();
+            CursorBadge.Show(!takes ? name + "  ·  " + Shared.Loc.Get("drop.cant_take", "can't take this")
+                : near ? (gift ? Shared.Loc.Get("drop.give_to", "give to  →  {0}", name) : Shared.Loc.Get("drop.use_on", "use on  →  {0}", name))
+                : walk ? (gift ? Shared.Loc.Get("drop.walk_give_to", "walk over and give to  →  {0}", name) : Shared.Loc.Get("drop.walk_use_on", "walk over and use on  →  {0}", name))
+                : name + "  ·  " + Shared.Loc.Get("drop.out_of_reach", "out of reach"));
             if (!Input.GetMouseButtonUp(0))
             {
                 return false;
@@ -91,6 +97,9 @@ namespace IslandUI
             SetPressed(_pressedCell, false);
             _pressedCell = null;
             _dragging = false;
+            // a click-click begun on the portrait is this give, not also the
+            // card's door to the sheet (the dock reads its input after this)
+            _cardPressed = CardPressNone;
             return true;
         }
 
@@ -151,7 +160,8 @@ namespace IslandUI
         // about is a feature nobody has: the first report after 0.3.0 was a potion
         // spent on yourself by a player who never found it. (A text slip over the
         // target dock came first and read poorly; the dock was a drop place too,
-        // until a release beside the bags gave an item away.)
+        // until a release beside the bags gave an item away - now only its
+        // portrait is, Forgejo #89.)
         private static bool GiftOffered(CommonStates who)
         {
             return who != null && _mn != null && !HandEmpty() && _grabSource != null
@@ -264,36 +274,17 @@ namespace IslandUI
                 || data.itemType == ItemData.ItemType.Consumables);
         }
 
-        // Whose window is under the pointer: the bag window, a sheet, a roster
-        // strip. Null over anything else. NOT THE TARGET DOCK: it sits on the action
-        // bar and under the bags, where an item is moved about all the time, and a
-        // release a little off its mark there gave the item away. Over the dock a
-        // release now does what it does over any panel - nothing.
-        private static CommonStates PersonUnderPointer(Camera cam)
+        // Whose roster strip is under the pointer; null over anything else. The
+        // bag window and the sheet were drop places too, the whole of their frames,
+        // until a release beside a cell gave the item away (Forgejo #89).
+        private static CommonStates RosterUnderPointer(Camera cam)
         {
             Vector2 mouse = Input.mousePosition;
-            if (_target is CommonStates held)
-            {
-                int bag = _groupFrame[GroupBag];
-                if (bag >= 0 && bag < Plates.Count && Plates[bag].Window.Go.activeInHierarchy
-                    && RectTransformUtility.RectangleContainsScreenPoint(Plates[bag].Window.Rect, mouse, cam))
-                {
-                    return held;
-                }
-            }
             for (int i = 0; i < SheetPlates.Count; i++)
             {
                 Plate plate = SheetPlates[i];
-                if (plate == null || !(plate.Owner is CommonStates owner) || !plate.Window.Go.activeInHierarchy)
-                {
-                    continue;
-                }
-                bool roster = plate.IsRoster;
-                if (!roster && !IsDossier(plate.Group))
-                {
-                    continue;
-                }
-                if (roster && ClippedAway(plate, cam))
+                if (plate == null || !plate.IsRoster || !(plate.Owner is CommonStates owner)
+                    || !plate.Window.Go.activeInHierarchy || ClippedAway(plate, cam))
                 {
                     continue;
                 }
@@ -303,6 +294,24 @@ namespace IslandUI
                 }
             }
             return null;
+        }
+
+        // THE PORTRAIT ON THE TARGET DOCK (Forgejo #89): the card itself, not the
+        // dock around it. The dock sits on the action bar and under the bags, where
+        // an item is moved about all the time, and a release a little off its mark
+        // there gave the item away - so the dock stays out, and only the face is a
+        // place to drop on. The person's, while they are the dock's; a thing's
+        // card is not, and the favourite's star on the corner keeps its click.
+        private static CommonStates PortraitUnderPointer()
+        {
+            if (_unitFor == null || _unitThing != null || _animeIdentity == null
+                || !_animeIdentity.gameObject.activeInHierarchy || OnCardStar
+                || !ReferenceEquals(Focus(), _unitFor))
+            {
+                return null;
+            }
+            return RectTransformUtility.RectangleContainsScreenPoint(_animeIdentity.rectTransform, Input.mousePosition, null)
+                ? _unitFor : null;
         }
 
         // A chest's own window, for the one item that acts on a chest (pocket_01).

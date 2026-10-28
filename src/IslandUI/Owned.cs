@@ -17,11 +17,16 @@ namespace IslandUI
 
         internal static int Count => Objects.Count;
 
+        // every object ever made through here, never lowered by Prune: FirstOpenTimer
+        // reads the difference across a frame as "Island UI built this many"
+        internal static int Created;
+
         /// <summary><c>new GameObject(name, typeof(RectTransform))</c>, tracked.</summary>
         internal static GameObject New(string name)
         {
             var go = new GameObject(name, typeof(RectTransform));
             Objects.Add(go);
+            Created++;
             return go;
         }
 
@@ -41,6 +46,7 @@ namespace IslandUI
             if (go != null)
             {
                 Objects.Add(go);
+                Created++;
             }
             return clone;
         }

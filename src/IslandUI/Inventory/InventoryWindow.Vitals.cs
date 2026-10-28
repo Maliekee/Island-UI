@@ -24,12 +24,12 @@ namespace IslandUI
         private static void WriteVitals(List<SheetLine> lines, CommonStates who)
         {
             GameManager gm = _mn != null ? _mn.gameMN : null;
-            lines.Add(Gauge("HP", (float)who.life, (float)who.maxLife, LifeTint));
-            lines.Add(Gauge("Stun", (float)who.faint, (float)who.maxFaint, StunTint));
-            lines.Add(Gauge("Food", who.food, who.maxFood, FoodTint,
+            lines.Add(Gauge(Shared.Loc.Get("vitals.hp", "HP"), (float)who.life, (float)who.maxLife, LifeTint));
+            lines.Add(Gauge(Shared.Loc.Get("vitals.stun", "Stun"), (float)who.faint, (float)who.maxFaint, StunTint));
+            lines.Add(Gauge(Shared.Loc.Get("vitals.food", "Food"), who.food, who.maxFood, FoodTint,
                 gm != null && gm.foodImage != null ? gm.foodImage.sprite : null, tintIcon: true,
                 text: who.food.ToString("0") + " / " + who.maxFood.ToString("0")));
-            lines.Add(Gauge("Water", who.water, who.maxWater, WaterTint,
+            lines.Add(Gauge(Shared.Loc.Get("vitals.water", "Water"), who.water, who.maxWater, WaterTint,
                 gm != null && gm.waterImage != null ? gm.waterImage.sprite : null, tintIcon: true,
                 text: who.water.ToString("0") + " / " + who.maxWater.ToString("0")));
         }
@@ -38,10 +38,10 @@ namespace IslandUI
         {
             bool flameTinted;
             Sprite flame = LibidoIcon(out flameTinted);
-            lines.Add(Gauge("Libido", who.libido, who.maxLibido, LibidoTint, flame, tintIcon: flameTinted));
+            lines.Add(Gauge(Shared.Loc.Get("vitals.libido", "Libido"), who.libido, who.maxLibido, LibidoTint, flame, tintIcon: flameTinted));
             // the roster's rule: green while content, red when discontent or below zero
             Color moral = MoralTint(who);
-            lines.Add(Gauge("Moral", Mathf.Abs(who.moral), 100f, moral,
+            lines.Add(Gauge(Shared.Loc.Get("vitals.moral", "Moral"), Mathf.Abs(who.moral), 100f, moral,
                 text: who.moral.ToString("0") + " / 100"));
         }
 
@@ -89,8 +89,8 @@ namespace IslandUI
             lines.Add(new SheetLine
             {
                 Kind = LinePair,
-                Label = "Job", Value = job != 0 ? JobName(job) : "—",
-                Label2 = "Following", Value2 = following ? "yes" : "no",
+                Label = Shared.Loc.Get("vitals.job", "Job"), Value = job != 0 ? JobName(job) : "—",
+                Label2 = Shared.Loc.Get("vitals.following", "Following"), Value2 = following ? Shared.Loc.Get("sheet.yes", "yes") : Shared.Loc.Get("sheet.no", "no"),
             });
             // The mood left this pair for a block of its own under it (WriteMood,
             // the mood census): every cause with its cost and its fix, where one
@@ -98,7 +98,7 @@ namespace IslandUI
             lines.Add(new SheetLine
             {
                 Kind = LinePair,
-                Label = "Where", Value = WhereWord(who, move),
+                Label = Shared.Loc.Get("vitals.where", "Where"), Value = WhereWord(who, move),
                 Label2 = string.Empty, Value2 = string.Empty,
             });
         }
@@ -114,7 +114,7 @@ namespace IslandUI
             if (who.pregnant != null && who.pregnant.Length > 1 && who.pregnant[0] != -1)
             {
                 float months = 12f - who.pregnant[1];
-                lines.Add(Gauge("Pregnant", months, 12f, BabyTint, Emotion(7),
+                lines.Add(Gauge(Shared.Loc.Get("vitals.pregnant", "Pregnant"), months, 12f, BabyTint, Emotion(7),
                     text: (100f * months / 12f).ToString("F0") + "%"));
             }
         }
@@ -133,47 +133,59 @@ namespace IslandUI
             float love;
             if (!LoveBetween(_mn.npcMN, who, me, out love))
             {
-                lines.Add(Gauge("Love", 0f, 100f, LoveWidget.Pale, heart, tintIcon: true, text: "not met"));
+                lines.Add(Gauge(Shared.Loc.Get("vitals.love", "Love"), 0f, 100f, LoveWidget.Pale, heart, tintIcon: true, text: Shared.Loc.Get("vitals.love.not_met", "not met")));
                 return;
             }
             // the number bare, for the same reason: 100 is where the band fills, not
             // where the value stops - a devoted follower reads 110 and the game is
             // right, not the label
-            lines.Add(Gauge("Love", Mathf.Abs(love), 100f, LoveWidget.ClassColor(love), heart,
+            lines.Add(Gauge(Shared.Loc.Get("vitals.love", "Love"), Mathf.Abs(love), 100f, LoveWidget.ClassColor(love), heart,
                 tintIcon: true, text: love.ToString("0")));
+        }
+
+        // an attribute's name on the Growth sheet, in the player's language
+        private static string StatLabel(int i)
+        {
+            switch (i)
+            {
+                case 0: return Shared.Loc.Get("vitals.health", "Health");
+                case 1: return Shared.Loc.Get("vitals.strength", "Strength");
+                case 2: return Shared.Loc.Get("vitals.speed", "Speed");
+                default: return StatNames[i];
+            }
         }
 
         // The Growth aspect, both: the level and its exp, the points and where
         // they go, and beside them what they buy - attack, guard, speed
         private static void WriteGrowth(List<SheetLine> lines, CommonStates who)
         {
-            lines.Add(new SheetLine { Label = "Character level " + who.level, Kind = LineBar,
+            lines.Add(new SheetLine { Label = Shared.Loc.Get("vitals.character_level", "Character level {0}", who.level), Kind = LineBar,
                 Value = who.exp.ToString("0") + " / " + who.maxExp.ToString("0"),
                 Frac = who.maxExp > 0 ? (float)(who.exp / who.maxExp) : 0f, Enabled = true,
                 Tinted = true, Tint = ExpTint() });
-            lines.Add(Head("Points", who.statusPoint.ToString(), VanillaTabIcon(0)));
+            lines.Add(Head(Shared.Loc.Get("sheet.points", "Points"), who.statusPoint.ToString(), VanillaTabIcon(0)));
             if (who.status != null)
             {
                 for (int i = 0; i < StatNames.Length && i < who.status.Length; i++)
                 {
                     int cost = StatCost(who, i);
-                    lines.Add(new SheetLine { Label = StatNames[i], Kind = LineStat, Arg = i,
-                        Value = "Lv " + who.status[i] + "   " + cost + " pt",
+                    lines.Add(new SheetLine { Label = StatLabel(i), Kind = LineStat, Arg = i,
+                        Value = Shared.Loc.Get("sheet.lv", "Lv {0}", who.status[i]) + "   " + Shared.Loc.Get("sheet.cost", "{0} pt", cost),
                         Enabled = who.statusPoint >= cost });
                 }
             }
-            lines.Add(Head("Combat", string.Empty, Theme.FindSprite("ui_buff_attack")));
+            lines.Add(Head(Shared.Loc.Get("vitals.combat", "Combat"), string.Empty, Theme.FindSprite("ui_buff_attack")));
             string attack = who.attack.ToString("F1");
             if (who.equip != null && who.equip.Length > 1 && who.equip[1] != null)
             {
                 attack += " (" + who.equip[1].attack.ToString("0") + ")";
             }
-            lines.Add(Row("Attack", attack));
-            lines.Add(Row("Guard", GuardOf(who).ToString("0.0")));
-            lines.Add(Row("Speed", who.MoveSpeed(false).ToString("0.00"), Theme.FindSprite("ui_buff_speed")));
+            lines.Add(Row(Shared.Loc.Get("vitals.attack", "Attack"), attack));
+            lines.Add(Row(Shared.Loc.Get("vitals.guard", "Guard"), GuardOf(who).ToString("0.0")));
+            lines.Add(Row(Shared.Loc.Get("vitals.speed", "Speed"), who.MoveSpeed(false).ToString("0.00"), Theme.FindSprite("ui_buff_speed")));
             if (who.status != null && who.status.Length > 7 && who.status[7] > 0)
             {
-                lines.Add(Row("Class", who.status[7].ToString()));
+                lines.Add(Row(Shared.Loc.Get("vitals.class", "Class"), who.status[7].ToString()));
             }
         }
 
@@ -184,7 +196,7 @@ namespace IslandUI
         // Profile is where they land, above the traits, for BOTH columns.
         private static void WriteProfile(List<SheetLine> lines, CommonStates who, bool own)
         {
-            TextManager tm = _mn != null ? _mn.textMN : null;
+            TextManager tm = GameWords.Text(_mn);
             NPCManager npcs = _mn != null ? _mn.npcMN : null;
             // An earlier pass parked the condition block here because retiring the Condition
             // tab orphaned it. D75 gives it a tab again, so Profile hands it back
@@ -193,22 +205,17 @@ namespace IslandUI
             if (own)
             {
                 WriteCondition(lines, who, own);
-                lines.Add(Head("Movement", string.Empty, HudGlyphs.Get("follow")));
-                lines.Add(new SheetLine { Kind = LineToggle, Arg = 91, Label = "Always run",
-                    On = _mn.gameMN.toggleRun, Enabled = true,
-                    Tip = TipAlwaysRun });
-                lines.Add(new SheetLine { Kind = LineSpace });
             }
-            lines.Add(Head("Preferences", string.Empty, null));
+            lines.Add(Head(Shared.Loc.Get("vitals.preferences", "Preferences"), string.Empty, null));
             lines.Add(new SheetLine { Kind = LineToggle, Arg = ToggleNameShown,
-                Label = "Show name in world", On = who.nameVisible != null, Enabled = true,
+                Label = Shared.Loc.Get("vitals.show_name", "Show name in world"), On = who.nameVisible != null, Enabled = true,
                 Tip = own ? TipShowNameOwn : TipShowName });
             if (!own && (who.employ == CommonStates.Employ.Friend || who.employ == CommonStates.Employ.Favorite))
                 lines.Add(new SheetLine { Kind = LineToggle, Arg = ToggleFavourite,
-                    Label = "Favorite in roster", On = who.employ == CommonStates.Employ.Favorite, Enabled = true,
+                    Label = Shared.Loc.Get("vitals.favourite", "Favorite in roster"), On = who.employ == CommonStates.Employ.Favorite, Enabled = true,
                     Tip = TipFavourite });
             lines.Add(new SheetLine { Kind = LineSpace });
-            lines.Add(Row("Age", who.age.ToString()));
+            lines.Add(Row(Shared.Loc.Get("vitals.age", "Age"), who.age.ToString()));
             // GetLocalizedCharaName returns the character TYPE's name, which for a
             // unique character IS their own - "Type  Takumi" under a plate saying
             // Takumi. A kind that only repeats the plate is not said twice.
@@ -216,11 +223,11 @@ namespace IslandUI
             if (!string.IsNullOrEmpty(kind)
                 && !string.Equals(kind, who.charaName, System.StringComparison.OrdinalIgnoreCase))
             {
-                lines.Add(Row("Type", kind));
+                lines.Add(Row(Shared.Loc.Get("vitals.type", "Type"), kind));
             }
-            lines.Add(Row("Personality", PersonText(tm, who.person, 0)));
-            lines.Add(Row("Likes", PersonText(tm, who.person, 1)));
-            lines.Add(Row("Dislikes", PersonText(tm, who.person, 2)));
+            lines.Add(Row(Shared.Loc.Get("vitals.personality", "Personality"), PersonText(tm, who.person, 0)));
+            lines.Add(Row(Shared.Loc.Get("vitals.likes", "Likes"), PersonText(tm, who.person, 1)));
+            lines.Add(Row(Shared.Loc.Get("vitals.dislikes", "Dislikes"), PersonText(tm, who.person, 2)));
             // A parent nobody recorded is no row at all. FriendName returns empty
             // for status -1, and a generated villager has both, so the two blank
             // rows were on almost every follower's sheet saying nothing (seen on
@@ -230,19 +237,19 @@ namespace IslandUI
             string mother = FriendName(npcs, who.status, 9);
             if (!string.IsNullOrEmpty(father))
             {
-                lines.Add(Row("Father", father));
+                lines.Add(Row(Shared.Loc.Get("vitals.father", "Father"), father));
             }
             if (!string.IsNullOrEmpty(mother))
             {
-                lines.Add(Row("Mother", mother));
+                lines.Add(Row(Shared.Loc.Get("vitals.mother", "Mother"), mother));
             }
             if (who.status != null && who.status.Length > 7 && who.status[7] > 0)
             {
-                lines.Add(Row("Class", who.status[7].ToString()));
+                lines.Add(Row(Shared.Loc.Get("vitals.class", "Class"), who.status[7].ToString()));
             }
             if (SaveManager.SaveSettingStatic.trackSurgeries == 1 && who.status != null && who.status.Length > 6)
             {
-                lines.Add(Row("Surgeries", who.status[6].ToString()));
+                lines.Add(Row(Shared.Loc.Get("vitals.surgeries", "Surgeries"), who.status[6].ToString()));
             }
             // RELATIONS MERGES INTO PROFILE. Six tabs on a follower is one or
             // two too many, and the set was inherited from vanilla's status window
@@ -425,7 +432,7 @@ namespace IslandUI
                 float now = slot.slots != null && slot.slots.Length > 0 ? slot.slots[0].itemLife : 0f;
                 lines.Add(new SheetLine
                 {
-                    Label = water ? "Water" : "Food", Kind = LineBar, Enabled = true,
+                    Label = water ? Shared.Loc.Get("vitals.water", "Water") : Shared.Loc.Get("vitals.food", "Food"), Kind = LineBar, Enabled = true,
                     Tinted = true, Tint = water ? new Color(0.20f, 0.57f, 0.75f) : new Color(0.75f, 0.48f, 0.18f),
                     Value = now.ToString("0") + " / " + max.ToString("0"),
                     Frac = max > 0f ? Mathf.Clamp01(now / max) : 0f,
@@ -435,7 +442,7 @@ namespace IslandUI
             {
                 lines.Add(new SheetLine
                 {
-                    Label = "Breeding", Kind = LineBar, Enabled = true,
+                    Label = Shared.Loc.Get("vitals.breeding", "Breeding"), Kind = LineBar, Enabled = true,
                     Tinted = true, Tint = new Color(0.76f, 0.48f, 0.24f),
                     Value = prop.life.ToString("0") + " / 100",
                     Frac = Mathf.Clamp01(prop.life / 100f),
@@ -450,7 +457,7 @@ namespace IslandUI
             {
                 lines.Add(new SheetLine
                 {
-                    Label = "Wear", Kind = LineBar, Enabled = true,
+                    Label = Shared.Loc.Get("vitals.wear", "Wear"), Kind = LineBar, Enabled = true,
                     Tinted = true, Tint = prop.life / prop.lifeMax < 0.25f
                         ? new Color(0.77f, 0.30f, 0.22f) : new Color(0.40f, 0.58f, 0.32f),
                     Value = prop.life.ToString("0") + " / " + prop.lifeMax.ToString("0"),
@@ -587,7 +594,7 @@ namespace IslandUI
         {
             if (prop == null || _mn == null || _mn.itemMN == null)
             {
-                return "Prop";
+                return Shared.Loc.Get("vitals.prop", "Prop");
             }
             try
             {

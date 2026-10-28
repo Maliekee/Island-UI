@@ -13,10 +13,11 @@ namespace IslandUI
         private static RectTransform _collectionsDock;
         private static RectTransform _generalDock;
         private static RectTransform _playerDock;
-        private static Canvas _generalDockCanvas;
+        private static Canvas _generalDockCanvas, _playerVitalsCanvas;
+        private static GraphicRaycaster _playerVitalsRaycaster;
         private sealed class HudEntry
         {
-            public string Name; public Image Face, Glyph, Mark; public Button Button;
+            public string Name; public Image Face, Glyph, Mark; public Button Button; public AnimeCell Cell;
         }
         private static readonly List<HudEntry> HudEntries = new List<HudEntry>();
         private sealed class HiddenHud
@@ -45,9 +46,14 @@ namespace IslandUI
                 Object.Destroy(_hud.gameObject);
             _hud = null;
             _hudTip = null;
+            ResetLogFeed();
             _generalDock = null;
             _playerDock = null;
             _generalDockCanvas = null;
+            AnimeHud.Reset();
+            PlayerPanelArt.Reset();
+            AnimePieces.Reset();
+            _dockChevron = null;
         }
         internal static void TickHud(ManagersScript mn)
         {
@@ -81,8 +87,8 @@ namespace IslandUI
                 AddHud(left, "quests", "Quests", 4);
                 // the tool belt's chip first, beside the board it slides out
                 AddHud(right, "tools", "Tool belt", 0);
-                AddHud(right, "bag", "Your bag", 1);
-                AddHud(right, "details", "Your character", 2);
+                AddHud(right, "details", "Your character", 1);
+                AddHud(right, "bag", "Your bag", 2);
                 AddHud(right, "settings", "Settings", 3);
                 MakeBoard(right);
                 // Collections remains a secondary entry of the crafting window.
@@ -92,12 +98,15 @@ namespace IslandUI
                 _collectionsDock.GetComponent<Image>().enabled = false;
                 var link = Theme.MakeKitText(_collectionsDock, "Collections", 7, Theme.KitCream, TMPro.TextAlignmentOptions.MidlineRight);
                 Theme.Place(link, 0, 0, 55, 12);
-                link.text = "Collections >";
+                UI.LocLabels.Set(link, () => Shared.Loc.Get("hud.collections_link", "Collections") + " >");
+                Theme.FitLanguage(link, 7);
                 link.raycastTarget = true;
                 var collectionButton = link.gameObject.AddComponent<Button>();
                 collectionButton.targetGraphic = link;
                 collectionButton.onClick.AddListener(() => HudPress("collections"));
-                string[] names = { "BackpackButton", "EquipButton", "StatusButton", "MapButton", "QuestButton", "ToggleRunButton", "SettingButton", "CraftButton", "CollectionButton", "FriendButton" };
+                // ...and the log with its +/- button: the feed draws its lines
+                // (InventoryWindow.LogFeed.cs), the veiled panel keeps its rect
+                string[] names = { "BackpackButton", "EquipButton", "StatusButton", "MapButton", "QuestButton", "ToggleRunButton", "SettingButton", "CraftButton", "CollectionButton", "FriendButton", "LogMask", "LogVisibleButton" };
                 // Only the HUD's own row: MainCanvas's direct children and MenuPanel's.
                 // A name match anywhere below caught SettingMenu/SettingButton - the
                 // Option entry - and with it the Island UI entry cloned from it.
@@ -114,7 +123,7 @@ namespace IslandUI
                     c.interactable = false;
                     c.blocksRaycasts = false;
                 }
-                _hudTip = KitTooltip.Create(_hud, true);
+                _hudTip = KitTooltip.Create(_hud);
             }
             // The HUD goes when vanilla fades its own - that is what a cutscene does
             // (UIManager.MainCanvasView). It used to go for the whole of a story
@@ -142,12 +151,18 @@ namespace IslandUI
             {
                 bool open = HudOpen(e.Name);
                 bool hot = e.Face.gameObject.activeInHierarchy && RectTransformUtility.RectangleContainsScreenPoint(e.Face.rectTransform, Input.mousePosition, null);
-                Theme.KitSkin(e.Face, open || hot ? "kit_plank_pine" : "kit_chip_walnut", open || hot ? 18 : 0);
-                e.Glyph.color = open ? Theme.KitInk : Theme.KitCream;
-                e.Mark.enabled = open;
+                bool window = e.Name == "craft" || e.Name == "vicinity" || e.Name == "roster" || e.Name == "bag" || e.Name == "details";
+                if(e.Face.transform.parent==_generalDock)
+                    e.Cell.PaintPanel(PlayerPanelArt.Button(HudEntries.IndexOf(e)),open,hot,hot && Input.GetMouseButton(0));
+                else if (e.Face.transform.parent == _playerDock)
+                    e.Cell.PaintPanel(AnimePieces.Get("tile_" + e.Name), open, hot, hot && Input.GetMouseButton(0));
+                else
+                    e.Cell.Paint(e.Name, null, open && window, false, false, true, hot, hot && Input.GetMouseButton(0), false, open && !window);
                 if (hot)
-                    tip = e.Name == "roster" ? RosterChipTip(e.Button.gameObject.name) : e.Button.gameObject.name;
+                    tip = e.Name == "roster" ? RosterChipTip(HudLabel(e.Name)) : HudLabel(e.Name);
             }
+            // the chevron points the way the tool belt's board slides: out, then back
+            if (_dockChevron != null) _dockChevron.rectTransform.localScale = new Vector3(BoardOpen ? -1 : 1, 1, 1);
             TickDockPoints(HudEntries.Find(e => e.Name == "details"));
             TickHudMood(HudEntries.Find(e => e.Name == "roster"));
             _hudTip.Tick(tip ?? boardTip, null);
@@ -157,12 +172,34 @@ namespace IslandUI
         {
             var mapCanvas = map != null ? map.GetComponent<Canvas>() : null;
             bool aboveMap = mapCanvas != null && map.activeInHierarchy;
-            _generalDockCanvas.overrideSorting = aboveMap;
-            if (aboveMap)
-            {
-                _generalDockCanvas.sortingLayerID = mapCanvas.sortingLayerID;
-                _generalDockCanvas.sortingOrder = mapCanvas.sortingOrder + 1;
-            }
+            _generalDock.GetComponent<Image>().enabled = true;
+            // the target dock stays under the map, and the map stops short of the
+            // screen's foot: its captions showed below it as a strip of loose words
+            var unitCanvas = _unit != null ? _unit.GetComponent<Canvas>() : null;
+            if (unitCanvas != null && unitCanvas.enabled == aboveMap) { unitCanvas.enabled = !aboveMap; }
+            // The vitals, the plate's lower half, go up with the dock (Forgejo #122):
+            // the map's frame runs along the map's foot, across the plate's top edge,
+            // and the HUD draws over it as it does over the quests' frame, which sits
+            // in MainCanvas under the HUD. The dock stays over the vitals, as it is
+            // in the HUD's own order. Only drawn over it: the map still owns their
+            // hover and clicks, so their tip does not open under the map
+            LiftOverMap(_playerVitalsCanvas, aboveMap ? mapCanvas : null, 1);
+            LiftOverMap(_generalDockCanvas, aboveMap ? mapCanvas : null, 2);
+            if (_playerVitalsRaycaster != null && _playerVitalsRaycaster.enabled == aboveMap)
+                _playerVitalsRaycaster.enabled = !aboveMap;
+        }
+
+        // The map is a root canvas of its own at MainCanvas's order, drawn after it,
+        // so a piece of the HUD shows over it only on a canvas sorted above it.
+        private static void LiftOverMap(Canvas canvas, Canvas map, int above)
+        {
+            if (canvas == null)
+                return;
+            canvas.overrideSorting = map != null;
+            if (map == null)
+                return;
+            canvas.sortingLayerID = map.sortingLayerID;
+            canvas.sortingOrder = map.sortingOrder + above;
         }
 
         // The quest diary is an overlay: over every window, under only the dock
@@ -251,57 +288,110 @@ namespace IslandUI
         }
         private static RectTransform MakeDock(string name, bool right, int count)
         {
-            var face = Theme.KitImage(_hud, name, "kit_plank_walnut", 18, Color.white);
+            var face = AnimeHud.Image(_hud, name, "rail");
             face.raycastTarget = true;
             var r = face.rectTransform;
             r.anchorMin = r.anchorMax = new Vector2(right ? 1 : 0, 0);
             r.pivot = new Vector2(right ? 1 : 0, 0);
-            r.anchoredPosition = new Vector2(right ? -8 : 8, right ? 6 : 44);
-            r.sizeDelta = new Vector2(HudX(name, count) + 4, 27);
+            r.anchoredPosition = new Vector2(right ? -8 : 8, right ? 6 : 35.5f);
+            r.sizeDelta = new Vector2(HudX(name, count) + 2, 33);
+            if (name == "General")
+            {
+                float height=PlayerPanelArt.Split*PlayerPanelArt.Scale;
+                r.sizeDelta=new Vector2(174,height);
+                r.anchoredPosition=new Vector2(8,68.5f-height);
+                face.sprite=PlayerPanelArt.Top;face.type=Image.Type.Simple;
+            }
+            if (name == "Player")
+            {
+                // the board's own player dock, its tiles lifted out (PlayerDockTiles)
+                face.sprite = AnimePieces.Get("dock_player"); face.type = Image.Type.Simple;
+                r.sizeDelta = AnimePieces.Size("dock_player");
+                r.anchoredPosition = new Vector2(-4, 2);
+                EnsureMarkerFonts();
+                _dockChevron = AnimePieces.Image(r, "Expansion", "mark_chevron");
+                AnimePieces.Place(_dockChevron, 16, 58, 44, 69);
+                AnimePieces.Centre(_dockChevron);
+                System.Func<string>[] words =
+                {
+                    () => Shared.Loc.Get("hud.caption.toolbelt", "TOOLBELT"), () => Shared.Loc.Get("unit.caption.character", "CHARACTER"),
+                    () => Shared.Loc.Get("unit.caption.inventory", "INVENTORY"), () => Shared.Loc.Get("hud.caption.menu", "MENU"),
+                };
+                for (int i = 0; i < words.Length; i++)
+                {
+                    Rect t = PlayerDockTiles[i];
+                    var word = PlayerVitalText(r, "Label", 3.3f, true, TMPro.TextAlignmentOptions.Center);
+                    UI.LocLabels.Set(word, words[i]); word.overflowMode = TMPro.TextOverflowModes.Overflow;
+                    ActRow.CaptionFit(word);
+                    AnimePieces.Place(word, t.x - 6, 148, t.width + 12, 32);
+                }
+            }
             return r;
         }
 
         // A chip's left edge on its dock: 23 units apart, and 7 more at each group's
-        // start - the General dock's map, the Player dock's settings, and its bag,
+        // start - the General dock's map, the Player dock's settings, and its character,
         // which sets the tool belt's chip apart from the menu (a separator between
         // it and the other buttons). HudX(dock,
         // count) is where a chip after the last would start, so + 4 is the width.
+        // The player dock's tiles in its painting's pixels (the board's section 4,
+        // cut at 940,528): tool belt, character, bag, menu - the board painted the
+        // bag first, the target dock's order (Forgejo #116) puts the character there.
+        // Every tile is the target dock's one slot, 107 x 111, centred across on the
+        // painted tile's outline (make_anime_hud.py player_slot, Forgejo #169).
+        private static readonly Rect[] PlayerDockTiles = {
+            new Rect(68, 42, 107, 111), new Rect(211, 42, 107, 111),
+            new Rect(328, 42, 107, 111), new Rect(465, 42, 107, 111) };
+        private static Image _dockChevron;
+
         private static float HudX(string dock, int index)
         {
             int gaps = dock == "General" ? (index >= 3 ? 1 : 0)
                 : dock == "Player" ? (index >= 1 ? 1 : 0) + (index >= 3 ? 1 : 0)
                 : 0;
-            return 4 + index * 23 + gaps * 7;
+            return 4 + index * (dock == "General" ? 32 : 28) + gaps * 6;
+        }
+
+        // A chip's words, its hover tip, read at use. The GameObject keeps the
+        // English label AddHud was given, which is what the harness finds.
+        private static string HudLabel(string name)
+        {
+            switch (name)
+            {
+                case "craft": return Shared.Loc.Get("hud.chip.crafting", "Crafting");
+                case "vicinity": return Shared.Loc.Get("hud.chip.vicinity", "Vicinity");
+                case "roster": return Shared.Loc.Get("roster.title", "Roster");
+                case "map": return Shared.Loc.Get("hud.chip.map", "Map");
+                case "quests": return Shared.Loc.Get("hud.chip.quests", "Quests");
+                case "tools": return Shared.Loc.Get("hud.chip.tools", "Tool belt");
+                case "bag": return Shared.Loc.Get("hud.chip.bag", "Your bag");
+                case "details": return Shared.Loc.Get("hud.chip.character", "Your character");
+                case "settings": return Shared.Loc.Get("hud.chip.settings", "Settings");
+                default: return name;
+            }
         }
 
         private static void AddHud(RectTransform parent, string name, string label, int index)
         {
-            if ((parent.name == "General" && index == 3) || (parent.name == "Player" && index == 3))
-            {
-                var divider = Theme.KitImage(parent, "Divider", "kit_hairline", 0, Theme.KitCream);
-                divider.raycastTarget = false;
-                Theme.Place(divider, HudX(parent.name, index) - 6, 7, 1, 14);
-            }
-            if (parent.name == "Player" && index == 1)
-            {
-                // the tool belt's chip stands apart: a groove carved across the
-                // plank, a dark cut with the lit edge beside it
-                float x = (HudX(parent.name, 0) + 21 + HudX(parent.name, 1)) / 2f;
-                var cut = Owned.New("Groove").AddComponent<Image>();
-                cut.transform.SetParent(parent, false);
-                cut.raycastTarget = false;
-                cut.color = new Color(Theme.KitInk.r, Theme.KitInk.g, Theme.KitInk.b, 0.75f);
-                Theme.Place(cut, x - 0.5f, 4.5f, 0.65f, 18f);
-                var lit = Owned.New("GrooveLight").AddComponent<Image>();
-                lit.transform.SetParent(parent, false);
-                lit.raycastTarget = false;
-                lit.color = new Color(Theme.KitCream.r, Theme.KitCream.g, Theme.KitCream.b, 0.22f);
-                Theme.Place(lit, x + 0.15f, 4.5f, 0.35f, 18f);
-            }
             var e = new HudEntry { Name = name };
             e.Face = Theme.KitImage(parent, label, "kit_chip_walnut", 0, Color.white);
             e.Face.raycastTarget = true;
-            Theme.Place(e.Face, HudX(parent.name, index), 3, 21, 21);
+            e.Cell = new AnimeCell(e.Face);
+            // the harness's state preview: the vicinity button and your bag hovered,
+            // the menu pressed, the map focused
+            e.Cell.Role = parent.name == "General" ? (index == 1 ? 1 : index == 3 ? 4 : 0)
+                : parent.name == "Player" ? (name == "bag" ? 1 : index == 3 ? 2 : 0) : 0;
+            e.Cell.Place(HudX(parent.name, index), 4, AnimeHud.CellSize, AnimeHud.CellSize);
+            if(parent.name=="General")
+            {
+                Rect b=PlayerPanelArt.ButtonRect(index);float s=PlayerPanelArt.Scale;
+                e.Cell.Place(b.x*s,b.y*s,b.width*s,b.height*s);
+            }
+            if (parent.name == "Player")
+            {
+                Rect t = PlayerDockTiles[index];
+                e.Cell.Place(t.x / AnimePieces.Px, t.y / AnimePieces.Px, t.width / AnimePieces.Px, t.height / AnimePieces.Px);
+            }
             e.Glyph = Theme.KitImage(e.Face.transform, "Glyph", "kit_check", 0, Theme.KitCream);
             e.Glyph.sprite = HudGlyphs.Get(name == "collections" ? "vicinity" : name);
             e.Glyph.raycastTarget = false;
@@ -309,12 +399,21 @@ namespace IslandUI
             e.Mark = Theme.KitImage(e.Face.transform, "Open", "kit_hairline", 0, Theme.KitCream);
             e.Mark.raycastTarget = false;
             Theme.Place(e.Mark, 5, 22, 11, 1);
+            e.Glyph.enabled = e.Mark.enabled = false;
             e.Button = e.Face.gameObject.AddComponent<Button>();
             e.Button.targetGraphic = e.Face;
             e.Button.transition = Selectable.Transition.None;
             e.Button.onClick.AddListener(() => HudPress(name));
             HudEntries.Add(e);
         }
+        // UI-only harness probe: hover, press, focus and a refused press drawn on
+        // chosen buttons of every dock for 15 s (AnimeCell.Role), no input sent
+        internal static string PreviewHudStates()
+        {
+            AnimeCell.PreviewUntil = Time.unscaledTime + 15f;
+            return "hud states preview for 15 s";
+        }
+
         internal static bool HudOpen(string name)
         {
             if (_mn == null || _mn.uiMN == null)

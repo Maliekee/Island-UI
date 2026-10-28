@@ -80,15 +80,22 @@ namespace IslandUI.UI
             }
             // the wells are named apart, so a harness path names one of them
             string well = occupant == 0 ? "FilterWell" : occupant == 2 ? "RosterFilterWell" : "VicinityFilterWell";
-            if (!field.Alive && !field.Build(_header, mn, "Filter...", Theme.FontBody, wellName: well)) return false;
+            if (!field.Alive && !field.Build(_header, mn, "", Theme.FontBody, wellName: well)) return false;
+            field.SetPlaceholder(Shared.Loc.Get("slot.filter", "Filter..."));
             if (field.Go.transform.parent != _header) field.Go.transform.SetParent(_header, false);
             // to the row's end, short of the collapse-all pill: a fixed 120 was sized
             // when the well still started at the row's left, and once the name stood
             // before it, it ran under the pill
             Theme.Place((RectTransform)field.Go.transform, X, 0f, _header.sizeDelta.x - X - Slot.PillReserve, H);
             if (!field.Go.activeSelf) field.Go.SetActive(true);
-            // crafting is a blueprint (BrowserShell.Sheet.cs); the others are the shed's
+            // crafting is a blueprint (BrowserShell.Sheet.cs), the vicinity the
+            // facelift's leather; the roster is the shed's
             bool sheet = occupant == 0;
+            if (occupant == 1)
+            {
+                VicinityHead(field);
+                return true;
+            }
             if (sheet)
             {
                 field.Sheet();
@@ -98,7 +105,8 @@ namespace IslandUI.UI
                 field.Shed(occupant);
             }
             field.Layout(CountW);
-            _title.text = occupant == 0 ? "Crafting" : occupant == 2 ? "Roster" : "Vicinity";
+            _title.text = occupant == 0 ? Shared.Loc.Get("hud.chip.crafting", "Crafting")
+                : occupant == 2 ? Shared.Loc.Get("roster.title", "Roster") : Shared.Loc.Get("hud.chip.vicinity", "Vicinity");
             _icon.sprite = HudGlyphs.Get(occupant == 0 ? "craft" : occupant == 2 ? "roster" : "vicinity");
             _icon.color = _title.color = _rule.color = sheet ? Blueprint.Ink : Accent(occupant, dark);
             Theme.Place(_icon, 0f, 0f, H, H);
@@ -120,7 +128,42 @@ namespace IslandUI.UI
                 _title.overflowMode = TextOverflowModes.Overflow;
                 Theme.Place(_title, 0f, 0f, 78f, H);
             }
+            // every path above set the size it is drawn at
+            Theme.FitLanguage(_title, _title.fontSize);
             return true;
+        }
+
+        // THE VICINITY'S HEAD (facelift look 02): "Vicinity" in the HUD's serif on
+        // the leather, the blank painted well to its right, and the rule under the
+        // row. Placed in the design's pixels from the frame's top-left; the header
+        // itself stands Slot.Inset in and Slot.PadTop down from there.
+        private const float HeadX = Slot.Inset / Facelift.Px;     // 32 px
+        private const float HeadY = Slot.PadTop / Facelift.Px;    // 25.6 px
+
+        private static void VicinityHead(FilterField field)
+        {
+            float px = Facelift.Px;
+            Theme.Place((RectTransform)field.Go.transform, (333f - HeadX) * px, (19f - HeadY) * px, 405f * px, 32f * px);
+            // the query and count at the roster's size (FontBody), not the design's
+            // 16 and 15 px: the two swap places in the same slot
+            float roster = Theme.FontBody / px;
+            field.Wear("vicinity-filter", Facelift.VicQuery, Facelift.VicHint, Facelift.VicCount, roster, roster);
+            field.Layout(CountW);
+            _icon.enabled = false;
+            _card.enabled = false;
+            ToolShed.PlacePin(_cardPin, 0f, 0f, 0f, Color.white, false);
+            _title.text = Shared.Loc.Get("hud.chip.vicinity", "Vicinity");
+            Facelift.Face(_title, true);
+            _title.fontSize = 24f * px;
+            _title.fontStyle = FontStyles.Normal;
+            _title.characterSpacing = 0f;
+            _title.color = Facelift.VicInk;
+            _title.overflowMode = TextOverflowModes.Overflow;
+            Theme.Place(_title, (27f - HeadX) * px, (23f - HeadY) * px, (333f - 27f - 16f) * px, 24f * px);
+            Theme.FitLanguage(_title, _title.fontSize);
+            _rule.enabled = true;
+            _rule.color = Facelift.VicFootRule;
+            Theme.Place(_rule, (22f - HeadX) * px, (63f - HeadY) * px, 760f * px, px);
         }
 
         // THE TOOL SHED'S NAMES (window-system.md 6.30): the pegboard's painted in

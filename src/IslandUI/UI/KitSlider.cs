@@ -74,6 +74,9 @@ namespace IslandUI.UI
 
             s._text = art.Text(go.transform, "Value", 8f, Theme.KitInk, TextAlignmentOptions.MidlineRight);
             s._text.overflowMode = TextOverflowModes.Overflow;
+            s._text.enableAutoSizing = true;          // "100 %" and longer units stay off the track
+            s._text.fontSizeMin = 6f;
+            s._text.fontSizeMax = 8f;
             Theme.Place(s._text, s._trackW + Theme.Gap, 0f, ValueW, Height);
 
             s.Value = s.Snap(value);

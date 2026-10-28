@@ -91,7 +91,7 @@ namespace IslandUI
             {
                 if (up && over && !InventoryWindow.IsDragging)
                 {
-                    InventoryWindow.ToggleReach();
+                    InventoryWindow.ToggleVicinity();
                 }
                 _pressed = false;
             }
@@ -291,7 +291,8 @@ namespace IslandUI
                 }
                 return;
             }
-            _caption.text = open ? "hide chests" : "chests in reach";
+            _caption.text = open ? Shared.Loc.Get("reach.button.hide", "hide chests")
+                : Shared.Loc.Get("reach.button.show", "chests in reach");
             if (!_caption.gameObject.activeSelf)
             {
                 _caption.gameObject.SetActive(true);

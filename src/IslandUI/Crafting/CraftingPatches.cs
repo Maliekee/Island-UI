@@ -190,8 +190,7 @@ namespace IslandUI
             {
                 return false;
             }
-            // The special storages the reach rule makes live (D145: 5 m, or
-            // construction range when larger) - the vicinity
+            // The special storages the reach rule makes live (D145: 5 m) - the vicinity
             // window's own answer, so a storage it shows is one a recipe can use.
             Collider[] hits = Physics.OverlapSphere(pMove.transform.position, ReachRule.Widest(mn), LayerMask.GetMask("BG"));
             for (int i = 0; i < hits.Length; i++)
@@ -203,6 +202,12 @@ namespace IslandUI
                 {
                     __instance.refInventory.Add(chest);
                 }
+            }
+            // the last boss's bench: its parts are what the fight's recipe is made of
+            InventorySlot boss = BossBench.Live(pMove.transform.position);
+            if (boss != null && !__instance.refInventory.Contains(boss))
+            {
+                __instance.refInventory.Add(boss);
             }
             return false;
         }

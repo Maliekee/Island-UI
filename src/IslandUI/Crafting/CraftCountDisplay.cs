@@ -62,13 +62,15 @@ namespace IslandUI
             int crafts = int.MaxValue;
             for (int i = 0; i < craftInfo.required.Length; i++)
             {
+                // a free recipe lists a placeholder "none" x0, which vanilla's check passes
+                if (craftInfo.required[i].count <= 0f) continue;
                 float available = CraftingPatches.CountAvailable(inv, craftInfo.required[i].itemData.name, bench);
                 // Fractional recipe costs consume 1 item per craft (vanilla CraftConsume
                 // clamps count up to 1 and yields multiple outputs instead)
                 float perCraft = Mathf.Max(1f, craftInfo.required[i].count);
                 crafts = Mathf.Min(crafts, (int)(available / perCraft));
             }
-            return crafts;
+            return crafts == int.MaxValue ? 999 : crafts;   // nothing to pay: as creative counts
         }
     }
 }

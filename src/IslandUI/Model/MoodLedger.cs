@@ -66,6 +66,8 @@ namespace IslandUI
         private static ManagersScript _mn;
 
         // the scene's managers; a scene load destroys them, and Unity's null says so
+        internal static ManagersScript Managers() => Mn();
+
         private static ManagersScript Mn()
         {
             if (_mn == null)
@@ -89,6 +91,22 @@ namespace IslandUI
         internal static IList<MoodEvent> Events(CommonStates who)
         {
             return who != null && Log.TryGetValue(who, out List<MoodEvent> list) ? list : None;
+        }
+
+        // Since when the ledger has kept anyone's changes: its earliest on record,
+        // or now when it holds none. Before it nothing is known; after it, a
+        // person with no change on record did not change.
+        internal static float RecordSince(ManagersScript mn)
+        {
+            float since = Now(mn);
+            foreach (List<MoodEvent> list in Log.Values)
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i].Day < since) { since = list[i].Day; }
+                }
+            }
+            return since;
         }
 
         // The mood moved this much in the last `days`.
@@ -146,6 +164,12 @@ namespace IslandUI
                     return;   // not one of yours
                 }
                 MoodCause why = Classify(__instance, partner, cause);
+                // the game's sex names no partner (SexManager.CommonSexNPC passes
+                // none): the pair it began with does
+                if (why == MoodCause.Sex && partner == null)
+                {
+                    SexWith.TryGetValue(__instance, out partner);
+                }
                 float after = __instance.moral;
                 // Sleep adds 20 to a negative mood and then sets it back to 10 if
                 // that overshot - after this postfix, so the cap is applied here
@@ -174,6 +198,26 @@ namespace IslandUI
             {
                 Plugin.Log.LogWarning("Mood ledger: could not record a change - " + e.Message);
             }
+        }
+
+        // who each villager last went to bed with, as the act began: the mood
+        // change it brings comes later in the act and names no one
+        private static readonly Dictionary<CommonStates, CommonStates> SexWith = new Dictionary<CommonStates, CommonStates>();
+
+        [HarmonyPatch(typeof(SexManager), nameof(SexManager.CommonSexNPC))]
+        [HarmonyPrefix]
+        private static void CommonSexNPC_Prefix(CommonStates npcA, CommonStates npcB)
+        {
+            if (npcA == null || npcB == null)
+            {
+                return;
+            }
+            if (SexWith.Count > 256)
+            {
+                SexWith.Clear();
+            }
+            SexWith[npcA] = npcB;
+            SexWith[npcB] = npcA;
         }
 
         private static void Add(CommonStates who, MoodEvent e)
@@ -228,7 +272,7 @@ namespace IslandUI
 
         // The game method that asked for the change, as Type.Method. A coroutine's
         // body runs as MoveNext on a nested <Name>d__N, which names the coroutine.
-        private static string Caller()
+        internal static string Caller()
         {
             var trace = new System.Diagnostics.StackTrace(2, false);
             Assembly ours = typeof(MoodLedger).Assembly;

@@ -1,0 +1,9 @@
+# Island Ex: Simplified Chinese strings, machine-translated from en/strings.txt.
+# Corrections are welcome: edit the right side of a line and keep the key and every {0}.
+
+badge.off=关  -  点击开启
+badge.on=开  -  点击关闭
+badge.turns_off=下次启动时关闭  -  点击取消
+badge.turns_on=下次启动时开启  -  点击取消
+
+loc.separator=・

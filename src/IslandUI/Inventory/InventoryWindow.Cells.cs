@@ -15,7 +15,7 @@ namespace IslandUI
         // already cost this file two invisible-layout bugs. One formula, two
         // callers, no way for them to disagree.
         private static float ContentHeight(int rows, float headerH, float iconH,
-            float gutterW, bool wantsText)
+            float gutterW, bool wantsText, float glyphH = GutterGlyph)
         {
             // a folded section is its header alone
             float h = headerH + iconH + (rows > 0 ? rows * CellPitch - (CellPitch - CellBox) : 0f);
@@ -23,7 +23,9 @@ namespace IslandUI
             {
                 // a one-row container is shorter than the icon, and shorter again
                 // than the icon plus a caption under it
-                h = Mathf.Max(h, GutterGlyph + (wantsText ? Theme.CaptionH : 0f));
+                // (a bag's sign hangs lower than a glyph: GutterIconSize)
+                h = Mathf.Max(h, Mathf.Max(0f, (CellBox - GutterGlyph) * 0.5f) + glyphH
+                    + (wantsText ? Theme.CaptionH : 0f));
             }
             return h;
         }
@@ -35,8 +37,8 @@ namespace IslandUI
             InventorySlot mirrorOf, bool loadout, int column = 0, int maxCols = 0,
             CommonStates owner = null, int vanillaSlotBase = -1, bool sharedBag = false,
             bool forceLabel = false, bool marked = false, int group = GroupNone,
-            Sprite icon = null, bool lean = false, bool section = false, bool collapsed = false,
-            bool captionRow = false)
+            Sprite icon = null, bool lean = false, bool collapsed = false,
+            bool captionRow = false, bool compact = false, CommonStates person = null)
         {
             if (array == null || count <= 0)
             {
@@ -48,13 +50,25 @@ namespace IslandUI
             plate.Container = mirrorOf;
             plate.IsLoadout = loadout;
             plate.IsSharedBag = sharedBag;
-            bool grouped = group != GroupNone;
-            plate.Group = grouped ? group : GroupNone;
+            // every grid is a member of a window's group: your inventory, a bag,
+            // the target's, the vicinity
+            plate.Group = group;
             plate.IsGroupFrame = false;
             // members of a group are bound back to back, so the first one is
             // simply the one whose group differs from the last bound
-            bool firstOfGroup = grouped && _lastGroupBound != group;
+            bool firstOfGroup = _lastGroupBound != group;
             _lastGroupBound = plate.Group;
+            // LOOK 07: a member of a leather window is a section - its name over its
+            // cells, never a gutter glyph (Leather.cs)
+            bool leather = IsLeather(group);
+            if (leather && !collapsed)
+            {
+                label = LeatherSection(loadout, sharedBag, owner);
+            }
+            // FACELIFT LOOK 02: a vicinity holder is a row - its identity in a column,
+            // its name under it, no header (Vicinity.cs)
+            bool vic = IsVicinity(group);
+            plate.WasVicinity = vic;
 
             if (maxCols <= 0)
             {
@@ -78,7 +92,47 @@ namespace IslandUI
             // both rules already put every cell in a single row, so this changes
             // the plate's WIDTH and not one cell's place.
             int cols = maxCols;
-            int rows = collapsed ? 0 : Mathf.CeilToInt(count / (float)cols);
+            // COMPACT IS A VIEW OVER THE REAL SLOTS, never a reordering of them: the
+            // occupied slots in their own order, each cell still bound to its
+            // container's original index through `map`, and one summary of what is
+            // free after them. The summary stands on the container's FIRST EMPTY
+            // REAL SLOT - a drop there is a drop into that slot, through the move
+            // rules every cell uses, never into an index of our own. A search dims,
+            // it never frees: a dimmed item still takes its place here.
+            int free = 0;
+            plate.SummaryAt = -1;
+            if (vic && compact && !collapsed)
+            {
+                if (plate.CompactMap == null || plate.CompactMap.Length < count)
+                {
+                    plate.CompactMap = new int[Mathf.Max(count, 16)];
+                }
+                int taken = 0;
+                int firstEmpty = -1;
+                for (int j = 0; j < count; j++)
+                {
+                    ItemSlot real = Resolve(array, map, mirrorOf, j, out int _);
+                    if (real != null && !string.IsNullOrEmpty(real.itemKey))
+                    {
+                        plate.CompactMap[taken++] = map != null ? map[j] : j;
+                    }
+                    else if (firstEmpty < 0)
+                    {
+                        firstEmpty = map != null ? map[j] : j;
+                    }
+                }
+                free = count - taken;
+                if (free > 0)
+                {
+                    plate.SummaryAt = taken;
+                    plate.CompactMap[taken++] = firstEmpty;
+                }
+                map = plate.CompactMap;
+                count = taken;
+            }
+            // the places the grid draws: every one a real cell, the summary's too
+            int places = count;
+            int rows = collapsed ? 0 : Mathf.CeilToInt(places / (float)cols);
             plate.Cols = cols;
 
             while (plate.Cells.Count < count)
@@ -86,16 +140,7 @@ namespace IslandUI
                 plate.Cells.Add(CreateCell(plate));
             }
 
-            // vanilla's own two container materials: cream parchment for bags,
-            // translucent green + brass for the loadout. The material IS the
-            // container-type signal, so we inherit the distinction rather than
-            // invent one.
-            Theme.Skin skin = loadout ? Theme.EquipSkin : Theme.BagSkin;
-            // a grouped member carries no border of its own — the group's frame
-            // does — so it spends no padding on one
-            float insetX = grouped ? 0f : FrameInsetX;
-            float insetY = grouped ? 0f : FrameInsetY;
-            float iconH = loadout ? TypeIconH : 0f;
+            float iconH = loadout ? (leather ? LeatherGlyphRow : TypeIconH) : 0f;
             // the label band cost a whole row of whitespace per plate, and the
             // harvested skins already say what a container is: cream = bag,
             // green + type icons = loadout
@@ -111,17 +156,17 @@ namespace IslandUI
             // is enough. Your bag and the shared bag were two anonymous bands
             // before this — only the loadout said what it was, and only because
             // vanilla's type icons happen to sit above it.
-            bool showLabel = forceLabel;
+            bool showLabel = forceLabel || leather;
             bool wantsText = showLabel && !string.IsNullOrEmpty(label);
-            // a section takes the header ROW, never the gutter
-            bool gutter = !section && (icon != null || wantsText);
-            float gutterW = gutter ? GutterWidth : 0f;
+            bool gutter = vic || (!leather && (icon != null || wantsText));
+            float gutterW = gutter ? (vic ? VicGutter : GutterWidth) : 0f;
             // A CAPTION ROW keeps the gutter's icon and puts the words on a line of
             // their own over the cells: a person's bag in the vicinity, where the
             // backpack says what and only the name can say whose, and a name does
             // not fit under a gutter glyph
-            bool rowCaption = captionRow && gutter && wantsText;
-            float headerH = section || (!gutter && wantsText) || rowCaption ? PlateHeaderH : 0f;
+            bool rowCaption = captionRow && gutter && wantsText && !vic;
+            float headerH = leather ? LeatherHeadH
+                : (!gutter && wantsText) || rowCaption ? PlateHeaderH : 0f;
 
             // Where the ROW starts inside the plate, settled here because every
             // placement below is measured against it: the gutter badge, its
@@ -133,7 +178,11 @@ namespace IslandUI
             plate.CellLeft = gutterW;
             plate.CellTop = headerH + iconH;
             float contentW = gutterW + cols * CellPitch - (CellPitch - CellBox);
-            float contentH = ContentHeight(rows, headerH, iconH, gutterW, wantsText && !rowCaption);
+            float contentH = vic
+                ? Mathf.Max(rows > 0 ? rows * CellPitch - (CellPitch - CellBox) : 0f,
+                    VicIdentityH(person != null))
+                : ContentHeight(rows, headerH, iconH, gutterW, wantsText && !rowCaption,
+                    GutterIconSize(icon).y);
             // The SIZE is compared directly, not inferred from the inputs that
             // usually move it. Height is written every bind and the rect only on a
             // reshape, so anything that changes contentH without tripping one of
@@ -148,7 +197,11 @@ namespace IslandUI
             //
             // Comparing the size itself means the next input added to contentH is
             // covered before anyone notices it was added.
-            bool reshaped = plate.LaidOutCols != cols || plate.LaidOutCount != count
+            // places AND cells: compact's three cells and a summary are four places,
+            // as a full four-slot bag is, and a cell that was the summary's place
+            // last time was never laid out (a black square at its default rect)
+            bool reshaped = plate.LaidOutCols != cols || plate.LaidOutCount != places
+                || plate.LaidOutCells != count
                 || plate.LaidOutIconH != iconH || plate.LaidOutHeaderH != headerH
                 || plate.LaidOutPitch != CellPitch || plate.LaidOutGutter != gutterW
                 || plate.LaidOutW != contentW || plate.LaidOutH != contentH;
@@ -161,14 +214,16 @@ namespace IslandUI
             // loop below - it was never meant to gate the plate's own geometry, and
             // gating it there means the box is only correct if the SHAPE changed,
             // when what actually changed was the JOB.
-            plate.Window.Rect.sizeDelta =
-                new Vector2(contentW + 2f * insetX, contentH + 2f * insetY);
-            Theme.Place(plate.Window.Content, insetX, insetY, contentW, contentH);
+            // a member carries no border of its own - the group's frame does - so
+            // it spends no padding on one
+            plate.Window.Rect.sizeDelta = new Vector2(contentW, contentH);
+            Theme.Place(plate.Window.Content, 0f, 0f, contentW, contentH);
             if (reshaped)
             {
                 _reshapes++;
                 plate.LaidOutCols = cols;
-                plate.LaidOutCount = count;
+                plate.LaidOutCount = places;
+                plate.LaidOutCells = count;
                 plate.LaidOutIconH = iconH;
                 plate.LaidOutHeaderH = headerH;
                 plate.LaidOutPitch = CellPitch;
@@ -176,7 +231,7 @@ namespace IslandUI
                 plate.LaidOutW = contentW;
                 plate.LaidOutH = contentH;
             }
-            plate.Height = contentH + 2f * insetY;
+            plate.Height = contentH;
 
             // LEAN: a band the viewport does not reach gets its GEOMETRY and
             // nothing else. Everything below this line is what the band looks
@@ -225,41 +280,30 @@ namespace IslandUI
                 return;
             }
 
-            if (grouped)
-            {
-                // The group's frame is the surface; a member drawing its own BORDER
-                // would be a box inside a box.
-                plate.Back.enabled = false;
-                plate.Edge.enabled = false;
-            }
-            else if (skin.Valid)
-            {
-                plate.Back.sprite = skin.Sprite;
-                plate.Back.type = skin.Type;
-                plate.Back.pixelsPerUnitMultiplier = skin.PixelsPerUnit;
-                // the vanilla equip strip ships translucent (alpha 0.68), which
-                // reads fine as a thin bar over the world but muddies a stacked
-                // panel you are meant to read items out of
-                Color plateColor = skin.Color;
-                plateColor.a = 1f;
-                plate.Back.color = plateColor;
-                plate.Back.enabled = true;
-                plate.Edge.enabled = false;
-            }
-            else
-            {
-                plate.Back.enabled = true;
-                plate.Back.sprite = null;
-                plate.Back.color = loadout ? Theme.PlateEquip : Theme.PlateDark;
-                plate.Edge.enabled = true;
-                plate.Edge.effectColor = loadout ? Theme.EdgeEquip : Theme.EdgeDefault;
-            }
+            // The group's frame is the surface; a member drawing its own BORDER
+            // would be a box inside a box.
+            plate.Back.enabled = false;
+            plate.Edge.enabled = false;
             // The icon is the label, when a label would only repeat it: a chest
             // reads as a chest from its own sprite faster than from its name, and
             // the name is what the header row is spending height on.
             // the loadout is told by its hanger glyph and the dotted seam alone;
             // the green corner ribbon (M7) is gone
-            bool wantIcon = icon != null && (gutter || section);
+            bool wantIcon = !vic && icon != null && gutter;
+            if (vic)
+            {
+                PlaceVicIdentity(plate, person, icon, false);
+                wantsText = false;
+            }
+            else if (plate.Header.enableWordWrapping)
+            {
+                // a holder's wrapped caption, put back
+                plate.Header.enableWordWrapping = false;
+                if (Theme.Font != null && plate.Header.font == HudBodyFont)
+                {
+                    plate.Header.font = Theme.Font;
+                }
+            }
             if (wantIcon)
             {
                 EnsureTitleParts(plate);
@@ -272,9 +316,11 @@ namespace IslandUI
                     // CENTRED ON THE FIRST ROW, not hung from its top (hung, every
                     // gutter glyph sat slightly too high): a 14-unit
                     // badge on a 22-unit cell drops four
-                    float size = GutterGlyph;
-                    Theme.Place(plate.Badge, GutterGlyphX(gutterW),
-                        plate.CellTop + Mathf.Max(0f, (CellBox - size) * 0.5f), size, size);
+                    // ...the backpack of a bag's sign on that same spot, its faces
+                    // hanging below (GutterIconSize)
+                    Vector2 size = GutterIconSize(icon);
+                    Theme.Place(plate.Badge, GutterGlyphX(gutterW) - (size.x - GutterGlyph) * 0.5f,
+                        plate.CellTop + Mathf.Max(0f, (CellBox - GutterGlyph) * 0.5f), size.x, size.y);
                 }
                 else
                 {
@@ -285,11 +331,22 @@ namespace IslandUI
                     plate.Badge.gameObject.SetActive(true);
                 }
             }
-            else if (plate.Badge != null && plate.Badge.gameObject.activeSelf)
+            else if (!vic && plate.Badge != null && plate.Badge.gameObject.activeSelf)
             {
                 plate.Badge.gameObject.SetActive(false);
             }
-            if (wantsText)
+            if (vic)
+            {
+                // the caption is placed with the identity
+            }
+            else if (wantsText && leather)
+            {
+                // the head: its name in capitals, the rule, what it holds; a
+                // treasure's caption (collapsed, no cells yet) as it is written
+                LeatherSectionHead(plate, label, loadout || collapsed ? 0 : count, contentW, !collapsed);
+                label = plate.Header.text;
+            }
+            else if (wantsText)
             {
                 if (rowCaption)
                 {
@@ -304,65 +361,40 @@ namespace IslandUI
                     // under the badge, which now sits centred on the first row
                     float badgeDrop = wantIcon ? Mathf.Max(0f, (CellBox - GutterGlyph) * 0.5f) : 0f;
                     Theme.Place(plate.Header, wantIcon ? GutterGlyphX(gutterW) : 0f,
-                        plate.CellTop + badgeDrop + (wantIcon ? GutterGlyph + 1f : 0f),
+                        plate.CellTop + badgeDrop + (wantIcon ? GutterIconSize(icon).y + 1f : 0f),
                         wantIcon ? GutterGlyph : gutterW, Theme.CaptionH);
                 }
                 else
                 {
-                    // the crafting header's type: body size, ink, FLAT (the harvested
-                    // font's black outline is what made "Spider Storage" read as a
-                    // different face from "Basic"), room for the arrow
-                    plate.Header.fontSize = section ? Theme.FontBody : Theme.FontCaption;
+                    plate.Header.fontSize = Theme.FontCaption;
                     plate.Header.alignment = TextAlignmentOptions.MidlineLeft;
-                    if (section)
-                    {
-                        Theme.FlattenType(plate.Header);
-                    }
                     float labelX = wantIcon ? headerH + 2f : 0f;
-                    float arrowRoom = section ? SectionArrowW + 4f : 0f;
-                    Theme.Place(plate.Header, labelX, 0f,
-                        Mathf.Max(8f, contentW - labelX - arrowRoom), headerH);
+                    Theme.Place(plate.Header, labelX, 0f, Mathf.Max(8f, contentW - labelX), headerH);
                 }
             }
             plate.Header.text = label;
-            // the section's disclosure triangle and the header's click target
-            if (section)
-            {
-                EnsureSectionParts(plate);
-                Theme.Place(plate.SectionArrow, contentW - SectionArrowW - 2f,
-                    (headerH - SectionArrowW) * 0.5f, SectionArrowW, SectionArrowW);
-                plate.SectionArrow.rectTransform.localEulerAngles =
-                    new Vector3(0f, 0f, collapsed ? 90f : 0f);
-                Theme.Place(plate.HeaderHit, 0f, 0f, contentW, headerH);
-                if (!plate.SectionArrow.gameObject.activeSelf)
-                {
-                    plate.SectionArrow.gameObject.SetActive(true);
-                    plate.HeaderHit.gameObject.SetActive(true);
-                }
-            }
-            else if (plate.SectionArrow != null && plate.SectionArrow.gameObject.activeSelf)
-            {
-                plate.SectionArrow.gameObject.SetActive(false);
-                plate.HeaderHit.gameObject.SetActive(false);
-            }
-            // the harvested plates are light parchment / mid green — ink reads on
-            // them, cream does not
-            plate.Header.color = grouped || skin.Valid
-                ? Theme.Ink : (loadout ? Theme.EdgeEquip : Theme.TextDim);
+            // a crate's name is stencilled over by ShedCaption
+            plate.Header.color = vic ? Facelift.VicCaption : leather ? LeatherCream : Theme.Ink;
             bool crate = IsCrate(group);
-            ShedCaption(plate, crate && wantsText);
+            if (!leather && !vic)
+            {
+                ShedCaption(plate, crate && wantsText);
+            }
             if (plate.Header.gameObject.activeSelf != wantsText)
             {
                 plate.Header.gameObject.SetActive(wantsText);
             }
             // Where the parts of one frame divide. A gap alone reads as a gap in a
             // grid; a hairline in the gap reads as a boundary.
-            bool wantSeparator = grouped && !firstOfGroup;
-            plate.LoadoutEdge = wantSeparator && loadout != _prevMemberLoadout;
-            if (grouped)
-            {
-                _prevMemberLoadout = loadout;
-            }
+            // ...and on the leather only the shared backpack is ruled off, 14 px
+            // under the backpack and 11 over its own head; every other section is
+            // parted by its 14 px of leather alone
+            bool wantSeparator = !firstOfGroup && (!leather || _prevMemberShared);
+            plate.LoadoutEdge = !leather && !vic && wantSeparator && loadout != _prevMemberLoadout;
+            plate.LeatherGap = leather && !firstOfGroup
+                ? (_prevMemberShared ? LeatherSharedGap : LeatherGap) : 0f;
+            _prevMemberLoadout = loadout;
+            _prevMemberShared = sharedBag;
             if (wantSeparator && plate.Separator == null)
             {
                 plate.Separator = NewChildImage(plate, "Separator");
@@ -407,7 +439,21 @@ namespace IslandUI
                         }
                     }
                     plate.SeamY = contentH + sepGap * 0.5f;
-                    Theme.Place(plate.Separator, 0f, plate.SeamY - th * 0.5f, contentW, th);
+                    if (leather)
+                    {
+                        plate.Separator.color = LeatherRuleInk;
+                        th = LeatherPx;
+                        plate.SeamY = contentH + LeatherGap + th * 0.5f;
+                    }
+                    else if (vic)
+                    {
+                        // the rule ABOVE this holder, 13 px over its first row: the
+                        // first holder has none
+                        plate.Separator.color = Facelift.VicRule;
+                        th = VicPx;
+                        plate.SeamY = -(VicRowGap - VicRowRuleAt) + th * 0.5f;
+                    }
+                    Theme.Place(plate.Separator, vic ? VicIdentityX : 0f, plate.SeamY - th * 0.5f, contentW, th);
                 }
                 if (plate.Separator.gameObject.activeSelf != wantSeparator)
                 {
@@ -427,7 +473,7 @@ namespace IslandUI
             // which was right until the gutter arrived and moved the cells right by
             // GutterWidth without telling it - so vanilla's hat glyph sat over the
             // gutter badge and every icon after it named the slot to its left.
-            BindTypeIcons(plate, loadout, map, cols, count);
+            BindTypeIcons(plate, loadout, map, cols, count, leather);
 
             // Read ONCE per plate, not per cell: Active trims and measures a
             // string, and this loop runs for every cell of every band in reach.
@@ -486,10 +532,14 @@ namespace IslandUI
                 // letter, and repaint several hundred of them to no visible effect.
                 int mark = !searching || !filled ? 0
                     : reachFilter.Matches(_mn, key) ? 1 : 2;
+                // ...and the skin: a pooled plate that changed windows with the
+                // same contents must still change its cells' material
+                int skinNow = leather ? (loadout ? 2 : 1) : vic ? 3 : 0;
                 if (ReferenceEquals(cell.DrewKey, key) && cell.DrewStack == stack
                     && cell.DrewLife == life && cell.DrewStar == starred
                     && cell.DrewToolMark == assigned
                     && cell.DrewMark == mark
+                    && cell.DrewSkin == skinNow
                     && cell.Go.activeSelf)
                 {
                     continue;
@@ -500,6 +550,7 @@ namespace IslandUI
                 cell.DrewStar = starred;
                 cell.DrewToolMark = assigned;
                 cell.DrewMark = mark;
+                cell.DrewSkin = skinNow;
                 _cellsBound++;
                 if (filled)
                 {
@@ -514,7 +565,7 @@ namespace IslandUI
                     cell.Icon.sprite = sprite;
                     cell.Icon.enabled = sprite != null;
                     float t1 = Time.realtimeSinceStartup;
-                    SetCellReadout(cell, slot);
+                    SetCellReadout(cell, slot, leather || vic);
                     _iconMs += (t1 - t0) * 1000f;
                     _textMs += (Time.realtimeSinceStartup - t1) * 1000f;
                 }
@@ -526,25 +577,35 @@ namespace IslandUI
                     cell.Icon.enabled = false;
                     cell.Count.text = "";
                 }
-                cell.Icon.color = mark == 2 ? Theme.SearchMiss : Color.white;
-                cell.Count.alpha = mark == 2 ? Theme.SearchMiss.a : 1f;
+                // on the vicinity's leather a passed-by item is the whole cell at .30
+                Color miss = vic ? new Color(1f, 1f, 1f, Facelift.SearchDim) : Theme.SearchMiss;
+                cell.Icon.color = mark == 2 ? miss : Color.white;
+                cell.Count.alpha = mark == 2 ? miss.a : 1f;
                 if (cell.Star.gameObject.activeSelf != starred)
                 {
                     cell.Star.gameObject.SetActive(starred);
                 }
-                cell.Box.color = BaseCellColor(filled);
+                cell.Box.color = Color.white;
                 if (cell.ToolMark.gameObject.activeSelf != assigned)
                 {
                     cell.ToolMark.gameObject.SetActive(assigned);
                 }
-                ShedCell(cell, filled, crate);
-                // No wash: the slot frame's interior is black at alpha 216/255
-                // already. Occupancy is carried by EmptySlotAlpha, which halves
-                // the EMPTY ones; filled is twice as opaque as empty.
-                if (cell.Fill != null)
+                if (!vic)
                 {
-                    cell.Fill.color = TileShadeColor;
-                    cell.Fill.enabled = filled && !crate;
+                    ShedVicinityCell(cell);
+                }
+                if (crate)
+                {
+                    ShedCell(cell, filled);
+                }
+                if (!vic)
+                {
+                    LeatherCell(cell, leather, filled, loadout,
+                        loadout ? (map != null && i < map.Length ? map[i] : i) : -1);
+                }
+                if (vic)
+                {
+                    VicinityCell(cell, true, filled, mark == 2);
                 }
                 if (!cell.Go.activeSelf)
                 {
@@ -552,19 +613,9 @@ namespace IslandUI
                 }
             }
             _cellMs += (Time.realtimeSinceStartup - cellBegan) * 1000f;
+            PlaceFreeSummary(plate, vic && free > 0 && !collapsed ? free : 0, plate.SummaryAt, cols, gutterW);
             plate.Shown = count;
             plate.IsTitle = false;
-            // A grouped member decides its own Back ABOVE - a type tint, or
-            // nothing - so this must not speak for it. It said !grouped, which was
-            // right while grouped meant "never draws a background" and silently
-            // undid the tint the moment that stopped being true: the branch set it
-            // on, and thirty lines later this set it off again. Now it is only what
-            // it always was underneath - the fallback for an ungrouped plate whose
-            // skin did not harvest.
-            if (!grouped)
-            {
-                plate.Back.enabled = true;
-            }
             plate.Header.gameObject.SetActive(wantsText);
             if (!sharedBag)
             {
@@ -601,12 +652,12 @@ namespace IslandUI
             {
                 Theme.PlaceSlotIcon(cell.Icon, CellBox);
             }
-            if (cell.Count != null)
+            // (the vicinity's count sits on its badge, placed with it: VicinityCell)
+            if (cell.Count != null && !cell.Vicinity)
             {
                 Theme.Place(cell.Count, 0f, CellBox - 10f, CellBox - 1f, 10f);
             }
-            // Fill and Star need nothing: the shade is anchor-stretched to the box
-            // and the mark is a fixed 7px in its corner.
+            // the Star needs nothing: the mark is a fixed 7px in its corner
         }
 
         // The corner readout is not always a stack count. Vanilla
@@ -616,22 +667,26 @@ namespace IslandUI
         //   durability    green, for weapons and tools
         //   happiness     magenta, for a captured NPC or animal — "MAX" at 100,
         //                 which is the point it can join the tribe
-        private static void SetCellReadout(CellView cell, ItemSlot slot)
+        // On the leather the bar's colours (BarCount): a tool's wear in the count's
+        // inks (Theme.CountInk), a stack's count in its cream.
+        private static void SetCellReadout(CellView cell, ItemSlot slot, bool leather)
         {
             if (_mn.inventory.IsWeaponOrTool(slot.toolType))
             {
                 cell.Count.text = slot.itemLife.ToString("");
-                cell.Count.color = Theme.Durability;
+                ItemData data = leather && _mn.itemMN != null ? _mn.itemMN.FindItem(slot.itemKey) : null;
+                cell.Count.color = !leather ? Theme.Durability
+                    : Theme.CountInk(data != null && data.itemLife > 0f ? Mathf.Clamp01(slot.itemLife / data.itemLife) : 1f);
                 return;
             }
             if (IsCreature(slot.toolType))
             {
-                cell.Count.text = slot.itemLife >= 100f ? "MAX" : slot.itemLife.ToString("");
-                cell.Count.color = Theme.Happiness;
+                cell.Count.text = slot.itemLife >= 100f ? Shared.Loc.Get("dossier.max", "MAX") : slot.itemLife.ToString("");
+                cell.Count.color = leather ? Theme.CountHappiness : Theme.Happiness;
                 return;
             }
             cell.Count.text = slot.stack > 1 ? slot.stack.ToString() : "";
-            cell.Count.color = CrateCount;
+            cell.Count.color = leather ? Theme.CountCream : CrateCount;
         }
 
         private static bool IsCreature(ItemData.ToolType toolType)

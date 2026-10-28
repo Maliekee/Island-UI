@@ -41,7 +41,7 @@ namespace IslandUI
         private struct Trade
         {
             public bool Swap;
-            public int FromHooks, ToHooks;
+            public System.Collections.Generic.Dictionary<int, int> FromHooks, ToHooks;
         }
 
         [HarmonyPrefix]
@@ -57,7 +57,7 @@ namespace IslandUI
             }
             __state.FromHooks = ToolBelt.HooksOf(from);
             __state.ToHooks = ToolBelt.HooksOf(to);
-            if (__state.FromHooks == 0 && __state.ToHooks == 0)
+            if (__state.FromHooks == null && __state.ToHooks == null)
             {
                 return;
             }

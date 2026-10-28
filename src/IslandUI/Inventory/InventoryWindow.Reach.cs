@@ -6,61 +6,9 @@ using UnityEngine.UI;
 
 namespace IslandUI
 {
-    // InventoryWindow — Reach: the fold/unfold sections and the position-cached scan.
+    // InventoryWindow — Reach: the position-cached scan.
     internal static partial class InventoryWindow
     {
-        // ---------- reach sections: fold and unfold ----------
-        private const float SectionArrowW = 8f;
-        private static readonly HashSet<int> CollapsedReach = new HashSet<int>();
-
-        private static void EnsureSectionParts(Plate plate)
-        {
-            if (plate.SectionArrow != null)
-            {
-                return;
-            }
-            var go = Owned.New("SectionArrow");
-            go.transform.SetParent(plate.Window.Content, false);
-            plate.SectionArrow = go.AddComponent<Image>();
-            plate.SectionArrow.sprite = Theme.Triangle;
-            plate.SectionArrow.raycastTarget = false;
-            plate.SectionArrow.color = Theme.Ink;
-            var hit = Owned.New("HeaderHit");
-            hit.transform.SetParent(plate.Window.Content, false);
-            plate.HeaderHit = (RectTransform)hit.transform;
-        }
-
-        // A click on a section's header folds or unfolds it. Hit-tested before the
-        // cells; the header row never overlaps a cell, so hovering it takes
-        // nothing from them, and only a release on the row acts.
-        private static bool ClickSectionHeaders(Camera cam)
-        {
-            if (!Input.GetMouseButtonUp(0) || _dragging)
-            {
-                return false;
-            }
-            for (int i = 0; i < _reachPlatesUsed && i < ReachPlates.Count; i++)
-            {
-                Plate p = ReachPlates[i];
-                if (p.HeaderHit == null || !p.HeaderHit.gameObject.activeInHierarchy
-                    || p.Container == null)
-                {
-                    continue;
-                }
-                if (RectTransformUtility.RectangleContainsScreenPoint(p.HeaderHit, Input.mousePosition, cam))
-                {
-                    int id = p.Container.GetInstanceID();
-                    if (!CollapsedReach.Remove(id))
-                    {
-                        CollapsedReach.Add(id);
-                    }
-                    Invalidate();
-                    return true;
-                }
-            }
-            return false;
-        }
-
         private const float CloseChipSize = CloseChip.Size;
         private const float CloseChipFromRight = CloseChip.FromRight;
         private static Plate _pressedClose;
@@ -96,6 +44,7 @@ namespace IslandUI
         // 2 units of thickness and the gap gains this much air.
         private const float LoadoutAir = 3f;
         private static bool _prevMemberLoadout;
+        private static bool _prevMemberShared;   // ...and the shared backpack, which the leather rules off
         // the dotted seam
         private const float ScorePeriod = 4.4f;   // one punched hole and its gap, in units (T1)
         private const float ScoreTilePx = 28f;    // kit_score is one square tile of that period
@@ -156,7 +105,7 @@ namespace IslandUI
                         return;
                     }
                     ShowSlotView(index == 2 ? ViewRoster : ViewReach);
-                }, KitPlateTabs.Style.Tabs, Slot.TabWoods);
+                }, KitPlateTabs.Style.Tabs, Slot.TabWoods, Slot.TabLabel, Slot.TabGlyphs);
                 // placed in root space from the bottom-left, like the columns
                 _slotTabs.Rect.anchorMin = Vector2.zero;
                 _slotTabs.Rect.anchorMax = Vector2.zero;
@@ -280,8 +229,11 @@ namespace IslandUI
                 || (here - _reachScanAt).sqrMagnitude > 0.25f
                 || Time.unscaledTime - _reachScanAge > 1f)
             {
+                ReachOrderWas.Clear();
+                ReachOrderWas.AddRange(ReachScan);
                 ReachScan.Clear();
                 Rescan(here, ReachScan);
+                OrderReach(here, ReachScan);
                 _reachScanAt = here;
                 _reachScanAge = Time.unscaledTime;
                 _reachScanDirty = false;
@@ -339,9 +291,13 @@ namespace IslandUI
                 }
                 found.Add(chest);
             }
-            found.Sort((a, b) =>
-                (a.transform.position - center).sqrMagnitude
-                    .CompareTo((b.transform.position - center).sqrMagnitude));
+            // the last boss's bench, whatever the Benches filter says: its parts are
+            // the fight's, and seeing them is the point
+            InventorySlot boss = BossBench.Live(center);
+            if (boss != null && !found.Contains(boss) && ContainerPolicy.PoolEligible(boss))
+            {
+                found.Add(boss);
+            }
             into.AddRange(found);
             if (ContainerPolicy.FamilyShown(ContainerPolicy.Family.Bags))
             {
@@ -379,9 +335,6 @@ namespace IslandUI
                 }
                 bodies.Add(who);
             }
-            bodies.Sort((a, b) =>
-                (a.transform.position - center).sqrMagnitude
-                    .CompareTo((b.transform.position - center).sqrMagnitude));
             for (int i = 0; i < bodies.Count; i++)
             {
                 into.Add(bodies[i].bag);
@@ -403,9 +356,11 @@ namespace IslandUI
         // THE PEOPLE'S BAGS (window-system.md D35's second scan). The
         // scan above cannot find them: it masks the BG layer, and a character's
         // bag is a colliderless child of the character. So they come from the
-        // roster's own source - your people within the radius - and follow the
-        // containers, by NAME: people walk, and a list ordered by their distance
-        // would reshuffle under the pointer while you stood still.
+        // roster's own source - your people within the radius. They used to
+        // follow the containers, by NAME, so that people walking would not
+        // reshuffle the list under the pointer; they are ordered with everything
+        // else now, nearest first, and the reshuffle is stopped where it hurts
+        // instead (OrderReach).
         private static void AddBags(Vector3 center, List<InventorySlot> into)
         {
             NPCManager npcs = _mn.npcMN;
@@ -428,10 +383,81 @@ namespace IslandUI
                 }
                 people.Add(who);
             }
-            people.Sort((a, b) => string.CompareOrdinal(a.charaName, b.charaName));
             for (int i = 0; i < people.Count; i++)
             {
                 into.Add(people[i].bag);
+            }
+        }
+
+        // ONE ORDER, NEAREST FIRST: chests, people's bags and bodies together, so
+        // the bag of the one standing beside you is at the top - it was always
+        // last, people's bags going after every chest, by name. The scan runs
+        // every second, and people walk, so a band could move under the pointer:
+        // while the pointer is over the window, the order stands - what was
+        // listed keeps its place, anything new joins below, nearest first - and
+        // it settles again once the pointer leaves. An item in hand alone does
+        // not hold it (Forgejo #179): carried across the world, the list should
+        // keep up with where you walk.
+        private static readonly List<InventorySlot> ReachOrderWas = new List<InventorySlot>();
+
+        private static bool ReachOrderHeld()
+        {
+            if (!Settings.VicinityHoldOrder.Value)
+            {
+                return false;   // the setting: always nearest first
+            }
+            return (_reachPanel != null && _reachPanel.gameObject.activeInHierarchy
+                && RectTransformUtility.RectangleContainsScreenPoint(_reachPanel, Input.mousePosition, _renameCam));
+        }
+
+        private static void OrderReach(Vector3 center, List<InventorySlot> list)
+        {
+            Dictionary<InventorySlot, int> was = null;
+            if (ReachOrderHeld() && ReachOrderWas.Count > 0)
+            {
+                was = new Dictionary<InventorySlot, int>();
+                for (int i = 0; i < ReachOrderWas.Count; i++)
+                {
+                    if (ReachOrderWas[i] != null && !was.ContainsKey(ReachOrderWas[i]))
+                    {
+                        was[ReachOrderWas[i]] = i;
+                    }
+                }
+            }
+            // NEAREST BY ITS EDGE, as reach measures it (ReachRule.WithinOfEdge): by
+            // the centre, a workbench beside you sorted after a chest further off,
+            // since a long bench's pivot stands well inside it
+            var far = new Dictionary<InventorySlot, float>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                far[list[i]] = ReachRule.EdgeDistance(list[i], center);
+            }
+            list.Sort((a, b) =>
+            {
+                if (was != null)
+                {
+                    bool ha = was.TryGetValue(a, out int ia);
+                    bool hb = was.TryGetValue(b, out int ib);
+                    if (ha && hb) { return ia.CompareTo(ib); }
+                    if (ha != hb) { return ha ? -1 : 1; }
+                }
+                return far[a].CompareTo(far[b]);
+            });
+            // A ROW THAT BELONGS HIGHER while the order holds: nearer, by more than
+            // a step, than a row listed above it (Vicinity.cs paints its arrow)
+            ReachHigher.Clear();
+            if (was != null)
+            {
+                float above = -1f;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    float d = far[list[i]];
+                    if (d < above - HigherBy)
+                    {
+                        ReachHigher.Add(list[i]);
+                    }
+                    above = Mathf.Max(above, d);
+                }
             }
         }
 
@@ -443,8 +469,8 @@ namespace IslandUI
             {
                 return owner.charaName;
             }
-            string name = string.IsNullOrEmpty(owner.charaName) ? "Body" : owner.charaName;
-            return name + (owner.life > 0.0 ? " · down" : " · dead");
+            string name = string.IsNullOrEmpty(owner.charaName) ? Shared.Loc.Get("reach.body", "Body") : owner.charaName;
+            return name + Shared.Loc.Separator + (owner.life > 0.0 ? Shared.Loc.Get("reach.body.down", "down") : Shared.Loc.Get("reach.body.dead", "dead"));
         }
 
         private static CommonStates BagOwner(InventorySlot container)
@@ -466,10 +492,36 @@ namespace IslandUI
         private static Sprite OwnBagIcon =>
             Theme.Kit("kit_bag_own", 0) ?? Theme.CarriedBadge;
 
-        // THE SHARED BAG'S SIGN IS A HOUSE (the storehouse: a place, not a
-        // person; one, fixed, open to all). The chest badge remains the fallback.
+        // THE SHARED BAG'S SIGN IS YOUR BACKPACK WITH THE TWO MAIN CHARACTERS
+        // UNDER IT, their faces sampled from their own portraits: the bag the two
+        // of them share (it was a house, the storehouse, before). The chest badge
+        // remains the fallback.
         private static Sprite SharedBagIcon =>
             Theme.Kit("kit_bag_shared", 0) ?? Theme.ContainerBadge;
+
+        // a backpack, plain or the Shared Bag's: never burnt brown in the vicinity (ShedCaption)
+        private static bool IsBackpack(Sprite icon)
+        {
+            return icon != null && (ReferenceEquals(icon, OwnBagIcon) || GutterIconSize(icon).y > GutterGlyph);
+        }
+
+        // THE SHARED BAG'S SIGN GROWS DOWN, the backpack keeping its size and the
+        // faces growing with it: the backpack is the same 14 units and the faces
+        // hang below it, into the gutter's empty run under the first row. It is
+        // drawn at the backpack's scale, 14 units to its 128 pixels, so it stands
+        // taller than a glyph, and a little wider, centred on the same spot. (Your
+        // own bag wore your face the same way for a while, and went back to the
+        // plain backpack.)
+        private static Vector2 GutterIconSize(Sprite icon)
+        {
+            bool sign = icon != null && ReferenceEquals(icon, Theme.Kit("kit_bag_shared", 0));
+            if (!sign)
+            {
+                return new Vector2(GutterGlyph, GutterGlyph);
+            }
+            float k = GutterGlyph / 128f;
+            return new Vector2(icon.rect.width * k, icon.rect.height * k);
+        }
 
         // THE LOADOUT'S SIGN IS THE HANGER (a shirt hanging on its hanger, moss
         // green, in the gutter): the colour and the glyph say "what they wear" together, and
@@ -498,12 +550,8 @@ namespace IslandUI
                 ? item.itemSprite : Theme.ContainerBadge;
         }
 
-        // With the icon carrying the kind, the name is repetition and the distance
-        // is the only part of WHERE a header can say — so with icons on, the label
-        // shrinks to the distance alone.
-        // The heading of the focused container's own panel. Unlike ChestLabel it
-        // always names the thing: a panel headed "3m" says where but never what,
-        // and this one is not competing for height with four others.
+        // The heading of the focused container's own panel: it always names the
+        // thing (a panel headed "3m" says where but never what).
         // The focused container costs no extra height for its heading - it has a
         // title band either way - but the number there was never worth reading: you
         // reach a container by walking to it, so the answer is always about zero.
@@ -516,26 +564,7 @@ namespace IslandUI
                 return BagName(owner);
             }
             ItemData item = ChestItem(chest);
-            return item != null ? item.GetItemName() : "Container";
-        }
-
-        // A container's own icon says what it is, so only a person's bag carries
-        // words: whose it is.
-        //
-        // No distance either. A caption is not free: wantsText adds Theme.CaptionH to every
-        // band in the pool, so five chests spent five captions of height to print
-        // five numbers that differ by a metre or two. The ORDER already carries it -
-        // the pool is sorted nearest first - and "in reach" is the only distance
-        // claim the window actually makes.
-        //
-        // It may come back once there is a design for it. The thing to avoid
-        // repeating is where it lived: under the icon, in the one place that
-        // charges every row for it.
-        private static string ChestLabel(InventorySlot chest)
-        {
-            // a bag's backpack says what, never whose: its label is the person
-            CommonStates owner = BagOwner(chest);
-            return owner != null ? BagName(owner) : "";
+            return item != null ? item.GetItemName() : Shared.Loc.Get("reach.container", "Container");
         }
     }
 }

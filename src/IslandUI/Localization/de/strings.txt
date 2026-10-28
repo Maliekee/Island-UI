@@ -1,0 +1,1592 @@
+# Island UI: German strings, machine-translated from en/strings.txt.
+# Corrections are welcome: edit the right side of a line and keep the key and every {0}.
+
+badge.off=aus  -  klicken zum Einschalten
+badge.on=an  -  klicken zum Ausschalten
+badge.turns_off=beim nächsten Start aus  -  klicken zum Abbrechen
+badge.turns_on=beim nächsten Start an  -  klicken zum Abbrechen
+
+board.assign.axe=zuweisen  →  Axtschlaufe
+board.assign.knife=zuweisen  →  Messerschlaufe
+board.assign.pickaxe=zuweisen  →  Spitzhackenschlaufe
+
+board.choose=wähle ein Werkzeug aus deinen eigenen Taschen
+
+board.drop.axe=Zieh eine Axt aus deiner Tasche hierher
+board.drop.knife=Zieh ein Messer aus deiner Tasche hierher
+board.drop.pickaxe=Zieh eine Spitzhacke aus deiner Tasche hierher
+
+board.durability=Haltbarkeit
+board.equipped=Ausgerüstet
+
+board.takes.axe=in die Axtschlaufe gehört eine Axt
+board.takes.knife=in die Messerschlaufe gehört ein Messer
+board.takes.pickaxe=in die Spitzhackenschlaufe gehört eine Spitzhacke
+
+board.used.axe=Wird benutzt, wenn eine Arbeit eine Axt braucht
+board.used.knife=Wird benutzt, wenn eine Arbeit ein Messer braucht
+board.used.pickaxe=Wird benutzt, wenn eine Arbeit eine Spitzhacke braucht
+
+bonds.all.section=ALLE BEZIEHUNGEN
+
+bonds.desires.help=Der Wunschpartner laut Spiel. Klicken für den Grund
+
+bonds.family.child=Kind
+bonds.family.father=Vater
+bonds.family.mother=Mutter
+bonds.family.not_yours=keiner deiner Leute
+bonds.family.section=FAMILIE
+bonds.family.you={0} (du)
+
+bonds.grudge.dropped=Getrennt fällt ein Groll beim nächsten Tick weg
+bonds.grudge.kept=Sie hatten Sex, also bleibt der Groll auch getrennt
+bonds.grudge.none=In den letzten sechs Ticks nichts zwischen ihnen verzeichnet.
+
+bonds.head.days=3 Tage
+bonds.head.days.help=um wie viel die Liebesticks der letzten drei Tage das Gefühl von {0} verändert haben
+bonds.head.mine.help=die Liebe von {0} zu ihnen
+bonds.head.they=Sie
+bonds.head.they.help=ihre Liebe zu {0}
+
+bonds.love_each_way=Liebe in beide Richtungen: ihre zu {0}, und zurück
+
+bonds.love_each_way.them=Liebe in beide Richtungen: ihre zu ihnen, und zurück
+
+bonds.moved.help=Die Ticks des letzten Tages haben das Gefühl von {0} für {1} um diesen Wert verändert. Klicken für den Grund
+
+bonds.pick.cant=geht gerade nicht
+bonds.pick.cant.why={0} kann gerade nicht (beschäftigt, folgt dir oder Sex aus)
+bonds.pick.ends_it=Beendet es: beide in einem Haus, eine besetzte Toilette im Umkreis von 10 m oder Sex aus
+bonds.pick.highest={0} ist die größte Liebe ({1}) unter denen im Revier.
+bonds.pick.no=Nein: {0}.
+bonds.pick.pining=sagt nein: Sehnsucht
+bonds.pick.pining.cost=Bei Libido 90 kostet ein Nein 5 Stimmung, mehrmals am Tag.
+bonds.pick.rule=Ab Libido 20 wird gefragt; ein Ja braucht ein gemeinsames Haus und erwiderte Liebe.
+bonds.pick.toilet=sagt nein: lieber eine Toilette
+bonds.pick.why.house={0} wohnt in einem anderen Haus
+bonds.pick.why.no={0} sagt nein
+bonds.pick.why.no_love={0} erwidert die Liebe nicht
+bonds.pick.why.no_mood={0} ist nicht in Stimmung
+bonds.pick.yes=sagt ja
+bonds.pick.yes.why=Ja: ein gemeinsames Haus, und {0} erwidert die Liebe.
+
+bonds.section=BINDUNGEN
+
+bonds.why.bond_fades=Getrennt verblasst ein Gefühl um 5 je Tick und fällt bei 0 weg
+bonds.why.bond_kept=Sie hatten Sex, also bleibt die Bindung auch getrennt
+bonds.why.not_met=Sie haben sich in den letzten sechs Ticks nicht getroffen: die Reviere überschneiden sich nicht.
+
+bonds.word.desires=begehrt
+bonds.word.grudge=Groll
+
+bonds.you.cant_stand=erträgt dich nicht
+bonds.you.cold=kühl zu dir
+bonds.you.fond=mag dich
+bonds.you.head=FÜR DICH
+bonds.you.head.help=Die Liebe zu dir
+bonds.you.loves=liebt dich
+
+card.attack=Angriff
+card.bench=Werkbank
+
+card.bench.none=Keine (von Hand)
+
+card.class=Klasse
+card.crafter=Hersteller
+card.durability=Haltbarkeit
+card.equip=Träger
+card.food=Nahrung
+card.get=Herkunft
+card.hp=HP
+card.kind=Art
+card.level=Stufe
+card.likes=Mag
+
+card.names.more=+{0} weitere
+
+card.npc_numbered=NPC {0}
+card.state=Zustand
+card.stun=Betäubung
+
+card.type.accessory=Accessoire
+card.type.ammo=Munition
+card.type.animal=Tier
+card.type.armor=Rüstung
+card.type.arrow=Pfeil
+card.type.axe=Axt
+card.type.bait=Köder
+card.type.bed=Bett
+card.type.bottle=Flasche
+card.type.bow=Bogen
+card.type.building=Gebäude
+card.type.chest=Truhe
+card.type.cloth=Kleidungsstück
+card.type.clothing=Kleidung
+card.type.consumable=Verbrauchsgut
+card.type.cooking=Kochen
+card.type.decoration=Dekoration
+card.type.drink=Getränk
+card.type.equipment=Ausrüstung
+card.type.feed=Futter
+card.type.fish=Fisch
+card.type.fishing=Angeln
+card.type.food=Nahrung
+card.type.hat=Hut
+card.type.knife=Messer
+card.type.light=Licht
+card.type.material=Material
+card.type.melee=Nahkampf
+card.type.net=Netz
+card.type.npc=NPC
+card.type.pickaxe=Spitzhacke
+card.type.plant=Pflanze
+card.type.prop=Objekt
+card.type.ranged=Fernkampf
+card.type.resource=Rohstoff
+card.type.rod=Angel
+card.type.shield=Schild
+card.type.shoes=Schuhe
+card.type.shovel=Schaufel
+card.type.storage=Lager
+card.type.stun=Betäubung
+card.type.support=Support
+card.type.throwing=Wurfwaffe
+card.type.tool=Werkzeug
+card.type.torch=Fackel
+card.type.underwear=Unterwäsche
+card.type.weapon=Waffe
+
+card.use=Wirkung
+
+card.use.food=Nahrung {0}
+card.use.hp=HP {0}
+card.use.water=Wasser {0}
+
+card.used_in=Verwendet in
+
+card.used_in.caps=VERWENDET IN
+
+card.water=Wasser
+
+chart.day=TAG {0}
+chart.now=JETZT
+
+combat.more.one=+{0} im Kampf
+combat.more.other=+{0} im Kampf
+
+company.cost={0} Moral: {1}
+
+company.cost.why=Die Liebe von {0} zu {1} ist {2}: ab -10 abwärts kostet jede Liebesänderung 1
+
+company.dawn.full=Am Maximum: nichts hinzuzufügen
+company.dawn.in=Eine Nacht drinnen: Moral steigt
+company.dawn.out=Keine Nacht drinnen: nichts zurück
+
+company.elsewhere=ANDERSWO
+
+company.elsewhere.kin={0} ({1})
+
+company.fix.fold=Klicken zum Einklappen der Abhilfe
+company.fix.unfold=Es gibt eine Abhilfe: klicken zum Ansehen
+
+company.head.back=ERWIDERT
+company.head.back.help=die Liebe jedes Einzelnen zu {0}
+company.head.love=LIEBE
+company.head.love.help=die Liebe von {0} zu jedem
+
+company.key.mood_cost=-1 MORAL
+company.key.per_meeting=LIEBE JE TREFFEN
+
+company.nights=Nächte
+
+company.nights.count={0} VON {1} DRINNEN
+
+company.nights.help=Jeder Morgen der drei Tage
+company.section=BEZIEHUNGEN
+
+company.tag.cant_stand=UNERTRÄGLICH
+company.tag.cant_stand_each=ERTRAGEN SICH NICHT
+company.tag.cant_stand_who=ERTRÄGT {0} NICHT
+company.tag.child=KIND
+company.tag.desires=BEGEHRT
+company.tag.father=VATER
+company.tag.mother=MUTTER
+
+company.ticks.cost=-1 Moral: eine Liebesänderung, während die Liebe von {0} zu ihnen bei -10 oder darunter liegt
+
+company.ticks.help=Jeder Liebestick der drei Tage, je eine Spalte
+company.what_moves=WAS SIE BEWEGT
+
+company.why.pair={0} und {1}
+
+console.commands.one={0} Befehl aus der Liste des Spiels (die Argumente sind die des Spiels):
+console.commands.other={0} Befehle aus der Liste des Spiels (die Argumente sind die des Spiels):
+
+console.hint.close={0} schließt
+console.hint.complete={0} vervollständigt
+
+console.hint.help={0} listet alle Befehle
+
+console.hint.history={0} Verlauf
+console.hint.scroll={0} blättern
+
+console.missing_argument={0}: ein Argument fehlt
+console.no_handler=der Befehls-Handler des Spiels ist nicht in dieser Szene
+console.no_match=kein Befehl beginnt mit {0}
+console.number_argument={0}: ein Argument muss eine Zahl sein
+console.own=und die eigenen der Konsole: {0}
+console.placeholder=Befehl eingeben
+console.unknown=unbekannter Befehl {0}
+console.unknown.help=({0} listet sie auf)
+console.welcome.one=Die Befehlszeile des Spiels. {0} Befehl; tippe {1} für die Liste.
+console.welcome.other=Die Befehlszeile des Spiels. {0} Befehle; tippe {1} für die Liste.
+
+craft.no_matches=Keine Treffer
+
+craft.section.bench_numbered=Werkbank {0}
+craft.section.by_hand=Von Hand
+
+craft.section.other=Sonstiges
+
+craft.section.type.acce=Accessoires
+craft.section.type.animal=Tiere
+craft.section.type.bottle=Flaschen
+craft.section.type.cloth=Kleidung
+craft.section.type.clothu=Unterkleidung
+craft.section.type.consumables=Verbrauchsgüter
+craft.section.type.food=Nahrung
+craft.section.type.hat=Hüte
+craft.section.type.hip=Hüfte
+craft.section.type.item=Gegenstände
+craft.section.type.none=Keine
+craft.section.type.npc=NPC
+craft.section.type.prop=Objekte
+craft.section.type.resource=Rohstoffe
+craft.section.type.resourcew=Rohstoffe W
+craft.section.type.shield=Schilde
+craft.section.type.shoes=Schuhe
+craft.section.type.support=Support
+craft.section.type.tool=Werkzeug
+craft.section.type.tool2=Werkzeug 2
+
+
+dossier.personality=PERSÖNLICHKEIT
+dossier.personality.a_tick={0} je Tick
+dossier.personality.click=Klicken für alle dieser Art
+dossier.personality.dislikes=Mag {0} nicht
+dossier.personality.likes=Mag {0}
+dossier.personality.near_one=In der Nähe
+
+dossier.age=ALTER
+dossier.attack=ANGRIFF
+
+dossier.attr.health=GESUNDHEIT
+dossier.attr.strength=STÄRKE
+
+dossier.attributes=ATTRIBUTE
+dossier.class=KLASSE
+dossier.combat=KAMPF
+dossier.deliveries=GEBURTEN
+dossier.exp=EP
+
+dossier.favourite.mark=Klicken, um zum Favoriten zu machen
+dossier.favourite.unmark=Favorit: klicken zum Entfernen
+
+dossier.food=NAHRUNG
+dossier.guard=ABWEHR
+dossier.hidden=VERBORGEN
+dossier.hp=HP
+dossier.kind=ART
+dossier.level=STUFE
+dossier.libido=LIBIDO
+dossier.masturbation=MASTURBATION
+dossier.max=MAX
+dossier.moral=MORAL
+dossier.name=NAME
+dossier.next_cost=nächste {0} P.
+dossier.points.one={0} Punkt
+dossier.points.other={0} Punkte
+dossier.pregnancies=SCHWANGERSCHAFTEN
+dossier.pregnant=SCHWANGER
+dossier.sex=SEX
+dossier.shown_in_world=IN DER WELT SICHTBAR
+dossier.skill_lv=FÄHIGKEITSSTUFE
+dossier.skills=FÄHIGKEITEN
+dossier.speed=TEMPO
+dossier.stun=BETÄUBUNG
+
+dossier.type.anyone_else=Alle anderen
+dossier.type.click=Klicken für alle, die {0} sind
+dossier.type.near_one={0} in der Nähe
+dossier.type.worth_near={0}, {1} in der Nähe
+
+dossier.vitals=VITALWERTE
+dossier.water=WASSER
+
+drop.cant_take=kann das nicht nehmen
+drop.give_to=geben an  →  {0}
+drop.out_of_reach=außer Reichweite
+drop.them=sie
+drop.this_chest=diese Truhe
+drop.use_on=anwenden auf  →  {0}
+drop.walk_give_to=hingehen und geben an  →  {0}
+drop.walk_use_on=hingehen und anwenden auf  →  {0}
+
+hud.caption.menu=MENÜ
+hud.caption.toolbelt=GÜRTEL
+
+hud.chip.bag=Deine Tasche
+hud.chip.character=Dein Charakter
+hud.chip.crafting=Herstellung
+hud.chip.map=Karte
+hud.chip.quests=Aufgaben
+hud.chip.settings=Einstellungen
+hud.chip.tools=Werkzeuggürtel
+hud.chip.vicinity=Umgebung
+
+hud.collections_link=Sammlungen
+
+hud.enemy.age=Alter {0}
+hud.enemy.faint=K.O.
+hud.enemy.slain=Besiegt
+hud.enemy.fainted=K.O.
+hud.enemy.boss=BOSS
+
+hud.roster.unhappy={0} unglücklich
+hud.roster.unhappy.help=Nach Stimmung sortieren, um den Grund zu sehen
+hud.roster.unhappy_near={0} unglücklich, {1} kurz vor der Rebellion
+
+inv.act.craft=Herstellen
+inv.act.inventory=Inventar
+inv.act.move=Versetzen
+inv.act.remove=Entfernen
+inv.act.repair=Reparieren
+inv.act.sleep=Schlafen
+inv.act.use=Benutzen
+
+inv.bag=Tasche
+inv.character=Charakter
+
+inv.chest.click_to_open=zum Öffnen anklicken
+inv.chest.locked=Verschlossen
+inv.chest.unopened=Ungeöffnet
+
+inv.hint.butcher={0}  →  zerlegen
+inv.hint.cannot_wear={0}   →   {1} kann das nicht tragen
+inv.hint.cannot_wear_you={0}   →   du kannst das nicht tragen
+inv.hint.drop=Ctrl-Klick  →  fallen lassen
+inv.hint.favourite=Favorit
+inv.hint.happiness=Zufriedenheit {0}/100
+inv.hint.happiness_max=Zufriedenheit MAX — kann dem Stamm beitreten
+inv.hint.kept=Favorit  ·  erst mit Alt-Klick entfernen
+inv.hint.mark=Alt-Klick  →  Favorit
+inv.hint.mark_never_stacked=Alt-Klick  →  Favorit (nie schnellgestapelt)
+inv.hint.move=Ctrl-Klick  →  {0}
+inv.hint.remove_action=Shift-Klick  →  entfernen    Shift-Ziehen  →  versetzen
+inv.hint.split=Shift-Klick  →  teilen
+inv.hint.take_off=Linksklick  →  in die Hand    Rechtsklick  →  {0}
+inv.hint.unmark=Alt-Klick  →  Favorit entfernen
+inv.hint.wear={0}   →   {1} · {2}
+inv.hint.wear_you={0}   →   du · {1}
+inv.hint.worn_by=getragen von {0}
+inv.hint.worn_by_them=von der Person getragen
+inv.hint.worn_by_you=von dir getragen
+
+inv.loadout=Ausstattung
+
+inv.move.bag_of=Tasche von {0}
+inv.move.body_pockets=die Taschen des Körpers
+inv.move.drop=fallen lassen
+inv.move.nearby_storage=Lager in der Nähe
+inv.move.pockets_of=Taschen von {0}
+inv.move.their_bag=ihre Tasche
+inv.move.your_bags=deine Taschen
+
+inv.pocket.bag_of=Tasche von {0}
+inv.pocket.cannot_expand={0} lässt sich nicht erweitern
+inv.pocket.capped={0} ist am Limit von 50 Slots
+inv.pocket.expand=Rechtsklick  →  {0}  +1 Slot
+inv.pocket.nothing=nichts zu erweitern
+inv.pocket.that_container=dieser Behälter
+inv.pocket.their_bag=ihre Tasche
+inv.pocket.your_bag=deine Tasche
+
+inv.shared_bag=Gemeinsame Tasche
+
+inv.slot.acce=Accessoire
+inv.slot.cloth=Kleidung
+inv.slot.hat=Hut
+inv.slot.hip=Hüfte
+inv.slot.off_hand=Nebenhand
+inv.slot.shoes=Schuhe
+inv.slot.support=Support
+inv.slot.tool=Werkzeug
+inv.slot.under=Unterwäsche
+
+inv.tab.character=Charakter
+inv.tab.fight=Kampf
+inv.tab.inventory=Inventar
+inv.tab.overview=Übersicht
+inv.tab.skills=Fähigkeiten
+inv.tab.social=Soziales
+
+inv.thing.building=Gebäude
+inv.thing.yours=Deins
+inv.thing.yours_lower=deins
+
+inv.tip.always_run=Renne bei jeder Bewegung, als würde die Renntaste gehalten.
+inv.tip.and_so_on={0} und so weiter
+inv.tip.at_0=Bei 0
+inv.tip.at_n=Bei {0}
+inv.tip.attack=Grundangriff
+inv.tip.attack.deals=Ein Treffer macht
+inv.tip.attack.help=diesen Wert plus den Angriff der Waffe (in Klammern), minus die Abwehr des Ziels
+inv.tip.attribute_cost=1 Punkt, plus 1 je 10 bereits gekaufte
+inv.tip.attribute_points=Attributpunkte
+inv.tip.attribute_points.spend=Für Attribute auszugeben. Ein Stufenaufstieg gibt:
+inv.tip.below_level=Unter Stufe {0}
+inv.tip.call_over=Holt die Person zu dir, wenn sie höchstens 10 m entfernt ist. Nicht während Ereignissen.
+inv.tip.class=Kampfklasse
+inv.tip.class.help=Ändert Angriffsreichweite, Timing und Animationen und gibt manchen Arten Spezialangriffe.
+inv.tip.combat_area=Wie weit über das Revier hinaus ein Feind verfolgt wird, bevor aufgegeben wird. Begleiter ignorieren das.
+inv.tip.cost=Kosten
+inv.tip.drained_by=Verbraucht durch
+inv.tip.edit_dialogue=Ändert, was die Person sagt.
+inv.tip.empty=Leer
+inv.tip.exp=Erfahrung
+inv.tip.exp.also_fills=Füllt auch
+inv.tip.exp.as_follower=Als Begleiter
+inv.tip.exp.from=Durch
+inv.tip.exp.from_what=Sammeln, Töten, Arbeit und manche Speisen
+inv.tip.exp.full_bar=Ein voller Balken ist eine Stufe; der Rest wird übertragen.
+inv.tip.exp.quarter=ein Viertel deiner
+inv.tip.exp.skill_level=die Fähigkeitsstufe
+inv.tip.face_left=Nach links schauen
+inv.tip.face_right=Nach rechts schauen
+inv.tip.facing=Wohin die Person auf ihrem Platz schaut, bei Revier 0. Erneutes Drücken der gewählten Richtung hebt es auf.
+inv.tip.favourite=In der Bewohnerliste unter Favoriten aufgeführt und auf der Karte verfolgt.
+inv.tip.first_partner=Die erste Person, mit der es Sex gab, einvernehmlich oder nicht.
+inv.tip.following=Folgt dir und erhält ein Viertel deiner EP. Jeder Begleiter belegt einen Platz in deiner Gruppe.
+inv.tip.following_off=Folgt nicht: bleibt am eigenen Platz
+inv.tip.following_on=Folgt dir
+inv.tip.food=Nahrung
+inv.tip.food.hunger=Verhungern überspringt deine Herzen.
+inv.tip.food.spend_to_heal=wird zum Heilen verbraucht
+inv.tip.food.stop_healing=die Heilung stoppt
+inv.tip.from_level=Ab Stufe {0}
+inv.tip.guard=Abwehr
+inv.tip.guard.armed=Bewaffnet
+inv.tip.guard.bare=Unbewaffnet
+inv.tip.guard.percent=Prozent des Schadens, die beim Blocken abgewehrt werden:
+inv.tip.guard.shield=Mit Schild
+inv.tip.guard.shield_value=der Wert des Schilds
+inv.tip.guard.theirs=Der Wert, den das Spiel zeigt. Nur du kannst blocken.
+inv.tip.health=Gesundheit
+inv.tip.health.help=Jeder Punkt erhöht die max. HP um den Wert, den die Art pro Punkt erhält.
+inv.tip.history.births=Geborene Kinder, von einem Vater unter den Geliebten.
+inv.tip.history.masturbated=Wie oft allein masturbiert wurde.
+inv.tip.history.pregnant=Wie oft eine Schwangerschaft eintrat.
+inv.tip.history.sex=Sexakte mit allen Partnern, einvernehmlich oder erzwungen, in beide Richtungen.
+inv.tip.hp=Trefferpunkte
+inv.tip.hp.gets_up=steht nach 90 Sekunden mit wenig HP auf
+inv.tip.hp.last_heart=Bei 0, letztes Herz
+inv.tip.hp.lose_heart=du verlierst ein Herz und gehst zu Boden
+inv.tip.hp.one_of_yours=Einer deiner Leute
+inv.tip.hp.they_go_down=geht zu Boden
+inv.tip.hp.you_die=du stirbst
+inv.tip.level=Charakterstufe
+inv.tip.level.own=Die eigene dieser Person. Jeder Stufenaufstieg gibt Attributpunkte:
+inv.tip.libido=Libido
+inv.tip.libido.refills=Füllt sich mit der Zeit.
+inv.tip.libido.refusal=eine Abweisung kostet Moral
+inv.tip.libido.seek=sucht Sex mit einer geliebten Person
+inv.tip.lose_hp=du verlierst mit der Zeit HP und heilst nicht mehr
+inv.tip.lowered_by=Gesenkt durch
+inv.tip.moral=Moral
+inv.tip.moral.lowered=Zurückweisung
+inv.tip.moral.raised=Schlaf, Sex, manche Speisen
+inv.tip.moral.revolt=revoltiert und kämpft
+inv.tip.moral.revolt_chance=Ein revoltierender Dorfbewohner greift dich mit einer Chance von 100 minus diesem Wert in Prozent an.
+inv.tip.outlaw=Nach deiner Bestätigung zieht die Person geächtet fort: Sie wehrt sich, wenn sie getroffen wird, und ist nach 2 Minuten weg, sofern sie nicht niedergestreckt wird.
+inv.tip.past_n=Über {0}
+inv.tip.perm.force=Erlaubt, einen Dorfbewohner in der Nähe zum Sex zu zwingen, sobald die Libido 5 oder mehr beträgt.
+inv.tip.perm.houses=Erlaubt, Häuser selbstständig zu betreten und zu verlassen und nachts zum Schlafen heimzugehen.
+inv.tip.perm.love=Erlaubt, Liebe zu Dorfbewohnern in der Nähe aufzubauen, und beim Folgen auch zu dir.
+inv.tip.perm.sex=Erlaubt, Sex zu suchen oder anzunehmen, sobald die Libido 20 oder mehr beträgt.
+inv.tip.place_while_following=Beim Folgen wartet der Platz: Er gilt wieder, sobald das Folgen endet.
+inv.tip.pregnant=Wie weit die Schwangerschaft ist.
+inv.tip.raised_by=Erhöht durch
+inv.tip.refilled_by=Aufgefüllt durch
+inv.tip.rename=Klicken zum Umbenennen. Return übernimmt, Esc behält den alten Namen.
+inv.tip.resting=Ausruhen
+inv.tip.send_to_place=Schickt die Person sofort zu ihrem Platz. Nicht für Begleiter oder Gefangene.
+inv.tip.set_place=Klicke auf den Boden, um den Platz zu setzen; Rechtsklick bricht ab.
+inv.tip.show_name=Der Name schwebt in der Welt über der Person.
+inv.tip.show_name_own=Dein Name schwebt in der Welt über dir.
+inv.tip.skill_exp=Die EP der Fähigkeitsstufe. Ein voller Balken ist eine Stufe.
+inv.tip.skill_level=Fähigkeitsstufe
+inv.tip.skill_level.help=Eine für den ganzen Spielstand, nicht je Charakter. Sie erhält die EP, die du erhältst, neben deiner Charakterstufe. Jede Stufe gibt Fähigkeitspunkte:
+inv.tip.skill_points=Fähigkeitspunkte
+inv.tip.skill_points.cost=5, plus 5 je Stufe der Fähigkeit
+inv.tip.skill_points.next=Nächste Stufe kostet
+inv.tip.skill_points.spend=Für Fähigkeiten auszugeben.
+inv.tip.speed=Tempo
+inv.tip.speed.help=Gehtempo nach Ausrüstung, Überladung und Verlangsamung; Rennen vervielfacht es.
+inv.tip.speed_point.help=Jeder Punkt erhöht das Grundtempo um 0,005.
+inv.tip.spent_on=Ausgegeben für
+inv.tip.strength=Stärke
+inv.tip.strength.help=Jeder Punkt erhöht den Grundangriff um den Wert, den die Art pro Punkt erhält.
+inv.tip.stun=Betäubung
+inv.tip.stun.bed=Schlafen im Bett
+inv.tip.stun.knocked_out=wird bewusstlos
+inv.tip.stun.resting=Ausruhen, das Wasser verbraucht
+inv.tip.stun.weapons=Betäubungswaffen
+inv.tip.stun.you_die=du stirbst, ob mit Herzen oder nicht
+inv.tip.surgeries=Körperformen oder Farben, die auf dem OP-Tisch geändert wurden.
+inv.tip.territory=Wie weit die Person um ihren Platz streift. Bei 0 bleibt sie auf der Stelle.
+inv.tip.waiting_pose=Was die Person tut, während sie auf ihrem Platz wartet - nur bei Revier 0 und wenn sie nicht folgt.
+inv.tip.water=Wasser
+inv.tip.water.neither=keins von beidem
+inv.tip.water.stun_work=Erholung von Betäubung, und Arbeit
+inv.tip.water.thirst=Verdursten überspringt deine Herzen.
+
+keybind.listening=Taste drücken
+keybind.numpad=Num {0}
+keybind.unbound=Nicht belegt
+
+keymap.action=Aktion (halten)
+keymap.backpack=Rucksack
+keymap.carry=Tragen / Aufheben
+keymap.confirm=Bestätigen / Absenden
+keymap.confirm.note=Eine Änderung kann Dialoge stören.
+keymap.context=Kontextaktion / Aufsitzen
+keymap.disassemble=Tier zerlegen
+keymap.drone_hide=Drohne: Modell ausblenden
+keymap.drone_hide.note=Nur beim Fliegen der Drohne benutzt.
+keymap.drop=Gegenstand fallen lassen / Menü schließen
+keymap.help=Die eigene Taste des Spiels ist {0}. Keine = keine Taste.
+keymap.interact=Interagieren
+keymap.jump=Springen / Bestätigen / Dialog überspringen
+keymap.map=Karte
+keymap.menu=Menü
+keymap.mod_alt=Modifikator: Alt-Verhalten
+keymap.mod_bulk=Modifikator: Menge
+keymap.mod_split=Modifikator: Teilen/Menge+
+keymap.move_back=Rückwärts
+keymap.move_forward=Vorwärts
+keymap.move_left=Nach links
+keymap.move_right=Nach rechts
+keymap.mute=Ton aus
+keymap.next_character=Nächster Charakter / Zeit schneller
+keymap.pause=Pause
+keymap.prev_character=Voriger Charakter / Zeit langsamer
+keymap.right_click=Rechtsklick-Ersatz
+keymap.run=Rennen umschalten
+
+links.arc.apart=Nicht nahe: nichts beim nächsten Tick
+links.arc.head=Jeder Tick, an dem sie sich treffen
+links.arc.love_off=Liebe aus: nichts ändert sich
+
+links.away.carried={0} wird getragen, in einem Behälter, den das Spiel nicht geladen hat
+links.away.head=Nicht in der Welt
+links.away.prisoner={0} ist bei Feinden gefangen. Eine Rettung ergibt sich zufällig, in deiner Nähe
+links.away.target_it=Klicken zum Anvisieren
+links.away.where={0} ist {1}.
+
+links.back=Zurück, wo du warst
+links.back_to=Zurück zu {0}
+links.level=Lv {0}
+links.type.help={0}: klicken für alle dieser Art
+
+links.where.bag=in deiner Tasche
+links.where.container=in einem Behälter
+links.where.in=in {0}
+links.where.with=bei {0}
+
+loc.separator= · 
+
+marker.carried=Getragen
+marker.corpse=Leiche
+marker.dead=Tot
+
+marker.door.inside=Drinnen
+marker.door.outside=Draußen
+
+marker.hostile=Feindlich
+marker.knocked_out=Bewusstlos
+marker.metres={0} m
+
+marker.neutral=Neutral
+met.count={0} getroffen
+
+met.end.area_away=ein Revier {0} m weiter weg
+met.end.ends_it=Beendet es: {0}
+met.end.gone=Die Bindung ist weg; sie beginnt bei null, wenn sie sich treffen
+met.end.houses_apart=Häuser weiter auseinander
+met.end.keeps_it=Erhält es: überschneidende Reviere
+met.end.love_off_they.help=Liebe aus: baut weder Liebe noch Groll auf, auch nicht zu dir
+met.end.love_off_who={0}: Liebe aus
+met.end.love_off_who.help=Liebe aus: {0} baut weder Liebe noch Groll auf, auch nicht zu dir
+met.end.or= oder 
+met.end.other_house=ein anderes Haus für einen von beiden
+
+met.head.day_ago=vor einem Tag
+met.head.they=SIE
+
+met.hours.and={0} und {1}
+met.hours.comma=, 
+
+met.love_off=Liebe aus
+met.love_off.help=Baut mit niemandem Liebe oder Groll auf
+
+met.next.apart=Die Reviere überschneiden sich jetzt nicht: getrennt verblasst eine Bindung in beide Richtungen um 5
+met.next.meet=Die Reviere überschneiden sich jetzt, also treffen sie sich:
+
+met.next_tick=Nächster Tick, {0}
+met.none=Nichts verzeichnet
+met.none.help=In den letzten sechs Ticks hat sich kein Revier mit diesem überschnitten
+
+met.note.by_day={0}, tagsüber
+met.note.dislike_each=mögen sich nicht
+met.note.dislikes=mag nicht
+met.note.dislikes_who=mag {0} nicht
+met.note.dropped_at=weggefallen bei {0}
+met.note.fading=verblasst getrennt
+met.note.housemates={0}, nachts Mitbewohner
+met.note.like_each=mögen sich
+met.note.likes=mag
+met.note.likes_who=mag {0}
+met.note.nights={0}, nachts
+
+met.row.help=Klicken für den Grund und was es beenden würde
+met.section=BEGEGNUNGEN
+met.section.help=Wen die Person in den letzten sechs Liebesticks traf und was jedes Treffen mit dem Gefühl machte
+
+met.tick.apart=Getrennt: die Bindung verblasst, -5 Liebe
+met.tick.disliked=-5 Liebe: ein abgelehnter Typ
+met.tick.liked=+10 Liebe: ein bevorzugter Typ
+met.tick.not_met=Nicht getroffen
+met.tick.plain=+5 Liebe: getroffen
+
+met.ticks.help=Die letzten sechs Liebesticks, vom ältesten bis jetzt; die schattierten unter einem Mond sind nachts, wenn die meisten drinnen schlafen. Ein leeres Quadrat: nicht getroffen. Ein Strich: getrennt, die Bindung verblasst um -5. Ein Punkt: vor der Aufzeichnung. Hinter der Jetzt-Linie der nächste Tick, wie er jetzt steht: blass, wenn sie sich treffen werden, gestrichelt, wenn getrennt
+
+met.why.distance=Die Reviere tagsüber: {0} m auseinander; sie treffen sich innerhalb von {1} m.
+met.why.every_known=Sie trafen sich bei jedem verzeichneten Tick.
+met.why.every_tick=Sie trafen sich bei jedem Tick, tags und nachts.
+met.why.grudge_dropped=Schon einen Tick getrennt, und der Groll fällt weg; er beginnt wieder bei 0, wenn sie sich treffen.
+met.why.grudge_kept=Sie hatten Sex, also bleibt der Groll auch getrennt: nur Liebe aus stoppt sein Wachsen.
+met.why.met_at=Sie trafen sich um {0}; nicht um {1}.
+met.why.near_houses=Nachts schlafen sie in verschiedenen Häusern, nah genug, um sich trotzdem zu treffen.
+met.why.not_met=Sie trafen sich in den letzten Ticks nicht: die Reviere überschneiden sich nicht mehr.
+met.why.rule_dislikes={0} MAG {1} NICHT, UND DAS IST {2}: −5 je Tick.
+met.why.rule_likes={0} MAG {1}, UND DAS IST {2}: +10 je Tick.
+met.why.same_house=Nachts schlafen sie im selben Haus, also treffen sie sich.
+
+mood.cause.company=Gesellschaft
+mood.cause.crush=Schwarm
+mood.cause.execution=Hinrichtung
+mood.cause.food=Essen
+mood.cause.forced=Zwang
+mood.cause.no_bed=kein Bett
+
+mood.cause.other=Sonstiges
+
+mood.cause.pining=Sehnsucht nach {0}
+mood.cause.rebel=Rebellion
+mood.cause.relief=Erleichterung
+mood.cause.sex=Sex
+mood.cause.sleep=Schlaf
+mood.cause.torture=Folter
+mood.cause.training=Training
+
+mood.cause_row.help=Was das Protokoll die Moral bewegen sah.
+
+mood.cause_row.three_days=Letzte drei Tage
+
+mood.chart.caption1=DIE MORAL,
+mood.chart.caption2=DREI TAGE
+mood.chart.next=NÄCHSTE
+mood.chart.no_change=KEINE ÄNDERUNG
+mood.chart.no_record=KEINE DATEN
+mood.chart.past=3 TAGE
+mood.chart.rebels_at=REBELLION BEI {0}
+
+mood.check.a_time=-5 je Mal
+mood.check.apart.fix=Reviere auseinanderlegen oder für eine der beiden Personen Liebe ausschalten
+mood.check.area_zero=kein Schlaf: Revier 0
+mood.check.area_zero.fix=Ein Revier mit einem Haus darin geben
+mood.check.area_zero.text=Revier ist 0, schläft also nie
+mood.check.cant_stand=erträgt {0} nicht
+mood.check.cant_stand.effect=-6/Tag
+mood.check.cant_stand.text=Erträgt {0} nicht: -1 Stimmung sechsmal am Tag
+mood.check.dislikes=mag {0} nicht
+mood.check.dislikes.days=kippt in {0} T
+mood.check.dislikes.hours=kippt in {0} Std
+mood.check.dislikes.text_days.one=Mag den Typ von {1} nicht, Reviere überschneiden sich: zehrt ab etwa {0} Tag
+mood.check.dislikes.text_days.other=Mag den Typ von {1} nicht, Reviere überschneiden sich: zehrt ab etwa {0} Tagen
+mood.check.dislikes.text_hours.one=Mag den Typ von {1} nicht, Reviere überschneiden sich: zehrt ab etwa {0} Stunde
+mood.check.dislikes.text_hours.other=Mag den Typ von {1} nicht, Reviere überschneiden sich: zehrt ab etwa {0} Stunden
+mood.check.far=außer Reichweite
+mood.check.far.effect=hier kein Schlaf
+mood.check.far.fix=Verbringe die Nacht in der Nähe
+mood.check.far.text=Außerhalb deiner Reichweite: Dorfbewohner schlafen nur, wenn du in der Nähe bist
+mood.check.following=kein Schlaf: folgt
+mood.check.following.fix=Über Nacht zu Hause lassen
+mood.check.following.text=Folgt dir, schläft also nie
+mood.check.guard=kein Schlaf: Wachdienst
+mood.check.guard.fix=Einen anderen Kampfbefehl geben
+mood.check.guard.text=Im Wachdienst, schläft also nie
+mood.check.near_rebellion=kurz vor Rebellion
+mood.check.near_rebellion.effect=rebelliert bei -100
+mood.check.near_rebellion.text=Kurz vor der Rebellion (rebelliert bei -100)
+mood.check.never_sleeps=schläft nie
+mood.check.never_sleeps.fix=Nur Speisen, Sex und Erleichterung heben die Stimmung: halte die Belastungen fern
+mood.check.never_sleeps.text=Diese Art schläft nie
+mood.check.no_bed=kein Bett mit {0}
+mood.check.no_bed.fix=Ein Bett höchstens 10 m entfernt aufstellen, im eigenen Haus
+mood.check.no_bed.text=Kein freies Bett für sie und {0}: {1}
+mood.check.no_house=kein Haus im Revier
+mood.check.no_house.fix=Revier erweitern, bis ein Haus darin liegt, oder eines darin bauen
+mood.check.no_house.text=Keine Haustür im Revier
+mood.check.no_recovery=keine Erholung
+mood.check.no_recovery.text={0} - morgens keine Stimmung zurück
+mood.check.outside=schläft draußen
+mood.check.outside.text=Darf nicht in Häuser, schläft also draußen
+mood.check.pining=sehnt sich nach {0}
+mood.check.pining.fix=Beide in ein Haus, eine besetzte Toilette im Umkreis von 10 m oder Sex ausschalten
+mood.check.pining.text=Sehnt sich nach {0} - {1}: {2}
+mood.check.rebelling=rebelliert
+mood.check.rebelling.effect=kämpft
+mood.check.rebelling.fix=Niederschlagen (+20 Stimmung), dann beheben, was belastet
+mood.check.rebelling.text=Rebelliert: kämpft gegen dich und die Dorfbewohner
+mood.check.sleeps=schläft drinnen
+mood.check.sleeps.effect=+10 morgens
+mood.check.sleeps.effect_low=+20 morgens
+mood.check.sleeps.text=Schläft drinnen: +10 im Morgengrauen
+mood.check.sleeps.text_low=Schläft drinnen: +20 im Morgengrauen, bis 10
+mood.check.sore.effect=-1 je Prüfung
+mood.check.sore.text=Noch gekränkt von {0} (Liebe {1}): -1 Stimmung je Prüfung, bis -10 überschritten ist
+mood.check.survivor=gehalten durch Survivor
+mood.check.survivor.effect=bei -100
+mood.check.survivor.text=Nur der Befehl Survivor hält von der Rebellion ab
+mood.check.when.morning=-5 Stimmung, sobald die Libido 90 erreicht (jeden Morgen)
+mood.check.when.urgent=-5 Stimmung, mehrmals am Tag
+mood.check.why.house={0} wohnt in einem anderen Haus
+mood.check.why.no={0} sagt nein
+mood.check.why.not_in_mood={0} ist nicht in Stimmung
+mood.check.why.unloved={0} erwidert die Liebe nicht
+mood.check.you=mag dich nicht
+mood.check.you.effect=-1 je Änderung
+mood.check.you.fix=Mitnehmen: Folgen erhöht die Liebe zu dir
+mood.check.you.text=Mag dich nicht (Liebe {0}): jede Änderung daran kostet 1 Stimmung
+
+mood.day_clock=Tag {0}, {1}
+
+mood.fix.allow_houses=Häuser betreten erlauben (Befehle, Rechte)
+mood.fix.houses=Häuser erlauben
+mood.fix.houses.help=Häuser betreten und verlassen lassen, und zum Schlafen heimgehen
+mood.fix.love_off=Liebe aus
+mood.fix.love_off.help=Stoppt den Aufbau von Liebe - und Groll - mit den Nachbarn. Auch die Liebe zu dir wächst nicht mehr.
+mood.fix.love_off.short=Stoppt den Aufbau von Liebe - und Groll - mit den Nachbarn
+mood.fix.love_off_other=Liebe aus: {0}
+mood.fix.love_off_other.help=Stoppt bei {0} den Aufbau von Liebe - und Groll - mit den Nachbarn. Auch die Liebe von {0} zu dir wächst nicht mehr.
+mood.fix.open={0} öffnen
+mood.fix.orders=Befehle
+mood.fix.orders.away=Revier: von ihnen weg verlegen
+mood.fix.orders.away_from=Revier: weg von {0} verlegen
+mood.fix.orders.free_bed=Revier: zu einem Haus mit freiem Bett verlegen
+mood.fix.orders.help=Revier, Kampfbefehl und Rechte
+mood.fix.orders.sex=Revier und Rechte: dort ist Sex
+mood.fix.orders.with=Revier und Haus: in eines mit {0} bringen
+mood.fix.orders.with_them=Revier und Haus: in eines mit ihnen bringen
+mood.fix.sex_off=Sex aus
+mood.fix.sex_off.help=Fragt nicht mehr, also keine Abweisung - und kein Sex, also auch nicht dessen +3 Stimmung
+
+mood.head=Stimmung
+
+mood.label.company=Schlechte Gesellschaft
+mood.label.company_with=Schlechte Gesellschaft: {0}
+mood.label.no_bed=Kein Bett
+mood.label.no_bed_with=Kein Bett mit {0}
+mood.label.pining=Sehnsucht
+mood.label.pining_for=Sehnsucht nach {0}
+mood.label.sex=Sex
+mood.label.sex_with=Sex mit {0}
+mood.label.sleep=Schläft drinnen
+
+mood.last_day=Letzter Tag
+mood.last_day.help=Was die Stimmung seit gestern um diese Zeit bewegt hat, nach Ursache
+mood.level=Moral {0}
+mood.moral_after=Moral danach
+mood.night=Nacht
+mood.night.help=21:00 bis 06:00. Eine Nacht drinnen zahlt sich im Morgengrauen aus:\nbis +10, oder +20 unter null
+
+mood.now.moved=Seit gestern um diese Zeit: {0}
+mood.now.none=Keine Änderung in den letzten drei Tagen verzeichnet
+
+mood.pill.from_rebelling={0} bis zur Rebellion
+mood.pill.in_a_day={0} an einem Tag
+mood.pill.in_days.one={1} in {0} Tag
+mood.pill.in_days.other={1} in {0} Tagen
+mood.pill.steady=stabil
+
+mood.report.dawn.one=Morgengrauen: {0} schlief drinnen.
+mood.report.dawn.other=Morgengrauen: {0} schliefen drinnen.
+mood.report.dawn_sleepless.one=Morgengrauen: {0} schlief drinnen; kein Schlaf: {1}.
+mood.report.dawn_sleepless.other=Morgengrauen: {0} schliefen drinnen; kein Schlaf: {1}.
+mood.report.near={0} steht kurz vor der Rebellion.
+mood.report.near_why={0} steht kurz vor der Rebellion: {1}.
+mood.report.rebelled={0} hat rebelliert.
+mood.report.rebelled_why={0} hat rebelliert: {1}.
+
+mood.section.moral=MORAL
+mood.section.moral.help=Die Moral, -100 bis 100: bei -100 folgt Rebellion. Eine Nacht drinnen ist der wichtigste Weg nach oben.
+
+mood.span.from_to={0} bis {1}
+mood.span.none=Keine Änderung verzeichnet
+mood.span.since=Seit {0}
+mood.span.until=Bis {0}
+
+mood.today={0} heute
+
+mood.word.company=schlechte Gesellschaft
+mood.word.execution=sah eine Hinrichtung
+mood.word.food=schlechtes Essen
+mood.word.heartbroken=Liebeskummer
+mood.word.no_bed=kein Bett
+mood.word.unhappy=unglücklich
+
+observe.unknown=???
+
+observe.unknown.short=?
+
+orders.action.banish=Verbannen
+orders.action.call=Rufen
+
+orders.combat=Kampf
+
+orders.combat.aggressive=Aggressiv
+orders.combat.aggressive.help=Greift jeden Feind sofort an.
+orders.combat.defensive=Defensiv
+orders.combat.defensive.help=Wehrt sich bei Angriffen und verfolgt nicht.\nBeim Folgen: greift an, wer dir feindlich ist.
+orders.combat.guard=Wache
+orders.combat.guard.help=Greift Späher und Plünderer sofort an und schläft nachts nicht.\nBeim Folgen: wie Aggressiv.
+orders.combat.name.aggressor=Angreifer
+orders.combat.name.defender=Verteidiger
+orders.combat.name.guarder=Wächter
+orders.combat.name.other=Rolle {0}
+orders.combat.name.survivor=Überlebender
+orders.combat.survival=Überleben
+orders.combat.survival.help=Kämpft nicht. Nimmt keinen Schaden.
+
+orders.edit_dialogue=Dialog bearbeiten
+orders.face_left=Nach links
+orders.face_right=Nach rechts
+orders.following=Folgt
+
+orders.following.no=nein
+orders.following.yes=ja
+
+orders.job=Arbeit
+
+orders.job.breeding=Zucht
+orders.job.breeding.help=Kümmert sich um die Zuchtanlagen in der Nähe.
+orders.job.breeding.needs=eine Schweinefarm oder ein Gehege, eine Erntekiste, eine Melkmaschine
+orders.job.digging=Graben
+orders.job.digging.help=Gräbt Erde aus und lagert sie an der Grabstelle.
+orders.job.digging.needs=eine Grabstelle
+orders.job.farming=Ackerbau
+orders.job.farming.help=Pflegt die Pflanzkästen in der Nähe und legt die Ernte in die Erntekiste.
+orders.job.farming.needs=Pflanzkästen und eine Erntekiste
+orders.job.food=Nahrung
+orders.job.food.help=Sammelt Nahrung und lagert sie in der Nahrungskiste.
+orders.job.food.needs=eine Nahrungskiste
+orders.job.gathering=Sammeln
+orders.job.gathering.help=Sammelt Äste, Blätter, Fasern und Ähnliches in die Erntekiste.
+orders.job.gathering.needs=eine Erntekiste
+orders.job.name.excavate=Ausgraben
+orders.job.name.farm=Ackerbau
+orders.job.name.fishing=Angeln
+orders.job.name.food=Nahrung
+orders.job.name.harvest=Sammeln
+orders.job.name.livestock=Viehzucht
+orders.job.name.log=Holzfällen
+orders.job.name.mine=Bergbau
+orders.job.name.none=Keine
+orders.job.name.other=Arbeit {0}
+orders.job.name.repair=Reparieren
+orders.job.name.train=Training
+orders.job.needs=Braucht
+orders.job.none=Keine Arbeit
+orders.job.none.help=Arbeitet nicht. Libido erholt sich schneller.
+orders.job.repair=Reparatur
+orders.job.repair.help=Repariert beschädigte Gebäude, die nächsten am Warteplatz zuerst.
+orders.job.stone=Stein
+orders.job.stone.help=Baut Stein ab und lagert ihn im Steinbruch.
+orders.job.stone.needs=ein Steinbruch
+orders.job.training=Training
+orders.job.training.help=Trainiert am Sandsack und sammelt Erfahrung.
+orders.job.training.needs=ein Sandsack
+orders.job.wood=Holz
+orders.job.wood.help=Fällt Holz und lagert es am Holzplatz.
+orders.job.wood.needs=ein Holzplatz
+
+orders.option.house=Haus betreten/verlassen
+orders.option.love=Liebe erlauben
+orders.option.sex=Sex erlauben
+
+orders.permission.force=Zwang
+orders.permission.force.off=Zwingt niemanden
+orders.permission.force.on=Erzwingt Sex, wenn die Lust kommt
+orders.permission.house=Haus
+orders.permission.house.off=Bleibt außerhalb von Häusern
+orders.permission.house.on=Geht in Häuser ein und aus
+orders.permission.love=Liebe
+orders.permission.love.off=Keine Liebe und kein Groll
+orders.permission.love.on=Baut Liebe zu Nachbarn auf
+orders.permission.sex=Sex
+orders.permission.sex.off=Kein Sex
+orders.permission.sex.on=Hat Sex, wenn die Lust kommt
+
+orders.permissions=Rechte
+
+orders.pose.attack=Angreifen
+orders.pose.cheer=Anfeuern
+orders.pose.dance=Tanzen
+orders.pose.fan=Fächeln
+orders.pose.harvest=Ernten
+orders.pose.lewd_dance=Anzüglicher Tanz
+orders.pose.lie_down=Liegen
+orders.pose.mining=Schürfen
+orders.pose.none=Nichts
+orders.pose.repair=Reparieren
+orders.pose.run=Rennen
+orders.pose.shower=Duschen
+orders.pose.sit=Sitzen
+orders.pose.sleep=Schlafen
+orders.pose.walk=Gehen
+orders.pose.walk_backward=Rückwärts gehen
+
+orders.section.assignment=AUFGABE
+orders.section.permissions=RECHTE
+orders.section.standing=STANDORT
+
+orders.set_place=Platz setzen
+orders.standing=Standort
+orders.territory=Revier
+orders.title=Befehle
+orders.waiting_pose=Wartepose
+
+place.cancel=Abbrechen
+place.cancel.help=Lässt Platz, Haus und Revier, wie sie waren.
+place.cancel.note=oder Rechtsklick, wie im Spiel
+place.food=Nahrung
+
+place.food.edge_only.one=nur am Rand des Reviers ({0} Vorrat)
+place.food.edge_only.other=nur am Rand des Reviers ({0} Vorräte)
+place.food.held.one={0} Vorrat mit {1}
+place.food.held.other={0} Vorräte mit {1}
+place.food.none=kein Vorrat in Reichweite
+
+place.head={0} platzieren
+
+place.head.cancel=abbrechen
+place.head.place=platzieren
+place.head.size=Größe
+place.head.walk=gehen
+
+place.house=Haus
+
+place.house.barred=eines {0} entfernt, {1}
+place.house.barred.why=darf aber nicht in Häuser
+place.house.inside=dieses: innen platziert, wohnt hier
+place.house.near={0} entfernt: +10 Stimmung im Morgengrauen
+place.house.none=keines im Umkreis von {0}: keine Stimmung im Morgengrauen
+place.house.past_widest=nächstes {0} entfernt, jenseits des größten Reviers
+place.house.widen=nächstes {0} entfernt: Revier um {1} erweitern
+
+place.key.click=Klick
+place.key.wheel=Mausrad
+
+place.keys.cancel={0} abbrechen
+place.keys.size={0} Größe
+
+place.living_here=WOHNT HIER
+
+place.near.back=ERWIDERT
+place.near.for={0} für {1}
+place.near.more.one=und {0} weitere
+place.near.more.other=und {0} weitere
+place.near.more_plain.one=und {0} weitere, alle +5 in beide Richtungen
+place.near.more_plain.other=und {0} weitere, alle +5 in beide Richtungen
+place.near.them=sie
+place.near.they=sie
+place.near.tick=Ein Liebestick, sechs am Tag, solange sich die Reviere berühren:
+place.near.to_them=ZU IHNEN
+
+place.neighbours=NACHBARN
+
+place.neighbours.love_off=Liebe ist aus: niemand hier zählt
+place.neighbours.none=Hier berührt kein anderes Revier dieses: keine Liebesänderung
+
+place.point_ground=Zeige auf den Boden, um eine Stelle zu prüfen
+
+place.rings.a_step=ein Schritt
+place.rings.wheel=das Mausrad über der Welt, {0} je Raste, {1} bis {2}
+
+place.stores.and_edge={0}, +{1} am Rand
+place.stores.nearest=nächster {0} entfernt, Reichweite {1}
+
+place.water=Wasser
+
+place.water.edge_only.one=nur am Rand des Reviers ({0} Brunnen)
+place.water.edge_only.other=nur am Rand des Reviers ({0} Brunnen)
+place.water.held.one={0} Brunnen mit {1}
+place.water.held.other={0} Brunnen mit {1}
+place.water.none=kein Brunnen in Reichweite
+
+player.food=Nahrung
+player.hp=HP
+player.level=Charakterstufe {0}
+player.lives=Leben
+player.name_level={0}  ·  Charakterstufe {1}
+player.needs_empty=Nahrung oder Wasser leer: keine Heilung, und die Gesundheit schwindet
+
+player.points.attributes=Attributpunkte zu vergeben
+
+player.skill_level=Fähigkeitsstufe {0}
+player.stun=Betäubung
+
+
+player.water=Wasser
+player.xp=EP
+
+quicksave.no_slot=Kein Speicherslot zum Speichern: einmal im Menü speichern und diesen Slot laden
+quicksave.saved=In Slot {0} gespeichert
+quicksave.saved_backup=Im Backup-Slot gespeichert
+quicksave.saving=Speichern...
+
+reach.all_in=Alles rein
+reach.all_in.help=Alles aus deinen Taschen kommt in die hier aufgeführten Truhen: zuerst in eine, die es schon enthält, dann in die nächste mit Platz. Favoriten bleiben.
+reach.all_out=Alles raus
+reach.all_out.help=Alles aus den aufgeführten Truhen kommt in deine Taschen, die nächste Truhe zuerst, bis sie voll sind. Dann die Ernte: Fische aus den Reusen, Eier, Honig, Kräuter und Pilze.
+reach.body=Körper
+
+reach.body.dead=tot
+reach.body.down=am Boden
+
+reach.button.hide=Truhen ausblenden
+reach.button.show=Truhen in Reichweite
+
+reach.chip.bags=Taschen deiner Leute
+reach.chip.bags.help=Die Taschen der Leute, die du beschäftigst, in Reichweite.
+reach.chip.benches=Werkbank-Leisten
+reach.chip.benches.help=Die eigene Leiste mit zehn Slots an jeder Werkbank.
+reach.chip.bodies=Körper
+reach.chip.bodies.help=Die Taschen der Niedergestreckten und der Toten, in Reichweite.
+reach.chip.breeding=Käfige, Fallen, Pflanzkästen
+reach.chip.breeding.help=Käfige, Fallen, Pflanzkästen, Bienenstöcke, Geflügelkästen, Pilzstämme, Kräuterkästen.
+reach.chip.bulk={0} · {1} · {2} wirken hier.
+reach.chip.by_hand=Aufgeführt; Dinge von Hand bewegen.
+reach.chip.chests=Truhen und Kisten
+reach.chip.chests.help=Holz- und Eisentruhen, Kisten, die Ausgabe der Mine.
+reach.chip.click_hide=Klicken zum Ausblenden.
+reach.chip.harvest={0} holt die Ernte; der Rest von Hand.
+reach.chip.hidden=ausgeblendet
+reach.chip.hidden.help=Hier nicht aufgeführt. Klicken zum Einblenden.
+reach.chip.let_stack=Klicken, damit auch die Schnellstapel-Taste es füllt.
+reach.chip.materials=Materiallager
+reach.chip.materials.help=Die Lager, die eine Werkbank als eigenen Bestand zählt.
+reach.chip.shown=angezeigt
+reach.chip.shown_stack=angezeigt, Schnellstapeln füllt es
+reach.chip.shown_stack.help=Die Schnellstapel-Taste darf auch hier ablegen. Klicken zum Ausblenden.
+
+reach.compact=Kompakt
+reach.container=Behälter
+reach.only_filtered=Nur, was zum Filter passt.
+reach.stack=Stapeln
+reach.stack.help=Was eine aufgeführte Truhe schon enthält, kommt zu ihr. Favoriten bleiben.
+reach.title=In Reichweite
+
+recipe.bench=WERKBANK
+
+recipe.bench.in_reach={0} · in Reichweite
+recipe.bench.not_in_reach={0} · außer Reichweite
+
+recipe.by_hand=Von Hand
+
+recipe.counter.max=MAX {0}
+recipe.counter.set=MENGE {0}
+
+recipe.craft=HERSTELLEN {0}
+recipe.have_need_makes=HABE / BRAUCHE · ERGIBT {0}
+
+recipe.hint.by_hand=Von Hand herstellen
+recipe.hint.gather=In der Welt sammeln
+recipe.hint.make_at=Herstellen bei: {0}
+recipe.hint.needs_materials=Rezept braucht Materialien
+recipe.hint.not_in_reach={0} außer Reichweite
+
+recipe.makes=ERGIBT {0}
+recipe.materials=MATERIALLISTE
+recipe.note=NOTIZ
+recipe.quantity=MENGE
+
+recipe.quantity.tip=Wie viele
+recipe.quantity.tip.type=Zahl anklicken, um eine einzugeben
+recipe.quantity.tip.wheel=Mausrad in Schritten
+
+recipe.return.back_to=Zurück zu {0}
+recipe.return.bench=Nötige Werkbank außer Reichweite
+recipe.return.job=Zurück zur Aufgabe
+recipe.return.needs_more=Braucht noch {0} {1}
+
+recipe.return.other=Weitere Materialien noch nötig
+
+recipe.return.ready=Bereit zum Herstellen
+
+recipe.sheet_number=BLATT {0}
+
+recipe.status.can_craft.one={0}-mal herstellbar
+recipe.status.can_craft.other={0}-mal herstellbar
+recipe.status.crafted={0} {1} hergestellt
+recipe.status.need_more=Noch {0} {1} nötig
+recipe.status.requires=Braucht {0} — außer Reichweite
+recipe.status.unavailable=In diesem Menü nicht verfügbar
+
+relations.head=Beziehungen
+relations.history=Chronik
+
+relations.history.deliveries=Geburten
+relations.history.first_partner=Erster Partner
+relations.history.masturbation=Masturbation
+relations.history.pregnancies=Schwangerschaften
+relations.history.sex=Sex
+
+relations.matrix.count.one={0} Beziehung
+relations.matrix.count.other={0} Beziehungen
+relations.matrix.plain={0} — {1}
+relations.matrix.plain_shown={0} — {1} ({2} angezeigt)
+relations.matrix.shown_of={0} von {1}
+relations.matrix.title={0} · BEZIEHUNGEN
+
+relations.more=… {0} weitere
+
+roster.filter.unhappy=unglücklich
+
+roster.job.breed=Zucht
+roster.job.dig=Graben
+roster.job.fishing=Angeln
+roster.job.following=Folgt
+roster.job.food=Nahrung
+roster.job.harvest=Ernte
+roster.job.idle=Untätig
+roster.job.planter=Anbau
+roster.job.repair=Reparatur
+roster.job.stone=Stein
+roster.job.training=Training
+roster.job.wood=Holz
+roster.job.working=Arbeitet
+
+roster.kind.numbered=Art {0}
+roster.kind.story=Story-Figuren
+
+roster.level=Lv {0}
+
+roster.mood.at_risk=Gefährdet
+roster.mood.close=Kurz vor Rebellion
+roster.mood.content=Zufrieden
+roster.mood.rebelling=Rebelliert
+roster.mood.unhappy=Unglücklich
+
+roster.section.at_home=Zu Hause
+roster.section.away=Abwesend
+roster.section.in_reach=In Reichweite
+roster.section.no_personality=Ohne Persönlichkeit
+
+roster.send_home=Alle heimschicken
+roster.send_home.help=Alle gehen zurück in ihr eigenes Revier
+
+roster.sort.job=Arbeit
+roster.sort.kind=Art
+roster.sort.mood=Stimmung
+roster.sort.personality=Persönlichkeit
+roster.sort.vicinity=Umgebung
+
+roster.title=Bewohner
+
+roster.where.at_home=zu Hause
+roster.where.away=abwesend
+roster.where.in_reach=in Reichweite
+
+settings.action_bar.shift=Shift zum Verschieben
+settings.action_bar.shift.help=Einen Platz der Aktionsleiste oder ein Werkzeug am Gürtel zu verschieben, braucht gehaltenes Shift, damit ein Ausrutscher der Maus keinen verliert. Aus: frei ziehen, und von der Leiste gezogen wird er entfernt. Shift+Klick entfernt ihn in jedem Fall.
+settings.apply_note=Änderungen gelten sofort.
+
+settings.camera.zoom_out=Herauszoomen
+settings.camera.zoom_out.help=Wie weit das Mausrad die Kamera zurückzieht, gemessen an der weitesten Stufe des Spiels. Die Kamera zeichnet so weit, wie sie zurücksteht, ein weiter Zoom kostet also Bilder pro Sekunde.\n100%  wie im unveränderten Spiel
+settings.cursor.style.arrow=Pfeil
+settings.cursor.style.arrow_bold=Pfeil fett
+settings.cursor.style.carved=Geschnitzt
+settings.cursor.style.claw=Klaue
+settings.cursor.style.crosshair=Fadenkreuz
+settings.cursor.style.help=Wähle Aus für den Mauszeiger des Systems.
+settings.cursor.style.off=Aus
+settings.cursor.style.ring=Ring
+settings.cursor.style.spear=Speer
+
+settings.done=Fertig
+
+settings.effects.by_id=Effekt {0}
+settings.effects.by_id.help=Über seine Nummer in der Liste [FX] Blocked der .cfg ausgeblendet.
+settings.effects.by_name.help=Der Name des Spiels für diesen Effekt. Ausblenden ändert nur, was du siehst.
+settings.effects.filter=Effektfilter
+settings.effects.filter.help=Aus, und jeder Effekt erscheint wie im Spiel ohne Mods. Was unten ausgeblendet ist, bleibt gespeichert, bis der Filter wieder an ist.
+settings.effects.group.hidden=Ausgeblendet
+settings.effects.group.shown=Angezeigt, neueste zuerst
+settings.effects.none=Noch keine. Spiel weiter und öffne das hier erneut.
+settings.effects.none.help=Effekte werden aufgeführt, sobald das Spiel sie in dieser Sitzung zum ersten Mal zeigt.
+
+settings.group.action_bar=Aktionsleiste
+settings.group.chests=Truhen
+settings.group.flights=Flüge
+settings.group.item_card=Gegenstandskarte
+settings.group.markers=Markierungen
+settings.group.marking=Markierung
+settings.group.plaque=Plakette
+settings.hotkeys.clash=Auch {0} zugewiesen. {1}
+settings.hotkeys.close_all=Alles schließen
+settings.hotkeys.close_all.help=Schließt jedes offene Fenster, zuerst die von Island UI, dann die des Spiels.
+settings.hotkeys.console=Konsole
+settings.hotkeys.console.help=Lässt die Befehlskonsole vom oberen Bildschirmrand herunterfahren.
+settings.hotkeys.console.unbound=Links neben 1
+settings.hotkeys.crafting=Herstellung
+settings.hotkeys.crafting.help=Öffnet und schließt das Herstellungsfenster.
+settings.hotkeys.cursor_cycle=Nächster Zeiger
+settings.hotkeys.cursor_cycle.help=Schaltet durch die Zeigerstile, damit du beim Hinsehen wählen kannst.
+settings.hotkeys.group.game=Tasten des Spiels
+settings.hotkeys.inventory=Inventar
+settings.hotkeys.inventory.help=Öffnet und schließt das Inventarfenster.
+settings.hotkeys.quick_save=Schnellspeichern
+settings.hotkeys.quick_save.help=Speichert in den Slot, aus dem dieses Spiel geladen wurde.
+settings.hotkeys.quick_stack=Schnellstapeln
+settings.hotkeys.quick_stack.help=Legt stapelbare Gegenstände in nahe Lager ab, die auf Stapeln stehen.
+settings.hotkeys.target=Ziel
+settings.hotkeys.target.help=Visiert an, was dem Zeiger am nächsten ist, ohne hinzugehen; erneut gedrückt, das nächstnähere.
+settings.hotkeys.target_sheet=Steckbrief des Ziels
+settings.hotkeys.target_sheet.help=Öffnet und schließt den Steckbrief deines aktuellen Ziels.
+settings.hotkeys.vicinity=Umgebung
+settings.hotkeys.vicinity.help=Öffnet und schließt das Umgebungsfenster: die Lager in Reichweite.
+settings.hotkeys.world_focus=Zurück zur Welt
+settings.hotkeys.world_focus.help=Schließt die Fenster von Island UI sowie Karte und Aufgaben-Einblendungen.
+
+settings.items.guide=Herkunft
+settings.items.guide.help=Die Infokarte sagt, wie man den Gegenstand bekommt: wo er zu finden ist, wer ihn fallen lässt, wer ihn handelt. Aus dem Wissen der Spieler zusammengetragen, deckt sie auch den Dungeon, Truhen und Tauschhandel ab.
+
+settings.language=Sprache
+settings.language.help=Wie das Spiel: die in den Optionen des Spiels eingestellte Sprache; die Klammer zeigt, welche es gerade ist. Eine Fan-Übersetzung über dem Englisch des Spiels erscheint dort weiterhin als Englisch, also wähle ihre Sprache aus der Liste. Die Übersetzungen sind maschinell erstellt; Korrekturen sind willkommen.
+
+settings.language.same_as_game=Wie das Spiel (jetzt: {0})
+
+settings.page.camera=Kamera
+settings.page.camera.about=Wie weit die Kamera zurücktreten kann.
+settings.page.combat=Kampf
+settings.page.combat.about=Wer im Kampf eine Markierung trägt und wem die Plakette folgt.
+settings.page.cursor=Zeiger
+settings.page.effects=Effekte
+settings.page.effects.about=Schalte einen Effekt ein, um ihn auszublenden. Ein Effekt erscheint in der Liste, sobald das Spiel ihn gezeigt hat.
+settings.page.general=Allgemein
+settings.page.general.about=Dein Zeiger und die Sprache der Mods.
+settings.page.hotkeys=Tasten
+settings.page.hotkeys.about=Klicke eine Taste an und drücke dann die neue. Esc bricht ab, Backspace löscht.
+settings.page.notices=Hinweise
+settings.page.notices.about=Wie der Bildschirm dir zeigt, was geschieht: niedrige Werte und was wohin fliegt.
+settings.page.sheets=Steckbriefe
+settings.page.vicinity=Umgebung
+settings.page.steering=Ausweichen
+settings.page.steering.about=Wie deine Leute und deine Feinde um das herumkommen, was ihnen im Weg ist.
+settings.page.story=Geschichte
+settings.page.story.about=Was dir die Entscheidungen der Geschichte verraten, bevor du wählst.
+settings.page.struggle=Gegenwehr
+settings.page.struggle.about=Die Taste im Klammergriff halten, statt sie zu hämmern.
+settings.page.target=Ziel
+settings.page.target.about=Wie die Person oder Sache markiert wird, mit der du es zu tun hast.
+settings.page.tip=Einstellungen: {0}
+settings.page.vitals=Vitalwerte
+settings.page.weather=Wetter
+settings.page.weather.about=Wo dich das Wetter erreicht.
+settings.page.window=Fenster
+settings.page.window.about=Was das Spielfenster tut, wenn du wegschaust.
+
+settings.page.windows=Fenster
+settings.page.windows.about=Wo die Fenster von Island UI stehen und was sie zeigen.
+settings.sheets.left=Steckbrief links
+settings.sheets.left.help=Der Steckbrief einer Figur wandert nach links, solange Herstellung, Umgebung und Bewohnerliste geschlossen sind, und zurück, sobald eines davon aufgeht. Der Reiter am Rand des Steckbriefs schaltet das ebenfalls um.
+settings.target.always_enemy_markers=Immer auf Feinden
+settings.target.always_enemy_markers.help=Alle Feindseligen auf dem Bildschirm tragen die Kampfmarkierung, im Kampf oder nicht: wer auf dich oder deine Leute losgegangen ist. Ersetzt für sie die Anzahl oben.
+settings.target.always_neutral_markers=Immer auf Neutralen
+settings.target.always_neutral_markers.help=Alle auf dem Bildschirm, die weder zu dir gehören noch feindselig sind, tragen die Kampfmarkierung, im Kampf oder nicht, ihr Lebensbalken gelb. Ersetzt für sie die Anzahl oben.
+settings.target.always_friend_markers=Immer auf deinen Leuten
+settings.target.always_friend_markers.help=Alle deine Leute auf dem Bildschirm tragen die Kampfmarkierung, im Kampf oder nicht, ihr Lebensbalken grün. Ersetzt für sie die Anzahl oben.
+settings.vicinity.compact=Kompakt
+settings.vicinity.compact.help=Jeder Behälter zeigt seine belegten Plätze in ihrer eigenen Reihenfolge und dann eine Zahl, wie viele frei sind, statt jedes Platzes. Das Kästchen „Kompakt“ unten im Umgebungsfenster schaltet das ebenfalls um.
+settings.vicinity.hold_order=Reihenfolge halten
+settings.vicinity.hold_order.help=Solange der Zeiger auf der Liste ist, bleiben die Zeilen an ihrem Platz, damit sich keine unter dem Zeiger verschiebt. Eine Zeile, die näher gekommen ist als eine darüber, trägt einen Pfeil, und die Liste sortiert sich neu, sobald der Zeiger sie verlässt.\nAus  immer das Nächste zuerst
+
+settings.steering.clearance=Abstand
+settings.steering.clearance.help=Wie breit die Vorausschau im Verhältnis zum eigenen Körper ist.\nÜber 100%  umrundet Ecken mit Luft, meidet enge Lücken\nUnter 100%  zwängt sich in Lücken kaum breiter als der Körper, streift Ecken
+settings.steering.door_assist=Türhilfe
+settings.steering.door_assist.help=Deine Leute, die ein Haus verlassen, kommen hinaus, sobald sie die Tür erreichen. Der Ausgang des Native House liegt größtenteils in seiner Wand, und ohne das können sie für immer daneben stehen bleiben.
+settings.steering.enabled=Island AI
+settings.steering.enabled.help=Die ganze Mod, live: aus, und alle bewegen sich genau wie im Spiel ohne Mods.
+settings.steering.enemies=Feinde weichen aus
+settings.steering.enemies.help=Feinde gehen um Hindernisse herum, statt hineinzudrücken: beim Verfolgen, Umherstreifen, Fliehen. Mauern schützen weniger.
+settings.steering.friends=Deine Leute weichen aus
+settings.steering.friends.help=Begleiter und Dorfbewohner gehen draußen um Hindernisse herum: wenn sie dir folgen, einen Feind verfolgen, umherstreifen, nachts zu einem Haus gehen.
+settings.steering.look_ahead=Vorausschau
+settings.steering.look_ahead.help=Wie weit ein Gehender nach etwas in seinem Weg vorausschaut.
+settings.steering.method=Methode
+settings.steering.method.along_walls=An Wänden entlang
+settings.steering.method.fan=Fächer
+settings.steering.method.help=Wie ein blockierter Gehender seinen Weg wählt:\nAn Wänden entlang  probiert auch die Richtung der getroffenen Wand und nimmt die Richtung mit dem meisten Platz nahe am Ziel; findet enge Durchgänge\nFächer  die erste Fassung: die nächstgelegene von elf festen Richtungen, die völlig frei ist
+
+settings.story.hints=Story-Hinweise
+settings.story.hints.always=Immer
+settings.story.hints.click=Auf Klick
+settings.story.hints.help=Jede Option einer Story-Entscheidung und jede Taste einer Szene, die auf eine wartet, sagt, wohin sie führt: Zuneigung, wer beitritt, was freigeschaltet wird. Auf Klick warten sie hinter einer Leiste, bis du sie anklickst. Tode, Enden und Trennungen bleiben immer verdeckt bis zum Klick.
+settings.story.hints.off=Aus
+
+settings.struggle.hold=Halten zum Wehren
+settings.struggle.hold.help=Halte im Klammergriff die Angriffstaste, und es wird weiter zugeschlagen. Ohne Mod wiederholt Halten erst ab gelernter Fähigkeit 9; bis dahin musst du die Taste hämmern.
+settings.struggle.interval=Schlag alle
+settings.struggle.interval.help=Zeit zwischen den Schlägen beim Halten. Nie langsamer, als deine Fähigkeit schon erlaubt.\n0,10 s  etwa schnelles Hämmern, und was das Spiel bei voller Fähigkeit gibt
+
+settings.target.combat_markers=Kampfmarker
+settings.target.combat_markers.help=Wie viele Feinde im Kampf einen kleinen Gesundheits- und Betäubungsmarker über dem Kopf tragen: die zuletzt getroffenen, dann die nächsten von denen, die dich angreifen. Außerhalb des Bildschirms wartet der Marker am Rand und zeigt auf sie. 0 = keine.
+settings.target.flight_time=Flugzeit
+settings.target.flight_time.help=Wie lange die Meldung fliegt.\nUnter etwa 0,35 s  die Anzahl ist im Flug nicht lesbar\nÜber 0,8 s  es fühlt sich wie Warten an
+settings.target.friendly_markers=Verbündeten-Marker
+settings.target.friendly_markers.help=Im Kampf tragen auch deine Begleiter und deine Leute, die an deiner Seite kämpfen, den Kampfmarker, ihr Gesundheitsbalken grün. Sie haben ihre eigene Anzahl, so viele wie die der Feinde oben, sodass ein Feind seinen Marker nie an einen von deinen abgibt.
+settings.target.hover_health=Gesundheit beim Zeigen
+settings.target.hover_health.help=Zeigst du auf jemanden mit Gesundheit, im Kampf oder nicht, trägt er den Kampfmarker über dem Kopf, solange der Zeiger auf ihm bleibt. Nicht bei jemandem, der schon einen Marker trägt: deinem Ziel oder einem im Kampf markierten Feind.
+settings.target.pickup_flight=Aufhebe-Flug
+settings.target.pickup_flight.help=Die Meldung eines aufgehobenen Gegenstands fliegt von dir zu dem Slot, in dem er gelandet ist, statt am Bildschirmrand zu warten.
+settings.target.ring=Bodenring
+settings.target.ring.help=Ein Ring auf dem Boden unter deinem Ziel, in der Farbe seines Markers:\nGrün  deins\nRot  feindlich\nBernstein  ein Fremder oder ein Ding\nGrau  ein Körper
+settings.target.ring_opacity=Ring-Deckkraft
+settings.target.ring_opacity.help=Wie deckend der Ring ist.
+settings.target.ring_size=Ringgröße
+settings.target.ring_size.help=Wie groß der Ring ist, im Vergleich zu dem, was die Grundfläche des Ziels verlangt.
+settings.target.containers_open=Truhen sofort öffnen
+settings.target.containers_open.help=Wenn du eine Truhe oder etwas anderes, das nur Lager ist, als Ziel wählst, öffnet sich sein Inventar sofort. Schließt du es, bleibt die nächste Truhe, zu der du wechselst, zu, bis du die Auswahl aufhebst.\nAus  über die Inventar-Taste öffnen
+settings.target.container_close_untargets=Truhe schließen hebt Auswahl auf
+settings.target.container_close_untargets.help=Schließt du das Inventar einer Truhe oder von etwas anderem, das nur Lager ist, wird auch die Auswahl aufgehoben.\nAus  sie bleibt dein Ziel, mit geschlossenem Inventar
+settings.target.selection_pulse=Auswahl-Puls
+settings.target.selection_pulse.help=Das eigene pulsierende weiße Leuchten des Spiels auf der gewählten Person. Standardmäßig aus: Marker und Ring zeigen schon, wer es ist.
+
+settings.unit.metres={0} m
+settings.unit.none=Keine
+settings.unit.percent={0}%
+settings.unit.seconds={0} s
+
+settings.vitals.health_at=Gesundheit knapp ab
+settings.vitals.health_at.help=Deiner maximalen Gesundheit. Kritisch wird es bei der Hälfte davon.
+settings.vitals.low=Knapp-Warnung
+settings.vitals.low.help=Ein knapper Vitalwert leuchtet auf der Anzeige in seiner eigenen Form:\nBernstein  knapp, ein langsamer Atem\nRot  kritisch, ein schnellerer Puls\nJede Stufe schlechter blitzt einmal auf. Wiederhergestellt, verblasst er.
+settings.vitals.needs_at=Nahrung und Wasser knapp ab
+settings.vitals.needs_at.help=Des vollen Balkens. Kritisch wird es bei der Hälfte davon, und leer blitzt es noch einmal: dann heilt dich das Spiel nicht mehr und zieht dir Gesundheit ab.
+
+settings.weather.dry_indoors=Drinnen trocken
+settings.weather.dry_indoors.help=In einem Haus fällt kein Regen. Draußen regnet es weiter, und an der Tür siehst du ihn wieder. Ohne Mod folgt dir der Regen hinein.
+
+settings.window.keep_fullscreen=Sichtbar bleiben
+settings.window.keep_fullscreen.help=Das Spiel bleibt offen, wenn du den Desktop wechselst, Alt+Tab drückst oder auf einen anderen Monitor klickst. Ohne Mod minimiert es sich.
+settings.window.minimise_shortcuts=Win+M minimiert
+settings.window.minimise_shortcuts.help=Win+M und Win+Down minimieren das Spiel, wie andere Fenster auch. Ein Klick auf die Taskleiste und Win+D wirken so oder so.
+
+sheet.click_to_target=Klicken, um {0} anzuvisieren
+sheet.cost={0} P.
+sheet.lv=Lv {0}
+sheet.no=nein
+sheet.points=Punkte
+sheet.yes=ja
+sheet.you=Du
+
+skills.fallback_name=Fähigkeit {0}
+skills.head=Fähigkeiten
+skills.level=Fähigkeitsstufe {0}
+skills.max=Max
+
+skills.name.carry=Tragen
+skills.name.construction=Bauen
+skills.name.grapple=Fesseln
+skills.name.harvest=Ernte
+skills.name.leader=Anführer
+skills.name.observation=Beobachtung
+skills.name.patience=Geduld
+skills.name.persuasive=Überzeugung
+skills.name.self_healing=Selbstheilung
+skills.name.smash=Wuchtschlag
+skills.name.stomach=Eiserner Magen
+skills.name.swim=Schwimmen
+
+skills.tip.next=Nächste, Lv {0}: {1}
+skills.tip.now=Jetzt, Lv {0}: {1}
+
+slot.filter=Filter...
+
+social.before_record=Vor der Aufzeichnung
+social.cant_stand=unerträglich
+social.cant_stand_each=ertragen sich nicht
+social.cant_stand_who=erträgt {0} nicht
+social.click_close=Klicken zum Schließen
+social.click_why=Klicken für den Grund
+social.not_shown={0} nicht angezeigt
+
+social.note.acquainted=bekannt
+social.note.loved_not_back={0} liebt {1}, nicht erwidert
+social.note.lovers=Liebespaar
+social.note.loves_not_back=liebt {0}, nicht erwidert
+
+social.show_less=Weniger zeigen
+social.none=Keine
+social.show_more={0} weitere zeigen
+
+split.take={0} nehmen
+
+story.spoiler=Spoiler - klicken zum Aufdecken
+story.show_hints=Hinweise - klicken zum Zeigen
+story.show_hints.tip=Wohin jede Option führt, wartet hinter dieser Leiste. Um die Hinweise sofort zu zeigen oder abzuschalten, siehe die Seite Story in den Einstellungen.\n
+strip.hp=HP
+strip.love_for_you=Liebe zu dir
+strip.not_met=nicht getroffen
+strip.pregnant=Schwanger
+strip.pregnant_months={0} / 12 Monate
+
+talk.choice_unnamed=Gesprächsoption
+talk.header=Mit {0} reden
+talk.nothing=Nichts zu besprechen
+
+target.tab.nothing=hier nichts anzuvisieren
+
+tip.fix=Abhilfe
+
+unit.act=Aktion
+
+unit.act.carry=Tragen
+unit.act.change=Wechseln
+unit.act.craft=Herstellen
+unit.act.dissect=Zerlegen
+unit.act.follow=Mitnehmen
+unit.act.give_birth=Gebären
+unit.act.leave=Zurücklassen
+unit.act.talk=Reden
+unit.act.token_shop=Token-Laden
+unit.act.token_shop_2=Token-Laden 2
+unit.act.trade=Handeln
+unit.act.vacuum=Saugen
+
+unit.bag=Tasche
+
+unit.caption.character=CHARAKTER
+unit.caption.inventory=INVENTAR
+
+unit.closer_by={0} m näher
+unit.details=Details
+unit.more_actions=Weitere Aktionen
+unit.opens_in_reach=öffnet in Reichweite
+unit.opens_when_in_reach=öffnet, wenn du in Reichweite bist
+unit.out_of_reach=außer Reichweite
+unit.pockets=Taschen
+
+unit.portrait.sheet=Klicken für den Charakterbogen
+
+unit.prop.call=Zurückrufen
+unit.prop.caress=Streicheln
+unit.prop.connect=Verbinden
+unit.prop.cosmetic=Schönheits-OP
+unit.prop.cosmetic_friend=Schönheits-OP (Begleiter)
+unit.prop.drink=Trinken
+unit.prop.dye=Färben
+unit.prop.eat=Essen
+unit.prop.edit=Bearbeiten
+unit.prop.enter=Betreten
+unit.prop.execute=Hinrichten
+unit.prop.finish=Kommen
+unit.prop.give_birth=Gebären
+unit.prop.hair_dress=Frisur
+unit.prop.hair_dress_friend=Frisur (Begleiter)
+unit.prop.hold=Anhalten
+unit.prop.insert=Einführen
+unit.prop.kill=Töten
+unit.prop.make_meat=Zu Fleisch verarbeiten
+unit.prop.male_display=Mann anzeigen
+unit.prop.move=Bewegen
+unit.prop.outfit=Outfit
+unit.prop.outfit_friend=Outfit (Begleiter)
+unit.prop.peek=Spähen
+unit.prop.piss=Pinkeln
+unit.prop.position_2=Stellung 2
+unit.prop.pull_away=Loslassen
+unit.prop.rape=Vergewaltigen
+unit.prop.rape_discreetly=Heimlich vergewaltigen
+unit.prop.rename=Umbenennen
+unit.prop.reset=Zurücksetzen
+unit.prop.roughness_2=Härte 2
+unit.prop.scale=Größe
+unit.prop.show_face=Gesicht zeigen
+unit.prop.sleep_morning=Bis zum Morgen schlafen
+unit.prop.sleep_night=Bis zur Nacht schlafen
+unit.prop.sleeping_powder=Sleep Powder benutzen
+unit.prop.speed=Tempo
+unit.prop.start=Einschalten
+unit.prop.summon=Beschwören
+unit.prop.take_out=Herausnehmen
+unit.prop.use=Benutzen
+unit.prop.visit=Besuchen
+unit.prop.wash=Waschen
+
+unit.state.carried=getragen
+unit.state.corpse=Leiche
+unit.state.knocked_out=bewusstlos
+
+use.not_on_you=Du kannst das nicht bei dir selbst anwenden. Zieh es auf {0}, um es zu geben.
+
+use.not_on_you.someone=Du kannst das nicht bei dir selbst anwenden. Zieh es auf jemanden, um es zu geben.
+
+vitals.age=Alter
+vitals.attack=Angriff
+vitals.breeding=Zucht
+vitals.character_level=Charakterstufe {0}
+vitals.class=Klasse
+vitals.combat=Kampf
+vitals.dislikes=Mag nicht
+vitals.father=Vater
+vitals.favourite=Favorit bei Bewohnern
+vitals.following=Folgt
+vitals.food=Nahrung
+vitals.guard=Abwehr
+vitals.health=Gesundheit
+vitals.hp=HP
+vitals.job=Arbeit
+vitals.libido=Libido
+vitals.likes=Mag
+vitals.love=Liebe
+
+vitals.love.not_met=nicht getroffen
+
+vitals.moral=Moral
+vitals.mother=Mutter
+vitals.personality=Persönlichkeit
+vitals.preferences=Vorlieben
+vitals.pregnant=Schwanger
+vitals.prop=Objekt
+vitals.show_name=Name in der Welt zeigen
+vitals.speed=Tempo
+vitals.strength=Stärke
+vitals.stun=Betäubung
+vitals.surgeries=Operationen
+vitals.type=Typ
+vitals.water=Wasser
+vitals.wear=Zustand
+vitals.where=Wo

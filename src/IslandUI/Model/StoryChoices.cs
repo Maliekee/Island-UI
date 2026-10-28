@@ -27,6 +27,10 @@ namespace IslandUI
     // An option is matched by its text, back to its index in TextManager.choices
     // ("XXXX" stands for a name), not by its position: some choices add an option
     // only when you carry an item or have someone following.
+    //
+    // A translation, Localization/<lang>/story-choices.tsv, rewords the English rows;
+    // the option column is what a scene prompt's hint is headed with, so it is the game's
+    // own prompt in that language (Forgejo #19).
     internal static class StoryChoices
     {
         private sealed class Hint
@@ -35,6 +39,7 @@ namespace IslandUI
         }
 
         private const string Resource = "IslandUI.story-choices.tsv";
+        private const string DataName = "story-choices.tsv";
         private static Dictionary<string, Dictionary<string, Hint>> _hints;
         private static readonly Dictionary<string, int> Marked = new Dictionary<string, int>();
 
@@ -44,15 +49,30 @@ namespace IslandUI
         private static string _site;
         private static string _prompt;
         private static string _shownKey;
+        // THE HINTS BEHIND A CLICK, on HintMode.OnClick (the default): a player who wants
+        // the story blind sees one "Hints" bar where the column would stand, and the hints
+        // only once it is clicked - for that choice or prompt alone. A choice and a scene
+        // prompt are one thing to the player, so one setting covers both; the spoilers
+        // inside a hint are always masked, whatever the setting.
+        // The site the bar was clicked for; the frame of the click, which no scene reads.
+        private static string _opened;
+        private static int _openedFrame = -1;
+        // the bar's tip says the setting exists: a new player meets the bar before the settings
+        private static KitTooltip _tip;
 
         // ---------- the data ----------
+
+        // read again when the language changes: the sites and options are the English
+        // file's, their words Localization/<lang>/story-choices.tsv's (Forgejo #19)
+        private static int _generation = -1;
 
         private static Dictionary<string, Dictionary<string, Hint>> Hints
         {
             get
             {
-                if (_hints == null)
+                if (_hints == null || _generation != Shared.Loc.Generation)
                 {
+                    _generation = Shared.Loc.Generation;
                     _hints = Load();
                 }
                 return _hints;
@@ -71,27 +91,67 @@ namespace IslandUI
                 }
                 using (var reader = new StreamReader(stream, Encoding.UTF8))
                 {
-                    string row;
-                    while ((row = reader.ReadLine()) != null)
+                    Read(reader, hints, true);
+                }
+            }
+            foreach (string path in Shared.Loc.DataFiles(DataName))
+            {
+                try
+                {
+                    using (var reader = new StreamReader(path, Encoding.UTF8))
                     {
-                        if (row.Length == 0 || row[0] == '#')
-                        {
-                            continue;
-                        }
-                        string[] f = row.Split('\t');
-                        if (f.Length < 4)
-                        {
-                            continue;
-                        }
-                        if (!hints.TryGetValue(f[0], out var site))
-                        {
-                            hints[f[0]] = site = new Dictionary<string, Hint>();
-                        }
-                        site[f[1]] = new Hint { Option = f[2], Plain = f[3], Spoiler = f.Length > 4 ? f[4] : "" };
+                        Read(reader, hints, false);
                     }
+                }
+                catch (IOException e)
+                {
+                    Plugin.Log.LogWarning("Story choices: could not read " + path + " - " + e.Message);
                 }
             }
             return hints;
+        }
+
+        // `site <TAB> choice id <TAB> option <TAB> plain <TAB> spoiler`. The English makes
+        // the sites; a translation only rewords them, so a row the English lacks is ignored
+        // and a spoiler stays where the English has one.
+        private static void Read(TextReader reader, Dictionary<string, Dictionary<string, Hint>> hints, bool english)
+        {
+            string row;
+            while ((row = reader.ReadLine()) != null)
+            {
+                if (row.Length == 0 || row[0] == '#')
+                {
+                    continue;
+                }
+                string[] f = row.Split('\t');
+                if (f.Length < 4)
+                {
+                    continue;
+                }
+                string spoiler = f.Length > 4 ? f[4] : "";
+                if (english)
+                {
+                    if (!hints.TryGetValue(f[0], out var site))
+                    {
+                        hints[f[0]] = site = new Dictionary<string, Hint>();
+                    }
+                    site[f[1]] = new Hint
+                    {
+                        Option = Shared.Loc.Untranslated(f[2]),
+                        Plain = Shared.Loc.Untranslated(f[3]),
+                        Spoiler = spoiler.Length > 0 ? Shared.Loc.Untranslated(spoiler) : "",
+                    };
+                }
+                else if (hints.TryGetValue(f[0], out var site) && site.TryGetValue(f[1], out Hint hint))
+                {
+                    hint.Option = f[2];
+                    hint.Plain = f[3];
+                    if (hint.Spoiler.Length > 0 && spoiler.Length > 0)
+                    {
+                        hint.Spoiler = spoiler;
+                    }
+                }
+            }
         }
 
         // ---------- marking the call sites ----------
@@ -217,7 +277,12 @@ namespace IslandUI
         // marked coroutines read the mouse through here, and a press on a hint is ours.
         public static bool MouseDown(int button)
         {
-            return Input.GetMouseButtonDown(button) && !OverHint();
+            return Input.GetMouseButtonDown(button) && !OverHint() && Time.frameCount != _openedFrame;
+        }
+
+        private static bool Guarded(string site)
+        {
+            return Settings.StoryHints.Value == HintMode.OnClick && _opened != site;
         }
 
         private static bool OverHint()
@@ -244,6 +309,7 @@ namespace IslandUI
             public TextMeshProUGUI MaskText;
             public TextMeshProUGUI Spoiler;
             public bool Revealed;
+            public bool Guard;             // the "Hints" bar, standing in for the hints
             public RectTransform Anchor;   // the game's button this hint belongs to
             public bool Below;             // yes/no: under the button, not beside it
         }
@@ -268,35 +334,104 @@ namespace IslandUI
             Dictionary<string, Hint> site = null;
             if (multi || yesNo)
             {
-                if (mn.story.commandState != -1 || !Settings.StoryHints.Value
+                if (mn.story.commandState != -1 || Settings.StoryHints.Value == HintMode.Off
                     || _site == null || !Hints.TryGetValue(_site, out site))
                 {
                     Hide();
                     return;
                 }
-                string key = _site + "/" + (multi ? CountActive(ui) : 2);
+                // the generation: a language switch while the choice is up words it again
+                bool guarded = Guarded(_site);
+                string key = _site + "/" + (multi ? CountActive(ui) : 2) + "/" + _generation + (guarded ? "/guard" : "");
                 if (key != _shownKey)
                 {
                     Build(mn, ui, site, multi);
+                    if (guarded) { GuardUp(_site); }
                     _shownKey = key;
                 }
                 Place();
+                TickTip();
                 return;
             }
             // the choice is answered or gone: the next one is a new mark
             _site = null;
             bool prompt = ui.controlDescText != null && ui.controlDescText.gameObject.activeInHierarchy;
-            if (prompt && Settings.StoryPromptHints.Value && _prompt != null && Hints.TryGetValue(_prompt, out site))
+            if (prompt && Settings.StoryHints.Value != HintMode.Off && _prompt != null && Hints.TryGetValue(_prompt, out site))
             {
-                if (_prompt != _shownKey)
+                bool guarded = Guarded(_prompt);
+                string key = _prompt + "/" + _generation + (guarded ? "/guard" : "");
+                if (key != _shownKey)
                 {
                     BuildPrompt(mn, ui, site);
-                    _shownKey = _prompt;
+                    if (guarded) { GuardUp(_prompt); }
+                    _shownKey = key;
                 }
                 Place();
+                TickTip();
                 return;
             }
+            // nothing is up: the next choice starts behind the bar again
+            _opened = null;
             Hide();
+        }
+
+        // The built hints give way to one bar in the first hint's place: a choice the data
+        // has no hint for shows no bar either. Its click opens the site, and the next Tick
+        // builds the hints in the column the bar stood at, spoilers still masked.
+        private static void GuardUp(string site)
+        {
+            if (Widgets.Count == 0 || Widgets[0].Root == null)
+            {
+                return;
+            }
+            Transform canvas = Widgets[0].Root.parent;
+            RectTransform anchor = Widgets[0].Anchor;
+            bool below = Widgets[0].Below;
+            foreach (Widget hint in Widgets)
+            {
+                if (hint.Root != null) { hint.Root.gameObject.SetActive(false); }   // destroyed at the frame's end
+            }
+            Clear();
+
+            var w = new Widget { Anchor = anchor, Below = below, Guard = true };
+            GameObject go = Owned.New("IslandUI_StoryHintGuard");
+            go.transform.SetParent(canvas, false);
+            w.Root = (RectTransform)go.transform;
+            w.Root.anchorMin = w.Root.anchorMax = new Vector2(0.5f, 0.5f);
+            w.Root.pivot = new Vector2(0f, 1f);
+            w.Back = go.AddComponent<Image>();
+            w.Back.color = MaskGround;
+            w.Mask = go.AddComponent<Button>();
+            float h = 18f;
+            w.MaskText = Theme.MakeText(go.transform, "Label", Theme.FontCaption, Theme.TextDim, TextAlignmentOptions.Center);
+            w.MaskText.text = Shared.Loc.Get("story.show_hints", "Hints - click to show");
+            Theme.Place(w.MaskText, 0f, 0f, Width, h);
+            w.Root.sizeDelta = new Vector2(Width, h);
+            w.Mask.onClick.AddListener(() =>
+            {
+                _opened = site;
+                _openedFrame = Time.frameCount;
+            });
+            Widgets.Add(w);
+        }
+
+        private static void TickTip()
+        {
+            Widget bar = Widgets.Count == 1 && Widgets[0].Guard ? Widgets[0] : null;
+            Canvas canvas = bar != null && bar.Root != null && bar.Root.gameObject.activeInHierarchy
+                ? bar.Root.GetComponentInParent<Canvas>() : null;
+            if (canvas == null)
+            {
+                _tip?.Hide();
+                return;
+            }
+            Camera cam = canvas.rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.rootCanvas.worldCamera : null;
+            if (_tip == null)
+            {
+                _tip = KitTooltip.Create((RectTransform)canvas.rootCanvas.transform);
+            }
+            bool over = RectTransformUtility.RectangleContainsScreenPoint(bar.Root, Input.mousePosition, cam);
+            _tip.Tick(over ? "<b>" + Shared.Loc.Get("settings.story.hints", "Story hints") + "</b>\n" + Shared.Loc.Get("story.show_hints.tip", "What each option leads to waits behind this bar. To show the hints at once, or switch them off, see the Story page of the settings.") : null, cam);
         }
 
         // one hint per input, in the data's order, beside the control text
@@ -417,8 +552,7 @@ namespace IslandUI
             Theme.Place(w.Plain, Pad, y, inner, h);
             y += h;
 
-            SpoilerMode mode = Settings.StorySpoilers.Value;
-            if (!string.IsNullOrEmpty(hint.Spoiler) && mode != SpoilerMode.Hide)
+            if (!string.IsNullOrEmpty(hint.Spoiler))
             {
                 y += 2f;
                 w.Spoiler = Theme.MakeText(go.transform, "Spoiler", Theme.FontCaption, SpoilerInk, TextAlignmentOptions.TopLeft);
@@ -426,30 +560,27 @@ namespace IslandUI
                 w.Spoiler.text = hint.Spoiler;
                 float sh = Mathf.Max(8f, w.Spoiler.GetPreferredValues(hint.Spoiler, inner, 0f).y);
                 Theme.Place(w.Spoiler, Pad, y, inner, sh);
-                if (mode == SpoilerMode.ClickToReveal)
+                // NOT DRAWN until the click, rather than drawn under a cover: the
+                // text renders above the cover whatever the sibling order (the
+                // first build showed the spoiler straight through it). The bar is
+                // the spoiler's own size, so revealing moves nothing.
+                w.Spoiler.gameObject.SetActive(false);
+                GameObject maskGo = Owned.New("SpoilerMask");
+                maskGo.transform.SetParent(go.transform, false);
+                Image mask = maskGo.AddComponent<Image>();
+                mask.color = MaskGround;
+                Theme.Place(mask, Pad, y, inner, sh);
+                w.Mask = maskGo.AddComponent<Button>();
+                w.MaskText = Theme.MakeText(maskGo.transform, "Label", Theme.FontCaption, Theme.TextDim, TextAlignmentOptions.Center);
+                w.MaskText.text = Shared.Loc.Get("story.spoiler", "Spoiler - click to reveal");
+                Theme.Place(w.MaskText, 0f, 0f, inner, sh);
+                Widget captured = w;
+                w.Mask.onClick.AddListener(() =>
                 {
-                    // NOT DRAWN until the click, rather than drawn under a cover: the
-                    // text renders above the cover whatever the sibling order (the
-                    // first build showed the spoiler straight through it). The bar is
-                    // the spoiler's own size, so revealing moves nothing.
-                    w.Spoiler.gameObject.SetActive(false);
-                    GameObject maskGo = Owned.New("SpoilerMask");
-                    maskGo.transform.SetParent(go.transform, false);
-                    Image mask = maskGo.AddComponent<Image>();
-                    mask.color = MaskGround;
-                    Theme.Place(mask, Pad, y, inner, sh);
-                    w.Mask = maskGo.AddComponent<Button>();
-                    w.MaskText = Theme.MakeText(maskGo.transform, "Label", Theme.FontCaption, Theme.TextDim, TextAlignmentOptions.Center);
-                    w.MaskText.text = "Spoiler - click to reveal";
-                    Theme.Place(w.MaskText, 0f, 0f, inner, sh);
-                    Widget captured = w;
-                    w.Mask.onClick.AddListener(() =>
-                    {
-                        captured.Revealed = true;
-                        captured.Mask.gameObject.SetActive(false);
-                        captured.Spoiler.gameObject.SetActive(true);
-                    });
-                }
+                    captured.Revealed = true;
+                    captured.Mask.gameObject.SetActive(false);
+                    captured.Spoiler.gameObject.SetActive(true);
+                });
                 y += sh;
             }
             w.Root.sizeDelta = new Vector2(Width, y + Pad);
@@ -506,6 +637,7 @@ namespace IslandUI
             {
                 Clear();
             }
+            _tip?.Hide();
             _shownKey = null;
         }
 
@@ -541,6 +673,8 @@ namespace IslandUI
             _site = null;
             _prompt = null;
             _shownKey = null;
+            _opened = null;
+            _tip = null;
         }
 
         // Harness door: put a site's hints up on the game's own panel without playing the
@@ -570,10 +704,10 @@ namespace IslandUI
         }
     }
 
-    internal enum SpoilerMode
+    internal enum HintMode
     {
-        ClickToReveal,
+        Off,
+        OnClick,
         Always,
-        Hide,
     }
 }

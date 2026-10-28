@@ -14,6 +14,7 @@ namespace IslandUI
         private static void Refresh()
         {
             float refreshBegan = Time.realtimeSinceStartup;
+            long spanAt = UI.FirstOpenTimer.Now();
             ApplySlotScale();
             _lastGroupBound = GroupNone;
             if (_mn == null || _mn.gameMN == null || _mn.gameMN.pMove == null
@@ -48,6 +49,7 @@ namespace IslandUI
             // the frame first: pooled plates keep creation order as sibling order,
             // so bound first is drawn first is behind
             BindGroupFrame(GroupOwn, OwnColumn);
+            NameLeather(GroupOwn, player != null ? player.charaName : null);
             SheetPlates.Clear();
             _tilePlates.Clear();   // re-shown by each frame that carries a person
             _actRowPlates.Clear(); // ...and the act rows, re-bound by each thing (D105)
@@ -77,7 +79,7 @@ namespace IslandUI
                             // so it takes the column's own budget and fills rows to
                             // it - 18 slots land on 10 + 8, sharing its left and
                             // right edges with every other band in the column.
-                            Bind("Shared Bag", inv.itemSlot, inv.baseCount, null, null,
+                            Bind(Shared.Loc.Get("inv.shared_bag", "Shared Bag"), inv.itemSlot, inv.baseCount, null, null,
                                 false, OwnColumn, 0, null, 0,
                                 sharedBag: true, group: GroupOwn,
                                 icon: ContainerIcon(SharedBagIcon));
@@ -86,7 +88,7 @@ namespace IslandUI
                     case "bag":
                         if (player != null && player.bag != null && player.bag.slots != null)
                         {
-                            Bind("Bag", player.bag.slots, player.bag.slots.Length, null,
+                            Bind(Shared.Loc.Get("inv.bag", "Bag"), player.bag.slots, player.bag.slots.Length, null,
                                 player.bag, false, OwnColumn, 0, player, group: GroupOwn,
                                 icon: ContainerIcon(OwnBagIcon));
                         }
@@ -94,7 +96,7 @@ namespace IslandUI
                     case "loadout":
                         if (player != null && HasLoadout(player))
                         {
-                            Bind("Loadout", player.equip, LoadoutOrder.Length, LoadoutOrder,
+                            Bind(Shared.Loc.Get("inv.loadout", "Loadout"), player.equip, LoadoutOrder.Length, LoadoutOrder,
                                 null, true, OwnColumn, 0, player, group: GroupOwn,
                                 icon: ContainerIcon(LoadoutIcon));
                         }
@@ -121,6 +123,10 @@ namespace IslandUI
             // 27 across, and the panel around it swallows the rail. MaxPlateColumns
             // is the shape rule; the screen fit only ever narrows it further.
             int targetCols = Mathf.Min(TargetMaxCols(ownWidth), OwnMaxCols);
+            // ONE WIDTH FOR EVERY TARGET (user): the widest bag the column allows,
+            // whoever it is and whatever their bag - a followed name must not move
+            // the sheet under the pointer
+            _targetSheetW = SheetFallbackWidth(null, targetCols, false, full: true);
 
             // ---- the focused CHARACTER, in the middle column ----
             // A character is more than a container — bag, loadout, and in time a
@@ -146,7 +152,7 @@ namespace IslandUI
             ItemInfo tileProp = null;
             if (_target is CommonStates npc && npc != player)
             {
-                string name = string.IsNullOrEmpty(npc.charaName) ? "Character" : npc.charaName;
+                string name = string.IsNullOrEmpty(npc.charaName) ? Shared.Loc.Get("inv.character", "Character") : npc.charaName;
                 targetTitle = name;
                 // THE FAVOURITE'S STAR: an NPC that has been favorited carries a
                 // star.
@@ -177,6 +183,7 @@ namespace IslandUI
                     _footSets[GroupBag] = PropAspects;
                     _footShown[GroupBag] = false;
                     BindGroupFrame(GroupBag, CharacterColumn);
+                    NameLeather(GroupBag, name);
                     bool hasSlots = npc.bag != null && npc.bag.slots != null && npc.bag.slots.Length > 0;
                     {
                         // the bag's three at the window's foot, bound first so the
@@ -187,13 +194,13 @@ namespace IslandUI
                         }
                         if (hasSlots)
                         {
-                            Bind("Bag", npc.bag.slots, npc.bag.slots.Length, null,
+                            Bind(Shared.Loc.Get("inv.bag", "Bag"), npc.bag.slots, npc.bag.slots.Length, null,
                                 npc.bag, false, CharacterColumn, targetCols, npc,
                                 group: GroupBag, icon: ContainerIcon(OwnBagIcon));
                         }
                         if (HasLoadout(npc))
                         {
-                            Bind("Loadout", npc.equip, LoadoutOrder.Length, LoadoutOrder,
+                            Bind(Shared.Loc.Get("inv.loadout", "Loadout"), npc.equip, LoadoutOrder.Length, LoadoutOrder,
                                 null, true, CharacterColumn, targetCols, npc,
                                 group: GroupBag, icon: ContainerIcon(LoadoutIcon));
                         }
@@ -268,6 +275,7 @@ namespace IslandUI
                 }
                 _footSets[GroupCharacter] = PropAspects;   // empty: a thing has no tabs
                 BindGroupFrame(GroupCharacter, CharacterColumn);
+                NameLeather(GroupCharacter, ChestTitle(chest));
                 ItemInfo chestProp = chest.GetComponent<ItemInfo>();
                 if (docked && !ReachRule.LiveProp(_mn, chestProp))
                 {
@@ -285,7 +293,8 @@ namespace IslandUI
                     ? chest.GetComponent<TreasureScript>() : null;
                 if (loot != null && (!loot.opened || !loot.unlocked || loot.isCollection))
                 {
-                    Bind(!loot.unlocked ? "Locked" : "Unopened  ·  click it to open", chest.slots, chest.slots.Length,
+                    Bind(!loot.unlocked ? Shared.Loc.Get("inv.chest.locked", "Locked")
+                        : Shared.Loc.Get("inv.chest.unopened", "Unopened") + "  ·  " + Shared.Loc.Get("inv.chest.click_to_open", "click it to open"), chest.slots, chest.slots.Length,
                         null, null, false, CharacterColumn, targetCols, null, forceLabel: true,
                         group: GroupCharacter, collapsed: true, captionRow: true);
                     goto doors;
@@ -427,9 +436,13 @@ namespace IslandUI
                     }
                 }
             }
+            ReleaseUnclaimed();
             float layoutBegan = Time.realtimeSinceStartup;
+            long layoutAt = UI.FirstOpenTimer.Now();
             Layout();
             _layoutMs = (Time.realtimeSinceStartup - layoutBegan) * 1000f;
+            UI.FirstOpenTimer.Span("inventory layout", layoutAt);
+            UI.FirstOpenTimer.Span("inventory refresh", spanAt);
         }
 
         // The rule lives in Theme, beside LoadoutOrder, so this gate and the
@@ -444,7 +457,7 @@ namespace IslandUI
         private static string PlayerName(CommonStates player)
         {
             return player != null && !string.IsNullOrEmpty(player.charaName)
-                ? player.charaName : "You";
+                ? player.charaName : Shared.Loc.Get("sheet.you", "You");
         }
 
         // Is the vicinity window up? Read by the HUD button, which has to say
@@ -526,6 +539,22 @@ namespace IslandUI
             }
         }
 
+        // V, the vicinity button and the HUD chest ALWAYS MEAN THE VICINITY
+        // (Forgejo #180). ToggleReach opens the slot with whichever list was last
+        // in it, so V after the roster brought the roster back. The vicinity
+        // showing closes; anything else - closed, or the roster - shows it.
+        internal static void ToggleVicinity()
+        {
+            if (_reachOpen && _slotView == ViewReach)
+            {
+                CloseReach();
+            }
+            else
+            {
+                ShowSlotView(ViewReach);
+            }
+        }
+
         // Every container in reach, in a column of its own — the pool, with the
         // one you have OPEN sitting first in it and marked (D30). Before this the
         // same chest was drawn in your column when it was merely nearby and in the
@@ -553,17 +582,11 @@ namespace IslandUI
             {
                 ScanReach(found);
             }
-            // the one you are dealing with has its own panel now, and a container
-            // drawn in two places reads as two containers
-            if (_focusedContainer != null)
-            {
-                found.Remove(_focusedContainer);
-            }
-            // ...and so does a person's bag while their bag window is up
-            if (_bagOpen && _target is CommonStates held && held.bag != null && PocketsOpen(held) && InReach(held))
-            {
-                found.Remove(held.bag);
-            }
+            // THE TARGET DOES NOT THIN THE VICINITY (user): the chest
+            // you have open, or a person whose bag window is up, stays in the list
+            // where it stands. Taking it out made the vicinity's contents depend on
+            // what the target window showed, and the chest you had just opened
+            // vanished from the list you found it in.
             _nearbyTotal = found.Count;
             // A query narrows the POOL to containers holding a match, and the
             // marking below narrows it again to the cells inside them. Neither
@@ -623,7 +646,9 @@ namespace IslandUI
             {
                 cols = SlotCols();
             }
-            float memberGap = GroupMemberGap;
+            float memberGap = ReachGap();
+            // the reach binds only off the roster, so it always wears look 02
+            bool compact = Settings.VicinityCompact.Value;
             // the foot sits under the list and does not scroll with it, so the
             // viewport gives up its height, as the roster's control row does
             EnsureReachFoot();
@@ -666,24 +691,16 @@ namespace IslandUI
                     continue;
                 }
                 bool thin = lean[i];
-                // A SECTION, like the crafting window's: the
-                // container's icon and name on a header row with a disclosure
-                // arrow, the slots beneath, folded by a click on the header.
-                // ...parked with the rest of the slot's chrome (Slot.CompactContainers): the
-                // icon goes back to the gutter, the slot a gutter wider for it
-                bool section = !Slot.CompactContainers;
-                bool folded = section && CollapsedReach.Contains(chest.GetInstanceID());
-                // a person's bag keeps its name even lean: the name is a line of
-                // height (captionRow), and a lean band must measure what a full one does
-                bool bag = BagOwner(chest) != null;
-                Bind(thin && !bag ? string.Empty : (section ? ChestTitle(chest) : ChestLabel(chest)),
-                    chest.slots, chest.slots.Length, null, chest,
+                // FACELIFT LOOK 02: a person's portrait or the thing's picture, with
+                // no caption under it (Vicinity.cs)
+                CommonStates holder = VicHolder(chest);
+                ItemData thing = holder == null ? ChestItem(chest) : null;
+                Bind(string.Empty, chest.slots, chest.slots.Length, null, chest,
                     false, ReachColumn, cols, null, -1, false,
                     forceLabel: true,
                     group: GroupReach,
-                    icon: thin ? null : ChestIcon(chest), lean: thin,
-                    section: section, collapsed: folded,
-                    captionRow: bag);
+                    icon: thing != null ? thing.itemSprite : null, lean: thin,
+                    compact: compact, person: holder);
                 ReachHeights[chest.GetInstanceID()] =
                     ReachPlates[_reachPlatesUsed - 1].Height;
                 ReachOrder.Add(chest);
@@ -701,13 +718,13 @@ namespace IslandUI
                 contentW = Mathf.Max(contentW, m.Window.Rect.sizeDelta.x);
             }
             _reachContentH = contentH;
-            // AS TALL AS ITS CONTENT, up to the slot: a dynamic height with the
-            // slot's height as its maximum, growing downwards so the top of the
-            // window stays put; the frame hangs from the slot's top and ends where the bands end
-            _reachViewH = Mathf.Min(capH, contentH);
+            // ALWAYS AS TALL AS IT CAN GET, however little it holds: a window that
+            // shrank with its content moved its own heading controls about, and a
+            // static one keeps them where the hand expects them
+            _reachViewH = capH;
 
             // bound before the spacer: the column stacks bottom-up, so first is lowest
-            BindReachFoot(slot ? Slot.InnerW : Mathf.Max(160f, contentW));
+            BindReachFoot(slot ? VicFootW : Mathf.Max(160f, contentW));
 
             _reachSpacer = TakePlate();
             _reachSpacer.Column = ReachColumn;
@@ -779,6 +796,18 @@ namespace IslandUI
         private static float GroupPadY()
         {
             return FrameInsetY;
+        }
+
+        // a frame's padding over its top member and under its lowest: the leather
+        // keeps its head above the first section and its shadow below the last
+        private static float FramePadTop(int group)
+        {
+            return IsLeather(group) ? LeatherPadTop : GroupPadY();
+        }
+
+        private static float FramePadFoot(int group)
+        {
+            return IsLeather(group) ? LeatherPadFoot : GroupPadY();
         }
 
         // The layer between a plate's Back and its cells. A group frame paints its

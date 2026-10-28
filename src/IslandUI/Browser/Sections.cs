@@ -23,6 +23,7 @@ namespace IslandUI
 
         private static readonly List<GameObject> Pool = new List<GameObject>();
         private static readonly Dictionary<int, string> PanelLabelCache = new Dictionary<int, string>();
+        private static int _labelsGeneration = -1;   // the language the cached labels are in
         private static int _poolUsed;
         private static TMP_FontAsset _font;
         private static float _fontSize;
@@ -139,12 +140,23 @@ namespace IslandUI
             if (Settings.GroupRecipesBy.Value == Settings.RecipeGrouping.ItemType)
             {
                 ItemData item = mn.itemMN.FindItem(recipe.name);
-                return item != null ? item.itemType.ToString() : "Other";
+                return item != null ? TypeLabel(item.itemType) : Shared.Loc.Get("craft.section.other", "Other");
             }
             // SourceBench
             if (!AggregatedCrafting.SourceOf.TryGetValue(recipe, out int panelID))
             {
                 panelID = 0;
+            }
+            return PanelLabel(mn, panelID);
+        }
+
+        // a source bench's section label: by hand, a bench's name, a crafter's
+        internal static string PanelLabel(ManagersScript mn, int panelID)
+        {
+            if (_labelsGeneration != Shared.Loc.Generation)
+            {
+                _labelsGeneration = Shared.Loc.Generation;
+                PanelLabelCache.Clear();
             }
             if (PanelLabelCache.TryGetValue(panelID, out string cached))
             {
@@ -157,17 +169,47 @@ namespace IslandUI
                 {
                     // NPC crafter section carries the character's name
                     StatsData stats = mn.npcMN != null ? mn.npcMN.GetStatsData(npcID) : null;
-                    label = stats != null ? stats.GetLocalizedCharaName() : $"NPC {npcID}";
+                    label = stats != null ? stats.GetLocalizedCharaName() : Shared.Loc.Get("card.npc_numbered", "NPC {0}", npcID);
                 }
                 else
                 {
                     string benchKey = AggregatedCrafting.BenchKeyOf(panelID);
                     ItemData bench = benchKey != null ? mn.itemMN.FindItem(benchKey) : null;
-                    label = bench != null ? bench.GetItemName() : $"Bench {panelID}";
+                    label = bench != null ? bench.GetItemName() : Shared.Loc.Get("craft.section.bench_numbered", "Bench {0}", panelID);
                 }
             }
             PanelLabelCache[panelID] = label;
             return label;
+        }
+
+        // The game's item categories, as headings. The English is the category's
+        // name in the game's code, as it was shown before.
+        private static string TypeLabel(ItemData.ItemType type)
+        {
+            switch (type)
+            {
+                case ItemData.ItemType.None: return Shared.Loc.Get("craft.section.type.none", "None");
+                case ItemData.ItemType.Resource: return Shared.Loc.Get("craft.section.type.resource", "Resource");
+                case ItemData.ItemType.Tool: return Shared.Loc.Get("craft.section.type.tool", "Tool");
+                case ItemData.ItemType.Prop: return Shared.Loc.Get("craft.section.type.prop", "Prop");
+                case ItemData.ItemType.Item: return Shared.Loc.Get("craft.section.type.item", "Item");
+                case ItemData.ItemType.Hat: return Shared.Loc.Get("craft.section.type.hat", "Hat");
+                case ItemData.ItemType.Cloth: return Shared.Loc.Get("craft.section.type.cloth", "Cloth");
+                case ItemData.ItemType.ClothU: return Shared.Loc.Get("craft.section.type.clothu", "ClothU");
+                case ItemData.ItemType.Acce: return Shared.Loc.Get("craft.section.type.acce", "Acce");
+                case ItemData.ItemType.Shoes: return Shared.Loc.Get("craft.section.type.shoes", "Shoes");
+                case ItemData.ItemType.Food: return Shared.Loc.Get("craft.section.type.food", "Food");
+                case ItemData.ItemType.Tool2: return Shared.Loc.Get("craft.section.type.tool2", "Tool2");
+                case ItemData.ItemType.Animal: return Shared.Loc.Get("craft.section.type.animal", "Animal");
+                case ItemData.ItemType.Bottle: return Shared.Loc.Get("craft.section.type.bottle", "Bottle");
+                case ItemData.ItemType.NPC: return Shared.Loc.Get("craft.section.type.npc", "NPC");
+                case ItemData.ItemType.Shield: return Shared.Loc.Get("craft.section.type.shield", "Shield");
+                case ItemData.ItemType.ResourceW: return Shared.Loc.Get("craft.section.type.resourcew", "ResourceW");
+                case ItemData.ItemType.Consumables: return Shared.Loc.Get("craft.section.type.consumables", "Consumables");
+                case ItemData.ItemType.Support: return Shared.Loc.Get("craft.section.type.support", "Support");
+                case ItemData.ItemType.Hip: return Shared.Loc.Get("craft.section.type.hip", "Hip");
+                default: return type.ToString();
+            }
         }
 
         // ---------- pooled filler/header cells ----------

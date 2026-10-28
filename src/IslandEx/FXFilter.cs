@@ -46,6 +46,12 @@ namespace IslandEx
         // since the one you are after is the one you just saw.
         private static readonly HashSet<int> Seen = new HashSet<int>();
         private static readonly List<string> SeenNames = new List<string>();
+        // Ids whose prefab is gameplay, not decoration: the pool also carries the
+        // melee hitbox (fx[0], "attackColl", spawned by FXManager.GoAttack),
+        // projectiles and damage triggers. Their callers use the spawned object
+        // without a null check, so a skip throws mid-attack and leaves attacker
+        // and target frozen in their attack/hit states. Never blocked, never listed.
+        private static readonly HashSet<int> Gameplay = new HashSet<int>();
         private static readonly HashSet<int> BlockedIds = new HashSet<int>();
         private static readonly List<string> BlockedNames = new List<string>();
         // what BlockedIds/BlockedNames were parsed from, so an edit in the config
@@ -67,13 +73,20 @@ namespace IslandEx
                 string name = prefab != null ? prefab.name : "?";
                 if (Seen.Add(fxID))
                 {
+                    if (IsGameplay(prefab))
+                    {
+                        Gameplay.Add(fxID);
+                        Plugin.Log.LogDebug($"FX {fxID} = {name} (gameplay, never filtered)");
+                        return false;
+                    }
                     lock (SeenNames)
                     {
                         SeenNames.Add(name);
                     }
                     Plugin.Log.LogDebug($"FX {fxID} = {name}");
                 }
-                if (_enabled == null || !_enabled.Value || !Plugin.Enabled.Value)
+                if (Gameplay.Contains(fxID)
+                    || _enabled == null || !_enabled.Value || !Plugin.Enabled.Value)
                 {
                     return false;
                 }
@@ -96,6 +109,15 @@ namespace IslandEx
                 Plugin.Log.LogWarning($"FXFilter: {e.Message}");
                 return false;
             }
+        }
+
+        // A collider or rigidbody anywhere in the prefab means the object does
+        // something in the world: hits, is thrown, triggers. Pure visuals have none.
+        private static bool IsGameplay(GameObject prefab)
+        {
+            return prefab != null
+                && (prefab.GetComponentInChildren<Collider>(true) != null
+                    || prefab.GetComponentInChildren<Rigidbody>(true) != null);
         }
 
         internal static string[] SeenNewestFirst()
@@ -160,8 +182,9 @@ namespace IslandEx
         }
 
         // Returns a GameObject rather than void, so a skip must also supply the
-        // answer: null. Every caller of a pooled-effect getter has to survive one
-        // anyway, since GoFXObj can already fail to produce an object.
+        // answer: null. Many callers do NOT survive one (GoAttack, GoRanged,
+        // GoArrow dereference it at once); that is safe only because Blocked never
+        // skips a gameplay prefab, and those are the ones such callers spawn.
         [HarmonyPatch(typeof(FXManager), nameof(FXManager.GoFXObj))]
         [HarmonyPrefix]
         private static bool GoFXObj_Prefix(FXManager __instance, int fxID,

@@ -120,14 +120,26 @@ namespace IslandUI
                     }
                 }
             }
+            // A target's frame is never narrower than the one target width, so a
+            // small bag on the Inventory page sits in the same frame as the sheet
+            if (_targetSheetW > 0f && _groupW[GroupCharacter] > 0f && IsDossier(GroupCharacter))
+            {
+                _groupW[GroupCharacter] = Mathf.Max(_groupW[GroupCharacter], _targetSheetW);
+                _colWidth[CharacterColumn] = Mathf.Max(_colWidth[CharacterColumn], _targetSheetW + 2f * padX);
+            }
             // What the column measures on its Inventory aspect is what every other
             // aspect is cut to (§6.20), so a sheet reads the width its bags set.
+            // (A target's sheet is the exception: _targetSheetW.)
             for (int g = 1; g < GroupCount; g++)
             {
                 if ((g == GroupOwn || g == GroupBag) && _groupW[g] > 0f)
                 {
                     _inventoryW[g] = _groupW[g];
-                    _inventoryW[g == GroupOwn ? GroupOwnSheet : GroupCharacter] = _groupW[g];
+                    // the leather spends no gutter (look 07's sections name their
+                    // containers), and the sheets were cut to the bags WITH one:
+                    // they keep the width they had
+                    _inventoryW[g == GroupOwn ? GroupOwnSheet : GroupCharacter] = _groupW[g]
+                        + (IsLeather(g) ? GutterWidth : 0f);
                 }
             }
             // A FIXED home for the target/vicinity column, rather than a place that
@@ -182,6 +194,8 @@ namespace IslandUI
                     x -= _colWidth[c] + columnGap;
                 }
             }
+            // the target's sheet may stand in the free left slot instead (Float.cs)
+            LayoutFloat(pinOther, barX);
 
             for (int c = 0; c < ColumnCount; c++)
             {
@@ -205,25 +219,27 @@ namespace IslandUI
                 {
                     if (g != GroupNone && g == _colGroup[c])
                     {
-                        // the loadout boundary breathes a little wider
-                        _colY[c] += memberGap + (plate.LoadoutEdge ? LoadoutAir : 0f);
+                        // the loadout boundary breathes a little wider; on the
+                        // leather each member says what it keeps under itself
+                        _colY[c] += plate.LeatherGap > 0f ? plate.LeatherGap
+                            : memberGap + (plate.LoadoutEdge ? LoadoutAir : 0f);
                     }
                     else
                     {
                         if (_colGroup[c] != GroupNone)
                         {
-                            _colY[c] += padY;   // the frame we are leaving, on top
+                            _colY[c] += FramePadTop(_colGroup[c]);   // the frame we are leaving, on top
                         }
                         _colY[c] += gap;
                         if (g != GroupNone)
                         {
-                            _colY[c] += padY;   // the frame we are entering, below
+                            _colY[c] += FramePadFoot(g);   // the frame we are entering, below
                         }
                     }
                 }
                 else if (g != GroupNone)
                 {
-                    _colY[c] += padY;
+                    _colY[c] += FramePadFoot(g);
                 }
                 _colStarted[c] = true;
                 _colGroup[c] = g;
@@ -256,12 +272,12 @@ namespace IslandUI
                 plate.Window.Rect.anchorMin = new Vector2(_colAnchorX[c], 0f);
                 plate.Window.Rect.anchorMax = new Vector2(_colAnchorX[c], 0f);
                 plate.Window.Rect.pivot = new Vector2(_colPivotX[c], 0f);
-                plate.Window.Rect.anchoredPosition = new Vector2(px, _colY[c]);
+                plate.Window.Rect.anchoredPosition = new Vector2(px + FloatShiftX(g), _colY[c]);
                 if (g != GroupNone)
                 {
                     if (_groupMembers[g]++ == 0)
                     {
-                        _groupLo[g] = _colY[c] - padY;
+                        _groupLo[g] = _colY[c] - FramePadFoot(g);
                     }
                     if (tabTitle)
                     {
@@ -269,7 +285,7 @@ namespace IslandUI
                     }
                     else
                     {
-                        _groupHi[g] = _colY[c] + plate.Height + padY;
+                        _groupHi[g] = _colY[c] + plate.Height + FramePadTop(g);
                     }
                 }
                 // The separator spans the GROUP, not the band that draws it. Bind
@@ -303,7 +319,7 @@ namespace IslandUI
             {
                 if (_colGroup[c] != GroupNone)
                 {
-                    _colY[c] += padY;
+                    _colY[c] += FramePadTop(_colGroup[c]);
                 }
             }
 
@@ -382,7 +398,7 @@ namespace IslandUI
                 {
                     frame.Window.Rect.sizeDelta =
                         new Vector2(_groupW[g] + 2f * padX, _groupHi[g] - _groupLo[g]);
-                    frame.Window.Rect.anchoredPosition = new Vector2(_colX[c], _groupLo[g]);
+                    frame.Window.Rect.anchoredPosition = new Vector2(_colX[c] + FloatShiftX(g), _groupLo[g]);
                 }
                 // THE BAND ALONE (a flower totem, say): a thing with no
                 // bag, no reading and no act has nothing for a body, and a frame
@@ -429,6 +445,11 @@ namespace IslandUI
                     // the sheet inside its folder, and yours stamped or theirs clipped
                     PlaceDossierFrame(frame, g);
                 }
+                else if (IsLeather(g))
+                {
+                    // the leather's head across its top
+                    PlaceLeatherFrame(frame, g);
+                }
                 else if (frame.Field != null && frame.Field.gameObject.activeSelf)
                 {
                     Vector2 size = frame.Window.Rect.sizeDelta;
@@ -452,6 +473,7 @@ namespace IslandUI
                 }
             }
             PlaceSlotTabs(false);
+            PlaceFloatTab();
             // The header follows the final frame, including filtering and shrink.
             PlaceFilter();
 

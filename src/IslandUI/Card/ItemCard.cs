@@ -299,6 +299,16 @@ namespace IslandUI
 
         // ---------- rendering ----------
 
+        // UI.LocLabels: the language changed - a card on screen is lettered again
+        internal static void LanguageChanged()
+        {
+            if (Cards[0] != null && Cards[0].Window != null && Cards[0].Window.Go != null
+                && Cards[0].Window.Go.activeInHierarchy)
+            {
+                RenderAll();
+            }
+        }
+
         private static void RenderAll()
         {
             if (Cards[0] == null || Cards[0].Window == null || Cards[0].Window.Go == null
@@ -359,6 +369,7 @@ namespace IslandUI
             Card card = Cards[0];
             if (card?.Window?.Go != null && card.Window.Go.activeInHierarchy)
             {
+                LiftAboveSheets(card.Window.Go.transform.parent);
                 card.TickClose(cam);
                 if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     card.Window.Content, Input.mousePosition, cam, out Vector2 local))
@@ -370,6 +381,22 @@ namespace IslandUI
             // frame gets one, and nobody asking is what puts it away
             ReasonTip.Commit(Cards[0]?.Window?.Go != null
                 ? Cards[0].Window.Go.transform.parent : null, cam);
+        }
+
+        // THE CARD IS IN FRONT OF THE SHEETS. It lives in vanilla's CraftPanel,
+        // which the game puts before our windows in MainCanvas, so a character
+        // sheet open beside the crafting window drew over the card you had just
+        // asked for. While a card is up the panel stands just after our windows
+        // (IslandUI_Inventory) - still under the crafting shell, and the hover
+        // card, which re-raises itself to the end, stays over both.
+        private static void LiftAboveSheets(Transform panel)
+        {
+            Transform canvas = panel != null ? panel.parent : null;
+            Transform sheets = canvas != null ? canvas.Find("IslandUI_Inventory") : null;
+            if (sheets != null && panel.GetSiblingIndex() < sheets.GetSiblingIndex())
+            {
+                panel.SetSiblingIndex(sheets.GetSiblingIndex());
+            }
         }
 
         // ---------- one card ----------
@@ -464,7 +491,7 @@ namespace IslandUI
                 _usedInLabel = Theme.MakeText(content, "UsedInLabel", Theme.FontCaption,
                     Theme.TextDim, TextAlignmentOptions.MidlineLeft);
                 _usedInLabel.enableWordWrapping = false;
-                _usedInLabel.text = "Used in";
+                _usedInLabel.text = Shared.Loc.Get("card.used_in", "Used in");
                 _usedInMore = Theme.MakeText(content, "UsedInMore", Theme.FontCaption,
                     Theme.TextDim, TextAlignmentOptions.MidlineRight);
                 _usedInMore.enableWordWrapping = false;
@@ -537,6 +564,7 @@ namespace IslandUI
                     return; // hidden — no empty-state card
                 }
 
+                if (ShownLink.Key != link.Key) { _craftedUntil = 0f; }   // a note is about the item it was made of
                 ShownLink = link;
                 if (link.Recipe != null)
                 {
@@ -621,7 +649,8 @@ namespace IslandUI
                     return y;
                 }
 
-                Theme.Place(_usedInLabel, 0f, y, iconsX, CardFacets.StatRowH);
+                Theme.Place(_usedInLabel, 0f, y, iconsX - 2f, CardFacets.StatRowH);
+                Theme.FitLanguage(_usedInLabel, Theme.FontCaption);
                 // one strip, two materials: on the recipe's sheet it is lettered
                 // and drawn as the sheet is, on a plain item's card it is the kit's
                 if (_usedInPlainFace == null)
@@ -639,7 +668,7 @@ namespace IslandUI
                     }
                     text.color = quiet;
                 }
-                _usedInLabel.text = sheet ? "USED IN" : "Used in";
+                _usedInLabel.text = sheet ? Shared.Loc.Get("card.used_in.caps", "USED IN") : Shared.Loc.Get("card.used_in", "Used in");
                 _usedInArrow.color = quiet;
                 if (hidden > 0)
                 {

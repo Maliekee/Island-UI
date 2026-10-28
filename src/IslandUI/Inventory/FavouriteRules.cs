@@ -73,7 +73,7 @@ namespace IslandUI
         // Ctrl+click (InventoryWindow) - and send the item home; All in, Stack and
         // quick-stack already leave it. A refusal says why at the cursor for a
         // moment: a click that silently does nothing reads as broken.
-        internal const string KeptWords = "favourite  ·  alt-click to unmark first";
+        internal static string KeptWords => Shared.Loc.Get("inv.hint.kept", "favourite  ·  alt-click to unmark first");
         internal static float KeptUntil;
 
         internal static void Refuse()

@@ -27,8 +27,19 @@ namespace IslandUI
 
         private const int SortVicinity = 0;
         private const int SortKind = 1;
-        private const int SortState = 2;
-        private static readonly string[] SortNames = { "Vicinity", "Kind", "State", "Mood" };
+        private const int SortJob = 2;
+        private const int SortPersonality = 4;
+        private static string SortName(int sort)
+        {
+            switch (sort)
+            {
+                case SortVicinity: return Shared.Loc.Get("roster.sort.vicinity", "Vicinity");
+                case SortKind: return Shared.Loc.Get("roster.sort.kind", "Kind");
+                case SortJob: return Shared.Loc.Get("roster.sort.job", "Job");
+                case SortPersonality: return Shared.Loc.Get("roster.sort.personality", "Personality");
+                default: return Shared.Loc.Get("roster.sort.mood", "Mood");
+            }
+        }
         // Vicinity first: "who can I touch" is the question the slot's other
         // occupant answers, so the roster opens as its continuation (D53).
         private static int _rosterSort = SortVicinity;
@@ -44,7 +55,8 @@ namespace IslandUI
         // below and the one-line bar take that to ~7.1 rows in the same window.
         private const float RosterRowH = 22f;    // a name line over the gauge, as the header is
         private const float RosterHeadH = 11f;   // a section heading
-        private const float RosterBarH = 13f;    // the control row over the list, in ONE line
+        // the control rows over the list: the sorts, then the camp's actions
+        private const float RosterBarH = RosterBarLineH * 2f + RosterBarGap;
         // The gap BETWEEN rows, which is the roster's and not the pool's. A list
         // of people is read down a column and wants the rows near each other; a
         // stack of container plates wants air between them, because each is its
@@ -85,7 +97,7 @@ namespace IslandUI
         // drawing disagree by a gap per row.
         private static float ReachGap()
         {
-            return RosterView ? RosterGap : GroupMemberGap;
+            return RosterView ? RosterGap : IsVicinity(GroupReach) ? VicRowGap : GroupMemberGap;
         }
 
         // THE CARD IS THE SAME ROW, DRAWN LARGER: the list's icons were too small
@@ -287,18 +299,30 @@ namespace IslandUI
             return e.Job != 0 ? 1 + e.Job : 100;
         }
 
-        private static string StateSection(RosterEntry e)
+        private static string JobSection(RosterEntry e)
         {
-            if (e.Following) { return "Following"; }
-            return e.Job != 0 ? JobName(e.Job) : "Idle";
+            if (e.Following) { return Shared.Loc.Get("roster.job.following", "Following"); }
+            return e.Job != 0 ? JobName(e.Job) : Shared.Loc.Get("roster.job.idle", "Idle");
         }
 
-        private static readonly string[] JobNames =
-            { "Idle", "Food", "Wood", "Stone", "Harvest", "Planter", "Breed", "Dig", "Training", "Fishing", "Repair" };
-
+        // the game's workType, in its order
         private static string JobName(int job)
         {
-            return job >= 0 && job < JobNames.Length ? JobNames[job] : "Working";
+            switch (job)
+            {
+                case 0: return Shared.Loc.Get("roster.job.idle", "Idle");
+                case 1: return Shared.Loc.Get("roster.job.food", "Food");
+                case 2: return Shared.Loc.Get("roster.job.wood", "Wood");
+                case 3: return Shared.Loc.Get("roster.job.stone", "Stone");
+                case 4: return Shared.Loc.Get("roster.job.harvest", "Harvest");
+                case 5: return Shared.Loc.Get("roster.job.planter", "Planter");
+                case 6: return Shared.Loc.Get("roster.job.breed", "Breed");
+                case 7: return Shared.Loc.Get("roster.job.dig", "Dig");
+                case 8: return Shared.Loc.Get("roster.job.training", "Training");
+                case 9: return Shared.Loc.Get("roster.job.fishing", "Fishing");
+                case 10: return Shared.Loc.Get("roster.job.repair", "Repair");
+                default: return Shared.Loc.Get("roster.job.working", "Working");
+            }
         }
 
         // VANILLA'S BUCKETS, BORROWING A NAME. GetNPCColorID sorts everyone into
@@ -317,22 +341,23 @@ namespace IslandUI
         // first - the story characters were grouped as a kind called Cassie.
         private const int StoryBucket = 5;
 
+        // Only the game's own names are cached; the mod's words are read at use,
+        // so a language switch reaches them.
         private static string KindSection(RosterEntry e)
         {
+            if (e.Kind == StoryBucket)
+            {
+                return Shared.Loc.Get("roster.kind.story", "Story characters");
+            }
             string name;
             if (KindSections.TryGetValue(e.Kind, out name))
             {
                 return name;
             }
-            if (e.Kind == StoryBucket)
-            {
-                KindSections[e.Kind] = "Story characters";
-                return "Story characters";
-            }
             name = KindName(_mn != null ? _mn.npcMN : null, e.Who);
             if (string.IsNullOrEmpty(name))
             {
-                name = "Kind " + e.Kind.ToString("0");
+                return Shared.Loc.Get("roster.kind.numbered", "Kind {0}", e.Kind.ToString("0"));
             }
             KindSections[e.Kind] = name;
             return name;
@@ -340,7 +365,9 @@ namespace IslandUI
 
         private static string VicinitySection(RosterEntry e)
         {
-            return e.InReach ? "In reach" : e.AtHome ? "At home" : "Away";
+            return e.InReach ? Shared.Loc.Get("roster.section.in_reach", "In reach")
+                : e.AtHome ? Shared.Loc.Get("roster.section.at_home", "At home")
+                : Shared.Loc.Get("roster.section.away", "Away");
         }
 
         // THE SECTION HAS TO LEAD THE SORT, OR THE HEADINGS REPEAT (found the
@@ -364,10 +391,31 @@ namespace IslandUI
             switch (_rosterSort)
             {
                 case SortKind: return KindSection(e);
-                case SortState: return StateSection(e);
+                case SortJob: return JobSection(e);
                 case SortMood: return MoodSection(e);
+                case SortPersonality: return PersonalitySection(e);
                 default: return VicinitySection(e);
             }
+        }
+
+        // BY PERSONALITY: one section per IS type, in the game's words, the
+        // sections in alphabetical order and those without one last. The rows
+        // carry no token - the roster is full, and the heading says it.
+        private static string PersonalitySection(RosterEntry e)
+        {
+            string type = PersonText(GameWords.Text(_mn), e.Who.person, 0);
+            return string.IsNullOrEmpty(type) ? Shared.Loc.Get("roster.section.no_personality", "No personality") : type;
+        }
+
+        private static int ByPersonality(RosterEntry a, RosterEntry b)
+        {
+            string x = PersonText(GameWords.Text(_mn), a.Who.person, 0);
+            string y = PersonText(GameWords.Text(_mn), b.Who.person, 0);
+            if (string.IsNullOrEmpty(x) != string.IsNullOrEmpty(y))
+            {
+                return string.IsNullOrEmpty(x) ? 1 : -1;
+            }
+            return string.Compare(x, y, System.StringComparison.CurrentCultureIgnoreCase);
         }
 
         private static void SortRoster()
@@ -380,8 +428,11 @@ namespace IslandUI
                     case SortKind:
                         c = a.Kind.CompareTo(b.Kind);
                         break;
-                    case SortState:
+                    case SortJob:
                         c = StateRank(a).CompareTo(StateRank(b));
+                        break;
+                    case SortPersonality:
+                        c = ByPersonality(a, b);
                         break;
                     case SortMood:
                         // worst section first, then lowest mood within it
@@ -416,7 +467,10 @@ namespace IslandUI
             SheetLine line = StripLine(who);
             line.Kind = LineRoster;
             line.Label = who.charaName ?? string.Empty;
-            line.Value = "Lv " + who.level.ToString("0");
+            line.Value = Shared.Loc.Get("roster.level", "Lv {0}", who.level.ToString("0"));
+            // NO TYPE BESIDE THE SNAPSHOT (user): the row is the person, not
+            // their profile; the Personality sort's headings still say the type
+            line.Style = -1;
             Color kind = NPCColor(who) ?? (_mn != null && _mn.uiMN != null
                 ? _mn.uiMN.GetNPCColor(who.npcID) : Theme.Ink);
             line.LabelTint = kind;
@@ -449,7 +503,7 @@ namespace IslandUI
         {
             SheetLine line = RosterLine(who);
             line.Card = true;
-            line.Label = "Lv " + who.level.ToString("0");
+            line.Label = Shared.Loc.Get("roster.level", "Lv {0}", who.level.ToString("0"));
             line.LabelTint = Theme.Ink;   // the stripe already says the kind, so the level
             line.LabelTinted = true;      // reads plain and strong instead of in the kind colour
             // The kind is the character TYPE's localised name, and for a unique
@@ -469,14 +523,14 @@ namespace IslandUI
                 ? _mn.gameMN.pMove.transform.position : Vector3.zero;
             if (ReachRule.Live(who, here, ReachRule.Near))
             {
-                return "in reach";
+                return Shared.Loc.Get("roster.where.in_reach", "in reach");
             }
             if (move != null && Vector3.Distance(who.transform.position, move.territory)
                 <= Mathf.Max(1f, move.territoryRad))
             {
-                return "at home";
+                return Shared.Loc.Get("roster.where.at_home", "at home");
             }
-            return "away";
+            return Shared.Loc.Get("roster.where.away", "away");
         }
 
         // WHY the moral is red, or will be: DiscontentWord (InventoryWindow.Mood.cs),
@@ -591,6 +645,8 @@ namespace IslandUI
             }
             else
             {
+                // the name, with no type's token before it (RosterLine)
+                HideRosterArt(row);
                 Theme.Place(row.Label, padX, 1.5f, Mathf.Max(20f, nameW - levelW - followW), RosterNameH);
                 if (line.Following)
                 {
@@ -759,12 +815,14 @@ namespace IslandUI
             if (where && !string.Equals(row.Sub.text, line.Where))
             {
                 row.Sub.text = line.Where;
+                Theme.FitLanguage(row.Sub, RosterSmall);
             }
             bool cause = !string.IsNullOrEmpty(line.Cause);
             SetShown(row.Note, cause);
             if (cause && !string.Equals(row.Note.text, line.Cause))
             {
                 row.Note.text = line.Cause;
+                Theme.FitLanguage(row.Note, RosterSmall);
             }
             if (cause)
             {
@@ -805,74 +863,87 @@ namespace IslandUI
                 Label = string.Empty,
                 Value = string.Empty,
                 Arg = _rosterSort,
-                Options = new[] { SortNames[0], SortNames[1], SortNames[2], SortNames[3], "All names", "Send home" },
+                Options = new[] { SortName(0), SortName(1), SortName(2), SortName(3), SortName(4),
+                    Shared.Loc.Get("roster.send_home", "Send everyone home") },
             };
         }
 
-        private const int RosterBarSorts = 4;
-        private const float RosterVerbW = 16f;
-        private static readonly string[] RosterVerbGlyphs = { "names", "home" };
-        private static readonly string[] RosterVerbTips =
+        private const int RosterBarSorts = 5;
+        private static string[] RosterVerbTips => new[]
         {
-            "All names: show or hide every villager's name over their head",
-            "Send home: everyone walks back to their own area",
+            Shared.Loc.Get("roster.send_home.help", "Everyone walks back to their own area"),
         };
         private const float RosterBarLineH = 13f;
         private const float RosterBarGap = 3f;
 
-        // ONE LINE. It was two, because the first attempt put
-        // five controls AND a count across the slot's 225 units and got 34 each,
-        // with the words running over one another. The count is what
-        // did not fit: moved to the header's own count slot - which was showing a
-        // total the sections already add up to - the five controls have 218 units
-        // between them, and the second line was pure cost to the list.
+        // TWO LINES AGAIN: the camp's actions across the first, the sorts on
+        // the second. One line held four sorts and two glyph chips; a fifth sort
+        // (Personality) did not fit beside them, so the actions took a line of
+        // their own, where they can be words. 'All names' went: unused.
         //
-        // The split across the one line is still by KIND, which is what the two
-        // lines were really saying: the sorts change what this window SHOWS and
-        // take the left, over the list they order; the verbs act on the CAMP and
-        // sit right, where a plank that does something belongs.
+        // The split is by KIND: the sorts change what this window SHOWS and sit
+        // over the list they order; the actions act on the CAMP and sit right,
+        // where a plank that does something belongs.
         private static void LayoutRosterBar(SheetRow row, SheetLine line, float width, float h)
         {
             int n = Mathf.Min(line.Options.Length, row.Planks.Length);
             float right = width - 4f;
-            float y = (h - SheetPlankH) * 0.5f;
-            // THE VERBS ARE BUTTONS: 'all names' and 'send home' are
-            // a glyph on a chip each, named by their tooltips, so the four sorts
-            // keep their words and get the room back
-            int verbs = Mathf.Max(0, n - RosterBarSorts);
-            float verbW = RosterVerbW;
+            // the actions on the first line, the sorts on the second, right
+            // over the list they order
+            float vy = (RosterBarLineH - SheetPlankH) * 0.5f;
+            float y = RosterBarLineH + RosterBarGap + vy;
             row.TipZones.Clear();
             row.TipTexts.Clear();
-            float verbsLeft = right - verbs * verbW - (verbs - 1) * RosterBarGap;
-            float vx = verbsLeft;
-            for (int i = RosterBarSorts; i < n; i++)
+            // the sorts, each as wide as its word and the rest of the line
+            // shared out, so "Personality" is not squeezed to "Kind"'s width
+            int sorts = Mathf.Min(RosterBarSorts, n);
+            float words = 0f;
+            for (int i = 0; i < sorts; i++)
             {
-                Theme.Place(row.Planks[i], vx, y, verbW, SheetPlankH);
+                words += RosterPlankWord(row, line, i);
+            }
+            float room = right - RosterPadX - (sorts - 1) * RosterBarGap;
+            float spare = sorts > 0 ? (room - words) / sorts : 0f;
+            float squeeze = words > 0f && spare < 0f ? room / words : 1f;
+            float sx = RosterPadX;
+            for (int i = 0; i < sorts; i++)
+            {
+                float sortW = squeeze < 1f ? RosterPlankWord(row, line, i) * squeeze
+                    : RosterPlankWord(row, line, i) + spare;
+                Theme.Place(row.Planks[i], sx, y, sortW, SheetPlankH);
+                Theme.Place(row.PlankTexts[i], 0f, 0f, sortW, SheetPlankH);
+                SetShown(row.PlankIcons[i], false);
+                sx += sortW + RosterBarGap;
+            }
+            // the actions, from the right, as words
+            float vx = right;
+            for (int i = n - 1; i >= sorts; i--)
+            {
+                float verbW = RosterPlankWord(row, line, i);
+                vx -= verbW;
+                Theme.Place(row.Planks[i], vx, vy, verbW, SheetPlankH);
                 Theme.Place(row.PlankTexts[i], 0f, 0f, verbW, SheetPlankH);
-                Theme.Place(row.PlankIcons[i], 2.5f, 2f, verbW - 5f, SheetPlankH - 4f);
+                SetShown(row.PlankIcons[i], false);
                 int verb = i - RosterBarSorts;
                 if (verb < RosterVerbTips.Length)
                 {
-                    row.TipZones.Add(new Rect(vx, y, verbW, SheetPlankH));
+                    row.TipZones.Add(new Rect(vx, vy, verbW, SheetPlankH));
                     row.TipTexts.Add(RosterVerbTips[verb]);
                 }
-                vx += verbW + RosterBarGap;
-            }
-            // the sorts, filling what is left of the line
-            float sortRight = verbs > 0 ? verbsLeft - 6f : right;
-            float sortW = (sortRight - RosterPadX - (RosterBarSorts - 1) * RosterBarGap) / RosterBarSorts;
-            float sx = RosterPadX;
-            for (int i = 0; i < RosterBarSorts && i < n; i++)
-            {
-                Theme.Place(row.Planks[i], sx, y, sortW, SheetPlankH);
-                Theme.Place(row.PlankTexts[i], 0f, 0f, sortW, SheetPlankH);
-                sx += sortW + RosterBarGap;
+                vx -= RosterBarGap;
             }
             Theme.Place(row.Label, RosterPadX, 0f, 0f, h);
             for (int i = n; i < row.Planks.Length; i++)
             {
                 SetShown(row.Planks[i], false);
             }
+        }
+
+        // a plank's width for its word, measured a little wide so the bold of
+        // the sort in force does not crowd it
+        private static float RosterPlankWord(SheetRow row, SheetLine line, int i)
+        {
+            return Mathf.Ceil(row.PlankTexts[i].GetPreferredValues(line.Options[i]).x * 1.08f) + 8f;
         }
 
         private static void PaintRosterBar(SheetRow row, SheetLine line)
@@ -887,23 +958,12 @@ namespace IslandUI
             {
                 SetShown(row.Planks[i], true);
                 bool sort = i < RosterBarSorts;
-                string word = sort ? line.Options[i] : string.Empty;
+                string word = line.Options[i];
                 if (row.PlankTexts[i].text != word)
                 {
                     row.PlankTexts[i].text = word;
                 }
                 UnityEngine.UI.Image glyph = row.PlankIcons[i];
-                int verb = i - RosterBarSorts;
-                if (!sort && verb < RosterVerbGlyphs.Length)
-                {
-                    Sprite mark = HudGlyphs.Get(RosterVerbGlyphs[verb]);
-                    if (glyph.sprite != mark) { glyph.sprite = mark; }
-                    if (!glyph.enabled) { glyph.enabled = true; }
-                }
-                else if (glyph.enabled)
-                {
-                    glyph.enabled = false;
-                }
                 bool on = sort && i == line.Arg;
                 bool hot = ReferenceEquals(_sheetHot, row) && _sheetHotSub == i;
                 bool down = hot && ReferenceEquals(_sheetPressed, row) && _sheetPressedSub == i && anyDown;
@@ -967,6 +1027,7 @@ namespace IslandUI
             // What the list is made of: a heading whenever the section changes,
             // then a row per person. Walked once to measure, once to bind, so a
             // row knows whether it is inside the window before it is drawn.
+            ScrollRosterToSection(memberGap);   // a token's link, landing (Links.cs)
             float lo = _reachScroll;
             float hi = _reachScroll + capH;
             float walk = 0f;
@@ -981,7 +1042,9 @@ namespace IslandUI
                 {
                     section = want;
                     bool leanHead = walk + RosterHeadH < lo - RosterRowH || walk > hi + RosterRowH;
-                    BindRosterHead(want, rowW, leanHead);
+                    int trait = _rosterSort == SortPersonality && e.Who.person != null && e.Who.person.Length > 0
+                        ? e.Who.person[0] : -1;
+                    BindRosterHead(want, rowW, leanHead, trait);
                     walk += RosterHeadH + memberGap;
                 }
                 bool lean = walk + RosterRowH < lo - RosterRowH || walk > hi + RosterRowH;
@@ -996,7 +1059,7 @@ namespace IslandUI
                 contentH += ReachPlates[i].Height + (i > 0 ? memberGap : 0f);
             }
             _reachContentH = contentH;
-            _reachViewH = Mathf.Min(capH, contentH);
+            _reachViewH = capH;   // always full height, as the vicinity (Build.cs)
 
             _reachSpacer = TakePlate();
             _reachSpacer.Column = ReachColumn;
@@ -1028,7 +1091,8 @@ namespace IslandUI
             {
                 return "";   // the plate says it; the field carries the count
             }
-            return _filter.Alive ? "Roster" : "Roster  " + _nearbyTotal;
+            return _filter.Alive ? Shared.Loc.Get("roster.title", "Roster")
+                : Shared.Loc.Get("roster.title", "Roster") + "  " + _nearbyTotal;
         }
 
         // One pooled plate, one row. A sheet plate in every respect the rest of
@@ -1099,6 +1163,17 @@ namespace IslandUI
             return row;
         }
 
+        // a heading's token stays with the heading: the plates are pooled, and a
+        // roster row draws only its own type's token from the form pool
+        private static void HideRosterArt(SheetRow row)
+        {
+            row.FormImagesUsed = 0;
+            for (int i = 0; row.FormImages != null && i < row.FormImages.Count; i++)
+            {
+                if (row.FormImages[i].gameObject.activeSelf) { row.FormImages[i].gameObject.SetActive(false); }
+            }
+        }
+
         private static void BindRosterRow(CommonStates who, float width, bool lean)
         {
             Plate plate = BindRosterPlate(width, RosterRowH, lean);
@@ -1111,7 +1186,8 @@ namespace IslandUI
             SheetLine line = RosterLine(who);
             SheetRow row = TakeRosterRow(plate, line);
             Theme.Place(row.Go.transform, 0f, 0f, width, RosterRowH);
-            LayoutRosterRow(row, line, width, RosterRowH);
+            if (line.Card) { HideRosterArt(row); }
+            LayoutRosterRow(row, line, width, RosterRowH);   // hides a heading's token, draws the row's
             PaintSheetRow(row, line);
             if (!row.Go.activeSelf)
             {
@@ -1120,7 +1196,9 @@ namespace IslandUI
             SheetPlates.Add(plate);
         }
 
-        private static void BindRosterHead(string text, float width, bool lean)
+        // A heading; under the Personality sort it leads with the type's token,
+        // the one the Character page draws (each row carries it too, before the name).
+        private static void BindRosterHead(string text, float width, bool lean, int trait = -1)
         {
             Plate plate = BindRosterPlate(width, RosterHeadH, lean);
             plate.Owner = null;   // static type: RepaintSheets leaves it alone
@@ -1132,9 +1210,17 @@ namespace IslandUI
             SheetRow row = TakeRosterRow(plate, line);
             Theme.Place(row.Go.transform, 0f, 0f, width, RosterHeadH);
             PaintSheetRow(row, line);
-            Theme.Place(row.Label, RosterPadX, 0f, width - RosterPadX - SheetPadX, RosterHeadH);
+            HideRosterArt(row);
+            float lead = 0f;
+            if (trait >= 0)
+            {
+                const float s = RosterHeadH - 1f;
+                DrawTraitToken(row, trait, RosterPadX, 0.5f, s);
+                lead = s + 3f;
+            }
+            Theme.Place(row.Label, RosterPadX + lead, 0f, width - RosterPadX - lead - SheetPadX, RosterHeadH);
             Theme.Place(row.Value, width, 0f, 0f, RosterHeadH);
-            ShedRosterHead(row, text);
+            ShedRosterHead(row, text, lead);
             if (!row.Go.activeSelf)
             {
                 row.Go.SetActive(true);
@@ -1224,6 +1310,12 @@ namespace IslandUI
         {
             CommonStates who = row >= 0 && row < Roster.Count ? Roster[row].Who : _target as CommonStates;
             return TargetVerbs.Dump(_mn, who);
+        }
+
+        // ...and every button on vanilla's NPC panel, as the foreign read sees it
+        internal static string PanelCensus()
+        {
+            return TargetVerbs.PanelCensus(_mn);
         }
 
         // For the harness: the prop in focus - what it is, what wear it
@@ -1324,6 +1416,12 @@ namespace IslandUI
         internal static string PropShapes()
         {
             return PropCensus.Run(_mn);
+        }
+
+        internal static string PropKinds()
+        {
+            PlayerMove p = _mn != null && _mn.gameMN != null ? _mn.gameMN.pMove : null;
+            return PropCensus.Kinds(_mn, p != null ? p.transform.position : Vector3.zero);
         }
 
         // ---------- what a press does ----------
@@ -1484,15 +1582,7 @@ namespace IslandUI
                 _reachScroll = 0f;   // a re-sorted list has nowhere to hold a position
                 return;
             }
-            if (_mn == null)
-            {
-                return;
-            }
-            if (sub == RosterBarSorts && _mn.uiMN != null)
-            {
-                _mn.uiMN.ALLNameVisible();
-            }
-            else if (_mn.npcMN != null)
+            if (sub == RosterBarSorts && _mn != null && _mn.npcMN != null)
             {
                 _mn.npcMN.ALLNPCToTerritory();
             }

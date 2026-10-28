@@ -110,5 +110,66 @@ namespace IslandUI
             }
             return seen + " props, " + order.Count + " shapes (see BepInEx/prop-census.txt)";
         }
+
+        // ...and by item key, with what vanilla's prop panel switches on: the
+        // item's type and subtype and the container's Type (Forgejo #60's survey
+        // of what each placed thing offers).
+        internal static string Kinds(ManagersScript mn, Vector3 from)
+        {
+            if (mn == null || mn.itemMN == null)
+            {
+                return "no managers";
+            }
+            var rows = new Dictionary<string, string>();
+            var counts = new Dictionary<string, int>();
+            var owned = new Dictionary<string, int>();
+            var nearest = new Dictionary<string, float>();
+            foreach (ItemInfo info in Object.FindObjectsOfType<ItemInfo>())
+            {
+                if (info == null || string.IsNullOrEmpty(info.itemKey))
+                {
+                    continue;
+                }
+                string key = info.itemKey;
+                if (!rows.ContainsKey(key))
+                {
+                    ItemData data = null;
+                    try { data = mn.itemMN.FindItem(key); }
+                    catch (System.Exception) { }
+                    InventorySlot slot = info.GetComponent<InventorySlot>();
+                    rows[key] = (data != null ? data.itemType + "/" + data.subType : "?")
+                        + " | " + (slot != null ? slot.type.ToString() : "-")
+                        + (info.GetComponent<BuildScaler>() != null ? " | scaler" : "")
+                        + (info.GetComponent<PositionEdit>() != null ? " | position" : "")
+                        + (info.GetComponent<SexPlace>() != null ? " | sexplace" : "");
+                    counts[key] = 0;
+                    owned[key] = 0;
+                    nearest[key] = float.MaxValue;
+                }
+                counts[key]++;
+                if (mn.buildMN != null && mn.buildMN.OwnCheck(info)) { owned[key]++; }
+                nearest[key] = Mathf.Min(nearest[key], Vector3.Distance(from, info.transform.position));
+            }
+            var keys = new List<string>(rows.Keys);
+            keys.Sort(System.StringComparer.Ordinal);
+            var sb = new StringBuilder();
+            sb.AppendLine("key | itemType/subType | slot type | extras || placed, yours, nearest m");
+            for (int i = 0; i < keys.Count; i++)
+            {
+                string k = keys[i];
+                sb.AppendLine(k + " | " + rows[k] + " || " + counts[k] + ", " + owned[k] + ", " + nearest[k].ToString("0"));
+            }
+            string text = sb.ToString();
+            try
+            {
+                System.IO.File.WriteAllText(
+                    System.IO.Path.Combine(BepInEx.Paths.BepInExRootPath, "prop-kinds.txt"), text);
+            }
+            catch (System.Exception e)
+            {
+                Plugin.Log.LogWarning("prop kinds: " + e.Message);
+            }
+            return keys.Count + " kinds (see BepInEx/prop-kinds.txt)";
+        }
     }
 }

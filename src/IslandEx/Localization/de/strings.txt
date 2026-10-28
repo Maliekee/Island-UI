@@ -1,0 +1,9 @@
+# Island Ex: German strings, machine-translated from en/strings.txt.
+# Corrections are welcome: edit the right side of a line and keep the key and every {0}.
+
+badge.off=aus  -  klicken zum Einschalten
+badge.on=an  -  klicken zum Ausschalten
+badge.turns_off=beim nächsten Start aus  -  klicken zum Abbrechen
+badge.turns_on=beim nächsten Start an  -  klicken zum Abbrechen
+
+loc.separator= · 

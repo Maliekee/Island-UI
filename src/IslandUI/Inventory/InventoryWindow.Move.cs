@@ -30,16 +30,29 @@ namespace IslandUI
         // rules are still open; this is the first cut, to be played with.
         private sealed class MoveRoute
         {
-            internal string Name;          // for the badge
+            // for the badge: the fixed routes' words are read at use, in the
+            // player's language; IntoRoute's is the store's name, set per frame
+            internal string Name
+            {
+                get
+                {
+                    return ToYours ? Shared.Loc.Get("inv.move.your_bags", "your bags")
+                        : ToReach ? Shared.Loc.Get("inv.move.nearby_storage", "nearby storage")
+                        : Drop ? Shared.Loc.Get("inv.move.drop", "drop")
+                        : _name;
+                }
+                set { _name = value; }
+            }
+            private string _name;
             internal InventorySlot Into;   // the target's bag or chest
             internal bool ToYours;
             internal bool ToReach;
             internal bool Drop;
         }
 
-        private static readonly MoveRoute ToYoursRoute = new MoveRoute { Name = "your bags", ToYours = true };
-        private static readonly MoveRoute ToReachRoute = new MoveRoute { Name = "nearby storage", ToReach = true };
-        private static readonly MoveRoute DropRoute = new MoveRoute { Name = "drop", Drop = true };
+        private static readonly MoveRoute ToYoursRoute = new MoveRoute { ToYours = true };
+        private static readonly MoveRoute ToReachRoute = new MoveRoute { ToReach = true };
+        private static readonly MoveRoute DropRoute = new MoveRoute { Drop = true };
         // asked every hovered frame while Ctrl is down, so one instance is reused
         private static readonly MoveRoute IntoRoute = new MoveRoute();
 
@@ -128,11 +141,13 @@ namespace IslandUI
             CommonStates owner = BagOwner(c);
             if (owner != null && ContainerPolicy.IsBodyBag(c))
             {
-                return string.IsNullOrEmpty(owner.charaName) ? "the body's pockets" : owner.charaName + "'s pockets";
+                return string.IsNullOrEmpty(owner.charaName) ? Shared.Loc.Get("inv.move.body_pockets", "the body's pockets")
+                    : Shared.Loc.Get("inv.move.pockets_of", "{0}'s pockets", owner.charaName);
             }
             if (owner != null)
             {
-                return string.IsNullOrEmpty(owner.charaName) ? "their bag" : owner.charaName + "'s bag";
+                return string.IsNullOrEmpty(owner.charaName) ? Shared.Loc.Get("inv.move.their_bag", "their bag")
+                    : Shared.Loc.Get("inv.move.bag_of", "{0}'s bag", owner.charaName);
             }
             return ChestTitle(c);
         }

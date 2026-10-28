@@ -94,6 +94,19 @@ namespace IslandUI.UI
             }
         }
 
+        // Escape cancels, asked from the pause's prefix (TargetPatches), the one
+        // place the game reads the key - so the press neither pauses nor
+        // reaches the target or the item card behind the dialog.
+        internal static bool EscapeCancels()
+        {
+            if (!IsOpen || !Input.GetKeyDown(KeyCode.Escape))
+            {
+                return false;
+            }
+            Close();
+            return true;
+        }
+
         // Every frame while open; true means the pointer is the dialog's this frame.
         internal static bool Tick(Camera cam)
         {
@@ -209,7 +222,8 @@ namespace IslandUI.UI
         private static void Paint(Image hot)
         {
             _count.text = (_typed != null ? _typed + "|" : _n.ToString()) + " / " + _stack;
-            _takeLabel.text = "Take " + _n;
+            _takeLabel.text = Shared.Loc.Get("split.take", "Take {0}", _n);
+            Theme.FitLanguage(_takeLabel, 8f);
             Theme.KitSkin(_less, hot == _less ? "kit_chip_oak" : "kit_chip_walnut", 0);
             Theme.KitSkin(_more, hot == _more ? "kit_chip_oak" : "kit_chip_walnut", 0);
             Theme.KitSkin(_take, hot == _take ? "kit_plank_pine" : "kit_plank_oak", 18);

@@ -55,7 +55,7 @@ namespace IslandUI
 
         private static string AttributeTip(CommonStates who)
         {
-            return "Attribute points to spend\n" + who.statusPoint;
+            return "<b>" + Shared.Loc.Get("player.points.attributes", "Attribute points to spend") + "</b>\n" + who.statusPoint;
         }
 
         // ---- the Player dock: your Your character chip wears both ----
@@ -76,14 +76,14 @@ namespace IslandUI
             // made after the chips, so they draw over them; a rebuilt HUD makes them again
             if (_dockSkills == null || _dockSkills.Rect == null)
             {
-                _dockSkills = PointsTag.Create(dock, "SkillPoints");
-                _dockAttributes = PointsTag.Create(dock, "AttributePoints");
+                _dockSkills = PointsTag.Create(dock, "SkillPoints", true);
+                _dockAttributes = PointsTag.Create(dock, "AttributePoints", true);
             }
             CommonStates you = You();
             bool skills = SkillsToSpend(out int sp);
             bool attributes = AttributesToSpend(you);
-            if (skills) { _dockSkills.Show(PointsTag.Kind.Skill, sp.ToString()); } else { _dockSkills.Hide(); }
-            if (attributes) { _dockAttributes.Show(PointsTag.Kind.Attribute, you.statusPoint.ToString()); } else { _dockAttributes.Hide(); }
+            if (skills) { _dockSkills.Show(PointsTag.Kind.Skill, sp.ToString(), PointsTag.DockPill); } else { _dockSkills.Hide(); }
+            if (attributes) { _dockAttributes.Show(PointsTag.Kind.Attribute, you.statusPoint.ToString(), PointsTag.DockPill); } else { _dockAttributes.Hide(); }
             if (!skills && !attributes)
             {
                 return;
@@ -91,14 +91,14 @@ namespace IslandUI
             const float gap = 1f;
             var face = details.Face.rectTransform;
             float corner = face.anchoredPosition.x + face.sizeDelta.x - 1f;
-            float y = -face.anchoredPosition.y - PointsTag.Height * 0.5f;
+            float y = -face.anchoredPosition.y - PointsTag.DockPill * 0.5f;
             // the rightmost tag is centred on the corner, the other laid to its left
             PointsTag last = skills ? _dockSkills : _dockAttributes;
             float x = corner - last.Width * 0.5f;
-            Theme.Place(last.Rect, x, y, last.Width, PointsTag.Height);
+            Theme.Place(last.Rect, x, y, last.Width, PointsTag.DockPill);
             if (skills && attributes)
             {
-                Theme.Place(_dockAttributes.Rect, x - gap - _dockAttributes.Width, y, _dockAttributes.Width, PointsTag.Height);
+                Theme.Place(_dockAttributes.Rect, x - gap - _dockAttributes.Width, y, _dockAttributes.Width, PointsTag.DockPill);
             }
             // a level-up bumps the tag it paid into (InventoryWindow.LevelUp.cs)
             if (skills) { ScaleFromMiddle(_dockSkills.Rect, PopScale(SkillBurst, .45f)); }

@@ -156,7 +156,7 @@ namespace IslandUI.UI
                 : ConflictWith != null ? _art.FieldInvalid : _art.Field);
             float k = listening || _hovered ? 1f : 0.95f;
             _field.color = new Color(k, k, k, 1f);
-            _text.text = listening ? "Press a key" : Key == KeyCode.None && _unbound != null ? _unbound : Name(Key);
+            _text.text = listening ? Shared.Loc.Get("keybind.listening", "Press a key") : Key == KeyCode.None && _unbound != null ? _unbound : Name(Key);
             _text.color = Key == KeyCode.None && !listening
                 ? new Color(Theme.KitInk.r, Theme.KitInk.g, Theme.KitInk.b, 0.5f) : Theme.KitInk;
         }
@@ -166,7 +166,7 @@ namespace IslandUI.UI
         {
             if (key == KeyCode.None)
             {
-                return "Unbound";
+                return Shared.Loc.Get("keybind.unbound", "Unbound");
             }
             string s = key.ToString();
             if (s.StartsWith("Alpha"))
@@ -175,7 +175,7 @@ namespace IslandUI.UI
             }
             if (s.StartsWith("Keypad"))
             {
-                return "Num " + s.Substring(6);
+                return Shared.Loc.Get("keybind.numpad", "Num {0}", s.Substring(6));
             }
             switch (key)
             {

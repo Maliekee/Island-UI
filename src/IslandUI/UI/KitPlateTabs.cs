@@ -62,6 +62,7 @@ namespace IslandUI.UI
 
         private readonly List<Tab> _tabs = new List<Tab>();
         private KitTabHint _tip;
+        private Func<int, string> _label;
         private int _hot = -1;
         private int _pressed = -1;
 
@@ -70,7 +71,6 @@ namespace IslandUI.UI
             public RectTransform Rect;
             public Image Plate;
             public TextMeshProUGUI Text;
-            public string Name;
             public Image Glyph;
         }
 
@@ -78,10 +78,16 @@ namespace IslandUI.UI
         // on the parent's top edge, so (x, 0) puts the plates half in over the
         // rail. Tabs: the row stands on its bottom edge, so (x, -Tuck) puts the
         // tabs' feet just under the field's top edge.
+        // `names` are the tabs' ids, their GameObjects' names; `label` is what a tab
+        // says, read at each paint so a language switch reaches it (the ids when
+        // null). `glyphs` (HudGlyphs ids) draw a glyph in place of the word, which
+        // is then the tab's hover hint.
         public static KitPlateTabs Create(Transform parent, string[] names, int active,
-            Action<int> onPick, Style look = Style.Tabs, string[] woods = null)
+            Action<int> onPick, Style look = Style.Tabs, string[] woods = null,
+            Func<int, string> label = null, string[] glyphs = null)
         {
             var row = new KitPlateTabs();
+            row._label = label ?? (i => names[i]);
             row.OnPick = onPick;
             row.Look = look;
             row._woods = woods;
@@ -95,7 +101,7 @@ namespace IslandUI.UI
             row.Rect.pivot = new Vector2(0f, py);
             for (int i = 0; i < names.Length; i++)
             {
-                var tab = new Tab { Name = names[i] };
+                var tab = new Tab();
                 var tgo = Owned.New("Tab_" + names[i]);
                 tgo.transform.SetParent(go.transform, false);
                 tab.Rect = (RectTransform)tgo.transform;
@@ -107,11 +113,10 @@ namespace IslandUI.UI
                 tab.Text = Theme.MakeKitText(tgo.transform, "Text", 9f, Theme.KitCream,
                     TextAlignmentOptions.Center, bold: true);
                 tab.Text.enableWordWrapping = false;
-                tab.Text.text = names[i];
-                if (names.Length == 3 && names[0] == "Crafting")
+                if (glyphs != null && i < glyphs.Length)
                 {
                     tab.Glyph = Theme.KitImage(tgo.transform, "Glyph", "kit_check", 0, Theme.KitCream);
-                    tab.Glyph.sprite = HudGlyphs.Get(i == 0 ? "craft" : i == 1 ? "vicinity" : "roster"); tab.Glyph.raycastTarget = false;
+                    tab.Glyph.sprite = HudGlyphs.Get(glyphs[i]); tab.Glyph.raycastTarget = false;
                     tab.Text.gameObject.SetActive(false);
                 }
                 row._tabs.Add(tab);
@@ -168,7 +173,7 @@ namespace IslandUI.UI
             {
                 Paint();
             }
-            _tip.Show(hot >= 0 ? _tabs[hot].Name : null);
+            _tip.Show(hot >= 0 ? _label(hot) : null);
             return hot >= 0;
         }
 
@@ -179,6 +184,7 @@ namespace IslandUI.UI
             for (int i = 0; i < _tabs.Count; i++)
             {
                 Tab t = _tabs[i];
+                t.Text.text = _label(i);
                 bool on = i == Active;
                 bool hot = i == _hot && !on;
                 bool down = i == _pressed && i == _hot && !on;

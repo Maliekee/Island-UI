@@ -4,7 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>IslandUI</AssemblyName>
     <RootNamespace>IslandUI</RootNamespace>
-    <Version>0.3.1</Version>
+    <Version>0.9.0</Version>
     <LangVersion>latest</LangVersion>
     <!-- Live Steam install: the game that actually runs. BepInEx and our plugin live here;
          binary/ is only a pristine reference copy for decompilation. -->
@@ -21,8 +21,14 @@
     <!-- Shared SOURCE compiled into this DLL: the mods share code, not an assembly -->
     <Compile Include="..\Shared\PatchCensus.cs" Link="Shared\PatchCensus.cs" />
     <Compile Include="..\Shared\TitleBadge.cs" Link="Shared\TitleBadge.cs" />
+    <Compile Include="..\Shared\Loc.cs" Link="Shared\Loc.cs" />
     <!-- the mod icon, shown on the title screen by Shared/TitleBadge.cs -->
     <EmbeddedResource Include="icon.png" LogicalName="IslandUI.icon.png" />
+    <EmbeddedResource Include="..\..\art\hud-anime-v1\runtime\icons.png" LogicalName="IslandUI.AnimeIcons.png" />
+    <EmbeddedResource Include="..\..\art\hud-anime-v1\runtime\frames.png" LogicalName="IslandUI.AnimeFrames.png" />
+    <EmbeddedResource Include="..\..\art\hud-anime-v1\runtime\player-panel-filled-v2.png" LogicalName="IslandUI.PlayerPanelV2.png" />
+    <EmbeddedResource Include="..\..\art\hud-anime-v1\runtime\pieces\*.png" LogicalName="IslandUI.Anime.%(Filename).png" />
+    <EmbeddedResource Include="..\..\art\fonts\*.ttf" LogicalName="IslandUI.Fonts.%(Filename).ttf" />
     <EmbeddedResource Include="Data\item-guide.tsv" LogicalName="IslandUI.item-guide.tsv" />
     <EmbeddedResource Include="Data\story-choices.tsv" LogicalName="IslandUI.story-choices.tsv" />
     <EmbeddedResource Include="..\..\art\options-visual-kit-v1\03-blank-frame.png" LogicalName="IslandUI.SettingsFrame.png" />
@@ -68,6 +74,10 @@
       <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="UnityEngine.TerrainModule">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.TerrainModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <!-- the kit's typeface is built from an installed OS font at runtime (Theme.KitFont) -->
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
@@ -83,6 +93,14 @@
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.Localization">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\Unity.Localization.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.ResourceManager">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\Unity.ResourceManager.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -101,6 +119,19 @@
   <!-- Every successful build lands in the game, in the folder the release zips use -->
   <Target Name="CopyToPlugins" AfterTargets="Build" Condition="'$(NoDeploy)' != 'true'">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)\BepInEx\plugins\IslandUI" />
+    <!-- the strings.txt per language beside it, where Shared/Loc.cs looks (Forgejo #19) -->
+    <ItemGroup>
+      <LocalizationFile Include="Localization\**\*.txt;Localization\**\*.tsv" />
+    </ItemGroup>
+    <Copy SourceFiles="@(LocalizationFile)"
+          DestinationFiles="@(LocalizationFile->'$(GameDir)\BepInEx\plugins\IslandUI\Localization\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <!-- the kit's art, where Theme.Kit reads it at runtime, as the release
+         ships it: a piece new to art/ was otherwise missing from the dev game and
+         drew as a blank quad (the Manage stem's red Remove socket) -->
+    <ItemGroup>
+      <KitArt Include="$(MSBuildProjectDirectory)\..\..\art\*.png" />
+    </ItemGroup>
+    <Copy SourceFiles="@(KitArt)" DestinationFolder="$(GameDir)\BepInEx\plugins\islandui-art" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>

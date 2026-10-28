@@ -236,10 +236,13 @@ namespace IslandUI
         }
 
         // Which verbs work at any distance: reading a sheet and sending someone
-        // home need no hands. Everything else wants you standing there.
+        // home need no hands, and neither does calling someone to follow or
+        // letting them go (Forgejo #87) - vanilla's FollowMe and GoodBye ask
+        // only who is in focus, never how far, and its follower list lets one
+        // go from anywhere. Everything else wants you standing there.
         private static bool ReachFree(string name)
         {
-            return name == "status" || name == "position";
+            return name == "status" || name == "position" || name == "follow" || name == "goodbye";
         }
 
         private static void PaintTiles()

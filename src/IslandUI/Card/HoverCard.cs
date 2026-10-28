@@ -115,7 +115,7 @@ namespace IslandUI
                 return;
             }
             _external = true;
-            _recipeOwned = false;
+            _owner = Owner.Inventory;
             // never the vanilla auto-hide's business while we own it
             _sourceSlot = null;
             // two carried people share an item key and are not the same card
@@ -157,8 +157,10 @@ namespace IslandUI
         }
 
         // An item that sits in no slot: a material or a used-in product on the recipe
-        // card shows the normal item hover. The same card, beside that row.
-        internal static void ShowForItem(ManagersScript mn, UIManager ui, string itemKey, RectTransform cell)
+        // card shows the normal item hover. The same card, beside that row. The
+        // action bar's cells are the same case - a binding is a key, not a slot.
+        internal static void ShowForItem(ManagersScript mn, UIManager ui, string itemKey, RectTransform cell,
+            Owner owner = Owner.Recipe)
         {
             if (!Settings.CustomItemTooltip.Value || mn == null || ui == null || mn.itemMN == null
                 || string.IsNullOrEmpty(itemKey) || cell == null)
@@ -171,9 +173,9 @@ namespace IslandUI
                 return;
             }
             _external = true;
-            _recipeOwned = true;
+            _owner = owner;
             _sourceSlot = null;
-            string key = "recipe:" + itemKey;
+            string key = "item:" + itemKey;
             if (key == _externalKey)
             {
                 if (!ReferenceEquals(cell, _externalCell))
@@ -224,20 +226,30 @@ namespace IslandUI
         // Only ever closes a card WE opened: a vanilla hover happening to be up is
         // not ours to take down. And only the side that raised it: the Inventory
         // hides its card every frame it hovers no cell, which took the recipe card's
-        // hover down the frame it went up.
-        private static bool _recipeOwned;
+        // hover down the frame it went up. The action bar is a third side: it
+        // ticks whether or not the Inventory is open, and each would close the other's.
+        internal enum Owner { Inventory, Recipe, Bar }
+
+        private static Owner _owner;
 
         internal static void HideExternal()
         {
-            if (_external && !_recipeOwned)
-            {
-                Hide();
-            }
+            HideOwned(Owner.Inventory);
         }
 
         internal static void HideRecipeHover()
         {
-            if (_external && _recipeOwned)
+            HideOwned(Owner.Recipe);
+        }
+
+        internal static void HideBarHover()
+        {
+            HideOwned(Owner.Bar);
+        }
+
+        private static void HideOwned(Owner owner)
+        {
+            if (_external && _owner == owner)
             {
                 Hide();
             }
@@ -273,7 +285,7 @@ namespace IslandUI
         {
             _sourceSlot = null;
             _external = false;
-            _recipeOwned = false;
+            _owner = Owner.Inventory;
             _externalKey = null;
             _externalCell = null;
             if (_window != null && _window.Go != null && _window.Go.activeSelf)
@@ -366,17 +378,25 @@ namespace IslandUI
             _name.text = string.IsNullOrEmpty(who.charaName) ? kind : who.charaName;
             _icon.sprite = item.itemSprite;
             _stats.Begin();
-            float y = _stats.Set(26f, "Kind", kind, Theme.TextCream);
+            float y = _stats.Set(26f, Shared.Loc.Get("card.kind", "Kind"), kind, Theme.TextCream);
             string state = CharacterState(mn, who, out Color tint);
             if (state.Length > 0)
             {
-                y = _stats.SetWrapped(y, "State", state, tint);
+                y = _stats.SetWrapped(y, Shared.Loc.Get("card.state", "State"), state, tint);
             }
-            y = _stats.Set(y, "Level", who.level.ToString(), Theme.TextCream);
-            y = _stats.Set(y, "HP", Reading(who.life, who.maxLife), Theme.TextCream);
-            y = _stats.Set(y, "Stun", Reading(who.faint, who.maxFaint), Theme.TextCream);
-            y = _stats.Set(y, "Food", Reading(who.food, who.maxFood), Theme.TextCream);
-            y = _stats.Set(y, "Water", Reading(who.water, who.maxWater), Theme.TextCream);
+            // a stranger's readings are the Observation skill's (Observe.cs): the
+            // level, health and stun one rank at a time, their food and water never
+            y = _stats.Set(y, Shared.Loc.Get("card.level", "Level"),
+                Observe.Sees(who, Observe.Level) ? who.level.ToString() : Observe.Unknown, Theme.TextCream);
+            y = _stats.Set(y, Shared.Loc.Get("card.hp", "HP"),
+                Observe.Sees(who, Observe.Life) ? Reading(who.life, who.maxLife) : Observe.Unknown, Theme.TextCream);
+            y = _stats.Set(y, Shared.Loc.Get("card.stun", "Stun"),
+                Observe.Sees(who, Observe.Faint) ? Reading(who.faint, who.maxFaint) : Observe.Unknown, Theme.TextCream);
+            if (Observe.Known(who))
+            {
+                y = _stats.Set(y, Shared.Loc.Get("card.food", "Food"), Reading(who.food, who.maxFood), Theme.TextCream);
+                y = _stats.Set(y, Shared.Loc.Get("card.water", "Water"), Reading(who.water, who.maxWater), Theme.TextCream);
+            }
             y = RenderFavorites(mn, item, y);
             _stats.HideRest();
             y = CardFacets.RenderDescription(item, _description, w, y);
@@ -418,7 +438,7 @@ namespace IslandUI
                 {
                     continue;
                 }
-                y = _stats.Set(y, first ? "Likes" : "", fav.item.GetItemName() + "  " + fav.favRate,
+                y = _stats.Set(y, first ? Shared.Loc.Get("card.likes", "Likes") : "", fav.item.GetItemName() + "  " + fav.favRate,
                     Theme.TextCream, fav.item.itemSprite);
                 first = false;
             }
@@ -434,7 +454,8 @@ namespace IslandUI
         // (a stranger's word or your own person's), outlaw, pregnant.
         private static string CharacterState(ManagersScript mn, CommonStates who, out Color tint)
         {
-            string[] words = mn.textMN != null ? mn.textMN.itemStateTexts : null;
+            TextManager tm = GameWords.Text(mn);
+            string[] words = tm != null ? tm.itemStateTexts : null;
             var parts = new System.Collections.Generic.List<string>();
             tint = Theme.Negative;
             if (who.sex == CommonStates.SexState.Daruma) { parts.Add(StateWord(words, 3, "Daruma")); }

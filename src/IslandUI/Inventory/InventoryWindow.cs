@@ -50,7 +50,7 @@ namespace IslandUI
         // THE WINDOWS' FIXED MEASURES, in canvas units.
         internal const int MaxPlateColumns = 10;      // the widest a container is drawn before it wraps
         internal const float GutterWidth = 12f;       // the icon strip down a container's left edge
-        internal const float EmptySlotAlpha = 0.5f;   // an empty slot's frame lets the parchment through
+        internal const float EmptySlotAlpha = 0.5f;   // the action bar's empty cell: the slot frame at half strength
         private const float SlotGap = 1f;             // between slots
         private const float GroupMemberGap = 4f;      // between containers sharing a frame
         private const float PlateGap = 0f;            // between frames in a column
@@ -134,7 +134,9 @@ namespace IslandUI
             }
             _slotLeft = Slot.Left;
             _slotBottom = Slot.Bottom;
-            _slotW = Slot.Width;
+            // the vicinity's leather is the design's 804 px; crafting and the roster
+            // keep the slot's width
+            _slotW = _reachOpen && !RosterView ? VicW : Slot.Width;
             _slotH = Slot.Height;
             _slotKnown = true;
             return true;
@@ -259,14 +261,16 @@ namespace IslandUI
         // THE SHEET IS OPENED BY A DOOR AND STAYS OPEN (§6.27 D107). A world click
         // gives you the unit alone; the roster, the Status verb, a click on the
         // unit's head and the sheet key open the sheet, and it stays open across
-        // targets - the management pass - until you close it; the target ending
-        // only hides it, and the next person opens with it (D107 amended).
+        // targets - the management pass - until you close it. A deselect closes it
+        // too, and the next person starts with the dock alone (Forgejo #93:
+        // CloseTargetDoors).
         // A container is its own door: a chest's grid IS what you clicked for
         // (D104), so it shows whatever this flag says.
         private static bool _sheetOpen;
         // THE BAG WINDOW: a person's bag and loadout as a grid window
         // on the bar, the same window a chest gets, opened by the Bag door on the
-        // unit and closed by its chip; remembered across targets like the sheet
+        // unit and closed by its chip; kept across targets like the sheet, and
+        // closed by a deselect like it
         private static bool _bagOpen;
 
         private static bool SheetOpenFor(object focus)
@@ -301,6 +305,19 @@ namespace IslandUI
             _nextRefresh = 0f;
         }
 
+        // THE PORTRAIT ONLY OPENS (Forgejo #49): the sheet on its first page - opened,
+        // or turned back to it if it is up on another - and never closed; the
+        // CHARACTER door beside it still toggles, on the page last used. Through the
+        // door machinery, since the page set is only known once the sheet binds.
+        internal static void OpenSheetOnFirstPage()
+        {
+            _sheetOpen = true;
+            _doorArmed = Door.Portrait;
+            _doorPending = true;
+            _forceRefresh = true;
+            _nextRefresh = 0f;
+        }
+
         internal static void ToggleBag()
         {
             _bagOpen = !_bagOpen;
@@ -329,8 +346,23 @@ namespace IslandUI
         // in Inventory, not the loadout moved to Fight. Not built - it adds content
         // to the one page D62 insists stays cheap to reach.
         private static readonly int[] LoadoutOrder = Theme.LoadoutOrder;
-        private static readonly string[] LoadoutNames =
-            { "Hat", "Tool", "Cloth", "Under", "Acce", "Shoes", "Off-hand", "Support", "", "Hip" };
+        // the loadout slots' names by equip id, for the drag hint; read at use
+        private static string LoadoutName(int equipId)
+        {
+            switch (equipId)
+            {
+                case 0: return Shared.Loc.Get("inv.slot.hat", "Hat");
+                case 1: return Shared.Loc.Get("inv.slot.tool", "Tool");
+                case 2: return Shared.Loc.Get("inv.slot.cloth", "Cloth");
+                case 3: return Shared.Loc.Get("inv.slot.under", "Under");
+                case 4: return Shared.Loc.Get("inv.slot.acce", "Acce");
+                case 5: return Shared.Loc.Get("inv.slot.shoes", "Shoes");
+                case 6: return Shared.Loc.Get("inv.slot.off_hand", "Off-hand");
+                case 7: return Shared.Loc.Get("inv.slot.support", "Support");
+                case 9: return Shared.Loc.Get("inv.slot.hip", "Hip");
+                default: return "";
+            }
+        }
 
         private sealed class CellView
         {
@@ -340,7 +372,6 @@ namespace IslandUI
             // this code created and owns, which it could simply have kept.
             public RectTransform Rect;
             public Image Box;
-            public Image Fill;     // the OCCUPANCY shade, inside the frame's rim
             public Image Icon;
             public TextMeshProUGUI Count;
             public Outline Highlight;
@@ -367,6 +398,18 @@ namespace IslandUI
             public int DrewLife;
             public Image ToolMark;
             public bool DrewStar, DrewToolMark;
+            // LOOK 07 (Leather.cs): the cell is on the leather, its lit rim, the
+            // faint glyph in an empty worn socket, and the plate under its count
+            public bool Leather;
+            public int DrewSkin;   // 0 a crate, 1 a leather cell, 2 a leather worn mount, 3 the vicinity's
+            public Image Rim;
+            public Image Ghost;
+            public bool CountOutlined;   // the action bar's dark edge on the count (BarCount)
+            // the vicinity's facelift (Vicinity.cs): its socket or bed by state, and
+            // the small dark badge under its count
+            public bool Vicinity;
+            public bool Filled;
+            public Image CountBack;
         }
 
         // One line of a sheet: a label at the left, a value at the right. Kind 0
@@ -454,6 +497,7 @@ namespace IslandUI
             public string DrewValue;
             public string Tip;
             public int DrewKind = -1;
+            public Rect NameArea;      // a form head's name line, row coordinates (top-left, y down): the rename's target
             // a roster row IS a button (D53: a row opens the column), but the CARD
             // is the same writer standing still - it is the head of the column it
             // would open, so it neither lights nor answers
@@ -482,6 +526,8 @@ namespace IslandUI
             public int FormImagesUsed;
             public int FormTextsUsed;
             public int[] FormArgs;     // what each box's + or each checkbox acts on, as painted
+            public CommonStates Link;  // the person the painted line names (SheetLine.Link)
+            public int LinkType = -1;  // ...and the type its token stands for
             // what each part of a form row says under the pointer, recorded as
             // it is painted - rects in the form's own frame (x right and y down from
             // the row's top left) and the tip for each
@@ -489,6 +535,7 @@ namespace IslandUI
             public readonly List<string> TipTexts = new List<string>();
             public Image PortraitMask; // the header's oval, as a stencil...
             public RawImage PortraitRaw; // ...and the character rendered into it (D125)
+            public Image[] PortraitPin;  // ...and the pin that holds the photo, as on the roster
         }
 
         // Kinds: 0 a value row · 1 a heading · 2 a breath of space · 3 a stat
@@ -507,6 +554,7 @@ namespace IslandUI
         private const int LineActions = 10;  // a row of plank buttons, one per Option
         private const int ToggleNameShown = 0;
         private const int ToggleFavourite = 1;
+        private const int ToggleRun = 91;     // GameManager.toggleRun, through ToggleRunChange
 
         private struct SheetLine
         {
@@ -517,6 +565,8 @@ namespace IslandUI
             public bool On;
             public bool Enabled;
             public float Frac;
+            public float Baby;         // a head's pregnancy, how far along (0 = none)
+            public bool[] Warns;       // a box in alarm: red rim, red wash, red value
             public string[] Options;   // a dropdown's choices, or an actions row's button labels
             public Sprite[] Icons;     // the dropdown's glyph per choice
             public int Index;          // the dropdown's current choice
@@ -563,6 +613,7 @@ namespace IslandUI
             // other row, so a pair line degrades to a plain row by leaving these
             // empty rather than by needing a different kind.
             public string Label2;
+            public string Away;        // a person not in the world: the tip that says where they are (Links.cs)
             public string Value2;
             public Color Value2Tint;
             public bool Value2Tinted;
@@ -595,6 +646,14 @@ namespace IslandUI
             public float[] Pools;  // a box bar's pool size (HP, stun), marked per 100 and 1000; 0 = none
             public float[] SeriesX;  // LineMoodNow: when, 0..1 across the last three days...
             public float[] SeriesY;  // ...and the mood then
+            public float SeriesNow;  // ...and the ledger's day now (MoodLedger.Now)
+            public float[] MarkX;    // LineMoodNow: the numbered changes, where (Marks their numbers, Tints their colours)
+            public int Number;       // LineMoodCause: the number its changes carry on the chart above; 0 = none
+            public MoodColumns Columns; // LineMoodNow, LineMoodCause: what the cause lines' columns hold, all of them
+            public CommonStates Link; // a person the line names: its name (and token) lead to them
+            public int[] Marks;      // LineMet: the six ticks' LoveLedger.TickMark, the person's toward them
+            public float[] Costs;    // ...and the mood each tick cost, by tick (0 = nothing)
+            public int Band;         // 1: a row of the Social page's MOOD, drawn on the chart's clock
         }
         private const int LineGauge = 11;    // icon · a filled band in its own colour · value
         private const int LineRelation = 12; // name · two thin love bands on one scale · the two numbers
@@ -633,6 +692,12 @@ namespace IslandUI
         private const int LineField = 26;      // one or two fill-in fields: a word on a ruled line
         private const int LineMoodNow = 27;    // the mood in a box, and its last three days as a stepped line
         private const int LineMoodCause = 28;  // a tick · a cause · its cost · its fix (Index = MoodSeverity)
+        private const int LineMetHead = 30;    // MET TODAY's column heads: the six ticks' hours, the two sums
+        private const int LineMetPerson = 31;  // a person met: token · name · mood · six ticks · the sums · a note
+        private const int LineMetFold = 32;    // the plain ones, folded: a caption, then their names
+        private const int LineFormBand = 35;   // the compact head: portrait · name · mood · type, kind, level · the way back
+        private const int LineBond = 34;       // a bond: caption · the compact person · a note (Arg = BondKey, -1 none)
+        private const int LineMetWhy = 33;     // a met row opened: why, in words (Values), what ends it (Label), its fix
 
         private sealed class Plate
         {
@@ -686,8 +751,25 @@ namespace IslandUI
             public Image Rail;     // the kit's hairline walnut rail over a kit_field back
             public Image Close;    // the close chip on the frame's top-right corner (CloseChip)
             public Image ScrollThumb;  // the kit scrollbar's walnut thumb, inside Scroll (its track)
-            public Image SectionArrow; // a reach section's disclosure triangle (parked with the sections, Slot.CompactContainers)
-            public RectTransform HeaderHit; // ...and its header row's click target
+            // a vicinity holder's identity (Vicinity.cs): the target dock's portrait
+            // card over its opening - a person on their sky, a thing on its enamel -
+            // and the compact view's free-count summary
+            public Image VicMount;
+            public Image VicSky;
+            public Image VicSkyFade;
+            public RawImage VicFace;
+            public Image VicItem;
+            public Image VicGlyph;      // a body's skull
+            public Image VicHigher;     // the held order's arrow: this row belongs higher
+            public Image VicNameBar;    // a person's name, on a bar over the card's top
+            public TextMeshProUGUI VicName;
+            public Place VicPlace;
+            public bool WasVicinity;
+            public Image FreeBack;
+            public TextMeshProUGUI FreeNum;
+            public TextMeshProUGUI FreeWord;
+            public int[] CompactMap;
+            public int SummaryAt = -1;   // the cell compact's summary stands on, or -1
             public Image Scroll;   // the pool's paint-mark scroll hint
             public Image Rule;     // hairline under/around a title
             // The vicinity heading's family toggles (D41). On the plate rather
@@ -716,6 +798,7 @@ namespace IslandUI
             // same bottom-up stack; only what is on it differs.
             public bool IsSheet;
             public RectMask2D SheetMask;
+            public bool SheetMasked;     // a sheet claimed the mask this refresh (ReleaseUnclaimed)
             public Image SheetTrack;
             public Image SheetThumb;
             public float SheetContentH;
@@ -730,6 +813,7 @@ namespace IslandUI
             // contents change constantly, geometry almost never
             public int LaidOutCols;
             public int LaidOutCount;
+            public int LaidOutCells;   // ...and how many of those places are cells (compact's summary is not)
             public float LaidOutIconH = -1f;
             public float LaidOutHeaderH = -1f;
             public float LaidOutPitch = -1f;
@@ -741,7 +825,19 @@ namespace IslandUI
             public float LaidOutW = -1f;
             public float LaidOutH = -1f;
             public float CellTop;   // where the grid starts inside the plate
+            public float ReachY;    // a vicinity row's place in the list, before its slide
             public float CellLeft;  // ...and how far in, once a gutter names it
+            // LOOK 07 (Leather.cs): a frame's head - "Inventory", the bar, whose it
+            // is, the rule - and a section's capacity and fading rule; the space a
+            // member keeps under itself on the leather, decided by what it follows
+            public string LeatherOwner;
+            public TextMeshProUGUI LeatherTitle;
+            public TextMeshProUGUI LeatherName;
+            public Image LeatherBar;
+            public Image LeatherRule;
+            public TextMeshProUGUI SectionCount;
+            public Image SectionFade;
+            public float LeatherGap;
         }
 
         private static GameObject _root;
@@ -800,6 +896,7 @@ namespace IslandUI
             World,         // you are standing at them - Overview (G7)
             Roster,        // you were managing followers - Orders
             StatusVerb,    // you asked for the sheet - Overview
+            Portrait,      // the dock's portrait: the first page, whatever the set (Forgejo #49)
         }
 
         // Armed by a door just before it opens the window, and consumed once.
@@ -850,6 +947,10 @@ namespace IslandUI
             {
                 // the sticky sheet: a new target under an open sheet keeps the page
                 return ClampAspect(_focusAspect, set);
+            }
+            if (door == Door.Portrait)
+            {
+                return set[0];
             }
             Aspect want = PreferredAspect(door);
             for (int i = 0; i < set.Length; i++)
@@ -934,6 +1035,7 @@ namespace IslandUI
         private static Plate _reachSpacer;      // reserves the space, in the main pool
         private static RectTransform _reachContent;   // permanent, masked, holds them
         private static float _reachScroll;      // units scrolled up from the bottom
+        private static float _targetSheetW;     // every target's sheet and frame: the widest bag the column allows
         private static float _reachContentH;
         private static float _reachViewH;
         // What the scroll is PINNED to. A pixel offset is meaningless across a

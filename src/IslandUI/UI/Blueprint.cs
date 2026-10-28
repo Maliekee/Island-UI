@@ -180,12 +180,12 @@ namespace IslandUI.UI
         private static bool Painted(Sprite source, int cap, out Color32[] src, out int sw, out int sh,
             out int x0, out int y0, out int x1, out int y1)
         {
-            Rect r = source.textureRect;
+            Rect r = SourceRect(source);
             float k = Mathf.Min(1f, cap / Mathf.Max(1f, Mathf.Max(r.width, r.height)));
             sw = Mathf.Max(1, Mathf.RoundToInt(r.width * k));
             sh = Mathf.Max(1, Mathf.RoundToInt(r.height * k));
             x0 = sw; y0 = sh; x1 = -1; y1 = -1;
-            src = ReadRect(source.texture, r, sw, sh);
+            src = ReadSprite(source, sw, sh);
             if (src == null)
             {
                 return false;
@@ -290,7 +290,72 @@ namespace IslandUI.UI
 
         // Atlases are not CPU-readable: blit the sprite's own rect to a target of
         // its size and read that back (SpriteDump's way, one sprite instead of all).
+        // A TIGHT-packed sprite has no rectangle of its own in its atlas: its
+        // textureRect reads zero and its neighbours share its box, so a read of
+        // the rectangle found nothing and the Native House's drawing came out
+        // empty (Forgejo #178). It is drawn from its own mesh instead, at the size
+        // of its own rect.
+        private static bool Tight(Sprite s)
+        {
+            return s.packed && s.packingMode == SpritePackingMode.Tight;
+        }
+
+        // the pixels a sprite is read from: its atlas rectangle, or a tight one's own rect
+        internal static Rect SourceRect(Sprite s)
+        {
+            return Tight(s) ? s.rect : s.textureRect;
+        }
+
+        // the sprite's pixels, scaled by the GPU to w x h
+        internal static Color32[] ReadSprite(Sprite s, int w, int h)
+        {
+            return Tight(s) ? ReadMesh(s, w, h) : ReadRect(s.texture, s.textureRect, w, h);
+        }
+
+        private static Material _meshInk;
+
+        private static Color32[] ReadMesh(Sprite s, int w, int h)
+        {
+            if (_meshInk == null)
+            {
+                _meshInk = new Material(Shader.Find("Sprites/Default"));
+            }
+            return ReadInto(w, h, () =>
+            {
+                GL.Clear(true, true, Color.clear);
+                _meshInk.mainTexture = s.texture;
+                _meshInk.SetPass(0);
+                GL.PushMatrix();
+                GL.LoadOrtho();
+                GL.Begin(GL.TRIANGLES);
+                GL.Color(Color.white);
+                Vector2[] v = s.vertices;
+                Vector2[] uv = s.uv;
+                ushort[] tri = s.triangles;
+                Rect rect = s.rect;
+                float ppu = s.pixelsPerUnit;
+                for (int i = 0; i < tri.Length; i++)
+                {
+                    int t = tri[i];
+                    // local units back to the sprite's own rect, 0..1
+                    GL.TexCoord2(uv[t].x, uv[t].y);
+                    GL.Vertex3((v[t].x * ppu + s.pivot.x) / rect.width,
+                        (v[t].y * ppu + s.pivot.y) / rect.height, 0f);
+                }
+                GL.End();
+                GL.PopMatrix();
+            });
+        }
+
         private static Color32[] ReadRect(Texture2D texture, Rect r, int w, int h)
+        {
+            var scale = new Vector2(r.width / texture.width, r.height / texture.height);
+            var offset = new Vector2(r.x / texture.width, r.y / texture.height);
+            return ReadInto(w, h, () => Graphics.Blit(texture, RenderTexture.active, scale, offset));
+        }
+
+        // a temporary target, made active, drawn into by `paint`, and read back
+        private static Color32[] ReadInto(int w, int h, System.Action paint)
         {
             RenderTexture rt = RenderTexture.GetTemporary(w, h, 0, RenderTextureFormat.ARGB32,
                 RenderTextureReadWrite.Linear);
@@ -298,9 +363,8 @@ namespace IslandUI.UI
             Texture2D copy = null;
             try
             {
-                var scale = new Vector2(r.width / texture.width, r.height / texture.height);
-                var offset = new Vector2(r.x / texture.width, r.y / texture.height);
-                Graphics.Blit(texture, rt, scale, offset);
+                RenderTexture.active = rt;
+                paint();
                 RenderTexture.active = rt;
                 copy = new Texture2D(w, h, TextureFormat.RGBA32, false);
                 copy.ReadPixels(new Rect(0f, 0f, w, h), 0, 0);

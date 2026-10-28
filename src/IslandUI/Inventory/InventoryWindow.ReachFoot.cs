@@ -33,8 +33,6 @@ namespace IslandUI
         private sealed class FootChip
         {
             public ContainerPolicy.Family Family;
-            public string Label;
-            public string About;
             public string Art;
             public Image Back;
             public Image Icon;
@@ -43,12 +41,35 @@ namespace IslandUI
 
         private static readonly List<FootChip> FootChips = new List<FootChip>();
 
+        // the verbs' ids: GameObject names and the log; the words shown are ReachVerbLabel
         private static readonly string[] ReachVerbWords = { "All in", "Stack", "All out" };
+
+        private static string ReachVerbLabel(int which)
+        {
+            switch (which)
+            {
+                case 0: return Shared.Loc.Get("reach.all_in", "All in");
+                case 1: return Shared.Loc.Get("reach.stack", "Stack");
+                default: return Shared.Loc.Get("reach.all_out", "All out");
+            }
+        }
 
         private static float ReachFootH()
         {
+            if (IsVicinity(GroupReach))
+            {
+                return VicFootH;
+            }
             return _reachFootRow != null ? _reachFootRow.Height : ActRow.H;
         }
+
+        // THE COMPACT OPTION (facelift look 02): a checkbox and its word in the foot's
+        // gap between the chips and the verbs - the view, never the storage
+        private static Image _compactBox;
+        private static TMPro.TextMeshProUGUI _compactWord;
+        private static Image _footRule;
+        private static bool _compactHot;
+        private static bool _compactPressed;
 
         private static void EnsureReachFoot()
         {
@@ -68,28 +89,56 @@ namespace IslandUI
                 _reachFootRow.Set(ActRow.Sockets - 3 + i, new ActRow.Slot
                 {
                     Name = "reach" + ReachVerbWords[i],
-                    Label = ReachVerbWords[i],
+                    Label = ReachVerbLabel(i),
                     Press = () => ReachAct(which),
                 });
             }
-            AddFootChip(ContainerPolicy.Family.Materials, "Material storages", "tent_spider",
-                "The storages a workbench counts as its own stock.");
-            AddFootChip(ContainerPolicy.Family.Chests, "Chests and boxes", "chest_01",
-                "Wooden and iron chests, boxes, the mine's output.");
-            AddFootChip(ContainerPolicy.Family.Breeding, "Cages, traps, planters", "planter_01",
-                "Cages, traps, planters, hives, poultry boxes, mushroom logs, herb boxes.");
-            AddFootChip(ContainerPolicy.Family.Benches, "Workbench strips", "bench_wood",
-                "Each workbench's own ten-slot strip.");
-            AddFootChip(ContainerPolicy.Family.Bags, "Your people's bags", null,
-                "The bags of the people you employ, within reach.");
-            AddFootChip(ContainerPolicy.Family.Bodies, "Bodies", "kit_emblem_skull",
-                "The pockets of the downed and the dead, within reach.");
+            AddFootChip(ContainerPolicy.Family.Materials, "tent_spider");
+            AddFootChip(ContainerPolicy.Family.Chests, "chest_01");
+            AddFootChip(ContainerPolicy.Family.Breeding, "planter_01");
+            AddFootChip(ContainerPolicy.Family.Benches, "bench_wood");
+            AddFootChip(ContainerPolicy.Family.Bags, null);
+            AddFootChip(ContainerPolicy.Family.Bodies, "kit_emblem_skull");
+            _footRule = Theme.KitImage(_reachFoot.transform, "Rule", "kit_cross", 0, Facelift.VicFootRule);
+            _footRule.sprite = null;
+            _footRule.type = Image.Type.Simple;
+            _compactBox = Facelift.Make(_reachFoot.transform, "Compact", "vicinity-checkbox-off-idle");
+            _compactBox.raycastTarget = true;
+            _compactWord = Facelift.Text(_reachFoot.transform, "CompactWord", false, ActRow.VicWordPx, Facelift.VicCaption,
+                TMPro.TextAlignmentOptions.MidlineLeft);
             _reachFoot.SetActive(false);
         }
 
-        private static void AddFootChip(ContainerPolicy.Family family, string label, string art, string about)
+        // a chip's name and what it covers, read at use
+        private static string FootChipLabel(ContainerPolicy.Family family)
         {
-            var chip = new FootChip { Family = family, Label = label, About = about, Art = art };
+            switch (family)
+            {
+                case ContainerPolicy.Family.Materials: return Shared.Loc.Get("reach.chip.materials", "Material storages");
+                case ContainerPolicy.Family.Chests: return Shared.Loc.Get("reach.chip.chests", "Chests and boxes");
+                case ContainerPolicy.Family.Breeding: return Shared.Loc.Get("reach.chip.breeding", "Cages, traps, planters");
+                case ContainerPolicy.Family.Benches: return Shared.Loc.Get("reach.chip.benches", "Workbench strips");
+                case ContainerPolicy.Family.Bags: return Shared.Loc.Get("reach.chip.bags", "Your people's bags");
+                default: return Shared.Loc.Get("reach.chip.bodies", "Bodies");
+            }
+        }
+
+        private static string FootChipAbout(ContainerPolicy.Family family)
+        {
+            switch (family)
+            {
+                case ContainerPolicy.Family.Materials: return Shared.Loc.Get("reach.chip.materials.help", "The storages a workbench counts as its own stock.");
+                case ContainerPolicy.Family.Chests: return Shared.Loc.Get("reach.chip.chests.help", "Wooden and iron chests, boxes, the mine's output.");
+                case ContainerPolicy.Family.Breeding: return Shared.Loc.Get("reach.chip.breeding.help", "Cages, traps, planters, hives, poultry boxes, mushroom logs, herb boxes.");
+                case ContainerPolicy.Family.Benches: return Shared.Loc.Get("reach.chip.benches.help", "Each workbench's own ten-slot strip.");
+                case ContainerPolicy.Family.Bags: return Shared.Loc.Get("reach.chip.bags.help", "The bags of the people you employ, within reach.");
+                default: return Shared.Loc.Get("reach.chip.bodies.help", "The pockets of the downed and the dead, within reach.");
+            }
+        }
+
+        private static void AddFootChip(ContainerPolicy.Family family, string art)
+        {
+            var chip = new FootChip { Family = family, Art = art };
             chip.Back = Theme.KitImage(_reachFoot.transform, "Chip_" + family, "kit_chip_walnut", 0, Color.white);
             chip.Back.raycastTarget = true;
             var iconGo = Owned.New("Icon");
@@ -136,6 +185,7 @@ namespace IslandUI
             plate.IsTitle = false;
             _lastGroupBound = GroupReach;
             _prevMemberLoadout = false;
+            _prevMemberShared = false;
             plate.Shown = 0;
             plate.Cols = 0;
             plate.LaidOutCols = -1;
@@ -160,8 +210,10 @@ namespace IslandUI
             plate.Edge.enabled = false;
 
             // the chips' run, kept clear of the verbs
+            bool vic = IsVicinity(GroupReach);
             float chipsW = FootChips.Count * (FootChipSize + FootChipGap) + ActRow.GroupGap;
             _reachFootRow.LeftReserve = chipsW;
+            _reachFootRow.Vicinity = vic;
             var rect = (RectTransform)_reachFoot.transform;
             if (rect.parent != plate.Window.Content)
             {
@@ -172,17 +224,55 @@ namespace IslandUI
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
             _reachFootRow.Show(true);
-            _reachFootRow.Layout(0f, 0f, width);
-            float h = _reachFootRow.Height;
+            // on the leather: the rule over the foot, and its controls 23 px under it
+            // on the 39 px buttons' line (.vicinity-footer)
+            float rowY = vic ? 23f * VicPx : 0f;
+            _reachFootRow.Layout(vic ? VicFootX : 0f, rowY, width);
+            float h = vic ? VicFootH : _reachFootRow.Height;
+            SetShown(_footRule, vic);
+            SetShown(_compactBox, vic);
+            SetShown(_compactWord, vic);
+            if (vic)
+            {
+                Theme.Place(_footRule, -10f * VicPx, 0f, 760f * VicPx, VicPx);
+                // .compact-option: the 17 px box, 8 px, the word - centred in the
+                // gap between the chips and the verbs rather than at the design's
+                // x = 380, which the verbs reach since their words grew to the
+                // roster's size
+                string word = Shared.Loc.Get("reach.compact", "Compact");
+                if (_compactWord.text != word)
+                {
+                    _compactWord.text = word;
+                }
+                float wordW = _compactWord.GetPreferredValues(word).x;
+                float optionW = 25f * VicPx + wordW;
+                float chipsEnd = VicFootX + FootChips.Count * (VicChipW + VicChipGap) - VicChipGap;
+                float cx = Mathf.Max(chipsEnd + 8f * VicPx,
+                    chipsEnd + (_reachFootRow.VicLeft - chipsEnd - optionW) * 0.5f);
+                Theme.Place(_compactBox, cx, rowY + (VicButtonH - 17f * VicPx) * 0.5f, 17f * VicPx, 17f * VicPx);
+                Theme.Place(_compactWord, cx + 25f * VicPx, rowY, wordW + 2f * VicPx, VicButtonH);
+            }
             for (int i = 0; i < FootChips.Count; i++)
             {
                 FootChip chip = FootChips[i];
-                Theme.Place(chip.Back, ActRow.PadX + i * (FootChipSize + FootChipGap),
-                    (ActRow.H - FootChipSize) * 0.5f, FootChipSize, FootChipSize);
-                float ih = FootChipSize - 3f;
-                Theme.Place(chip.Icon, 1.5f, 1.5f, ih, ih);
-                const float mk = 6.5f;
-                Theme.Place(chip.Mark, FootChipSize - mk + 1.5f, FootChipSize - mk + 1.5f, mk, mk);
+                if (vic)
+                {
+                    // .kind-filters: 40 px buttons, 7 apart, their symbol 29 px
+                    Theme.Place(chip.Back, VicFootX + i * (VicChipW + VicChipGap), rowY, VicChipW, VicButtonH);
+                    Theme.Place(chip.Icon, (VicChipW - VicChipIcon) * 0.5f, (VicButtonH - VicChipIcon) * 0.5f,
+                        VicChipIcon, VicChipIcon);
+                    float vm = 14f * VicPx;
+                    Theme.Place(chip.Mark, VicChipW - vm - 2f * VicPx, VicButtonH - vm - 2f * VicPx, vm, vm);
+                }
+                else
+                {
+                    Theme.Place(chip.Back, ActRow.PadX + i * (FootChipSize + FootChipGap),
+                        (ActRow.H - FootChipSize) * 0.5f, FootChipSize, FootChipSize);
+                    float ih = FootChipSize - 3f;
+                    Theme.Place(chip.Icon, 1.5f, 1.5f, ih, ih);
+                    const float mk = 6.5f;
+                    Theme.Place(chip.Mark, FootChipSize - mk + 1.5f, FootChipSize - mk + 1.5f, mk, mk);
+                }
                 if (chip.Icon.sprite == null)
                 {
                     chip.Icon.sprite = FootChipArt(chip);
@@ -213,9 +303,10 @@ namespace IslandUI
 
         private static Sprite FootChipArt(FootChip chip)
         {
+            // the people's bags wear the dock's backpack, the button of your own bag
             if (chip.Art == null)
             {
-                return OwnBagIcon;
+                return AnimeHud.Icon("bag") ?? OwnBagIcon;
             }
             if (chip.Art.StartsWith("kit_"))
             {
@@ -232,18 +323,47 @@ namespace IslandUI
                 return;
             }
             bool held = Input.GetMouseButton(0);
+            bool vic = IsVicinity(GroupReach);
             for (int i = 0; i < FootChips.Count; i++)
             {
                 FootChip chip = FootChips[i];
                 ContainerPolicy.FamilyMode mode = ContainerPolicy.Mode(chip.Family);
                 bool hot = i == _footChipHot;
+                bool down = hot && _footChipPressed == i && held;
+                float a;
+                if (vic)
+                {
+                    // A TOGGLE READS ON OR OFF AT A GLANCE (user): only the
+                    // symbol's fade told them apart. A shown family is the lit
+                    // button in its gold rim (the focus piece); a hidden one sits
+                    // sunk in the leather (the pressed piece), its symbol at .45,
+                    // and lifts to the hover piece under the pointer.
+                    bool on = mode != ContainerPolicy.FamilyMode.Hidden;
+                    Facelift.State state = on ? Facelift.State.Focus
+                        : hot && !down ? Facelift.State.Hover : Facelift.State.Pressed;
+                    if (down && on)
+                    {
+                        state = Facelift.State.Pressed;
+                    }
+                    Facelift.Skin(chip.Back, Facelift.Id("vicinity-button", state));
+                    chip.Back.color = Color.white;
+                    a = mode == ContainerPolicy.FamilyMode.Hidden ? (hot ? 0.6f : 0.45f) : 1f;
+                    chip.Icon.color = new Color(1f, 1f, 1f, a);
+                    bool stacking = mode == ContainerPolicy.FamilyMode.Stack && ContainerPolicy.SweepBound
+                        && chip.Mark.sprite != null;
+                    if (chip.Mark.enabled != stacking)
+                    {
+                        chip.Mark.enabled = stacking;
+                    }
+                    continue;
+                }
                 Theme.KitSkin(chip.Back, "kit_shed_block", 14);
                 chip.Back.preserveAspect = false;
-                float k = hot && _footChipPressed == i && held ? 0.8f : 1f;
+                float k = down ? 0.8f : 1f;
                 chip.Back.color = new Color(k, k, k, 1f);
                 // ghosted reads as absent, which is what Hidden is (the settings
                 // window's own rule); under the pointer it lifts a little
-                float a = mode == ContainerPolicy.FamilyMode.Hidden ? (hot ? 0.5f : 0.3f) : 1f;
+                a = mode == ContainerPolicy.FamilyMode.Hidden ? (hot ? 0.5f : 0.3f) : 1f;
                 chip.Icon.color = new Color(1f, 1f, 1f, a);
                 // the sweep's mark, only while there is a sweep to fill it
                 bool stacks = mode == ContainerPolicy.FamilyMode.Stack && ContainerPolicy.SweepBound
@@ -253,7 +373,15 @@ namespace IslandUI
                     chip.Mark.enabled = stacks;
                 }
             }
-            _reachFootRow.Shed = true;
+            if (vic && _compactBox != null)
+            {
+                bool on = Settings.VicinityCompact.Value;
+                Facelift.Skin(_compactBox, on
+                    ? (_compactHot ? "vicinity-checkbox-on-focus" : "vicinity-checkbox-on-idle")
+                    : (_compactHot ? "vicinity-checkbox-off-focus" : "vicinity-checkbox-off-idle"));
+                _compactWord.color = _compactHot ? Facelift.VicInk : Facelift.VicCaption;
+            }
+            _reachFootRow.Shed = !vic;
             _reachFootRow.Paint();
         }
 
@@ -268,8 +396,14 @@ namespace IslandUI
                 {
                     _reachFootTip.Hide();
                 }
+                PaintVicIdentityHover();
+                TickVicOrder();
                 return false;
             }
+            // a holder's picture first: it sits in the list, clear of the foot
+            bool onIdentity = TickVicIdentity(cam, out string identityTip);
+            PaintVicIdentityHover();
+            TickVicOrder();
             int hot = -1;
             for (int i = 0; i < FootChips.Count; i++)
             {
@@ -281,6 +415,23 @@ namespace IslandUI
                 }
             }
             _footChipHot = hot;
+            // the Compact box and its word are one target
+            bool compactHot = _compactBox != null && _compactBox.gameObject.activeInHierarchy
+                && (RectTransformUtility.RectangleContainsScreenPoint(_compactBox.rectTransform, Input.mousePosition, cam)
+                    || RectTransformUtility.RectangleContainsScreenPoint(_compactWord.rectTransform, Input.mousePosition, cam));
+            _compactHot = compactHot;
+            if (Input.GetMouseButtonDown(0))
+            {
+                _compactPressed = compactHot;
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (_compactPressed && compactHot)
+                {
+                    ToggleCompact();
+                }
+                _compactPressed = false;
+            }
             bool onRow = _reachFootRow.ReadInput();
             if (Input.GetMouseButtonDown(0))
             {
@@ -298,48 +449,74 @@ namespace IslandUI
             PaintReachFoot();
             if (_reachFootTip == null)
             {
-                _reachFootTip = KitTooltip.Create((RectTransform)_root.transform, dark: true);
+                _reachFootTip = KitTooltip.Create((RectTransform)_root.transform);
             }
-            string tip = hot >= 0 ? FootChipHelp(FootChips[hot])
+            string tip = identityTip != null ? identityTip
+                : hot >= 0 ? FootChipHelp(FootChips[hot])
                 : _reachFootRow.Hot >= 0 ? ReachVerbHelp(_reachFootRow.Hot - (ActRow.Sockets - 3)) : null;
             _reachFootTip.Tick(tip, cam);
-            return hot >= 0 || onRow;
+            return hot >= 0 || onRow || compactHot || onIdentity;
+        }
+
+        // The view flips; the containers do not. The scroll stays pinned to the
+        // holder it was on (_reachAnchor), which the next layout restores.
+        private static void ToggleCompact()
+        {
+            Settings.VicinityCompact.Value = !Settings.VicinityCompact.Value;
+            _forceRefresh = true;
+            _nextRefresh = 0f;
+            Refresh();
+        }
+
+        // For the harness: the Compact box, as a click would press it
+        internal static bool ReachCompact(bool on)
+        {
+            if (!_reachFootBound)
+            {
+                return false;
+            }
+            if (on != Settings.VicinityCompact.Value)
+            {
+                ToggleCompact();
+            }
+            return true;
         }
 
         private static string FootChipHelp(FootChip chip)
         {
             bool bulk = chip.Family == ContainerPolicy.Family.Materials || chip.Family == ContainerPolicy.Family.Chests;
-            string reach = bulk ? "All in · Stack · All out reach it."
-                : chip.Family == ContainerPolicy.Family.Breeding ? "All out takes the harvest; the rest by hand."
-                : "Listed; move things by hand.";
+            string reach = bulk ? Shared.Loc.Get("reach.chip.bulk", "{0} · {1} · {2} reach it.", ReachVerbLabel(0), ReachVerbLabel(1), ReachVerbLabel(2))
+                : chip.Family == ContainerPolicy.Family.Breeding ? Shared.Loc.Get("reach.chip.harvest", "{0} takes the harvest; the rest by hand.", ReachVerbLabel(2))
+                : Shared.Loc.Get("reach.chip.by_hand", "Listed; move things by hand.");
+            string label = FootChipLabel(chip.Family);
+            string about = FootChipAbout(chip.Family);
             bool sweep = ContainerPolicy.SweepBound && ContainerPolicy.CanStack(chip.Family);
             ContainerPolicy.FamilyMode mode = ContainerPolicy.Mode(chip.Family);
             if (mode == ContainerPolicy.FamilyMode.Hidden)
             {
-                return chip.Label + "  ·  hidden\n" + chip.About + "\nNot listed here. Click to show.";
+                return "<b>" + label + "  ·  " + Shared.Loc.Get("reach.chip.hidden", "hidden") + "</b>\n" + about
+                    + "\n" + Shared.Loc.Get("reach.chip.hidden.help", "Not listed here. Click to show.");
             }
             if (mode == ContainerPolicy.FamilyMode.Stack && sweep)
             {
-                return chip.Label + "  ·  shown, quick-stack fills it\n" + chip.About + "\n" + reach
-                    + " The quick-stack key may deposit here too. Click to hide.";
+                return "<b>" + label + "  ·  " + Shared.Loc.Get("reach.chip.shown_stack", "shown, quick-stack fills it") + "</b>\n" + about + "\n" + reach
+                    + " " + Shared.Loc.Get("reach.chip.shown_stack.help", "The quick-stack key may deposit here too. Click to hide.");
             }
-            return chip.Label + "  ·  shown\n" + chip.About + "\n" + reach
-                + (sweep ? " Click to let the quick-stack key fill it too." : " Click to hide.");
+            return "<b>" + label + "  ·  " + Shared.Loc.Get("reach.chip.shown", "shown") + "</b>\n" + about + "\n" + reach
+                + " " + (sweep ? Shared.Loc.Get("reach.chip.let_stack", "Click to let the quick-stack key fill it too.") : Shared.Loc.Get("reach.chip.click_hide", "Click to hide."));
         }
 
         private static string ReachVerbHelp(int which)
         {
-            string only = SlotFilter.Vicinity.Active ? "\nOnly what matches the filter." : "";
+            string only = SlotFilter.Vicinity.Active ? "\n" + Shared.Loc.Get("reach.only_filtered", "Only what matches the filter.") : "";
             switch (which)
             {
                 case 0:
-                    return "All in\nEverything in your bags goes to the chests listed here: to one already holding it first, "
-                        + "then the nearest with room. Favourites stay." + only;
+                    return "<b>" + ReachVerbLabel(0) + "</b>\n" + Shared.Loc.Get("reach.all_in.help", "Everything in your bags goes to the chests listed here: to one already holding it first, then the nearest with room. Favourites stay.") + only;
                 case 1:
-                    return "Stack\nWhat a listed chest already holds goes to it. Favourites stay." + only;
+                    return "<b>" + ReachVerbLabel(1) + "</b>\n" + Shared.Loc.Get("reach.stack.help", "What a listed chest already holds goes to it. Favourites stay.") + only;
                 case 2:
-                    return "All out\nEverything in the listed chests comes into your bags, nearest chest first, until they are full. "
-                        + "Then the harvest: fish from the traps, eggs, honey, herbs and mushrooms." + only;
+                    return "<b>" + ReachVerbLabel(2) + "</b>\n" + Shared.Loc.Get("reach.all_out.help", "Everything in the listed chests comes into your bags, nearest chest first, until they are full. Then the harvest: fish from the traps, eggs, honey, herbs and mushrooms.") + only;
             }
             return null;
         }

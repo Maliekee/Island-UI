@@ -1,0 +1,627 @@
+# Island UI: Spanish item guide, machine-translated from en/item-guide.tsv.
+# Corrections are welcome: edit the text after the tab and keep the item id and every "; ".
+acce_00	Equipo inicial de las Female Natives
+acce_01	Equipo inicial de las Female Natives
+acce_02	Equipo inicial de las Female Natives
+acce_03	Equipo inicial de las Female Natives
+acce_04	Cofres de las Ruins
+acce_05	Fabricar en el Iron Workbench
+acce_06	Fabricar en el Sand Workbench
+acce_07	Fabricar con la Elder Sister Native
+acce_08	Fabricar con la Elder Sister Native
+acce_09	Fabricar con la Elder Sister Native
+acce_10	Equipo inicial de Reika
+acce_30	Se compra en la Shop
+acce_32	Fabricar en el Wing Workbench
+acce_33	Fabricar en el Sand Workbench
+acce_34	Fabricar en el Meat Workbench
+acce_36	Fabricar en el Christmas Workbench
+acce_37	Fabricar en el Christmas Workbench
+acce_38	Fabricar en el Christmas Workbench
+acce_40	Equipo inicial de Takumi
+acce_46	De los Specters
+acce_48	De los Halloween Ghosts
+acce_67	De los Natives en las incursiones de Halloween
+acce_68	Fabricar en el Halloween Workbench
+acce_71	De los Natives en las incursiones de Halloween
+acce_74	De los Natives en las incursiones de Halloween
+acce_76	De los Natives en las incursiones de Halloween
+acce_78	De los Natives en las incursiones de Halloween
+acce_80	Equipo inicial de Sally
+acce_s_00	Fabricar en la Campfire
+acce_s_01	Fabricar en el Wood Workbench
+acce_s_02	Lo suelta el Guardian Warrior, el jefe del nivel 10 de las Ruins
+acce_s_03	Lo sueltan los Guards en las incursiones (no los de la Prison)
+acce_s_04	Matar a Keigo
+acorn_01	Talar árboles con un hacha
+animal_bee_01	Clic derecho a las Bees de las Beehives de los árboles con una Iron Bug Net o mejor
+animal_centipede_01	Clic derecho a los Centipedes con una Bug Net en la Mine Underground (por cualquiera de las dos Mine)
+animal_chicken_01	Atrapar con una trampa jaula; Dejar inconsciente a un Rooster y capturarlo
+animal_chicken_02	Atrapar con una trampa jaula; Dejar inconsciente a una Hen y capturarla
+animal_crab_01	Clic derecho a los Crabs de la playa con una Bug Net equipada
+animal_pig_01	Dejar inconsciente a un Pig y capturarlo; Poner trabajadores a criar Pigs en una Pig Farm
+animal_ruck_01	Dejar inconscientes y capturar Rucks en la tierra corrupta tras la Gate (norte)
+animal_turtle_01	Dejar inconscientes y capturar Turtles en la Mountain Cave (noreste de la isla)
+arrow_00	Fabricar a mano
+arrow_01	Fabricar a mano
+arrow_02	Fabricar a mano
+arrow_chaos_01	Fabricar en el Chaos Workbench
+arrow_glass_01	Fabricar en el Sand Workbench
+arrow_pretty_01	Fabricar en el Pretty Workbench
+arrow_spider_01	Fabricar en el Spider Workbench
+arrow_wing_01	Fabricar en el Wing Workbench
+bench_halloween	Cambiar 1 Small Candy, 1 Green Blood y 1 Pumpkin con el Trader
+bench_iron	Fabricar con 4 Iron Ingot en el Wood Workbench
+bench_spring	Cambiar 1 Yellow Flower con el Trader
+bench_summer	Cambiar 1 Shell con el Trader
+bench_wood	Fabricar con 20 Wood
+bench_xmas	Cambiar 1 Berry con el Trader
+berry_01	Recoger de arbustos con bayas rojas; Poner trabajadores a cosecharlo
+berry_corrupt_01	Crece junto al agua en la Cave of Chaos
+berry_exp_01	Poner trabajadores a cosecharlo
+berry_exp_02	Lo sueltan los Big Natives, las Underground Women, Mummy y Daddy
+berry_exp_03	Lo sueltan los Werewolves, el Bigfoot y las Corrupt Goats
+berry_exp_04	Lo sueltan los White Tigers y las Ent Roots
+block_stairs_01	Fabricar en el Wood Workbench
+block_stairs_02	Fabricar en el Wood Workbench
+block_water_01	Fabricar a partir de Wonder Berry S con la Mermaid, estando en el agua
+bone_01	Lo sueltan los Bats y los Skeletons
+bone_02	Lo sueltan los Under Ground Men y los Skeletons
+brain	Solo por comando de consola (un coleccionable de evento, sin uso como objeto)
+branch_01	Recoger del suelo; Recoger de arbustos; Fabricar con 2 Wood; Poner trabajadores a cosecharlo
+cactus_01	Talar cactus
+charcoal_01	Fabricar con 2 Wood en el Furnace
+chest_pretty_01	Fabricar con 5 Gold Ingot, 10 Hard Wood y 2 Fabric en el Pretty Workbench
+chest_wing_01	Fabricar con 1 Diamond, 10 Feather y 5 Purple Ore en el Wing Workbench
+claw_01	Lo sueltan los Mogles de la Cave of Chaos
+clay_01	Cavar suelo embarrado con una pala; Poner trabajadores a cavarlo en el pantano
+cloth_01	Fabricar a mano; Equipo inicial de Yona
+cloth_05	Fabricar a mano
+cloth_08	Equipo inicial de Reika
+cloth_10	Fabricar en el Spider Workbench
+cloth_100	Comando de consola
+cloth_11	Fabricar con la Old Woman Native
+cloth_12	Fabricar con la Old Woman Native
+cloth_13	Fabricar con la Old Woman Native
+cloth_14	Fabricar en el Mens Workbench
+cloth_15	Cofres de las Ruins
+cloth_16	Cofres de las Ruins
+cloth_17	Fabricar en el Wood Workbench
+cloth_18	Fabricar en el Sand Workbench
+cloth_19	Equipo inicial de la Underground Woman
+cloth_20	Fabricar a mano
+cloth_21	Fabricar en el Pretty Workbench
+cloth_22	De las incursiones de élite
+cloth_23	Equipo inicial de la Elder Sister Native; Fabricar con la Elder Sister Native
+cloth_24	Fabricar con la Elder Sister Native
+cloth_25	Fabricar con la Elder Sister Native
+cloth_26	Fabricar en el Pretty Workbench
+cloth_27	Fabricar en el Pretty Workbench
+cloth_28	Fabricar con la Elder Sister Native
+cloth_30	Del Trader
+cloth_31	Fabricar en el Sand Workbench
+cloth_32	Fabricar en el Wing Workbench
+cloth_33	Fabricar en el Sand Workbench
+cloth_35	Fabricar en el Plant Workbench
+cloth_36	Fabricar en el Christmas Workbench
+cloth_37	Fabricar en el Christmas Workbench
+cloth_38	Fabricar en el Christmas Workbench
+cloth_39	Equipo inicial de Cassie
+cloth_40	Equipo inicial de Takumi
+cloth_41	De las incursiones de élite
+cloth_42	De las Female Large Natives en las incursiones
+cloth_43	Cofres de las Ruins
+cloth_45	Equipo inicial de Keigo
+cloth_46	De los Specters
+cloth_47	Fabricar en el Plant Workbench
+cloth_49	Lo llevan los Guards
+cloth_50	Fabricar en el Summer Workbench
+cloth_51	Fabricar en el Summer Workbench
+cloth_52	Fabricar en el Summer Workbench
+cloth_53	Fabricar en el Summer Workbench
+cloth_54	Fabricar en el Summer Workbench
+cloth_55	Fabricar en el Summer Workbench
+cloth_56	Fabricar en el Summer Workbench
+cloth_57	Fabricar en el Summer Workbench
+cloth_58	Fabricar en el Summer Workbench
+cloth_59	Equipo inicial de Shino
+cloth_60	De las incursiones de élite
+cloth_61	Equipo inicial en la aldea de las Native Girls
+cloth_62	Equipo inicial en la aldea de las Native Girls
+cloth_63	Fabricar en el Halloween Workbench
+cloth_65	De los Natives en las incursiones de Halloween
+cloth_66	De los Small Natives en las incursiones de Halloween
+cloth_67	De los Natives en las incursiones de Halloween
+cloth_68	Fabricar en el Halloween Workbench
+cloth_69	Fabricar en el Halloween Workbench
+cloth_70	De los Natives en las incursiones de Halloween
+cloth_71	De los Natives en las incursiones de Halloween
+cloth_72	De los Natives en las incursiones de Halloween
+cloth_73	Fabricar en el Halloween Workbench
+cloth_74	De los Natives en las incursiones de Halloween
+cloth_75	De los Natives en las incursiones de Halloween
+cloth_76	De los Natives en las incursiones de Halloween
+cloth_77	Fabricar en el Halloween Workbench
+cloth_78	De los Natives en las incursiones de Halloween
+cloth_80	Equipo inicial de Sally
+cloth_81	De los Natives de la Prison
+clothu_00	Fabricar a mano
+clothu_01	Fabricar a mano
+clothu_04	Equipo inicial de los Natives; Fabricar con la Old Woman Native
+clothu_05	Equipo inicial de los Natives; Fabricar con la Old Woman Native
+clothu_06	Equipo inicial de los Natives; Fabricar con la Old Woman Native
+clothu_08	Equipo inicial de Reika
+clothu_10	Fabricar en el Spider Workbench
+clothu_100	Comando de consola
+clothu_14	Fabricar en el Mens Workbench
+clothu_16	Cofres de las Ruins
+clothu_17	Fabricar en el Wood Workbench
+clothu_18	Fabricar en el Sand Workbench
+clothu_21	Fabricar en el Pretty Workbench
+clothu_22	De las incursiones de élite
+clothu_23	Equipo inicial de las Old Woman Natives y Elder Sister Natives; Fabricar con la Elder Sister Native
+clothu_24	Fabricar con la Elder Sister Native
+clothu_25	Fabricar con la Elder Sister Native
+clothu_26	Fabricar en el Pretty Workbench
+clothu_27	Fabricar en el Pretty Workbench
+clothu_28	Fabricar con la Elder Sister Native
+clothu_30	Se compra en la Shop
+clothu_31	Fabricar en el Sand Workbench
+clothu_32	Fabricar en el Wing Workbench
+clothu_33	Fabricar en el Sand Workbench
+clothu_35	Fabricar en el Plant Workbench
+clothu_36	Fabricar en el Christmas Workbench
+clothu_38	Fabricar en el Christmas Workbench
+clothu_39	Equipo inicial de Cassie
+clothu_40	Equipo inicial de Takumi
+clothu_41	De las incursiones de élite
+clothu_42	De las Female Large Natives en las incursiones
+clothu_43	Cofres de las Ruins
+clothu_44	Fabricar en el Summer Workbench
+clothu_45	Equipo inicial de Keigo
+clothu_47	Fabricar en el Plant Workbench
+clothu_49	Lo llevan los Guards
+clothu_50	Fabricar en el Summer Workbench
+clothu_51	Fabricar en el Summer Workbench
+clothu_53	Fabricar en el Summer Workbench
+clothu_54	Fabricar en el Summer Workbench
+clothu_55	Fabricar en el Summer Workbench
+clothu_56	Fabricar en el Summer Workbench
+clothu_57	Fabricar en el Summer Workbench
+clothu_58	Fabricar en el Summer Workbench
+clothu_59	Equipo inicial de Shino
+clothu_60	De las incursiones de élite
+clothu_61	Equipo inicial en la aldea de las Native Girls
+clothu_63	Fabricar en el Halloween Workbench
+clothu_65	De los Natives en las incursiones de Halloween
+clothu_67	De los Natives en las incursiones de Halloween
+clothu_68	Fabricar en el Halloween Workbench
+clothu_69	Fabricar en el Halloween Workbench
+clothu_70	De los Natives en las incursiones de Halloween
+clothu_71	Fabricar en el Summer Workbench
+clothu_72	Fabricar en el Summer Workbench
+clothu_73	Fabricar en el Halloween Workbench
+clothu_74	De los Natives en las incursiones de Halloween
+clothu_75	De los Natives en las incursiones de Halloween
+clothu_76	De los Natives en las incursiones de Halloween
+clothu_77	Fabricar en el Halloween Workbench
+clothu_78	De los Natives en las incursiones de Halloween
+clothu_80	Equipo inicial de Sally
+clothu_81	De los Natives de la Prison
+cobweb_01	Romper telarañas en la Cave of Spiders (suroeste); Lo sueltan las Spiders de la Cave of Spiders y de los bosques de suelo oscuro
+cook_ancientfruit_01	Cofres de las Ruins
+cook_bread_01	Fabricar con 4 Flour y 1 Butter en la Cooking Table
+cook_cheese_01	Fabricar con 2 Milk en la Cooking Table
+cook_hallo_candy_01	Fabricar con 2 Small Candy en el Halloween Workbench
+cook_roastedpork_01	Fabricar con 1 Raw Pork de alta calidad y 1 Honey en la Cooking Table
+cook_satsuma_01	(sin verificar) Solo por comando de consola de objetos (a fecha de 8/18)
+cook_tempura_shrimp_01	Fabricar con 1 Egg, 1 Flour y 1 Shrimp en la Cooking Table
+coral_blue_01	Recoger coral azul que crece en el mar
+coral_green_01	Recoger coral verde que crece en el mar
+coral_rainbow_01	Recoger coral arcoíris que crece en el mar
+coral_red_01	Recoger coral rojo que crece en el mar
+crabshell_01	Lo sueltan los Crabs
+deco_arch_ruins_01	(sin verificar) Solo por comando de consola de objetos (a fecha de 8/18)
+deco_barrel_01	Fabricar con 10 Wood
+deco_basket_01	Fabricar con 20 Fiber
+deco_doll_lulu_01	Evento de Kana & Lulu, ruta del entierro: recogerlo en la casa de Kana
+deco_flagstone_01	Fabricar con 2 Stone
+deco_grave_01_lulu	Evento de Kana & Lulu: recoger la tumba de Lulu tras enterrarla
+deco_pole_bone_01	(sin verificar) Solo por comando de consola de objetos (a fecha de 8/18)
+deco_pool_01	Fabricar con 25 Stone
+deco_rope_01	Fabricar con 1 Rope
+deco_weed_01	Quitarlo con Ctrl pulsado (modo de retirada)
+deco_weed_03	Quitarlo con Ctrl pulsado en la tierra corrupta tras la Gate
+deco_weed_04	Quitarlo con Ctrl pulsado (modo de retirada) en zonas de bosque
+def_ass_awake_01	Fabricar en el Meat Workbench
+def_ass_awake_10	Cambiar 1 Dead Orb con el Trader (noroeste de la isla)
+def_ass_awake_44	Fabricar en el Chaos Workbench
+def_jar_cursed_01	(sin verificar) Solo por comando de consola de objetos (a fecha de 8/18)
+diamond_01	Cofres de las Ruins; Cambiar 2 Fighter Orb con el Trader (noroeste); Poner trabajadores a minarlo en la tierra corrupta tras la Gate
+elecmuscle_01	Lo sueltan las Eleceels del pantano del este de la isla
+explosionbag_01	Picar bolsas explosivas en el pantano del este de la isla con un pico
+fabric_01	Fabricar con 5 Fiber; Lo sueltan los enemigos; Picar montones de chatarra con un pico
+feather_01	Lo sueltan los pájaros
+fiber_01	Recoger de arbustos; Lo sueltan los enemigos; Subproducto de los árboles gruesos que crecen en suelo verde oscuro; Poner trabajadores a cosecharlo
+fish_angler_01	Pescar en el lago pequeño de la Mountain Cave (norte-noreste)
+fish_ass_01	Pescar en las aguas termales de la aldea de las aguas termales
+fish_babyface_01	Pescar en la zona de sangre del Bottom of the Earth
+fish_bigeye_01	Pescar en los estanques humeantes y aguas termales de la montaña del norte-noreste
+fish_bigot_01	Pescar en los estanques humeantes y aguas termales de la montaña del norte-noreste; Nasa en las mismas aguas
+fish_cathead_01	Pescar en el mar
+fish_clione_01	Pescar en el lago pequeño de la Mountain Cave (norte-noreste)
+fish_egg_01	Pescar en los estanques humeantes y aguas termales de la montaña del norte-noreste
+fish_eyeball_01	Pescar en la zona de sangre del Bottom of the Earth
+fish_firog_01	Pescar en estanques, charcas y lagos
+fish_fish_01	Pescar en el mar o en ríos; Poner una nasa en el mar
+fish_fishoil_01	Lo sueltan las Eleceels del pantano del este de la isla
+fish_glow_01	Pescar en el lago pequeño de la Mountain Cave (norte-noreste)
+fish_goldfish_01	Pescar en estanques, charcas y lagos; Nasa en estanques, charcas y lagos
+fish_goldfish_02	Pescar en estanques, charcas y lagos
+fish_jellyfish_01	Pescar cerca de los arrecifes del sureste (la zona de la Mermaid)
+fish_killer_01	Pescar en el pantano del este de la isla; Nasa en el pantano del este
+fish_left_01	Pescar en la zona de sangre del Bottom of the Earth; Nasa en las mismas aguas
+fish_liquid_01	Pescar en el oasis del desierto
+fish_meat_01	Lo sueltan los Sharks del mar
+fish_meat_02	Lo sueltan los Sharks del mar
+fish_melty_01	Pescar en el pantano del este de la isla
+fish_monkish_01	Pescar en los estanques humeantes y aguas termales de la montaña del norte-noreste
+fish_mutantoctopus_01	Pescar en los estanques morados y el lago del caos del norte
+fish_paiot_01	Pescar en las aguas termales de la aldea de las aguas termales
+fish_peach_01	Pescar en los estanques morados y el lago del caos del norte
+fish_penguish_02	Pescar en el mar
+fish_rainbowsalmon_01	Pescar en ríos, como los del sureste de la isla
+fish_red_01	Pescar en el pantano del este de la isla
+fish_rock_01	Pescar en el lago pequeño de la Mountain Cave (norte-noreste); Nasa en las mismas aguas
+fish_salmon_01	Pescar en ríos, como los del sureste de la isla
+fish_sandfugu_01	Pescar en los oasis del desierto del noroeste
+fish_shrimp_01	Pescar en el mar; Poner una nasa en el mar
+fish_tentacle_01	Pescar en los estanques morados y el lago del caos del norte; Nasa en las mismas aguas
+flag_01	Fabricar con 2 Hide y 4 Branch
+flag_02	Tras vencer al Boss Native y hablar con el otro protagonista, fabricar con 2 Hide y 4 Branch en el Iron Workbench (una por mapa)
+flower_ajisai_blue_01	Bosques (verde oscuro en el mapa) solo en días de lluvia, cerca de los Snails, desaparece cuando para
+flower_ajisai_red_01	Bosques (verde oscuro en el mapa) solo en días de lluvia de sangre, cerca de los Blood Snails, desaparece cuando para
+flower_blue_01	Recoger en la Mountain Cave (la de las Turtles)
+flower_mutantlotus_01	Crece en los pantanos
+flower_red_01	Recoger cerca del altar del centro de las Ruins
+flower_yellow_01	Recoger en zonas bajas junto al agua (verde claro en el mapa)
+food_butter_01	Fabricar con 2 Milk en la Cooking Table
+food_cabbage_01	Cultivar Cabbage Seed en una jardinera (si se deja plantado, da semillas)
+food_carrot_01	Cultivar Carrot Seed en una jardinera (si se deja plantado, da semillas); Lo sueltan los Big Natives
+food_coconut_01	Talar palmeras con un hacha: oasis del desierto del noroeste, islotes del oeste y del sureste
+food_corn_01	Cultivar Corn Seed en una jardinera (si se deja plantado, da semillas)
+food_egg_01	Poner una Hen en el Chicken Coop y que los trabajadores recojan
+food_egg_02	(sin verificar) Atrapar la gallina rara y criarla en el Chicken Coop
+food_eye_01	Fabricar en el Meat Workbench con la cabeza de un Male Native, una Female Native o una Native Girl
+food_finger_01	Fabricar en el Meat Workbench con el brazo de un Male Native o una Female Native (no las piernas)
+food_flesh_01	Recoger en el Dump of Exiles; Recoger cadáveres con un Flesh Collector
+food_flour_soybean_01	Fabricar con 4 Soybean Seed en el Millstone
+food_flour_wheat_01	Fabricar con 4 Wheat en el Millstone
+food_fnickers_01	Muy rara vez en playas de arena; Rara vez al cavar playas con una pala
+food_garlic_01	Se cultiva en una jardinera (si se deja plantado, da semillas)
+food_hallo_candy_01	Lo sueltan los enemigos de las incursiones de Halloween
+food_hallo_pumpkin_01	Lo sueltan los enemigos de las incursiones de Halloween
+food_hallo_source_01	Lo sueltan los enemigos de las incursiones de Halloween
+food_honey_01	Recoger colmenas de los árboles
+food_mandora_01	Matar Mandrakes disfrazadas de hierba en el pantano de las setas; Rara vez al cavar barro con una pala; Rara vez de trabajadores que cavan en el pantano
+food_meat_01	Lo sueltan los animales pequeños y grandes
+food_meat_02	Lo sueltan los animales diminutos
+food_meat_03	Descuartizar un Pork, que rara vez nace en la Pig Farm
+food_meat_04	Lo sueltan las Cows (montaña del noreste) y la Milky
+food_milk_01	Poner en la Milking Machine a una mujer que haya dado a luz
+food_milk_02	Poner trabajadores a criar Cows o Milky en un corral
+food_onion_01	Se cultiva en una jardinera (si se deja plantado, da semillas)
+food_pimento_01	Cultivar Pimento Seed en una jardinera (si se deja plantado, da semillas)
+food_potato_01	Cultivar Seed Potato en una jardinera; Lo sueltan los Big Natives
+food_snail_01	Matar los Snails o Blood Snails que aparecen con las hortensias (comestibles, a diferencia de los capturados con Bug Net)
+food_soybean_01	Cultivar Soybean Seed en una jardinera (si se deja plantado, se convierte en Soybean Seed)
+food_tomato_01	Se cultiva en una jardinera (si se deja plantado, da semillas)
+food_wheat_01	Cultivar Wheat Seed en una jardinera
+foodstorage_01	Fabricar con 10 Wood y 4 Charcoal en el Wood Workbench
+glass_01	Fabricar con 5 Sand y 1 Charcoal en el Furnace
+gold_01	Picar rocas en la Mine (North) con un pico; Lo sueltan los enemigos con aspecto de perro de las Ruins
+goldingot_01	Fabricar con 10 Gold en el Furnace
+hat_04	De las Female Natives
+hat_05	De las Female Natives
+hat_06	De las Female Natives
+hat_07	De los Small Natives
+hat_08	Fabricar a mano
+hat_09	Fabricar en el Spider Workbench
+hat_10	Fabricar en el Meat Workbench
+hat_11	Fabricar en el Plant Workbench
+hat_12	Fabricar en el Mens Workbench
+hat_13	Cofres de las Ruins
+hat_14	Fabricar a mano
+hat_15	Fabricar en el Wood Workbench
+hat_16	Fabricar en el Iron Workbench
+hat_17	Fabricar en el Wood Workbench
+hat_18	Fabricar en el Sand Workbench
+hat_20	De las incursiones de élite
+hat_21	De las incursiones de élite
+hat_22	De las incursiones de élite
+hat_23	Fabricar con la Elder Sister Native
+hat_25	Fabricar con la Elder Sister Native
+hat_31	Fabricar en el Sand Workbench
+hat_32	Fabricar en el Wing Workbench
+hat_33	Fabricar en el Sand Workbench
+hat_34	Fabricar en el Meat Workbench
+hat_35	Fabricar en el Plant Workbench
+hat_36	Fabricar en el Christmas Workbench
+hat_37	Fabricar en el Christmas Workbench
+hat_41	De las incursiones de élite
+hat_42	De las Mummies (las que tienen el pelo visible)
+hat_43	De las Mummies (las que tienen el pelo visible)
+hat_44	De los Small Guardians
+hat_45	De los Small Guardians
+hat_46	De los Specters
+hat_47	Fabricar en el Plant Workbench
+hat_48	De los Natives en las incursiones de Halloween
+hat_60	De las incursiones de élite
+hat_61	Equipo inicial en la aldea de las Native Girls
+hat_62	Equipo inicial en la aldea de las Native Girls
+hat_63	Fabricar en el Halloween Workbench
+hat_65	De las Female Natives en las incursiones de Halloween
+hat_66	De los Small Natives en las incursiones de Halloween
+hat_67	De los Natives en las incursiones de Halloween
+hat_68	Fabricar en el Halloween Workbench
+hat_69	Fabricar en el Halloween Workbench
+hat_70	De los Natives en las incursiones de Halloween
+hat_71	De las Native Girls en las incursiones de Halloween
+hat_72	De las Native Girls en las incursiones de Halloween
+hat_73	De los Natives en las incursiones de Halloween
+hat_74	De los Natives en las incursiones de Halloween
+hat_75	De los Natives en las incursiones de Halloween
+hat_76	De los Natives en las incursiones de Halloween
+hat_77	Fabricar en el Halloween Workbench
+hat_78	De los Natives en las incursiones de Halloween
+hat_80	Equipo inicial de Sally
+hat_81	De los Natives de la Prison
+herb_01	Recoger de arbustos; Lo sueltan los enemigos; Crece en una Herb Planter
+herb_02	Recoger hierbas rojas silvestres en la montaña del norte-noreste; Crece en una Red Herb Planter
+hide_01	Lo sueltan los animales
+hip_31	Fabricar en el Sand Workbench
+hip_32	Fabricar en el Wing Workbench
+hip_33	Fabricar en el Sand Workbench
+hip_38	Fabricar en el Christmas Workbench
+hip_69	Fabricar en el Halloween Workbench
+hive_01	Recoger colmenas de los árboles
+iron_01	Picar rocas de mineral de hierro con un pico; Lo sueltan los enemigos; Picar montones de chatarra con un pico; Poner trabajadores a minarlo
+ironingot_01	Fabricar con 10 Iron en el Furnace; Lo sueltan los Big Natives
+l_cloth_00	Fabricar con la Old Woman Native
+l_cloth_01	Fabricar con la Old Woman Native
+l_clothu_00	Fabricar con la Old Woman Native
+l_clothu_01	Equipo inicial de los Natives; Fabricar con la Old Woman Native
+l_clothu_02	Equipo inicial de los Natives; Fabricar con la Old Woman Native
+leaf_01	Recoger de arbustos; Lo sueltan los enemigos; Poner trabajadores a cosecharlo
+light_candle_01	Cofres de las Ruins
+light_candle_02	Cofres de las Ruins
+light_candle_03	Cofres de las Ruins
+light_candle_04	Cofres de las Ruins
+light_candle_prison_01	Romper barriles en la Prison
+light_lantern_01	Cofres de las Ruins
+light_lantern_02	Cofres de las Ruins
+liquid_01	Lo sueltan los Sandworms del desierto del noroeste
+m_cloth_00	Equipo inicial de los hombres; Fabricar con la Old Woman Native
+m_cloth_05	De los Natives de élite en las incursiones
+m_cloth_07	De las incursiones de élite
+m_clothu_00	Equipo inicial de los Natives; Fabricar con la Old Woman Native
+m_clothu_01	Equipo inicial de los Natives; Fabricar con la Old Woman Native
+m_clothu_02	Equipo inicial de los Natives; Fabricar con la Old Woman Native
+m_clothu_03	Equipo inicial de los hombres; Fabricar con la Old Woman Native
+m_clothu_05	De los Natives de élite en las incursiones
+m_clothu_07	De las incursiones de élite
+m_shoes_00	Equipo inicial de los hombres
+mushroom_01	Recoger setas rojas en los bosques; Colocar un Mushroom Log
+mushroom_02	Recoger en la montaña del noreste de la isla; Colocar un Mushroom Log en la montaña del noreste
+mushroom_03	Recoger en el pantano del este de la isla; Colocar un Mushroom Log en el pantano del este
+mushroom_04	Recoger en la tierra corrupta tras la Gate; Colocar un Mushroom Log en la tierra corrupta tras la Gate
+orb_core_01	Lo suelta Scrap, el jefe de la planta 5 de las Ruins
+orb_curse_01	Lo suelta Sadako
+orb_dead_01	Lo sueltan los Specters y Jack
+orb_earth_01	Vencer a la Giant en el evento de la Giant y elegir matarla
+orb_fighter_01	Lo sueltan los asaltantes con equipo de élite en los niveles de incursión altos (p. ej., Pot of Anger)
+orb_life_01	Se obtiene de un mortinato; Usar una Abortion Potion en un personaje embarazado
+orb_mad_01	Romper vasijas en el Dump of Exiles; Lo sueltan los Under Ground Men
+orb_soul_01	Lo sueltan los Servants of Death en la incursión de Death
+orb_soul_02	Lo suelta Death en la incursión de Death
+ore_blood_01	Picar Blood Stone en el Dump of Exiles (oeste) con un pico de hierro o mejor
+ore_chaos_01	Picar Chaos Ore en la tierra corrupta tras la Gate con un pico de hierro o mejor
+ore_purple_01	Lo sueltan los Anglers dentro de la Mine
+parts_g2_L_arm	Descuartizar el cuerpo de una Native Girl con un hacha
+parts_g2_L_leg	Descuartizar el cuerpo de una Native Girl con un hacha
+parts_g2_R_arm	Descuartizar el cuerpo de una Native Girl con un hacha
+parts_g2_R_leg	Descuartizar el cuerpo de una Native Girl con un hacha
+parts_g_L_arm	Descuartizar el cuerpo de una Female Native con un hacha
+parts_g_L_leg	Descuartizar el cuerpo de una Female Native con un hacha
+parts_g_R_arm	Descuartizar el cuerpo de una Female Native con un hacha
+parts_g_R_leg	Descuartizar el cuerpo de una Female Native con un hacha
+parts_gengiant_01_oppai	Vencer a la Giant en su evento, elegir matarla y descuartizar su cuerpo con un cuchillo
+parts_genunder_01_oppai	Descuartizar el cuerpo de una Underground Woman con un cuchillo
+parts_m_L_arm	Descuartizar el cuerpo de un Male Native con un hacha
+parts_m_L_leg	Descuartizar el cuerpo de un Male Native con un hacha
+parts_m_R_arm	Descuartizar el cuerpo de un Male Native con un hacha
+parts_m_R_leg	Descuartizar el cuerpo de un Male Native con un hacha
+parts_m_tinko	Descuartizar el cuerpo de un Male Native con un cuchillo (los Big Natives, Small Natives y Native Boys dan otros tamaños)
+parts_mummy_01_oppai	Descuartizar el cuerpo de una Mummy con un cuchillo
+pedestal_01	Comando de consola
+platform_01	Fabricar en el Wood Workbench
+platform_04	Fabricar con 10 Glass
+pocket_01	Cambiar 1 Ruck con el Trader
+poop_01	Lo sueltan los animales; Poner trabajadores a cuidar la Pig Farm; Picar montones de chatarra con un pico
+pot_00	Fabricar con 1 Iron Ingot en el Iron Workbench
+potion_abortion_01	Fabricar a partir de 1 Red Herb y 1 Rotten Food con el Old Man Native
+potion_age_01	Fabricar a partir de 1 Herb, 1 Carrot y 1 Gold Fish con el Old Man Native
+potion_age_02	Cambiar 1 Rejuvenate Potion y 1 Life Orb con el Trader
+potion_love_01	Fabricar con 1 Perfume Potion, 1 Honey y 1 Mother's Milk en la Cooking Table (tras conseguir Takumi's Notes)
+potion_perfume_01	Fabricar con 1 Green Mushroom y 1 Red Herb en la Cooking Table (tras conseguir Takumi's Notes)
+raincollector_01	Fabricar con 5 Wood y 2 Fabric en el Wood Workbench
+repairkit_01	Cambiar 1 Fighter Orb con el Trader; Fabricar con 1 Iron Ingot, 1 Rope y 1 Sap en el Iron Workbench
+rope_01	Fabricar con 4 Fiber; Cajas de madera en las aldeas de los Natives; Picar montones de chatarra con un pico
+rotten_01	Picar montones de chatarra con un pico; Fabricar a partir de 1 Raw Meat con el Old Man Native
+sand_01	Cavar playas o el desierto (norte-noroeste) con una pala; Poner trabajadores a cavarlo en el desierto
+sap_01	Talar árboles con un hacha; Poner trabajadores a talarlos
+seed_cabbage_01	Lo sueltan las Sheep; Dejar una Cabbage madura en su jardinera para que dé semillas
+seed_carrot_01	Lo sueltan los Natives; Dejar una Carrot madura en su jardinera para que dé semillas
+seed_corn_01	Lo sueltan los Natives; Dejar el Corn maduro en su jardinera para que dé semillas
+seed_garlic_01	Lo sueltan los Big Natives; Dejar el Garlic maduro en su jardinera para que dé semillas
+seed_onion_01	Lo sueltan los Small Natives; Dejar una Onion madura en su jardinera para que dé semillas
+seed_pimento_01	A veces lo sueltan las Nepenthes; Dejar un Pimento maduro en su jardinera para que dé semillas
+seed_potato_01	Lo sueltan los Natives; Fabricar con 1 Potato
+seed_soybean_01	Lo sueltan los pájaros pequeños; Cultivar en un campo y dejar hasta que se marchite (los trabajadores lo recogen como Green Soybean)
+seed_tomato_01	Lo sueltan los pájaros pequeños; Dejar un Tomato maduro en su jardinera para que dé semillas
+seed_wheat_01	Lo sueltan los Chickens
+shell_01	Recoger en playas de arena; Subproducto de cavar playas con una pala; Poner trabajadores a cavarlo en las playas
+shell_turtle_01	Lo sueltan las Turtles de la Mountain Cave (norte-noreste)
+shield_01	Fabricar en el Wood Workbench
+shield_02	Fabricar en el Iron Workbench
+shield_03	Fabricar en el Wood Workbench
+shield_04	Fabricar en el Spider Workbench
+shield_05	Fabricar en el Meat Workbench
+shield_06	Fabricar en el Wing Workbench
+shield_07	Fabricar en el Plant Workbench
+shield_08	Fabricar en el Sand Workbench
+shield_09	El cofre del jefe del nivel 5 de las Ruins
+shield_10	Lo llevan las Female Large Natives
+shield_11	El cofre del jefe del nivel 10 de las Ruins
+shield_12	Lo llevan las Female Large Natives en Halloween
+shield_13	Fabricar en el Wing Workbench
+shield_40	Fabricar en el Iron Workbench
+shield_41	Fabricar en el Wing Workbench
+shield_44	Del Trader
+shield_45	Fabricar a mano
+shoes_00	Equipo inicial de Yona
+shoes_08	Equipo inicial de Reika
+shoes_17	Fabricar en el Wood Workbench
+shoes_21	Fabricar en el Pretty Workbench
+shoes_28	Fabricar con la Elder Sister Native
+shoes_30	Se compra en la Shop
+shoes_31	Fabricar en el Sand Workbench
+shoes_32	Fabricar en el Wing Workbench
+shoes_33	Fabricar en el Sand Workbench
+shoes_35	Fabricar en el Plant Workbench
+shoes_36	Fabricar en el Christmas Workbench
+shoes_37	Fabricar en el Christmas Workbench
+shoes_38	Fabricar en el Christmas Workbench
+shoes_40	Equipo inicial de Takumi
+shoes_41	De las incursiones de élite
+shoes_43	Equipo inicial de Keigo
+shoes_44	Fabricar en el Pretty Workbench
+shoes_45	Fabricar en el Pretty Workbench
+shoes_46	Fabricar en el Pretty Workbench
+shoes_47	Fabricar en el Pretty Workbench
+shoes_59	Equipo inicial de Shino
+shoes_62	Equipo inicial en la aldea de las Native Girls
+shoes_63	Fabricar en el Halloween Workbench
+shoes_65	De los Natives en las incursiones de Halloween
+shoes_67	De los Natives en las incursiones de Halloween
+shoes_68	Fabricar en el Halloween Workbench
+shoes_69	Fabricar en el Halloween Workbench
+shoes_70	De los Natives en las incursiones de Halloween
+shoes_71	De los Natives en las incursiones de Halloween
+shoes_72	De los Natives en las incursiones de Halloween
+shoes_73	Fabricar en el Halloween Workbench
+shoes_74	De los Natives en las incursiones de Halloween
+shoes_76	De los Natives en las incursiones de Halloween
+shoes_77	Fabricar en el Halloween Workbench
+shoes_78	De los Natives en las incursiones de Halloween
+shoes_80	Equipo inicial de Sally
+skin_gorilla_01	Lo sueltan Gorola y Gorela, jefes de la Cave of Chaos
+skin_spider_01	Lo suelta Spike, el jefe de la Cave of Spiders (suroeste)
+skin_whitetiger_01	Lo sueltan los White Tigers
+soil_01	Cavar las llanuras con una pala; Lo sueltan los enemigos; Poner trabajadores a cavarlo
+stone_01	Recoger del suelo; Picar rocas con un pico; Poner trabajadores a minarlo
+stone_blue	Solo por comando de consola (un coleccionable de evento, sin uso como objeto)
+stone_green	Solo por comando de consola (un coleccionable de evento, sin uso como objeto)
+stone_red	Solo por comando de consola (un coleccionable de evento, sin uso como objeto)
+stone_tinko	Solo por comando de consola (un coleccionable de evento, sin uso como objeto)
+suicide_kana_01	Evento de Kana & Lulu: recoger a Kana tras su suicidio
+titanium_01	Lo sueltan los enemigos de The Lab; Crear un Cyborg y derrotarlo
+token_kill_01	Derrotar PNJ al asaltar otra partida
+token_talk_01	Hablar con PNJ al visitar otra partida
+torch_01	Fabricar a mano
+torch_chaos_01	Fabricar en el Chaos Workbench
+vine_01	Lo sueltan las Nepenthes del pantano del este; Subproducto de cavar pantanos con una pala; Poner trabajadores a cavarlo en el pantano
+vine_02	Recoger pequeños arbustos espinosos (hacen algo de daño) en la tierra corrupta tras la Gate
+wall_01	Fabricar con 4 Wood
+wall_02	Fabricar con 4 Stone
+wall_glass_01	Fabricar con 4 Glass en el Sand Workbench
+waterbag_01	Usar una Water Bag vacía en una fuente de agua
+waterbag_02	Usar una Water Bag vacía junto a un pozo o un depósito de agua; Usarla en cualquier sitio mientras llueve; Fabricar con 1 Water Bag (agua sucia) y 1 Pot en una Campfire (la bolsa vacía se conserva al beber)
+wood_01	Talar árboles con un hacha; Poner trabajadores a talarlos
+wood_02	Talar árboles robustos con un hacha de hierro o mejor en la tierra corrupta tras la Gate; Lo sueltan los Ents de la tierra corrupta tras la Gate; Poner trabajadores a talarlos en la tierra corrupta tras la Gate
+wood_03	Talar Dark Trees con un Chaos Axe
+woodbowl_01	Usar un Wood Bowl en una fuente de agua
+woodbowl_02	Fabricar con 1 Wood Bowl (agua sucia) en una Campfire (el cuenco se gasta al beber)
+wool_01	Lo sueltan las Sheep
+worm_01	Recoger de arbustos; Matar Bees; Cavar tierra con una pala; Poner trabajadores a cavarlo
+wp_axe_01	Fabricar con 2 Stone, 1 Branch y 1 Fiber
+wp_axe_02	Fabricar en el Iron Workbench
+wp_axe_03	Fabricar en el Iron Workbench
+wp_axe_bloody_01	Lo llevan los Natives en Halloween
+wp_bat_01	Fabricar en el Wood Workbench
+wp_bat_02	Fabricar en el Mens Workbench
+wp_battleaxe_01	Fabricar con el Elder Brother Native
+wp_battleaxe_02	Lo llevan las Female Large Natives
+wp_bigpen_01	Lo lleva el Bigfoot
+wp_borg_00	De Cassie
+wp_borg_01	De Cassie
+wp_bow_01	Fabricar a mano
+wp_bow_chaos_01	Fabricar en el Chaos Workbench
+wp_bow_pretty_01	Fabricar en el Pretty Workbench
+wp_bow_spider_01	Fabricar en el Spider Workbench
+wp_bow_wing_01	Fabricar en el Wing Workbench
+wp_chainsaw	Lo sueltan los Halloween Ghosts
+wp_club_01	Fabricar a mano
+wp_club_02	Fabricar en el Iron Workbench
+wp_club_03	Fabricar en el Iron Workbench
+wp_club_04	Fabricar en el Chaos Workbench
+wp_club_10	Lo llevan los Big Natives
+wp_club_head	Fabricar en el Meat Workbench
+wp_cracker_01	Fabricar en el Summer Workbench
+wp_cursedhand_01	Del Trader
+wp_deb_club	Comando de consola
+wp_fishingrod_01	Fabricar a mano
+wp_fishingrod_02	Comando de consola
+wp_foldingfan_01	Fabricar en el Spring Workbench
+wp_gen_saw_01	Fabricar en el Meat Workbench
+wp_gianthand_01	Del Trader
+wp_hallo_broom_01	Lo llevan las Female Natives en Halloween
+wp_hallo_club_01	De los Natives en las incursiones de Halloween
+wp_hallo_spear_01	Lo llevan las Elder Sister Natives en Halloween
+wp_hallo_sword_cross	Lo llevan las Female Large Natives en Halloween
+wp_katana_01	El cofre del jefe del nivel 5 de las Ruins
+wp_knife_01	Fabricar en el Mens Workbench
+wp_knife_blood_01	Fabricar en el Meat Workbench
+wp_kodachi_01	Fabricar en el Spring Workbench
+wp_kunai_01	Fabricar en el Spring Workbench
+wp_leaffan_01	Fabricar en el Plant Workbench
+wp_net_01	Fabricar con 4 Branch y 10 Fiber
+wp_net_02	Fabricar en el Iron Workbench
+wp_net_03	Fabricar en el Chaos Workbench
+wp_pickax_01	Fabricar con 1 Branch, 2 Stone y 1 Fiber
+wp_pickax_02	Fabricar en el Iron Workbench
+wp_pickax_03	Fabricar en el Iron Workbench
+wp_picknaxe_01	Fabricar en el Chaos Workbench
+wp_shovel_01	Fabricar con 2 Wood y 1 Branch en el Wood Workbench
+wp_shovel_02	Fabricar en el Iron Workbench
+wp_shovel_03	Fabricar en el Chaos Workbench
+wp_shuriken_01	Fabricar en el Spring Workbench
+wp_sickle_cuctus	Fabricar en el Sand Workbench
+wp_spear_01	Fabricar en el Wood Workbench
+wp_spear_chaos_01	Fabricar en el Chaos Workbench
+wp_stungun_01	De Takumi
+wp_sword_blood	Fabricar en el Meat Workbench
+wp_sword_chaos	Fabricar en el Chaos Workbench
+wp_sword_crystal	El cofre del jefe del nivel 10 de las Ruins
+wp_sword_dia	Fabricar en el Iron Workbench
+wp_sword_dia_02	Fabricar en el Iron Workbench
+wp_sword_iron	Fabricar en el Iron Workbench
+wp_sword_odachi_01	Lo llevan los Big Natives de élite en Halloween
+wp_sword_ruins_01	Lo lleva el jefe del nivel 10 de las Ruins
+wp_sword_stone	Cofres normales de las Ruins; Fabricar en el Wood Workbench
+wp_sword_wood	Fabricar en el Wood Workbench
+wp_wand_heart	El cofre del jefe del nivel 5 de las Ruins
+wp_wand_heart_02	Fabricar en el Chaos Workbench
+wp_watergun_01	Fabricar en el Summer Workbench
+xmas_box_figure_01	Lo sueltan los Presents durante el evento de Navidad
+xmas_box_santa_01	Lo sueltan los Presents durante el evento de Navidad

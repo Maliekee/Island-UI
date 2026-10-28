@@ -14,7 +14,7 @@ namespace IslandUI
     //   Ctrl+click    an item in a bag or chest      move it to the other side, or
     //                                                drop it (InventoryWindow.Move)
     //   Shift+click   an action bar slot             remove the action
-    //   Shift+drag    an action bar slot             move the action (ActionBar)
+    //   drag          an action bar slot             move the action (ActionBar; shift too with ActionBarShiftToMove)
     //
     // Ctrl+click on a favourite moves nothing: a favourite stays in your bags
     // (FavouriteRules), so Ctrl names why instead of where (Verb.Kept).
@@ -67,25 +67,25 @@ namespace IslandUI
             switch (verb)
             {
                 case Verb.Move:
-                    CursorBadge.Show("ctrl-click  →  " + where, HudGlyphs.Get("move"));
+                    CursorBadge.Show(Shared.Loc.Get("inv.hint.move", "ctrl-click  →  {0}", where), HudGlyphs.Get("move"));
                     break;
                 case Verb.Drop:
-                    CursorBadge.Show("ctrl-click  →  drop", HudGlyphs.Get("drop"));
+                    CursorBadge.Show(Shared.Loc.Get("inv.hint.drop", "ctrl-click  →  drop"), HudGlyphs.Get("drop"));
                     break;
                 case Verb.Kept:
                     CursorBadge.Show(FavouriteRules.KeptWords, HudGlyphs.Get("star"));
                     break;
                 case Verb.Favourite:
-                    CursorBadge.Show("alt-click  →  favourite", HudGlyphs.Get("star"));
+                    CursorBadge.Show(Shared.Loc.Get("inv.hint.mark", "alt-click  →  favourite"), HudGlyphs.Get("star"));
                     break;
                 case Verb.Unmark:
-                    CursorBadge.Show("alt-click  →  unmark", HudGlyphs.Get("star"));
+                    CursorBadge.Show(Shared.Loc.Get("inv.hint.unmark", "alt-click  →  unmark"), HudGlyphs.Get("star"));
                     break;
                 case Verb.Split:
-                    CursorBadge.Show("shift-click  →  split", HudGlyphs.Get("split"));
+                    CursorBadge.Show(Shared.Loc.Get("inv.hint.split", "shift-click  →  split"), HudGlyphs.Get("split"));
                     break;
                 case Verb.RemoveAction:
-                    CursorBadge.Show("shift-click  →  remove    shift-drag  →  move", HudGlyphs.Get("remove"));
+                    CursorBadge.Show(Shared.Loc.Get("inv.hint.remove_action", "shift-click  →  remove    shift-drag  →  move"), HudGlyphs.Get("remove"));
                     break;
             }
         }

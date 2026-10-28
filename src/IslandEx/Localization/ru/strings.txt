@@ -1,0 +1,9 @@
+# Island Ex: Russian strings, machine-translated from en/strings.txt.
+# Corrections are welcome: edit the right side of a line and keep the key and every {0}.
+
+badge.off=выкл.  -  нажмите, чтобы включить
+badge.on=вкл.  -  нажмите, чтобы выключить
+badge.turns_off=выключится при следующем запуске  -  нажмите для отмены
+badge.turns_on=включится при следующем запуске  -  нажмите для отмены
+
+loc.separator= · 

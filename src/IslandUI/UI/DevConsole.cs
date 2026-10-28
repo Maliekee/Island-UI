@@ -481,10 +481,20 @@ namespace IslandUI.UI
             {
                 return;
             }
+            if (_field != null && _field.placeholder is TMP_Text ph)
+            {
+                ph.text = Shared.Loc.Get("console.placeholder", "type a command");
+            }
             string text = _field != null ? _field.text ?? "" : "";
             if (text.Trim().Length == 0)
             {
-                _hint.text = "Tab completes  ·  ↑ ↓ history  ·  PgUp PgDn scroll  ·  Esc closes  ·  help lists every command";
+                // the keys and the command are code, the words around them the language's
+                _hint.text = string.Join(" " + Shared.Loc.Separator + " ",
+                    Shared.Loc.Get("console.hint.complete", "{0} completes", "Tab"),
+                    Shared.Loc.Get("console.hint.history", "{0} history", "↑ ↓"),
+                    Shared.Loc.Get("console.hint.scroll", "{0} scroll", "PgUp PgDn"),
+                    Shared.Loc.Get("console.hint.close", "{0} closes", "Esc"),
+                    Shared.Loc.Get("console.hint.help", "{0} lists every command", "help"));
                 return;
             }
             string head = text.TrimStart();
@@ -497,7 +507,7 @@ namespace IslandUI.UI
                     cmd = "/" + cmd;
                 }
                 _hint.text = Array.IndexOf(Commands(), cmd) >= 0 || IsOwn(cmd.TrimStart('/'))
-                    ? cmd : "<color=" + ErrorHex + ">unknown command " + Escape(cmd) + "</color>";
+                    ? cmd : "<color=" + ErrorHex + ">" + Shared.Loc.Get("console.unknown", "unknown command {0}", Escape(cmd)) + "</color>";
                 return;
             }
             if (IsOwn(head))
@@ -508,7 +518,8 @@ namespace IslandUI.UI
             List<string> hits = Matching(head[0] == '/' ? head : "/" + head);
             if (hits.Count == 0)
             {
-                _hint.text = "<color=" + ErrorHex + ">no command starts with " + Escape(head) + "</color>";
+                _hint.text = "<color=" + ErrorHex + ">" + Shared.Loc.Get("console.no_match", "no command starts with {0}", Escape(head))
+                    + "</color>";
                 return;
             }
             var sb = new StringBuilder();
@@ -568,13 +579,15 @@ namespace IslandUI.UI
             string[] known = Commands();
             if (known.Length > 0 && Array.IndexOf(known, head) < 0)
             {
-                Print("<color=" + ErrorHex + ">unknown command " + Escape(head) + "</color>  (help lists them)");
+                Print("<color=" + ErrorHex + ">" + Shared.Loc.Get("console.unknown", "unknown command {0}", Escape(head)) + "</color>  "
+                    + Shared.Loc.Get("console.unknown.help", "({0} lists them)", "help"));
                 return;
             }
             DebugTool tool = Tool();
             if (tool == null)
             {
-                Print("<color=" + ErrorHex + ">the game's command handler is not in this scene</color>");
+                Print("<color=" + ErrorHex + ">" + Shared.Loc.Get("console.no_handler", "the game's command handler is not in this scene")
+                    + "</color>");
                 return;
             }
             _captureUntil = Time.unscaledTime + 1.5f;
@@ -584,11 +597,13 @@ namespace IslandUI.UI
             }
             catch (IndexOutOfRangeException)
             {
-                Print("<color=" + ErrorHex + ">" + Escape(head) + ": an argument is missing</color>");
+                Print("<color=" + ErrorHex + ">" + Shared.Loc.Get("console.missing_argument", "{0}: an argument is missing", Escape(head))
+                    + "</color>");
             }
             catch (FormatException)
             {
-                Print("<color=" + ErrorHex + ">" + Escape(head) + ": an argument should be a number</color>");
+                Print("<color=" + ErrorHex + ">" + Shared.Loc.Get("console.number_argument", "{0}: an argument should be a number", Escape(head))
+                    + "</color>");
             }
             catch (Exception e)
             {
@@ -601,8 +616,10 @@ namespace IslandUI.UI
         {
             string[] all = Commands();
             var sb = new StringBuilder();
-            sb.Append("<color=").Append(DimHex).Append('>').Append(all.Length)
-                .Append(" commands, from the game's own list (arguments are the game's):</color>");
+            sb.Append("<color=").Append(DimHex).Append('>')
+                .Append(Shared.Loc.Plural("console.commands", "{0} command, from the game's own list (arguments are the game's):",
+                    "{0} commands, from the game's own list (arguments are the game's):", all.Length))
+                .Append("</color>");
             Print(sb.ToString());
             sb.Length = 0;
             // columns by position, not by padding: the face is proportional
@@ -622,7 +639,7 @@ namespace IslandUI.UI
             {
                 Print(sb.ToString());
             }
-            Print("<color=" + DimHex + ">and the console's own: help, clear</color>");
+            Print("<color=" + DimHex + ">" + Shared.Loc.Get("console.own", "and the console's own: {0}", "help, clear") + "</color>");
         }
 
         private static DebugTool _tool;
@@ -910,8 +927,9 @@ namespace IslandUI.UI
             Animate();
             if (Lines.Count == 0)
             {
-                Print("<color=" + DimHex + ">The game's command line. " + Commands().Length
-                    + " commands; type help for the list.</color>");
+                Print("<color=" + DimHex + ">" + Shared.Loc.Plural("console.welcome",
+                    "The game's command line. {0} command; type {1} for the list.",
+                    "The game's command line. {0} commands; type {1} for the list.", Commands().Length, "help") + "</color>");
             }
             Plugin.Log.LogInfo("Console built");
             return true;
@@ -970,7 +988,7 @@ namespace IslandUI.UI
             }
             if (_field.placeholder is TMP_Text ph)
             {
-                ph.text = "type a command";
+                ph.text = Shared.Loc.Get("console.placeholder", "type a command");
                 ph.enableAutoSizing = false;
                 ph.fontSize = Theme.FontBody;
                 ph.alignment = TextAlignmentOptions.MidlineLeft;

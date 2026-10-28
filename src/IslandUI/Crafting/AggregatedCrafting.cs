@@ -61,61 +61,28 @@ namespace IslandUI
         internal static CraftInfo[] PristineInnate => _pristine;
 
         // reachability: is this panel's bench/crafter currently usable?
-        // Innate always; the scoped bench is by definition the one just clicked;
-        // otherwise whatever the last aggregation scan found in reach.
+        // Innate always; otherwise whatever the last aggregation scan found in
+        // reach (the bench or crafter a Craft opened onto among them).
         internal static bool PanelReachable(int panelID)
         {
             if (panelID == 0)
             {
                 return true;
             }
-            if (BenchScope != 0 && panelID == BenchScope)
-            {
-                return true;
-            }
             return LastPanelIDs.Contains(panelID);
         }
 
-        // ---------- one crafting menu: bench opens become scoped opens ----------
+        // ---------- one crafting menu: bench opens open the whole menu ----------
         //
         // The vanilla bench/NPC panels are gone: CraftOpen(id != 0) is redirected to
-        // the aggregated panel 0 with BenchScope as an intrinsic filter, so the
-        // custom menu (with search, detail card, availability) serves every crafting
-        // surface. Scope lifetime mirrors vanilla's craftPanelID semantics: a genuine
-        // vanilla CraftOpen(0) (chest/bag close via SubInventoryVisible, rack open,
-        // build menu) resets it, while our own refills and LeftPanelState(1)'s
-        // panel-show re-run (which only fires because craftPanelID is 0) keep it.
-        internal static int BenchScope;
+        // the aggregated panel 0, so the custom menu (with search, detail card,
+        // availability) serves every crafting surface, opened onto the section of
+        // the bench or crafter that asked (BrowserShell.RevealPanel).
 
-        private static bool _refill;
-        private static bool _inLeftPanel;
-
-        // re-run the pipeline for the CURRENT view without resetting the scope
+        // re-run the pipeline for the CURRENT view
         internal static void Refill(InventoryManager inv)
         {
-            _refill = true;
-            try
-            {
-                inv.CraftOpen(inv.craftPanelID);
-            }
-            finally
-            {
-                _refill = false;
-            }
-        }
-
-        [HarmonyPatch(typeof(UIManager), nameof(UIManager.LeftPanelState))]
-        [HarmonyPrefix]
-        private static void LeftPanelState_ScopePrefix()
-        {
-            _inLeftPanel = true;
-        }
-
-        [HarmonyPatch(typeof(UIManager), nameof(UIManager.LeftPanelState))]
-        [HarmonyPostfix]
-        private static void LeftPanelState_ScopePostfix()
-        {
-            _inLeftPanel = false;
+            inv.CraftOpen(inv.craftPanelID);
         }
 
         [HarmonyPatch(nameof(InventoryManager.CraftOpen))]
@@ -125,17 +92,15 @@ namespace IslandUI
         {
             if (!Settings.CustomGrid.Value)
             {
-                BenchScope = 0; // feature off: vanilla bench panels as before
-                return;
+                return; // feature off: vanilla bench panels as before
             }
             if (id != 0)
             {
-                BenchScope = id;
+                // EVERY BENCH AND CRAFTER OPENS THE WHOLE MENU, scrolled to its
+                // section (BrowserShell.RevealPanel) - never its recipes alone: the
+                // game's own bench panel is what the one menu replaces
+                BrowserShell.RevealPanel = id;
                 id = 0;
-            }
-            else if (!_refill && !_inLeftPanel)
-            {
-                BenchScope = 0;
             }
         }
 
@@ -255,23 +220,6 @@ namespace IslandUI
             }
             DumpGridInfo(mn);
 
-            // scoped open (clicked bench/crafter): ONLY that panel's recipes —
-            // vanilla bench-menu content, custom-menu presentation
-            if (BenchScope > 0 && BenchScope < mn.craftMN.craftData.Length)
-            {
-                CraftInfo[] scoped = mn.craftMN.craftData[BenchScope].craftInfo;
-                SourceOf.Clear();
-                for (int i = 0; i < scoped.Length; i++)
-                {
-                    if (scoped[i] != null)
-                    {
-                        SourceOf[scoped[i]] = BenchScope;
-                    }
-                }
-                innate.craftInfo = scoped;
-                return;
-            }
-
             SourceOf.Clear();
             for (int i = 0; i < _pristine.Length; i++)
             {
@@ -292,8 +240,26 @@ namespace IslandUI
             // which owned bench types are in reach?
             var panelIDs = new HashSet<int>();
             ScanPanelIDs(mn, pMove.transform.position, panelIDs);
+            // the crafter whose Craft opened this is in it, wherever the scan's
+            // reach ended
+            if (BrowserShell.RevealPanel != 0) panelIDs.Add(BrowserShell.RevealPanel);
             LastPanelIDs.Clear();
             LastPanelIDs.UnionWith(panelIDs);
+
+            // THE LAST BOSS'S FIGHT IS ITS BENCH ALONE: the hammer is made there, of
+            // its free parts, against a clock, and the menu's hundred other recipes
+            // only hide the nine that matter
+            if (panelIDs.Contains(BossBench.Panel) && BossBench.Live(pMove.transform.position) != null)
+            {
+                SourceOf.Clear();
+                CraftInfo[] only = mn.craftMN.craftData[BossBench.Panel].craftInfo;
+                for (int i = 0; i < only.Length; i++)
+                {
+                    if (only[i] != null) { SourceOf[only[i]] = BossBench.Panel; }
+                }
+                innate.craftInfo = ApplyGrouping(mn, only);
+                return;
+            }
 
             // collect their recipes, deduped against innate and each other by item name
             var seen = new HashSet<string>();
@@ -351,6 +317,10 @@ namespace IslandUI
                 {
                     result.Add(panelID);
                 }
+            }
+            if (BossBench.Live(center) != null)
+            {
+                result.Add(BossBench.Panel);
             }
 
             // crafter NPCs, vanilla-gated (employed, alive, 71 water-only)

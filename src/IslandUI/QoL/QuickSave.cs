@@ -52,7 +52,7 @@ namespace IslandUI
             int slot = mn.save.currentLoadID;
             if (slot < 0 || slot >= 20)
             {
-                Show("No save slot to save to: save from the menu once and load that slot", Theme.KitCream);
+                Show(Shared.Loc.Get("quicksave.no_slot", "No save slot to save to: save from the menu once and load that slot"), Theme.KitCream);
                 _fadeAt = Time.unscaledTime + Hold + 1.5f;
                 return;
             }
@@ -70,7 +70,7 @@ namespace IslandUI
             Plugin.Log.LogInfo($"Quick save to slot {slot}");
             HideBanner();
             _slot = slot;
-            Show("Saving...", Theme.KitCream);
+            Show(Shared.Loc.Get("quicksave.saving", "Saving..."), Theme.KitCream);
             _fadeAt = -1f;
             mn.save.Save(slot);
         }
@@ -85,7 +85,8 @@ namespace IslandUI
             {
                 return;
             }
-            Show(saveID == 0 ? "Saved to the backup slot" : $"Saved to slot {saveID}", Theme.KitCream);
+            Show(saveID == 0 ? Shared.Loc.Get("quicksave.saved_backup", "Saved to the backup slot")
+                : Shared.Loc.Get("quicksave.saved", "Saved to slot {0}", saveID), Theme.KitCream);
             _fadeAt = Time.unscaledTime + Hold;
         }
 

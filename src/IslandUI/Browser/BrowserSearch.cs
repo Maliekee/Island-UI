@@ -127,9 +127,10 @@ namespace IslandUI
             data.craftInfo = filtered.ToArray();
         }
 
-        // The words the hand section answers to: its label, and the old one.
-        internal const string HandLabel = "By hand";
-        private const string HandWords = "by hand basic";
+        // The words the hand section answers to: its label, the old one, and the
+        // label in the player's language.
+        internal static string HandLabel => Shared.Loc.Get("craft.section.by_hand", "By hand");
+        private static string HandWords => "by hand basic " + HandLabel.ToLowerInvariant();
 
         private static int SourcePanel(CraftInfo recipe)
         {
@@ -279,6 +280,13 @@ namespace IslandUI
         // the shared query moved and re-run the crafting pipeline behind it -- the
         // field, the keyboard grab, Escape and the focus chord all live in
         // UI.SearchSurface now, because none of them were ever about crafting.
+        // UI.LocLabels: the language changed - the section headings are refilled
+        internal static void LanguageChanged()
+        {
+            CraftLazyFill.InvalidateUnchangedCache();
+            _refillAt = Time.unscaledTime;
+        }
+
         internal static void Tick(ManagersScript mn)
         {
             if (mn == null || mn.uiMN == null)

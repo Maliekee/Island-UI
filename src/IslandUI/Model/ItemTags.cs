@@ -243,7 +243,7 @@ namespace IslandUI
                 return names;
             }
             return string.Join(", ", parts, 0, maxNames)
-                + $" +{parts.Length - maxNames} more";
+                + " " + Shared.Loc.Get("card.names.more", "+{0} more", parts.Length - maxNames);
         }
 
         internal static string EquipTargetNames(ManagersScript mn, ItemData item)

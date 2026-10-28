@@ -264,9 +264,9 @@ namespace IslandUI
             }
             if (_filter.Alive)
             {
-                return "In reach";
+                return Shared.Loc.Get("reach.title", "In reach");
             }
-            return $"In reach  {_nearbyTotal}";
+            return Shared.Loc.Get("reach.title", "In reach") + "  " + _nearbyTotal;
         }
     }
 }

@@ -7,16 +7,14 @@ using UnityEngine.UI;
 
 namespace IslandUI
 {
-    // Selected concept A: the target indicator's enamel and rulers,
-    // worn by the player. EXP has two rails beneath the action bar: the character
-    // level's blue right under it, the skill level's green under that.
+    // Navigation and strong health share an illustrated plate. EXP stays below
+    // the action bar, with independent character and skill rails.
     internal static partial class InventoryWindow
     {
         private static RectTransform _playerVitals, _vanillaVitals;
         private static Image _playerHp, _playerHpFill, _playerStun, _playerStunFill;
         private static Image _playerXp, _playerXpFill, _playerXpHit;
         private static Image _playerSkillXp, _playerSkillXpFill, _playerSkillXpHit;
-        private static SheetRow _playerHpRuler, _playerStunRuler;
         private static TextMeshProUGUI _playerName, _playerLevel, _playerHpText;
         private static RectTransform _playerCoin;
         private static Image _playerFood, _playerWater;
@@ -25,18 +23,33 @@ namespace IslandUI
         private static readonly Image[] PlayerSkillXpTicks = new Image[9];
         private static readonly List<RaycastResult> PlayerVitalHits = new List<RaycastResult>();
         private static KitTooltip _playerVitalsTip;
-        private const float PlayerBarW = 104f;
         private const float PlayerRailH = 3.5f;
+        private static float _panelPreviewUntil;
+        private static Vector4 _panelPreview;
+        private static int _panelPreviewLives;
+
+        // Harness-only visual probe. Changes no game values and expires automatically.
+        internal static void PreviewPlayerPanel(float health,float stun,float food,float water,int lives)
+        {
+            _panelPreview=new Vector4(Mathf.Clamp01(health),Mathf.Clamp01(stun),Mathf.Clamp01(food),Mathf.Clamp01(water));
+            _panelPreviewLives=Mathf.Clamp(lives,0,3);
+            _panelPreviewUntil=Time.realtimeSinceStartup+15f;
+        }
+        internal static void EndPlayerPanelPreview() { _panelPreviewUntil=0; }
 
         private static void ResetPlayerVitals()
         {
             // The owned children die with _hud; ResetHud restores the vanilla
             // CanvasGroup before destroying them, including on a hot reload.
+            ResetAnimeEnemy();
+            ResetLowVitals();
+            _panelPreviewUntil=0;
             _playerVitals = _vanillaVitals = null;
+            _playerVitalsCanvas = null;
+            _playerVitalsRaycaster = null;
             _playerHp = _playerHpFill = _playerStun = _playerStunFill = null;
             _playerXp = _playerXpFill = _playerXpHit = null;
             _playerSkillXp = _playerSkillXpFill = _playerSkillXpHit = null;
-            _playerHpRuler = _playerStunRuler = null;
             _playerVitalsTip = null;
             _playerName = _playerLevel = _playerHpText = null;
             _playerCoin = null;
@@ -82,26 +95,39 @@ namespace IslandUI
             return hit;
         }
 
-        // Both needs stand PlayerNeedH tall; the box takes the sprite's own aspect so
-        // preserveAspect has nothing to shrink (vanilla: food 24x24, water 17x24).
-        private const float PlayerNeedH = 17.5f;
-
-        private static Image PlayerNeed(Transform parent, string name, Image source, float x, out float width)
+        // Vanilla colours its own food and water icons (orange, blue) and recolours
+        // them for a condition such as food poisoning. The painted icons carry their
+        // own colour, so vanilla's is applied only when it has left its usual hue -
+        // multiplied always, it turned the cyan drop navy.
+        private static Color NeedTint(Color vanilla, float usualHue)
         {
-            var rect = source.sprite != null ? source.sprite.rect : new Rect(0, 0, 1, 1);
-            width = rect.height > 0 ? PlayerNeedH * rect.width / rect.height : PlayerNeedH;
-            var back = Theme.KitImage(parent, name, "kit_emblem_person", 0, StripTrack);
-            back.sprite = source.sprite;
-            back.preserveAspect = true;
-            Theme.Place(back, x, 13.25f, width, PlayerNeedH);
-            var fill = Theme.KitImage(back.transform, "Fill", "kit_emblem_person", 0, source.color);
-            fill.sprite = source.sprite;
-            fill.preserveAspect = true;
-            fill.type = Image.Type.Filled;
-            fill.fillMethod = Image.FillMethod.Vertical;
-            fill.fillOrigin = 0;
-            Theme.Place(fill, 0, 0, width, PlayerNeedH);
+            Color.RGBToHSV(vanilla, out float hue, out float saturation, out _);
+            float off = Mathf.Abs(hue - usualHue); off = Mathf.Min(off, 1f - off);
+            return saturation < .2f || off < .08f ? new Color(1f, 1f, 1f, vanilla.a) : vanilla;
+        }
+
+        private static Image PlayerNeed(Transform parent, string name)
+        {
+            string key=name.ToLowerInvariant();
+            Rect r=PlayerPanelArt.FillRect(key);float k=PlayerPanelArt.Scale;
+            var back=PlayerPanelArt.Image(parent,name,null);back.color=Color.clear;
+            Theme.Place(back,4+r.x*k,r.y*k-28.5f,r.width*k,r.height*k);
+            var fill=PlayerPanelArt.Image(back.transform,"Fill",PlayerPanelArt.Fill(key));
+            fill.type=Image.Type.Filled;fill.fillMethod=Image.FillMethod.Vertical;fill.fillOrigin=0;
+            Theme.Place(fill,0,0,r.width*k,r.height*k);
             return fill;
+        }
+
+        private static Image PanelBar(Transform parent,string name,string key,out Image fill)
+        {
+            var track=PlayerPanelArt.Image(parent,name,null);track.color=Color.clear;
+            Rect r=PlayerPanelArt.FillRect(key);float k=PlayerPanelArt.Scale;
+            float x=4+r.x*k,y=r.y*k-28.5f,w=r.width*k,h=r.height*k;
+            Theme.Place(track,x,y,w,h);
+            fill=PlayerPanelArt.Image(track.transform,"Fill",PlayerPanelArt.Fill(key));
+            Theme.Place(fill,0,0,w,h);
+            fill.type=Image.Type.Filled;fill.fillMethod=Image.FillMethod.Horizontal;fill.fillOrigin=0;
+            return track;
         }
 
         private static bool BuildPlayerVitals(GameManager gm)
@@ -117,53 +143,40 @@ namespace IslandUI
             _playerVitals.pivot = Vector2.zero;
             _playerVitals.anchoredPosition = new Vector2(4f, 4f);
             _playerVitals.sizeDelta = new Vector2(178f, 36f);
-            var plate = Theme.KitImage(go.transform, "EnamelPlate", "kit_emblem_status_header", 20, Color.white);
-            Theme.Place(plate, 11f, 0f, 167f, 36f);
+            float k=PlayerPanelArt.Scale;
+            var plate = PlayerPanelArt.Image(go.transform, "AnimeVitals", PlayerPanelArt.Bottom);
+            Theme.Place(plate,4,PlayerPanelArt.Split*k-28.5f,174,(2048f*724/2172-PlayerPanelArt.Split)*k);
+            _playerVitals.SetAsFirstSibling();
+            // a canvas of its own to rise over the map with the dock (PlaceNavigationAboveMap),
+            // and a raycaster, or the plate's hover and its catch of clicks went with it
+            _playerVitalsCanvas = go.AddComponent<Canvas>();
+            _playerVitalsRaycaster = go.AddComponent<GraphicRaycaster>();
             plate.raycastTarget = true;
             _playerName = PlayerVitalText(go.transform, "Name", 8f, true);
-            Theme.Place(_playerName, 36f, 2.5f, 96f, 10f);
-            _playerHpText = PlayerVitalText(go.transform, "HealthReading", 5f, false, TextAlignmentOptions.MidlineRight);
-            Theme.Place(_playerHpText, 49f, 13f, 88f, 6f);
-            var hpLabel = PlayerVitalText(go.transform, "HealthLabel", 4.3f);
-            hpLabel.text = "HP";
-            hpLabel.color = MarkerMuted;
-            Theme.Place(hpLabel, 36f, 13f, 11f, 6f);
-            _playerHp = PlayerVitalTrack(go.transform, "Health", out _playerHpFill);
-            _playerStun = PlayerVitalTrack(go.transform, "Stun", out _playerStunFill);
-            _playerHpRuler = new SheetRow { Go = _playerHp.gameObject };
-            _playerStunRuler = new SheetRow { Go = _playerStun.gameObject };
-            for (int i = 0; i < PlayerHearts.Length; i++)
+            _playerName.gameObject.SetActive(false);
+            _playerHp=PanelBar(go.transform,"Health","health",out _playerHpFill);
+            _playerStun=PanelBar(go.transform,"Stun","stun",out _playerStunFill);
+            _playerHpText=PlayerVitalText(go.transform,"HealthReading",7.5f,true,TextAlignmentOptions.Center);
+            Theme.Place(_playerHpText,30,2.5f,104,9);
+            _playerHpText.outlineWidth=.15f;_playerHpText.outlineColor=new Color32(30,15,16,255);
+            for(int i=0;i<PlayerHearts.Length;i++)
             {
-                PlayerHearts[i] = Theme.KitImage(go.transform, "Life" + i, "kit_heart", 0, MarkerCream);
-                Theme.Place(PlayerHearts[i], 149f + i * 6.5f, 5f, 5.5f, 5.5f);
+                PlayerHearts[i]=PlayerPanelArt.Image(go.transform,"Life"+i,PlayerPanelArt.Heart(i));
+                Theme.Place(PlayerHearts[i],4+(1588+125*i)*k,365*k-28.5f,112*k,99*k);
             }
-            var divider = Theme.KitImage(go.transform, "NeedsDivider", "kit_hairline", 0, MarkerMuted);
-            Theme.Place(divider, 139.5f, 16f, .4f, 16f);
-            _playerFood = PlayerNeed(go.transform, "Food", gm.foodImage, 141.5f, out float foodW);
-            _playerWater = PlayerNeed(go.transform, "Water", gm.waterImage, 141.5f + foodW + .75f, out _);
-
-            var rim = Theme.KitImage(go.transform, "PlayerMedallion", "kit_emblem_rim", 0, Color.white);
-            rim.raycastTarget = true;
-            Theme.Place(rim, 0, 3f, 33f, 33f);
-            var enamel = Theme.KitImage(rim.transform, "Enamel", "kit_emblem_enamel", 0,
-                Theme.ParseColor("#43699C", Color.blue));
-            Theme.Place(enamel, 4.3f, 4.3f, 24.4f, 24.4f);
-            var person = Theme.KitImage(rim.transform, "Person", "kit_emblem_person", 0, Color.white);
-            Theme.Place(person, 7f, 7f, 19f, 19f);
-            var coin = Theme.KitImage(rim.transform, "LevelCoin", "kit_emblem_coin", 0, Color.white);
-            Theme.Place(coin, 22f, 23f, 12.5f, 12.5f);
-            _playerCoin = coin.rectTransform;
-            ScaleFromMiddle(_playerCoin, 1f);
-            _playerLevel = PlayerVitalText(coin.transform, "Level", 6.6f, true, TextAlignmentOptions.MidlineGeoAligned);
-            _playerLevel.color = EmblemInk;
-            _playerLevel.enableAutoSizing = true;
-            _playerLevel.fontSizeMin = 4f;
-            _playerLevel.fontSizeMax = 6.6f;
-            Theme.Place(_playerLevel, .6f, 0, 11.3f, 12.5f);
+            _playerFood=PlayerNeed(go.transform,"Food");
+            _playerWater=PlayerNeed(go.transform,"Water");
+            var coin=PlayerPanelArt.Image(go.transform,"Level",null);coin.color=Color.clear;
+            Theme.Place(coin,8,0,19,18);
+            _playerCoin=coin.rectTransform;ScaleFromMiddle(_playerCoin,1);
+            _playerLevel=PlayerVitalText(coin.transform,"LevelReading",10,true,TextAlignmentOptions.Center);
+            _playerLevel.color=AnimeHud.Hex("302015");
+            _playerLevel.enableAutoSizing=true;_playerLevel.fontSizeMin=6;_playerLevel.fontSizeMax=10;
+            Theme.Place(_playerLevel,0,0,19,18);
 
             _playerXpHit = PlayerXpRail("PlayerExperience", PlayerXpTicks, CharacterBurst, out _playerXp, out _playerXpFill);
             _playerSkillXpHit = PlayerXpRail("SkillExperience", PlayerSkillXpTicks, SkillBurst, out _playerSkillXp, out _playerSkillXpFill);
-            _playerVitalsTip = KitTooltip.Create(_hud, true);
+            _playerVitalsTip = KitTooltip.Create(_hud);
 
             // Fade the original, leaving its objects and event-driven values alive.
             // Food poisoning still drives the original icon's tint/animation.
@@ -181,6 +194,9 @@ namespace IslandUI
         {
             if (_hud == null || mn == null || !mn.allSet || mn.gameMN == null) { return; }
             var gm = mn.gameMN;
+            CombatList.Tick(gm, mn.npcMN);
+            TickAnimeEnemy(gm);
+            TickPortraitSkies();
             // Same selected character as vanilla, including character switches.
             var players = gm.playerCommons;
             int selected = GameManager.selectPlayer;
@@ -207,35 +223,47 @@ namespace IslandUI
             float coin = PopScale(CharacterBurst, .4f);
             _playerCoin.localScale = new Vector3(coin, coin, 1f);
             _playerHpText.text = who.life.ToString("0") + " / " + who.maxLife.ToString("0");
-            PaintMarkerBar(_playerHp, _playerHpFill, 36f, 19.5f, PlayerBarW, 5f,
-                who.maxLife > 0 ? (float)(who.life / who.maxLife) : 0f, LifeTint);
-            PaintMarkerBar(_playerStun, _playerStunFill, 36f, 27f, PlayerBarW, 3f,
-                who.maxFaint > 0 ? (float)(who.faint / who.maxFaint) : 0f, StunTint);
-            PaintMarkerRuler(_playerHpRuler, (float)who.maxLife, PlayerBarW, 5f);
-            PaintMarkerRuler(_playerStunRuler, (float)who.maxFaint, PlayerBarW, 3f);
-            for (int i = 0; i < PlayerHearts.Length; i++)
-                PlayerHearts[i].sprite = Theme.Kit(i < gm.lives ? "kit_heart" : "kit_heart_hollow", 0);
+            _playerHpFill.fillAmount=who.maxLife>0?Mathf.Clamp01((float)(who.life/who.maxLife)):0;
+            _playerStunFill.fillAmount=who.maxFaint>0?Mathf.Clamp01((float)(who.faint/who.maxFaint)):0;
+            for(int i=0;i<PlayerHearts.Length;i++)
+                PlayerHearts[i].enabled=i<gm.lives;
             _playerFood.fillAmount = who.maxFood > 0 ? Mathf.Clamp01(who.food / who.maxFood) : 0f;
             _playerWater.fillAmount = who.maxWater > 0 ? Mathf.Clamp01(who.water / who.maxWater) : 0f;
-            _playerFood.color = gm.foodImage.color;
-            _playerWater.color = gm.waterImage.color;
+            _playerFood.color = NeedTint(gm.foodImage.color, .097f);
+            _playerWater.color = NeedTint(gm.waterImage.color, .56f);
+            bool preview=Time.realtimeSinceStartup<_panelPreviewUntil;
+            if(preview)
+            {
+                _playerHpFill.fillAmount=_panelPreview.x;_playerStunFill.fillAmount=_panelPreview.y;
+                _playerFood.fillAmount=_panelPreview.z;_playerWater.fillAmount=_panelPreview.w;
+                _playerHpText.text=Mathf.RoundToInt(_panelPreview.x*200)+" / 200";
+                for(int i=0;i<PlayerHearts.Length;i++) PlayerHearts[i].enabled=i<_panelPreviewLives;
+            }
+            // the fills, which are the preview's when one runs; a maximum of nothing is no reading
+            TickLowVitals(preview||who.maxLife>0?_playerHpFill.fillAmount:-1f,
+                preview||who.maxFood>0?_playerFood.fillAmount:-1f,preview||who.maxWater>0?_playerWater.fillAmount:-1f);
             SkillManager sk = mn.skillMN;
             PlacePlayerExperience(who, sk);
 
             string tip = null;
             if (PlayerVitalHot(_playerXpHit.rectTransform))
-                tip = "Character level " + who.level + "\nXP  " + who.exp.ToString("0") + " / " + who.maxExp.ToString("0")
+                tip = "<b>" + Shared.Loc.Get("player.level", "Character level {0}", who.level) + "</b>\n"
+                    + Shared.Loc.Get("player.xp", "XP") + "  " + who.exp.ToString("0") + " / " + who.maxExp.ToString("0")
                     + " (" + (who.maxExp > 0 ? who.exp / who.maxExp : 0).ToString("P0") + ")";
             else if (sk != null && PlayerVitalHot(_playerSkillXpHit.rectTransform))
-                tip = "Skill level " + sk.skillLevel + "\nXP  " + sk.exp.ToString("0") + " / " + sk.maxExp.ToString("0")
+                tip = "<b>" + Shared.Loc.Get("player.skill_level", "Skill level {0}", sk.skillLevel) + "</b>\n"
+                    + Shared.Loc.Get("player.xp", "XP") + "  " + sk.exp.ToString("0") + " / " + sk.maxExp.ToString("0")
                     + " (" + (sk.maxExp > 0 ? sk.exp / sk.maxExp : 0).ToString("P0") + ")";
             else if (PlayerVitalHot(_playerVitals))
-                tip = who.charaName + "  ·  Character level " + who.level
-                    + "\nHP  " + who.life.ToString("0") + " / " + who.maxLife.ToString("0")
-                    + "\nStun  " + who.faint.ToString("0") + " / " + who.maxFaint.ToString("0")
-                    + "\nLives  " + gm.lives + " / 3"
-                    + "\nFood  " + who.food.ToString("0") + " / " + who.maxFood.ToString("0")
-                    + "\nWater  " + who.water.ToString("0") + " / " + who.maxWater.ToString("0");
+                tip = "<b>" + Shared.Loc.Get("player.name_level", "{0}  ·  Character level {1}", who.charaName, who.level) + "</b>"
+                    + "\n" + Shared.Loc.Get("player.hp", "HP") + "  " + LowWord(0, who.life.ToString("0") + " / " + who.maxLife.ToString("0"))
+                    + "\n" + Shared.Loc.Get("player.stun", "Stun") + "  " + who.faint.ToString("0") + " / " + who.maxFaint.ToString("0")
+                    + "\n" + Shared.Loc.Get("player.lives", "Lives") + "  " + gm.lives + " / 3"
+                    + "\n" + Shared.Loc.Get("player.food", "Food") + "  " + LowWord(1, who.food.ToString("0") + " / " + who.maxFood.ToString("0"))
+                    + "\n" + Shared.Loc.Get("player.water", "Water") + "  " + LowWord(2, who.water.ToString("0") + " / " + who.maxWater.ToString("0"))
+                    // GameManager: no healing at an empty need, and each hunger tick then costs health
+                    + (who.food <= 0f || who.water <= 0f ? "\n<color=#ff6a5a>"
+                        + Shared.Loc.Get("player.needs_empty", "Food or water empty: no healing, and health drains") + "</color>" : "");
             _playerVitalsTip.Tick(tip, null);
         }
 
@@ -285,6 +313,9 @@ namespace IslandUI
             rect.sizeDelta = new Vector2(width, PlayerRailH);
             BurstRail(burst, ref fraction, ref color, width);
             PaintMarkerBar(track, fill, 0, 1f, width, PlayerRailH - 1f, fraction, color);
+            // the marker's painted fills carry their own colour and PaintMarkerBar
+            // whitens them; the rails' plain bar takes its blue or green here
+            fill.color = color;
             for (int i = 0; i < ticks.Length; i++)
                 Theme.Place(ticks[i], .6f + (width - 1.2f) * (i + 1) / 10f, .6f, .5f, 1.3f);
         }

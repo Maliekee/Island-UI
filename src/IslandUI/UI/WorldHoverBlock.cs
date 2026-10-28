@@ -61,7 +61,12 @@ namespace IslandUI
             // InventoryWindow.MatrixOwnsPointer: the relations matrix is modal, and
             // the press that closes it must not land in the world after it.
             // InventoryWindow.OfferUnderPointer: an item held over someone is given
-            // to them on release, not dropped on the ground on the press
+            // to them on release, not dropped on the ground on the press.
+            // InventoryWindow.PlacePanelUnderPointer: a click on the placement panel
+            // must not also place the person on the ground behind it.
+            // TalkBubble.OwnsPointer: the bubble is modal, the press outside that
+            // closes it included, and the wheel under it is not the camera's.
+            // ManageFan.OwnsPointer: the Manage key's stem, the same over its keys
             if (Ours())
             {
                 __instance.OnUI = true;
@@ -70,9 +75,13 @@ namespace IslandUI
 
         internal static bool Ours()
         {
+            // InventoryWindow.SheetDragging: the sheet dragged by its tabs passes
+            // out over the world on its way between its two homes
             return InventoryWindow.IsDragging || ActionBar.IsDragging || InventoryWindow.BoardDragging
+                || InventoryWindow.SheetDragging
                 || ReachButton.PointerOver || SettingsWindow.PointerOver
-                || InventoryWindow.MatrixOwnsPointer || InventoryWindow.OfferUnderPointer;
+                || InventoryWindow.MatrixOwnsPointer || InventoryWindow.OfferUnderPointer
+                || InventoryWindow.PlacePanelUnderPointer || TalkBubble.OwnsPointer || ManageFan.OwnsPointer;
         }
     }
 

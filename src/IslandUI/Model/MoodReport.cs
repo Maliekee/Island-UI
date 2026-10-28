@@ -29,8 +29,12 @@ namespace IslandUI
                 return;   // the game says this one itself (CommonStates.MoralChange)
             }
             string word = MoodCheck.Word(mn, who, MoodCheck.Check(mn, who));
-            string text = Name(mn, who) + (after == 4 ? " has rebelled" : " is one step from rebelling")
-                + (string.IsNullOrEmpty(word) ? "." : ": " + word + ".");
+            string name = Name(mn, who);
+            string text = string.IsNullOrEmpty(word)
+                ? after == 4 ? Shared.Loc.Get("mood.report.rebelled", "{0} has rebelled.", name)
+                    : Shared.Loc.Get("mood.report.near", "{0} is one step from rebelling.", name)
+                : after == 4 ? Shared.Loc.Get("mood.report.rebelled_why", "{0} has rebelled: {1}.", name, word)
+                    : Shared.Loc.Get("mood.report.near_why", "{0} is one step from rebelling: {1}.", name, word);
             mn.uiMN.GoLogText(text);
         }
 
@@ -125,15 +129,17 @@ namespace IslandUI
             {
                 return;
             }
-            var sb = new StringBuilder("Dawn: ").Append(rested).Append(" slept indoors");
-            if (sleepless.Count > 0)
+            if (sleepless.Count == 0)
             {
-                // one line in the log panel: two names, then a count
-                int shown = Mathf.Min(2, sleepless.Count);
-                sb.Append("; no sleep: ").Append(string.Join(", ", sleepless.GetRange(0, shown).ToArray()));
-                if (sleepless.Count > shown) { sb.Append(" +").Append(sleepless.Count - shown); }
+                mn.uiMN.GoLogText(Shared.Loc.Plural("mood.report.dawn", "Dawn: {0} slept indoors.", "Dawn: {0} slept indoors.", rested));
+                return;
             }
-            mn.uiMN.GoLogText(sb.Append('.').ToString());
+            // one line in the log panel: two names, then a count
+            int shown = Mathf.Min(2, sleepless.Count);
+            var sb = new StringBuilder(string.Join(", ", sleepless.GetRange(0, shown).ToArray()));
+            if (sleepless.Count > shown) { sb.Append(" +").Append(sleepless.Count - shown); }
+            mn.uiMN.GoLogText(Shared.Loc.Plural("mood.report.dawn_sleepless", "Dawn: {0} slept indoors; no sleep: {1}.",
+                "Dawn: {0} slept indoors; no sleep: {1}.", rested, sb.ToString()));
         }
     }
 }

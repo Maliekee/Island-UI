@@ -53,7 +53,9 @@ namespace IslandUI
         private static float _adoptPropUntil;
 
         // FORGOTTEN in another area (D146): a door, a dungeon's stairs, a switch of
-        // character all move you further in one frame than any walk does.
+        // character all move you further in one frame than any walk does. Measured
+        // across the ground only: a house's interior stands straight under it
+        // (BuildManager.SetHouse, 25 m down), so going in or out keeps the target.
         private const float AreaJump = 12f;
         private static Vector3 _lastHere;
         private static bool _lastHereSet;
@@ -101,7 +103,9 @@ namespace IslandUI
             if (!late && p != null)
             {
                 Vector3 here = p.transform.position;
-                bool jumped = _lastHereSet && (here - _lastHere).sqrMagnitude > AreaJump * AreaJump;
+                Vector3 moved = here - _lastHere;
+                moved.y = 0f;
+                bool jumped = _lastHereSet && moved.sqrMagnitude > AreaJump * AreaJump;
                 _lastHere = here;
                 _lastHereSet = true;
                 if (jumped && _heldVar != Held.None)
@@ -148,6 +152,7 @@ namespace IslandUI
 
             if (_heldVar == Held.None)
             {
+                LapseDoors(p);
                 return;
             }
             // the adopted variable no longer holds it: ended - unless a Follow or
@@ -202,16 +207,18 @@ namespace IslandUI
                 // pressed the ground - as the game's own does (D158). The keep that
                 // stood here (D153 for things) is Tab's alone now, and a Tab target
                 // is held by us, not by tmpProp (keptThing above).
-                Drop(_endWhy ?? "vanilla closed it");
+                Drop(_endWhy ?? VanillaClosed);
                 return;
             }
             // A person vanilla stopped holding without letting go - its loop gone,
             // the variable still set - would be stuck for good under vanilla's
             // rules. A click is the game's (D158), so it ends the game's way: the
             // menu closed, as its loop would have. (It was taken over as ours here.)
-            if (_heldHow == Begun.World && _heldVar != Held.Prop && !game.nowAction && !late && p != null)
+            // Not while their Talk bubble is up: that keeps them (KeepPastVanillaEnd).
+            if (_heldHow == Begun.World && _heldVar != Held.Prop && !game.nowAction && !late && p != null
+                && !TalkBubble.OpenFor(_heldRef as CommonStates))
             {
-                EndHeld(mn, "vanilla let go");
+                EndHeld(mn, VanillaLetGo);
                 return;
             }
             // A target of ours - Tab, a roster pick - ends only by our rules (D146):
@@ -230,16 +237,20 @@ namespace IslandUI
         // we hold as ours, and the menu stays. A close of ours (_endWhy), a click on
         // another person, and vanilla's other callers, which leave the target as it
         // was (a fire, a scene, the friends list), close as before.
+        // A CLICKED PERSON WITH THE TALK BUBBLE UP is kept the same way while it is
+        // (Forgejo #58): you walk and swing with it open, and its choices are this
+        // menu's. Closed, the click's end comes due (the let-go above).
         internal static bool KeepPastVanillaEnd()
         {
             if (_mn == null || _mn.gameMN == null || _endWhy != null || _heldVar != Held.Menu
-                || _heldHow != Begun.Roster || !_mn.gameMN.nowAction)
+                || !_mn.gameMN.nowAction)
             {
                 return false;
             }
             CommonStates who = _heldRef as CommonStates;
             PlayerMove p = _mn.gameMN.pMove;
-            if (who == null || p == null || !ReferenceEquals(_mn.gameMN.menuNPC, who) || !who.Employed())
+            if (who == null || p == null || !ReferenceEquals(_mn.gameMN.menuNPC, who) || !who.Employed()
+                || (_heldHow != Begun.Roster && !TalkBubble.OpenFor(who)))
             {
                 return false;
             }
@@ -339,7 +350,13 @@ namespace IslandUI
             _adoptPropFor = null;
             _adoptWhy = null;
             _endWhy = null;
+            _doorsLapse = false;   // a switch, not a deselect: the windows stay
             Note("begin " + NameOf(what) + " (" + why + ", " + (how == Begun.Roster ? "ours" : "vanilla's") + ")");
+            // ...but a live hostile is a break: the next target starts its doors afresh
+            if (what is CommonStates foe && foe.life > 0.0 && Hostile(foe))
+            {
+                CloseTargetDoors();
+            }
             _forceRefresh = true;
             _nextRefresh = 0f;
         }
@@ -387,6 +404,98 @@ namespace IslandUI
             _endWhy = null;
             _forceRefresh = true;
             _nextRefresh = 0f;
+            if (why == VanillaClosed || why == VanillaLetGo)
+            {
+                _doorsLapse = true;
+            }
+            else
+            {
+                CloseTargetDoors();
+            }
+        }
+
+        // A DESELECT CLOSES THE TARGET'S WINDOWS (Forgejo #93, D107 as first
+        // settled): the sheet's and the bag's switches go off, and the next
+        // person shows the dock alone until a door is pressed. Going straight to
+        // another target is not a deselect - Adopt keeps both and they refill.
+        // Escape, the dock's close, the pick pressed again, Tab on nothing and a
+        // target gone (dead, carried, another area) close at once. The game's own
+        // end of a clicked target closes them on the next tick, unless a pick of
+        // ours is what let it go: a pick made while vanilla holds something lets
+        // that go first and lands a tick later (LandPendingPick). The 2 s grace
+        // that also covered the walk to a person you clicked is gone (§6.37): a
+        // click walks you, so a click always starts the doors afresh.
+        private const string VanillaClosed = "vanilla closed it";
+        private const string VanillaLetGo = "vanilla let go";
+        private static bool _doorsLapse;
+
+        // THE DOOR IS KEPT PER KIND (§6.37): a container whose dock offers nothing
+        // else (1) and everything else - people, bodies, benches (0). Each kind's
+        // door starts where its kind starts, open for a container, and carries
+        // across a switch only to targets of the same kind (SeedDoor); a deselect
+        // and a hostile target forget both.
+        private static int _doorKind = -1;   // the kind _bagOpen speaks for; -1: none since a deselect
+        private static readonly bool?[] DoorKept = new bool?[2];
+
+        private static void CloseTargetDoors()
+        {
+            _doorsLapse = false;
+            _doorKind = -1;
+            DoorKept[0] = DoorKept[1] = null;
+            if (_sheetOpen || _bagOpen)
+            {
+                Note("target windows closed (deselect)");
+            }
+            _sheetOpen = false;
+            _bagOpen = false;
+            _forceRefresh = true;
+            _nextRefresh = 0f;
+        }
+
+        // ...the tick after, with nothing begun: a deselect after all. Not while a
+        // pick waits to land.
+        private static void LapseDoors(PlayerMove p)
+        {
+            if (!_doorsLapse || _pendingPick != null)
+            {
+                return;
+            }
+            CloseTargetDoors();
+        }
+
+        // CLOSING A CONTAINER'S GRID ENDS IT (§6.37, ContainerCloseUntargets): what
+        // is only storage is done with once its window is closed - by the window's
+        // own close, not the dock's door, which only toggles the grid. A person's
+        // bag, a bench's or a wreck's grid folds and the target stays.
+        private static bool CloseEndsContainer()
+        {
+            return Settings.ContainerCloseUntargets.Value && _doorKind == 1 && !_bagOpen
+                && Untarget("its inventory closed");
+        }
+
+        // Asked by the door as the dock is read: a target of another kind than the
+        // last puts the last kind's door away and takes its own - where it was
+        // left since the deselect, or where its kind starts.
+        private static void SeedDoor(bool container)
+        {
+            int kind = container ? 1 : 0;
+            if (kind == _doorKind)
+            {
+                return;
+            }
+            if (_doorKind >= 0)
+            {
+                DoorKept[_doorKind] = _bagOpen;
+            }
+            _doorKind = kind;
+            bool open = DoorKept[kind] ?? (container && Settings.ContainersOpen.Value);
+            if (_bagOpen != open)
+            {
+                _bagOpen = open;
+                Note((open ? "door open" : "door shut") + (container ? " (a container's)" : " (a person's or a thing's)"));
+                _forceRefresh = true;
+                _nextRefresh = 0f;
+            }
         }
 
         // Ending a target of OURS: vanilla is let go too, the way it lets go of a menu.

@@ -369,13 +369,13 @@ namespace IslandUI
                     babe == Emotion(7) ? Color.white : BabyTint,
                 },
                 Masks = new[] { null, null, null, null, flameMask, null },
-                BarTip = "HP  " + who.life.ToString("0") + " / " + who.maxLife.ToString("0")
-                    + "\nStun  " + who.faint.ToString("0") + " / " + who.maxFaint.ToString("0"),
+                BarTip = Shared.Loc.Get("strip.hp", "HP") + "  " + who.life.ToString("0") + " / " + who.maxLife.ToString("0")
+                    + "\n" + Shared.Loc.Get("inv.tip.stun", "Stun") + "  " + who.faint.ToString("0") + " / " + who.maxFaint.ToString("0"),
                 IconTips = new[]
                 {
-                    Tip("Food", who.food, who.maxFood),
-                    Tip("Water", who.water, who.maxWater),
-                    Tip("Moral", who.moral, 100f),
+                    Tip(Shared.Loc.Get("inv.tip.food", "Food"), who.food, who.maxFood),
+                    Tip(Shared.Loc.Get("inv.tip.water", "Water"), who.water, who.maxWater),
+                    Tip(Shared.Loc.Get("inv.tip.moral", "Moral"), who.moral, 100f),
                     // love has NO ceiling - nothing clamps CommonStates.Lovers.love, and
                     // the Relations track already runs to 2000 - so it is stated bare.
                     // Moral keeps its "/ 100": that one really is clamped, to ±100
@@ -384,9 +384,9 @@ namespace IslandUI
                     // relation rather than a condition, and the game keeps only this
                     // direction (§6.20). The plate carries their name already, so the
                     // tip names the other end
-                    known ? "Love for you\n" + love.ToString("0") : "Love for you\nnot met",
-                    Tip("Libido", who.libido, who.maxLibido),
-                    pregnant ? "Pregnant\n" + months.ToString("0") + " / 12 months" : string.Empty,
+                    "<b>" + Shared.Loc.Get("strip.love_for_you", "Love for you") + "</b>\n" + (known ? love.ToString("0") : Shared.Loc.Get("strip.not_met", "not met")),
+                    Tip(Shared.Loc.Get("inv.tip.libido", "Libido"), who.libido, who.maxLibido),
+                    pregnant ? "<b>" + Shared.Loc.Get("strip.pregnant", "Pregnant") + "</b>\n" + Shared.Loc.Get("strip.pregnant_months", "{0} / 12 months", months.ToString("0")) : string.Empty,
                 },
                 Icons = new[]
                 {
@@ -515,7 +515,7 @@ namespace IslandUI
         // pointer
         private static string Tip(string label, double value, double max)
         {
-            return label + "\n" + value.ToString("0") + " / " + max.ToString("0");
+            return "<b>" + label + "</b>\n" + value.ToString("0") + " / " + max.ToString("0");
         }
 
         // A face for moral: the game's own emotion sprite when one is named for

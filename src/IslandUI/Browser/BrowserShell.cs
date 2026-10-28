@@ -283,6 +283,7 @@ namespace IslandUI
             }
             EnsureFilter(mn);
             RebuildRows(inv, mn);
+            RevealPendingSection(inv, mn);
             UpdateSearchFeedback();
             inv.FindCraftReference(); // player-centered chest scan (vanilla open rhythm)
             CraftingPatches.BeginSweepWindow();
@@ -345,6 +346,7 @@ namespace IslandUI
             if (_noMatches != null)
             {
                 _noMatches.gameObject.SetActive(_filter.Active && _matchCount == 0);
+                _noMatches.text = Shared.Loc.Get("craft.no_matches", "No matches");
             }
         }
 
@@ -558,7 +560,6 @@ namespace IslandUI
 
             _noMatches = UI.Theme.MakeText(_content, "NoMatches",
                 UI.Theme.FontBody, UI.Theme.InkDim, TMPro.TextAlignmentOptions.Center);
-            _noMatches.text = "No matches";
             var nmRect = (RectTransform)_noMatches.transform;
             nmRect.anchorMin = new Vector2(0f, 1f);
             nmRect.anchorMax = new Vector2(1f, 1f);
@@ -1002,7 +1003,6 @@ namespace IslandUI
         internal sealed class RecipePlace
         {
             public string Query;
-            public int Scope;
             public float Scroll;
             public bool DefaultCollapsed;
             public Dictionary<string, bool> Groups;
@@ -1011,7 +1011,6 @@ namespace IslandUI
         internal static RecipePlace CaptureRecipePlace() => new RecipePlace
         {
             Query = _filter.Query,
-            Scope = AggregatedCrafting.BenchScope,
             Scroll = _scroll,
             DefaultCollapsed = _defaultCollapsed,
             Groups = new Dictionary<string, bool>(CollapsedGroups),
@@ -1020,7 +1019,6 @@ namespace IslandUI
         internal static void RestoreRecipePlace(RecipePlace place)
         {
             if (place == null || _inv == null) return;
-            AggregatedCrafting.BenchScope = place.Scope;
             if (_filter.Field != null) _filter.Field.text = place.Query;
             _defaultCollapsed = place.DefaultCollapsed;
             CollapsedGroups.Clear();
@@ -1029,6 +1027,33 @@ namespace IslandUI
             _scroll = Mathf.Clamp(place.Scroll, 0, MaxScroll());
             BindVisible();
             RefreshSelectionOutlines();
+        }
+
+        // A CRAFTER'S CRAFT OPENS ONTO THEIR SECTION: the panel a crafter's Craft
+        // asked for (AggregatedCrafting's redirect sets it), taken by the open it
+        // led to. Their section is unfolded and, when its head is out of view,
+        // scrolled to the top; every other section stays folded or open as it was.
+        internal static int RevealPanel;
+
+        private static void RevealPendingSection(InventoryManager inv, ManagersScript mn)
+        {
+            int panel = RevealPanel;
+            RevealPanel = 0;
+            if (panel == 0 || Settings.GroupRecipesBy.Value != Settings.RecipeGrouping.SourceBench) return;
+            string group = Sections.PanelLabel(mn, panel);
+            if (IsCollapsed(group))
+            {
+                CollapsedGroups[group] = false;
+                RebuildRows(inv, mn);
+            }
+            for (int row = 0; row < Rows.Count; row++)
+            {
+                if (Rows[row].Header != group) continue;
+                // the head and its first row in view already: the scroll stays
+                if (row < _scroll || row + 2 > _scroll + VisibleRows())
+                    _scroll = Mathf.Clamp(row, 0, MaxScroll());
+                break;
+            }
         }
 
         internal static void RevealRecipe(CraftInfo recipe)
@@ -1040,7 +1065,6 @@ namespace IslandUI
                 && RecipeCatalog.IsReachable(RecipeCatalog.Of(recipe)))
             {
                 _filter.Clear();
-                AggregatedCrafting.BenchScope = 0;
                 AggregatedCrafting.Refill(_inv);
             }
             SelectFromCard(recipe);
@@ -1548,8 +1572,11 @@ namespace IslandUI
                         return;
                     }
                     // craftableCheck lets vanilla refuse: out of reach, short of
-                    // a material, or clamped out of the live grid
+                    // a material, or clamped out of the live grid - asked first as
+                    // well, so the card's "Crafted" note follows only a real craft
+                    bool craftable = _inv.CraftableCheckSlot(recipe);
                     _inv.CraftItem(100 + recipe, craftableCheck: true);
+                    if (craftable) ItemCard.NoteCrafted(info, 1);
                 }
             }
 

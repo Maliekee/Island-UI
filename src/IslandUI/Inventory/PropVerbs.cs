@@ -83,10 +83,36 @@ namespace IslandUI
                 Live.Add(new Act
                 {
                     State = mn.uiMN.propActionState[i],
-                    Label = string.IsNullOrEmpty(text.text) ? "Act" : text.text,
+                    Label = string.IsNullOrEmpty(text.text) ? Shared.Loc.Get("unit.act", "Act") : Words(mn, text.text),
                     Button = text.transform.parent.GetComponent<Button>(),
                 });
             }
+        }
+
+        // THE ACT'S WORDS IN THE MODS' LANGUAGE. PropPanelStateChange writes them from the
+        // game's text table (actButtonTexts), with no string table behind them: the entry is
+        // found by the words shown, and read again in the mods' language - the game's where
+        // it has one, ours where it has none (Forgejo #110). Words no entry has (a mod's)
+        // stay as shown.
+        private static string Words(ManagersScript mn, string shown)
+        {
+            if (GameWords.SpeaksOurs)
+            {
+                return shown;
+            }
+            string[] game = mn.textMN != null ? mn.textMN.actButtonTexts : null;
+            int entry = game != null ? System.Array.IndexOf(game, shown) : -1;
+            if (entry < 0)
+            {
+                return shown;
+            }
+            if (GameWords.Lacking)
+            {
+                return ControlWords.PropAct(entry) ?? shown;
+            }
+            TextManager tm = GameWords.Text(mn);
+            string[] ours = tm != null ? tm.actButtonTexts : null;
+            return ours != null && entry < ours.Length && !string.IsNullOrEmpty(ours[entry]) ? ours[entry] : shown;
         }
 
         // Whose acts are on the panel right now. buildMN.tmpProp is what UseProp

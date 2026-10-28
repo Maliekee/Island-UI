@@ -92,6 +92,7 @@ namespace IslandUI
                 row.Go.SetActive(true);
                 ((RectTransform)row.Go.transform).anchoredPosition = new Vector2(0f, -y);
                 row.Label.text = label;
+                Theme.FitLanguage(row.Label, Theme.FontCaption);
                 row.Value.text = value;
                 row.Value.color = valueColor;
                 row.Icon.enabled = icon != null;
@@ -99,6 +100,7 @@ namespace IslandUI
                 // pooled rows are reused: normalize back to a single line (a prior
                 // render may have left this row in wrapped mode)
                 row.Value.enableWordWrapping = false;
+                Theme.FitLanguage(row.Value, Theme.FontCaption);
                 var valueRect = (RectTransform)row.Value.transform;
                 valueRect.sizeDelta = new Vector2(valueRect.sizeDelta.x, StatRowH);
                 // icon (when present) sits between label and value
@@ -118,6 +120,9 @@ namespace IslandUI
                 Row row = _rows[_cursor];
                 Set(y, label, value, valueColor);
                 row.Value.enableWordWrapping = true;
+                // a wrapped value grows its row instead of shrinking
+                row.Value.enableAutoSizing = false;
+                row.Value.fontSize = Theme.FontCaption;
                 var valueRect = (RectTransform)row.Value.transform;
                 float width = valueRect.sizeDelta.x;
                 float h = Mathf.Clamp(row.Value.GetPreferredValues(value, width, 0f).y + 1f,
@@ -148,7 +153,7 @@ namespace IslandUI
             CraftInfo recipe, StatPool stats, float y, out int panelID)
         {
             panelID = 0;
-            y = stats.Set(y, "Class", FriendlyType(item), Theme.TextCream);
+            y = stats.Set(y, Shared.Loc.Get("card.class", "Class"), FriendlyType(item), Theme.TextCream);
             if (recipe != null)
             {
                 // how it entered the current view when it did (SourceOf), the
@@ -158,32 +163,34 @@ namespace IslandUI
                     panelID = RecipeCatalog.DisplayPanel(RecipeCatalog.Of(recipe));
                 }
                 y = panelID != 0
-                    ? stats.Set(y, RecipeCatalog.IsNpcPanel(panelID) ? "Crafter" : "Bench",
+                    ? stats.Set(y, RecipeCatalog.IsNpcPanel(panelID)
+                        ? Shared.Loc.Get("card.crafter", "Crafter") : Shared.Loc.Get("card.bench", "Bench"),
                         RecipeCatalog.PanelOwnerName(mn, panelID), Theme.TextCream,
                         RecipeCatalog.PanelOwnerIcon(mn, panelID))
-                    : stats.Set(y, "Bench", "None (by hand)", Theme.TextDim);
+                    : stats.Set(y, Shared.Loc.Get("card.bench", "Bench"),
+                        Shared.Loc.Get("card.bench.none", "None (by hand)"), Theme.TextDim);
             }
             if (item.attack > 0f)
             {
-                y = stats.Set(y, "Attack", item.attack.ToString("0.#"), Theme.TextCream);
+                y = stats.Set(y, Shared.Loc.Get("card.attack", "Attack"), item.attack.ToString("0.#"), Theme.TextCream);
             }
             if (item.itemLife > 0f)
             {
-                y = stats.Set(y, "Durability", item.itemLife.ToString("0.#"), Theme.TextCream);
+                y = stats.Set(y, Shared.Loc.Get("card.durability", "Durability"), item.itemLife.ToString("0.#"), Theme.TextCream);
             }
             FoodInfo food = item.GetComponent<FoodInfo>();
             if (food != null && (food.food != 0f || food.water != 0f || food.life != 0f))
             {
                 var parts = new List<string>();
-                if (food.food != 0f) parts.Add($"Food {food.food:+0.#;-0.#}");
-                if (food.water != 0f) parts.Add($"Water {food.water:+0.#;-0.#}");
-                if (food.life != 0f) parts.Add($"HP {food.life:+0.#;-0.#}");
-                y = stats.Set(y, "Use", string.Join("  ", parts), Theme.Positive);
+                if (food.food != 0f) parts.Add(Shared.Loc.Get("card.use.food", "Food {0}", food.food.ToString("+0.#;-0.#")));
+                if (food.water != 0f) parts.Add(Shared.Loc.Get("card.use.water", "Water {0}", food.water.ToString("+0.#;-0.#")));
+                if (food.life != 0f) parts.Add(Shared.Loc.Get("card.use.hp", "HP {0}", food.life.ToString("+0.#;-0.#")));
+                y = stats.Set(y, Shared.Loc.Get("card.use", "Use"), string.Join("  ", parts), Theme.Positive);
             }
             string equip = ItemTags.EquipTargetNames(mn, item);
             if (equip.Length > 0)
             {
-                y = stats.SetWrapped(y, "Equip", ItemTags.SummarizeNames(equip, 6), Theme.TextCream);
+                y = stats.SetWrapped(y, Shared.Loc.Get("card.equip", "Equip"), ItemTags.SummarizeNames(equip, 6), Theme.TextCream);
             }
             return y;
         }
@@ -197,7 +204,7 @@ namespace IslandUI
             }
             string how = IslandUI.ItemGuide.Of(item.name);
             // a guide entry can run to several ways, each its own line: room for them
-            return how == null ? y : stats.SetWrapped(y, "Get", how, Theme.TextCream, 140f);
+            return how == null ? y : stats.SetWrapped(y, Shared.Loc.Get("card.get", "Get"), how, Theme.TextCream, 140f);
         }
 
         // the item's own tip text, measured — the card grows around it
@@ -222,8 +229,64 @@ namespace IslandUI
         internal static string FriendlyType(ItemData item)
         {
             string[] tags = ItemTags.TagsOf(item);
-            string type = tags.Length > 0 ? tags[0] : item.itemType.ToString();
+            string type = tags.Length > 0 ? TagWord(tags[0]) : item.itemType.ToString();
             return type.Length > 0 ? char.ToUpperInvariant(type[0]) + type.Substring(1) : type;
+        }
+
+        // ItemTags' words are search terms, in English; this is the one the card shows
+        private static string TagWord(string tag)
+        {
+            switch (tag)
+            {
+                case "accessory": return Shared.Loc.Get("card.type.accessory", "Accessory");
+                case "ammo": return Shared.Loc.Get("card.type.ammo", "Ammo");
+                case "animal": return Shared.Loc.Get("card.type.animal", "Animal");
+                case "armor": return Shared.Loc.Get("card.type.armor", "Armor");
+                case "arrow": return Shared.Loc.Get("card.type.arrow", "Arrow");
+                case "axe": return Shared.Loc.Get("card.type.axe", "Axe");
+                case "bait": return Shared.Loc.Get("card.type.bait", "Bait");
+                case "bed": return Shared.Loc.Get("card.type.bed", "Bed");
+                case "bottle": return Shared.Loc.Get("card.type.bottle", "Bottle");
+                case "bow": return Shared.Loc.Get("card.type.bow", "Bow");
+                case "building": return Shared.Loc.Get("card.type.building", "Building");
+                case "chest": return Shared.Loc.Get("card.type.chest", "Chest");
+                case "cloth": return Shared.Loc.Get("card.type.cloth", "Cloth");
+                case "clothing": return Shared.Loc.Get("card.type.clothing", "Clothing");
+                case "consumable": return Shared.Loc.Get("card.type.consumable", "Consumable");
+                case "cooking": return Shared.Loc.Get("card.type.cooking", "Cooking");
+                case "decoration": return Shared.Loc.Get("card.type.decoration", "Decoration");
+                case "drink": return Shared.Loc.Get("card.type.drink", "Drink");
+                case "equipment": return Shared.Loc.Get("card.type.equipment", "Equipment");
+                case "feed": return Shared.Loc.Get("card.type.feed", "Feed");
+                case "fish": return Shared.Loc.Get("card.type.fish", "Fish");
+                case "fishing": return Shared.Loc.Get("card.type.fishing", "Fishing");
+                case "food": return Shared.Loc.Get("card.type.food", "Food");
+                case "hat": return Shared.Loc.Get("card.type.hat", "Hat");
+                case "knife": return Shared.Loc.Get("card.type.knife", "Knife");
+                case "light": return Shared.Loc.Get("card.type.light", "Light");
+                case "material": return Shared.Loc.Get("card.type.material", "Material");
+                case "melee": return Shared.Loc.Get("card.type.melee", "Melee");
+                case "net": return Shared.Loc.Get("card.type.net", "Net");
+                case "npc": return Shared.Loc.Get("card.type.npc", "Npc");
+                case "pickaxe": return Shared.Loc.Get("card.type.pickaxe", "Pickaxe");
+                case "plant": return Shared.Loc.Get("card.type.plant", "Plant");
+                case "prop": return Shared.Loc.Get("card.type.prop", "Prop");
+                case "ranged": return Shared.Loc.Get("card.type.ranged", "Ranged");
+                case "resource": return Shared.Loc.Get("card.type.resource", "Resource");
+                case "rod": return Shared.Loc.Get("card.type.rod", "Rod");
+                case "shield": return Shared.Loc.Get("card.type.shield", "Shield");
+                case "shoes": return Shared.Loc.Get("card.type.shoes", "Shoes");
+                case "shovel": return Shared.Loc.Get("card.type.shovel", "Shovel");
+                case "storage": return Shared.Loc.Get("card.type.storage", "Storage");
+                case "stun": return Shared.Loc.Get("card.type.stun", "Stun");
+                case "support": return Shared.Loc.Get("card.type.support", "Support");
+                case "throwing": return Shared.Loc.Get("card.type.throwing", "Throwing");
+                case "tool": return Shared.Loc.Get("card.type.tool", "Tool");
+                case "torch": return Shared.Loc.Get("card.type.torch", "Torch");
+                case "underwear": return Shared.Loc.Get("card.type.underwear", "Underwear");
+                case "weapon": return Shared.Loc.Get("card.type.weapon", "Weapon");
+                default: return tag;
+            }
         }
     }
 }

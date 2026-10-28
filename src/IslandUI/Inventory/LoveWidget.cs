@@ -98,10 +98,10 @@ namespace IslandUI
             return from + " → " + to + "  " + a + "\n" + to + " → " + from + "  " + b;
         }
 
-        // the class on dark paper: the fill colours read there; ash goes a shade lighter
+        // the tip is printed on paper, as the sheets are: the class in their ink
         private static Color TipInk(float love)
         {
-            return love < 0f ? new Color(178f / 255f, 166f / 255f, 152f / 255f, 1f) : ClassColor(love);
+            return ClassInk(love);
         }
 
         // ---- the parts, in canvas units

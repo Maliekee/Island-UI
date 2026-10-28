@@ -430,7 +430,8 @@ namespace IslandUI
         // Vanilla draws a type icon over every loadout slot — nine identical
         // frames cannot tell you which one is the hat. These are the game's own
         // icons, harvested from the equip strip (Theme.SlotTypeIcons).
-        private static void BindTypeIcons(Plate plate, bool show, int[] map, int cols, int count)
+        private static void BindTypeIcons(Plate plate, bool show, int[] map, int cols, int count,
+            bool leather = false)
         {
             if (!show)
             {
@@ -471,10 +472,14 @@ namespace IslandUI
                 }
                 icon.sprite = sprite;
                 // measured from the same origin the CELLS are, so the strip cannot
-                // drift from the row it names
+                // drift from the row it names; on the leather the proof's 22 px
+                // glyph, 5 px over its cell, in cream (Leather.cs)
+                float size = leather ? LeatherGlyphH : TypeIconH;
+                float rise = leather ? LeatherGlyphRow : TypeIconH;
                 Theme.Place(icon,
-                    plate.CellLeft + i * CellPitch + (CellBox - TypeIconH) * 0.5f,
-                    plate.CellTop - TypeIconH, TypeIconH, TypeIconH);
+                    plate.CellLeft + i * CellPitch + (CellBox - size) * 0.5f,
+                    plate.CellTop - rise, size, size);
+                LeatherGlyph(icon, leather);
                 if (!icon.gameObject.activeSelf)
                 {
                     icon.gameObject.SetActive(true);

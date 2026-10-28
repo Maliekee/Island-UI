@@ -1,0 +1,1609 @@
+# Island UI: Russian strings, machine-translated from en/strings.txt.
+# Corrections are welcome: edit the right side of a line and keep the key and every {0}.
+
+badge.off=выкл.  -  нажмите, чтобы включить
+badge.on=вкл.  -  нажмите, чтобы выключить
+badge.turns_off=выключится при следующем запуске  -  нажмите для отмены
+badge.turns_on=включится при следующем запуске  -  нажмите для отмены
+
+board.assign.axe=назначить  →  петля для топора
+board.assign.knife=назначить  →  петля для ножа
+board.assign.pickaxe=назначить  →  петля для кирки
+
+board.choose=выберите инструмент из своих сумок
+
+board.drop.axe=Положите сюда топор из сумки
+board.drop.knife=Положите сюда нож из сумки
+board.drop.pickaxe=Положите сюда кирку из сумки
+
+board.durability=Прочность
+board.equipped=Надето
+
+board.takes.axe=в петлю для топора идёт топор
+board.takes.knife=в петлю для ножа идёт нож
+board.takes.pickaxe=в петлю для кирки идёт кирка
+
+board.used.axe=Берётся, когда для работы нужен топор
+board.used.knife=Берётся, когда для работы нужен нож
+board.used.pickaxe=Берётся, когда для работы нужна кирка
+
+bonds.all.section=ВСЕ ОТНОШЕНИЯ
+
+bonds.desires.help=Партнёр, которого выбрала игра. Нажмите, чтобы узнать почему
+
+bonds.family.child=ребёнок
+bonds.family.father=отец
+bonds.family.mother=мать
+bonds.family.not_yours=никто из ваших
+bonds.family.section=СЕМЬЯ
+bonds.family.you={0} (вы)
+
+bonds.grudge.dropped=Порознь обида пропадает на следующем тике
+bonds.grudge.kept=У них был секс, поэтому обида остаётся и порознь
+bonds.grudge.none=За последние шесть тиков между ними ничего не записано.
+
+bonds.head.days=3 дня
+bonds.head.days.help=на сколько любовные тики последних трёх дней изменили чувство {0}
+bonds.head.mine.help=любовь {0} к ним
+bonds.head.they=Они
+bonds.head.they.help=их любовь к {0}
+
+bonds.love_each_way=Любовь в обе стороны: их к {0} и обратно
+
+bonds.love_each_way.them=Любовь в обе стороны: их к этому персонажу и обратно
+
+bonds.moved.help=На столько тики последнего дня изменили чувство {0} к {1}. Нажмите, чтобы узнать почему
+
+bonds.pick.cant=сейчас нельзя
+bonds.pick.cant.why={0} сейчас не может (занятость, следование за вами или секс выключен)
+bonds.pick.ends_it=Прекращается: оба в одном доме, занятый туалет в пределах 10 м или секс выключен
+bonds.pick.highest={0} — их самая сильная любовь ({1}) среди тех, кто на их территории.
+bonds.pick.no=Нет: {0}.
+bonds.pick.pining=отказ: тоска
+bonds.pick.pining.cost=При либидо 90 каждый отказ стоит им 5 настроения, несколько раз в день.
+bonds.pick.rule=При либидо от 20 они просят; для согласия нужны общий дом и ответная любовь.
+bonds.pick.toilet=отказ: вместо этого туалет
+bonds.pick.why.house={0} живёт в другом доме
+bonds.pick.why.no={0} отказывает
+bonds.pick.why.no_love={0} не любит в ответ
+bonds.pick.why.no_mood={0} не в настроении
+bonds.pick.yes=соглашается
+bonds.pick.yes.why=Да: у них общий дом, и {0} любит в ответ.
+
+bonds.section=СВЯЗИ
+
+bonds.why.bond_fades=Порознь чувство слабеет на 5 за тик и пропадает на 0
+bonds.why.bond_kept=У них был секс, поэтому связь остаётся и порознь
+bonds.why.not_met=Они не встречались на последних шести тиках: их территории не пересекаются.
+
+bonds.word.desires=влечение
+bonds.word.grudge=обида
+
+bonds.you.cant_stand=не выносит вас
+bonds.you.cold=относится холодно
+bonds.you.fond=относится тепло
+bonds.you.head=К ВАМ
+bonds.you.head.help=Их любовь к вам
+bonds.you.loves=любит вас
+
+card.attack=Атака
+card.bench=Верстак
+
+card.bench.none=Нет (вручную)
+
+card.class=Класс
+card.crafter=Мастер
+card.durability=Прочность
+card.equip=Носят
+card.food=Еда
+card.get=Где взять
+card.hp=HP
+card.kind=Вид
+card.level=Уровень
+card.likes=Любит
+
+card.names.more=и ещё {0}
+
+card.npc_numbered=NPC {0}
+card.state=Состояние
+card.stun=Оглушение
+
+card.type.accessory=Аксессуар
+card.type.ammo=Боеприпас
+card.type.animal=Животное
+card.type.armor=Броня
+card.type.arrow=Стрела
+card.type.axe=Топор
+card.type.bait=Наживка
+card.type.bed=Кровать
+card.type.bottle=Бутылка
+card.type.bow=Лук
+card.type.building=Постройка
+card.type.chest=Сундук
+card.type.cloth=Наряд
+card.type.clothing=Одежда
+card.type.consumable=Расходник
+card.type.cooking=Готовка
+card.type.decoration=Декор
+card.type.drink=Напиток
+card.type.equipment=Снаряжение
+card.type.feed=Корм
+card.type.fish=Рыба
+card.type.fishing=Рыбалка
+card.type.food=Еда
+card.type.hat=Шляпа
+card.type.knife=Нож
+card.type.light=Свет
+card.type.material=Материал
+card.type.melee=Ближний бой
+card.type.net=Сачок
+card.type.npc=NPC
+card.type.pickaxe=Кирка
+card.type.plant=Растение
+card.type.prop=Обстановка
+card.type.ranged=Дальний бой
+card.type.resource=Ресурс
+card.type.rod=Удочка
+card.type.shield=Щит
+card.type.shoes=Обувь
+card.type.shovel=Лопата
+card.type.storage=Хранилище
+card.type.stun=Оглушение
+card.type.support=Поддержка
+card.type.throwing=Метательное
+card.type.tool=Инструмент
+card.type.torch=Факел
+card.type.underwear=Бельё
+card.type.weapon=Оружие
+
+card.use=Даёт
+
+card.use.food=Еда {0}
+card.use.hp=HP {0}
+card.use.water=Вода {0}
+
+card.used_in=Нужен для
+
+card.used_in.caps=НУЖЕН ДЛЯ
+
+card.water=Вода
+
+chart.day=ДЕНЬ {0}
+chart.now=СЕЙЧАС
+
+combat.more.one=+{0} в бою
+combat.more.few=+{0} в бою
+combat.more.many=+{0} в бою
+
+company.cost={0} морали: {1}
+
+company.cost.why=Любовь {0} к {1} равна {2}: при -10 и ниже каждое изменение любви стоит 1
+
+company.dawn.full=На максимуме: добавить нечего
+company.dawn.in=Ночь под крышей: мораль растёт
+company.dawn.out=Ночь не под крышей: ничего не вернулось
+
+company.elsewhere=В ДРУГИХ МЕСТАХ
+
+company.elsewhere.kin={0} ({1})
+
+company.fix.fold=Нажмите, чтобы свернуть решение
+company.fix.unfold=Есть решение: нажмите, чтобы увидеть
+
+company.head.back=ОТВЕТ
+company.head.back.help=любовь каждого к {0}
+company.head.love=ЛЮБОВЬ
+company.head.love.help=любовь {0} к каждому
+
+company.key.mood_cost=-1 МОРАЛИ
+company.key.per_meeting=ЛЮБОВЬ ЗА ВСТРЕЧУ
+
+company.nights=Ночи
+
+company.nights.count={0} ИЗ {1} ПОД КРЫШЕЙ
+
+company.nights.help=Каждый рассвет за три дня
+company.section=ОТНОШЕНИЯ
+
+company.tag.cant_stand=НЕ ВЫНОСИТ
+company.tag.cant_stand_each=НЕ ВЫНОСЯТ ДРУГ ДРУГА
+company.tag.cant_stand_who=НЕ ВЫНОСИТ {0}
+company.tag.child=РЕБЁНОК
+company.tag.desires=ВЛЕЧЕНИЕ
+company.tag.father=ОТЕЦ
+company.tag.mother=МАТЬ
+
+company.ticks.cost=-1 морали: изменение любви, пока любовь {0} к ним -10 или ниже
+
+company.ticks.help=Каждый любовный тик за три дня, по столбцу на тик
+company.what_moves=ЧТО НА НИХ ВЛИЯЕТ
+
+company.why.pair={0} и {1}
+
+console.commands.one={0} команда из списка самой игры (аргументы — как в игре):
+console.commands.few={0} команды из списка самой игры (аргументы — как в игре):
+console.commands.many={0} команд из списка самой игры (аргументы — как в игре):
+
+console.hint.close={0} закрыть
+console.hint.complete={0} дополнить
+
+console.hint.help={0} — список всех команд
+
+console.hint.history={0} история
+console.hint.scroll={0} прокрутка
+
+console.missing_argument={0}: не хватает аргумента
+console.no_handler=в этой сцене нет обработчика команд игры
+console.no_match=нет команд, начинающихся с {0}
+console.number_argument={0}: аргумент должен быть числом
+console.own=и собственные команды консоли: {0}
+console.placeholder=введите команду
+console.unknown=неизвестная команда {0}
+console.unknown.help=({0} покажет список)
+console.welcome.one=Командная строка игры. {0} команда; введите {1}, чтобы увидеть список.
+console.welcome.few=Командная строка игры. {0} команды; введите {1}, чтобы увидеть список.
+console.welcome.many=Командная строка игры. {0} команд; введите {1}, чтобы увидеть список.
+
+craft.no_matches=Ничего не найдено
+
+craft.section.bench_numbered=Верстак {0}
+craft.section.by_hand=Вручную
+
+craft.section.other=Прочее
+
+craft.section.type.acce=Аксессуары
+craft.section.type.animal=Животные
+craft.section.type.bottle=Бутылки
+craft.section.type.cloth=Одежда
+craft.section.type.clothu=Бельё
+craft.section.type.consumables=Расходники
+craft.section.type.food=Еда
+craft.section.type.hat=Шляпы
+craft.section.type.hip=Бёдра
+craft.section.type.item=Предметы
+craft.section.type.none=Без типа
+craft.section.type.npc=NPC
+craft.section.type.prop=Обстановка
+craft.section.type.resource=Ресурсы
+craft.section.type.resourcew=Ресурсы W
+craft.section.type.shield=Щиты
+craft.section.type.shoes=Обувь
+craft.section.type.support=Поддержка
+craft.section.type.tool=Инструменты
+craft.section.type.tool2=Инструменты 2
+
+
+dossier.personality=ХАРАКТЕР
+dossier.personality.a_tick={0} за тик
+dossier.personality.click=Нажмите, чтобы увидеть всех такого типа
+dossier.personality.dislikes=Не любит: {0}
+dossier.personality.likes=Любит: {0}
+dossier.personality.near_one=Рядом с таким
+
+dossier.age=ВОЗРАСТ
+dossier.attack=АТАКА
+
+dossier.attr.health=ЗДОРОВЬЕ
+dossier.attr.strength=СИЛА
+
+dossier.attributes=ХАРАКТЕРИСТИКИ
+dossier.class=КЛАСС
+dossier.combat=БОЙ
+dossier.deliveries=РОДЫ
+dossier.exp=ОПЫТ
+
+dossier.favourite.mark=Нажмите, чтобы добавить в избранное
+dossier.favourite.unmark=В избранном: нажмите, чтобы убрать
+
+dossier.food=ЕДА
+dossier.guard=ЗАЩИТА
+dossier.hidden=СКРЫТО
+dossier.hp=HP
+dossier.kind=ВИД
+dossier.level=УРОВЕНЬ
+dossier.libido=ЛИБИДО
+dossier.masturbation=МАСТУРБАЦИЯ
+dossier.max=МАКС.
+dossier.moral=МОРАЛЬ
+dossier.name=ИМЯ
+dossier.next_cost=след. {0} оч.
+dossier.points.one={0} очко
+dossier.points.few={0} очка
+dossier.points.many={0} очков
+dossier.pregnancies=БЕРЕМЕННОСТИ
+dossier.pregnant=БЕРЕМЕННОСТЬ
+dossier.sex=СЕКС
+dossier.shown_in_world=ВИДНО В МИРЕ
+dossier.skill_lv=УР. НАВЫКОВ
+dossier.skills=НАВЫКИ
+dossier.speed=СКОРОСТЬ
+dossier.stun=ОГЛУШЕНИЕ
+
+dossier.type.anyone_else=Все остальные
+dossier.type.click=Нажмите, чтобы увидеть всех с типом {0}
+dossier.type.near_one={0} рядом с таким
+dossier.type.worth_near={0}, {1} рядом с таким
+
+dossier.vitals=ПОКАЗАТЕЛИ
+dossier.water=ВОДА
+
+drop.cant_take=не может это взять
+drop.give_to=отдать  →  {0}
+drop.out_of_reach=вне досягаемости
+drop.them=персонаж
+drop.this_chest=этот сундук
+drop.use_on=применить  →  {0}
+drop.walk_give_to=подойти и отдать  →  {0}
+drop.walk_use_on=подойти и применить  →  {0}
+
+hud.caption.menu=МЕНЮ
+hud.caption.toolbelt=ПОЯС
+
+hud.chip.bag=Ваша сумка
+hud.chip.character=Ваш персонаж
+hud.chip.crafting=Создание
+hud.chip.map=Карта
+hud.chip.quests=Задания
+hud.chip.settings=Настройки
+hud.chip.tools=Пояс с инструментами
+hud.chip.vicinity=Окрестности
+
+hud.collections_link=Коллекции
+
+hud.enemy.age=Возраст {0}
+hud.enemy.faint=Оглуш.
+hud.enemy.slain=Убит
+hud.enemy.fainted=Оглушён
+hud.enemy.boss=БОСС
+
+hud.roster.unhappy=Не в духе: {0}
+hud.roster.unhappy.help=Сортировка «Настроение» покажет почему
+hud.roster.unhappy_near=Не в духе: {0}, близко к бунту: {1}
+
+inv.act.craft=Создать
+inv.act.inventory=Инвентарь
+inv.act.move=Переместить
+inv.act.remove=Убрать
+inv.act.repair=Починить
+inv.act.sleep=Спать
+inv.act.use=Использовать
+
+inv.bag=Сумка
+inv.character=Персонаж
+
+inv.chest.click_to_open=нажмите, чтобы открыть
+inv.chest.locked=Заперто
+inv.chest.unopened=Не открыто
+
+inv.hint.butcher={0}  →  разделать
+inv.hint.cannot_wear={0}   →   {1} не может это надеть
+inv.hint.cannot_wear_you={0}   →   вы не можете это надеть
+inv.hint.drop=Ctrl+клик  →  выбросить
+inv.hint.favourite=избранное
+inv.hint.happiness=счастье {0}/100
+inv.hint.happiness_max=счастье МАКС. — может вступить в племя
+inv.hint.kept=избранное  ·  сначала снимите отметку Alt+кликом
+inv.hint.mark=Alt+клик  →  в избранное
+inv.hint.mark_never_stacked=Alt+клик  →  в избранное (быстрое складывание не тронет)
+inv.hint.move=Ctrl+клик  →  {0}
+inv.hint.remove_action=Shift+клик  →  убрать    Shift+перетаскивание  →  переместить
+inv.hint.split=Shift+клик  →  разделить
+inv.hint.take_off=ЛКМ  →  в руку    ПКМ  →  {0}
+inv.hint.unmark=Alt+клик  →  снять отметку
+inv.hint.wear={0}   →   {1} · {2}
+inv.hint.wear_you={0}   →   вы · {1}
+inv.hint.worn_by=носит {0}
+inv.hint.worn_by_them=носит этот персонаж
+inv.hint.worn_by_you=носите вы
+
+inv.loadout=Снаряжение
+
+inv.move.bag_of=сумка {0}
+inv.move.body_pockets=карманы тела
+inv.move.drop=выбросить
+inv.move.nearby_storage=хранилище рядом
+inv.move.pockets_of=карманы {0}
+inv.move.their_bag=их сумка
+inv.move.your_bags=ваши сумки
+
+inv.pocket.bag_of=Сумка {0}
+inv.pocket.cannot_expand={0}: нельзя расширить
+inv.pocket.capped={0}: достигнут предел в 50 ячеек
+inv.pocket.expand=ПКМ  →  {0}  +1 ячейка
+inv.pocket.nothing=нечего расширять
+inv.pocket.that_container=этот контейнер
+inv.pocket.their_bag=их Сумка
+inv.pocket.your_bag=ваша Сумка
+
+inv.shared_bag=Общая сумка
+
+inv.slot.acce=Аксесс.
+inv.slot.cloth=Одежда
+inv.slot.hat=Шляпа
+inv.slot.hip=Бёдра
+inv.slot.off_hand=Вторая рука
+inv.slot.shoes=Обувь
+inv.slot.support=Поддержка
+inv.slot.tool=Инструмент
+inv.slot.under=Бельё
+
+inv.tab.character=Персонаж
+inv.tab.fight=Бой
+inv.tab.inventory=Инвентарь
+inv.tab.overview=Обзор
+inv.tab.skills=Навыки
+inv.tab.social=Общение
+
+inv.thing.building=Постройка
+inv.thing.yours=Ваше
+inv.thing.yours_lower=ваше
+
+inv.tip.always_run=Бегать при любом движении, как будто клавиша бега зажата.
+inv.tip.and_so_on={0} и так далее
+inv.tip.at_0=На 0
+inv.tip.at_n=На {0}
+inv.tip.attack=Базовая атака
+inv.tip.attack.deals=Удар наносит
+inv.tip.attack.help=это значение плюс атака оружия (в скобках), минус защита цели
+inv.tip.attribute_cost=1 очко, плюс 1 за каждые 10 уже купленных
+inv.tip.attribute_points=Очки характеристик
+inv.tip.attribute_points.spend=Тратятся на характеристики. Новый уровень даёт:
+inv.tip.below_level=До уровня {0}
+inv.tip.call_over=Зовёт к вам, если персонаж в пределах 10 м. Не во время событий.
+inv.tip.class=Боевой класс
+inv.tip.class.help=Меняет дальность, тайминг и анимации атак, а некоторым видам даёт особые атаки.
+inv.tip.combat_area=Как далеко за пределы своей территории они преследуют врага, прежде чем отступить. Спутники это не учитывают.
+inv.tip.cost=Цена
+inv.tip.drained_by=Убывает
+inv.tip.edit_dialogue=Изменить их реплики.
+inv.tip.empty=Пусто
+inv.tip.exp=Опыт
+inv.tip.exp.also_fills=Также растит
+inv.tip.exp.as_follower=Спутником
+inv.tip.exp.from=Источники
+inv.tip.exp.from_what=сбор, убийства, работа и некоторая еда
+inv.tip.exp.full_bar=Полная шкала — это уровень; остаток переносится.
+inv.tip.exp.quarter=четверть вашего
+inv.tip.exp.skill_level=уровень навыков
+inv.tip.face_left=Смотреть влево
+inv.tip.face_right=Смотреть вправо
+inv.tip.facing=Куда они смотрят на своём месте при территории 0. Повторное нажатие сбрасывает выбор.
+inv.tip.favourite=Показывается в «Избранных» в составе и отслеживается на карте.
+inv.tip.first_partner=Первый, с кем у них был секс, по согласию или нет.
+inv.tip.following=Следуют за вами и получают четверть вашего опыта. Каждый спутник занимает место в отряде.
+inv.tip.following_off=Не следуют: держатся своего места
+inv.tip.following_on=Следуют за вами
+inv.tip.food=Еда
+inv.tip.food.hunger=От голода умирают, минуя сердца.
+inv.tip.food.spend_to_heal=тратится на лечение
+inv.tip.food.stop_healing=лечение прекращается
+inv.tip.from_level=С уровня {0}
+inv.tip.guard=Защита
+inv.tip.guard.armed=С оружием
+inv.tip.guard.bare=Без оружия
+inv.tip.guard.percent=Доля урона, которую блокирует защита:
+inv.tip.guard.shield=Со щитом
+inv.tip.guard.shield_value=значение щита
+inv.tip.guard.theirs=Число, которое показывает игра. Защищаться можете только вы.
+inv.tip.health=Здоровье
+inv.tip.health.help=Каждое очко повышает макс. HP на прирост их вида за очко.
+inv.tip.history.births=Дети, которых они родили от отца из числа своих возлюбленных.
+inv.tip.history.masturbated=Сколько раз мастурбировали в одиночестве.
+inv.tip.history.pregnant=Сколько раз беременели.
+inv.tip.history.sex=Половые акты со всеми партнёрами, по согласию или силой, в любую сторону.
+inv.tip.hp=Очки здоровья
+inv.tip.hp.gets_up=встаёт через 90 секунд с небольшим запасом HP
+inv.tip.hp.last_heart=На 0, последнее сердце
+inv.tip.hp.lose_heart=вы теряете сердце и падаете
+inv.tip.hp.one_of_yours=Кто-то из ваших
+inv.tip.hp.they_go_down=падают
+inv.tip.hp.you_die=вы умираете
+inv.tip.level=Уровень персонажа
+inv.tip.level.own=Свой у каждого. Каждый новый уровень даёт очки характеристик:
+inv.tip.libido=Либидо
+inv.tip.libido.refills=Восполняется со временем.
+inv.tip.libido.refusal=отказ стоит морали
+inv.tip.libido.seek=ищут секса с возлюбленным
+inv.tip.lose_hp=вы постепенно теряете HP и не лечитесь
+inv.tip.lowered_by=Снижается
+inv.tip.moral=Мораль
+inv.tip.moral.lowered=отказом
+inv.tip.moral.raised=сном, сексом, некоторой едой
+inv.tip.moral.revolt=бунтуют и дерутся
+inv.tip.moral.revolt_chance=Бунтующий житель нападает на вас с шансом 100 минус это значение, в процентах.
+inv.tip.outlaw=После подтверждения они уходят изгоем: отбиваются, если их ударить, и исчезают через 2 минуты, если их не свалить.
+inv.tip.past_n=Выше {0}
+inv.tip.perm.force=Позволяет принуждать к сексу жителя поблизости, когда либидо от 5.
+inv.tip.perm.houses=Позволяет самим входить в дома и выходить, а ночью идти спать домой.
+inv.tip.perm.love=Позволяет развивать любовь с жителями поблизости, а с вами — пока следуют за вами.
+inv.tip.perm.sex=Позволяет искать секса или соглашаться на него, когда либидо от 20.
+inv.tip.place_while_following=Пока они следуют за вами, их место ждёт и снова действует, когда они перестают.
+inv.tip.pregnant=Срок беременности.
+inv.tip.raised_by=Повышается
+inv.tip.refilled_by=Восполняется
+inv.tip.rename=Нажмите, чтобы переименовать. Return сохраняет, Escape оставляет старое имя.
+inv.tip.resting=Отдых
+inv.tip.send_to_place=Сразу отправляет на своё место. Не для спутников и пленников.
+inv.tip.set_place=Нажмите на землю, чтобы задать их место; ПКМ отменяет.
+inv.tip.show_name=Их имя видно над ними в мире.
+inv.tip.show_name_own=Ваше имя видно над вами в мире.
+inv.tip.skill_exp=Опыт уровня навыков. Полная шкала — это уровень.
+inv.tip.skill_level=Уровень навыков
+inv.tip.skill_level.help=Один на всё сохранение, а не на персонажа. Получает тот же опыт, что и вы, наряду с уровнем персонажа. Каждый уровень даёт очки навыков:
+inv.tip.skill_points=Очки навыков
+inv.tip.skill_points.cost=5, плюс 5 за каждый уровень навыка
+inv.tip.skill_points.next=Цена след. уровня
+inv.tip.skill_points.spend=Тратятся на навыки.
+inv.tip.speed=Скорость
+inv.tip.speed.help=Скорость ходьбы с учётом снаряжения, перегруза и замедления; бег умножает её.
+inv.tip.speed_point.help=Каждое очко добавляет 0.005 к базовой скорости.
+inv.tip.spent_on=Тратится на
+inv.tip.strength=Сила
+inv.tip.strength.help=Каждое очко повышает базовую атаку на прирост их вида за очко.
+inv.tip.stun=Оглушение
+inv.tip.stun.bed=сном в кровати
+inv.tip.stun.knocked_out=теряют сознание
+inv.tip.stun.resting=отдыхом, на который тратится вода
+inv.tip.stun.weapons=от оглушающего оружия
+inv.tip.stun.you_die=вы умираете, с сердцами или без
+inv.tip.surgeries=Формы тела или цвета, изменённые на операционном столе.
+inv.tip.territory=Как далеко они бродят вокруг своего места. При 0 стоят на месте.
+inv.tip.waiting_pose=Что они делают, ожидая на своём месте, — только при территории 0 и если не следуют за вами.
+inv.tip.water=Вода
+inv.tip.water.neither=ни то, ни другое
+inv.tip.water.stun_work=восстановление оглушения и работу
+inv.tip.water.thirst=От жажды умирают, минуя сердца.
+
+keybind.listening=Нажмите клавишу
+keybind.numpad=Num {0}
+keybind.unbound=Не назначено
+
+keymap.action=Действие (удерживать)
+keymap.backpack=Рюкзак
+keymap.carry=Нести / Подобрать
+keymap.confirm=Подтвердить / Отправить
+keymap.confirm.note=Изменение может сломать диалоги.
+keymap.context=Контекстное действие / Сесть верхом
+keymap.disassemble=Разделать животное
+keymap.drone_hide=Дрон: скрыть модель
+keymap.drone_hide.note=Только при управлении дроном.
+keymap.drop=Выбросить предмет / Закрыть меню
+keymap.help=Клавиша самой игры: {0}. None — без клавиши.
+keymap.interact=Взаимодействие
+keymap.jump=Прыжок / Подтвердить / Пропустить диалог
+keymap.map=Карта
+keymap.menu=Меню
+keymap.mod_alt=Модификатор: альт. действие
+keymap.mod_bulk=Модификатор: массово
+keymap.mod_split=Модификатор: разделить/массово+
+keymap.move_back=Назад
+keymap.move_forward=Вперёд
+keymap.move_left=Влево
+keymap.move_right=Вправо
+keymap.mute=Выключить звук
+keymap.next_character=След. персонаж / Ускорить время
+keymap.pause=Пауза
+keymap.prev_character=Пред. персонаж / Замедлить время
+keymap.right_click=Замена ПКМ
+keymap.run=Бег вкл./выкл.
+
+links.arc.apart=Не рядом: на следующем тике ничего
+links.arc.head=Каждый тик, когда они встречаются
+links.arc.love_off=Любовь выкл.: ничего не меняется
+
+links.away.carried={0} переносится в контейнере, который игра не загрузила
+links.away.head=Нет в мире
+links.away.prisoner={0} в плену у врагов. Возможность спасти появляется случайно, рядом с вами
+links.away.target_it=Нажмите, чтобы выбрать целью
+links.away.where={0} — {1}.
+
+links.back=Назад, туда, где вы были
+links.back_to=Назад к {0}
+links.level=Ур. {0}
+links.type.help={0}: нажмите, чтобы увидеть всех такого типа
+
+links.where.bag=в вашей сумке
+links.where.container=в контейнере
+links.where.in=в {0}
+links.where.with=у {0}
+
+loc.separator= · 
+
+marker.carried=Несут
+marker.corpse=Труп
+marker.dead=Мёртв(а)
+
+marker.door.inside=Внутри
+marker.door.outside=Снаружи
+
+marker.hostile=Враг
+marker.knocked_out=Без сознания
+marker.metres={0} м
+
+marker.neutral=Нейтральный
+met.count=встреч: {0}
+
+met.end.area_away=одна из территорий дальше на {0} м
+met.end.ends_it=Прекратит: {0}
+met.end.gone=Связи больше нет; при встрече она начнётся с нуля
+met.end.houses_apart=дома дальше друг от друга
+met.end.keeps_it=Сохраняет: пересечение их территорий
+met.end.love_off_they.help=Любовь выкл.: ни любви, ни обид, в том числе к вам
+met.end.love_off_who={0}: любовь выкл.
+met.end.love_off_who.help=Любовь выкл.: у {0} нет ни любви, ни обид, в том числе к вам
+met.end.or= или 
+met.end.other_house=другой дом для одного из них
+
+met.head.day_ago=день назад
+met.head.they=ОНИ
+
+met.hours.and={0} и {1}
+met.hours.comma=, 
+
+met.love_off=Любовь выкл.
+met.love_off.help=Ни с кем не развивают ни любви, ни обид
+
+met.next.apart=Сейчас их территории не пересекаются: порознь связь с любой стороны слабеет на 5
+met.next.meet=Сейчас их территории пересекаются, поэтому они встречаются:
+
+met.next_tick=След. тик, {0}
+met.none=Записей нет
+met.none.help=За последние шесть тиков ничья территория не пересекалась с их территорией
+
+met.note.by_day={0}, днём
+met.note.dislike_each=не любят друг друга
+met.note.dislikes=не любит
+met.note.dislikes_who=не любит {0}
+met.note.dropped_at=сброшено в {0}
+met.note.fading=слабеет порознь
+met.note.housemates={0}, ночью соседи по дому
+met.note.like_each=любят друг друга
+met.note.likes=любит
+met.note.likes_who=любит {0}
+met.note.nights={0}, ночами
+
+met.row.help=Нажмите: почему и что это прекратит
+met.section=С КЕМ ВСТРЕЧАЮТСЯ
+met.section.help=С кем они встречались на последних шести любовных тиках и как каждая встреча изменила чувство
+
+met.tick.apart=Порознь: связь слабеет, -5 любви
+met.tick.disliked=-5 любви: нелюбимый тип
+met.tick.liked=+10 любви: любимый тип
+met.tick.not_met=Не встретились
+met.tick.plain=+5 любви: встретились
+
+met.ticks.help=Последние шесть любовных тиков, от старых к текущему; затенённые, под луной, — ночные, когда большинство спит под крышей. Пустой квадрат: не встретились. Черта: порознь, связь слабеет на -5. Точка: до начала записей. За линией «сейчас» — следующий тик, каким он выглядит сейчас: бледный, если встретятся, пунктирный, если порознь
+
+met.why.distance=Их территории днём: в {0} м друг от друга; встречаются в пределах {1} м.
+met.why.every_known=Они встречались на каждом записанном тике.
+met.why.every_tick=Они встречались на каждом тике, днём и ночью.
+met.why.grudge_dropped=Одного тика порознь хватает, чтобы обида пропала; при встрече она снова начнётся с 0.
+met.why.grudge_kept=У них был секс, поэтому обида остаётся и порознь: её рост останавливает только «Любовь выкл.».
+met.why.met_at=Встречались в {0}; не в {1}.
+met.why.near_houses=Ночью они спят в разных домах, но достаточно близко, чтобы встречаться.
+met.why.not_met=На последних тиках они не встречались: их территории больше не пересекаются.
+met.why.rule_dislikes={0} НЕ ЛЮБИТ тип {1}, а {2} ОТНОСИТСЯ К НЕМУ: −5 за тик.
+met.why.rule_likes={0} ЛЮБИТ тип {1}, а {2} ОТНОСИТСЯ К НЕМУ: +10 за тик.
+met.why.same_house=Ночью они спят в одном доме, поэтому встречаются.
+
+mood.cause.company=компания
+mood.cause.crush=влюблённость
+mood.cause.execution=казнь
+mood.cause.food=еда
+mood.cause.forced=принуждение
+mood.cause.no_bed=нет кровати
+
+mood.cause.other=прочее
+
+mood.cause.pining=тоска по {0}
+mood.cause.rebel=бунт
+mood.cause.relief=разрядка
+mood.cause.sex=секс
+mood.cause.sleep=сон
+mood.cause.torture=пытки
+mood.cause.training=тренировка
+
+mood.cause_row.help=Что, по записям, меняло их мораль.
+
+mood.cause_row.three_days=Последние три дня
+
+mood.chart.caption1=МОРАЛЬ
+mood.chart.caption2=ЗА ТРИ ДНЯ
+mood.chart.next=ДАЛЕЕ
+mood.chart.no_change=БЕЗ ИЗМЕНЕНИЙ
+mood.chart.no_record=НЕТ ЗАПИСЕЙ
+mood.chart.past=3 ДНЯ
+mood.chart.rebels_at=БУНТ НА {0}
+
+mood.check.a_time=-5 за раз
+mood.check.apart.fix=Разведите их территории или выключите «Любовь» одному из них
+mood.check.area_zero=нет сна: территория 0
+mood.check.area_zero.fix=Дайте им территорию с домом
+mood.check.area_zero.text=Территория 0, поэтому никогда не спит
+mood.check.cant_stand=не выносит {0}
+mood.check.cant_stand.effect=-6/день
+mood.check.cant_stand.text=Не выносит {0}: -1 настроения шесть раз в день
+mood.check.dislikes=не любит {0}
+mood.check.dislikes.days=испортится через {0} д
+mood.check.dislikes.hours=испортится через {0} ч
+mood.check.dislikes.text_days.one=Не любит тип {1}, территории пересекаются: начнёт портить настроение примерно через {0} день
+mood.check.dislikes.text_days.few=Не любит тип {1}, территории пересекаются: начнёт портить настроение примерно через {0} дня
+mood.check.dislikes.text_days.many=Не любит тип {1}, территории пересекаются: начнёт портить настроение примерно через {0} дней
+mood.check.dislikes.text_hours.one=Не любит тип {1}, территории пересекаются: начнёт портить настроение примерно через {0} час
+mood.check.dislikes.text_hours.few=Не любит тип {1}, территории пересекаются: начнёт портить настроение примерно через {0} часа
+mood.check.dislikes.text_hours.many=Не любит тип {1}, территории пересекаются: начнёт портить настроение примерно через {0} часов
+mood.check.far=далеко от вас
+mood.check.far.effect=здесь не спят
+mood.check.far.fix=Проведите ночь рядом с ними
+mood.check.far.text=Далеко от вас: жители спят, только когда вы рядом
+mood.check.following=нет сна: следует за вами
+mood.check.following.fix=Оставьте на ночь дома
+mood.check.following.text=Следует за вами, поэтому никогда не спит
+mood.check.guard=нет сна: охрана
+mood.check.guard.fix=Дайте другой боевой приказ
+mood.check.guard.text=На посту охраны, поэтому никогда не спит
+mood.check.near_rebellion=на грани бунта
+mood.check.near_rebellion.effect=бунт на -100
+mood.check.near_rebellion.text=В шаге от бунта (бунт начинается на -100)
+mood.check.never_sleeps=никогда не спит
+mood.check.never_sleeps.fix=Настроение поднимают только еда, секс и разрядка: уберите то, что его портит
+mood.check.never_sleeps.text=Их вид никогда не спит
+mood.check.no_bed=нет кровати с {0}
+mood.check.no_bed.fix=Поставьте кровать в их доме, в пределах 10 м от них
+mood.check.no_bed.text=Нет свободной кровати для них и {0}: {1}
+mood.check.no_house=нет дома на территории
+mood.check.no_house.fix=Расширьте территорию, чтобы в неё попал дом, или постройте на ней дом
+mood.check.no_house.text=На их территории нет двери дома
+mood.check.no_recovery=нет восстановления
+mood.check.no_recovery.text={0} — на рассвете настроение не вернётся
+mood.check.outside=спит снаружи
+mood.check.outside.text=Не пускают в дома, поэтому спит снаружи
+mood.check.pining=тоскует по {0}
+mood.check.pining.fix=Поселите обоих в один дом, поставьте занятый туалет в пределах 10 м или выключите «Секс»
+mood.check.pining.text=Тоскует по {0} — {1}: {2}
+mood.check.rebelling=бунтует
+mood.check.rebelling.effect=дерётся
+mood.check.rebelling.fix=Свалите с ног (+20 к настроению), затем устраните то, что портит настроение
+mood.check.rebelling.text=Бунтует: дерётся с вами и жителями
+mood.check.sleeps=спит под крышей
+mood.check.sleeps.effect=+10 на рассвете
+mood.check.sleeps.effect_low=+20 на рассвете
+mood.check.sleeps.text=Спит под крышей: +10 на рассвете
+mood.check.sleeps.text_low=Спит под крышей: +20 на рассвете, до 10
+mood.check.sore.effect=-1 за проверку
+mood.check.sore.text=Ещё в обиде на {0} (любовь {1}): -1 настроения за проверку, пока любовь не поднимется выше -10
+mood.check.survivor=держит «Выживший»
+mood.check.survivor.effect=на -100
+mood.check.survivor.text=От бунта удерживает только приказ «Выживший»
+mood.check.when.morning=-5 настроения, когда либидо достигает 90 (каждое утро)
+mood.check.when.urgent=-5 настроения несколько раз в день
+mood.check.why.house={0} живёт в другом доме
+mood.check.why.no={0} отказывает
+mood.check.why.not_in_mood={0} не в настроении
+mood.check.why.unloved={0} не любит в ответ
+mood.check.you=не любит вас
+mood.check.you.effect=-1 за изменение
+mood.check.you.fix=Берите с собой: следование за вами повышает их любовь к вам
+mood.check.you.text=Не любит вас (любовь {0}): каждое её изменение стоит 1 настроения
+
+mood.day_clock=День {0}, {1}
+
+mood.fix.allow_houses=Разрешите входить в дома (Приказы, Разрешения)
+mood.fix.houses=Пускать в дома
+mood.fix.houses.help=Пусть входят в дома и выходят, а спать идут домой
+mood.fix.love_off=Любовь выкл.
+mood.fix.love_off.help=Они перестанут развивать любовь — и обиды — с соседями. Их любовь к вам тоже перестанет расти.
+mood.fix.love_off.short=Они перестанут развивать любовь — и обиды — с соседями
+mood.fix.love_off_other=Любовь выкл.: {0}
+mood.fix.love_off_other.help={0} перестанет развивать любовь — и обиды — с соседями. Любовь к вам тоже перестанет расти.
+mood.fix.open=Открыть {0}
+mood.fix.orders=Приказы
+mood.fix.orders.away=Их территория: отодвиньте её подальше
+mood.fix.orders.away_from=Их территория: отодвиньте её от {0}
+mood.fix.orders.free_bed=Их территория: перенесите её к дому со свободной кроватью
+mood.fix.orders.help=Их территория, боевой приказ и разрешения
+mood.fix.orders.sex=Их территория и разрешения: там есть «Секс»
+mood.fix.orders.with=Их территория и дом: поселите их в один дом с {0}
+mood.fix.orders.with_them=Их территория и дом: поселите их в один дом
+mood.fix.sex_off=Секс выкл.
+mood.fix.sex_off.help=Они перестают просить, так что никто им не отказывает — но и секса нет, а значит, нет и его +3 к настроению
+
+mood.head=Настроение
+
+mood.label.company=Плохая компания
+mood.label.company_with=Плохая компания: {0}
+mood.label.no_bed=Нет кровати
+mood.label.no_bed_with=Нет кровати с {0}
+mood.label.pining=Тоска
+mood.label.pining_for=Тоска по {0}
+mood.label.sex=Секс
+mood.label.sex_with=Секс с {0}
+mood.label.sleep=Сон под крышей
+
+mood.last_day=Последний день
+mood.last_day.help=Что меняло их настроение с этого же времени вчера, по причинам
+mood.level=Мораль {0}
+mood.moral_after=Мораль после
+mood.night=Ночь
+mood.night.help=С 21:00 до 06:00. Ночь под крышей окупается на рассвете:\nдо +10, или +20, пока ниже нуля
+
+mood.now.moved=С этого же времени вчера: {0}
+mood.now.none=За последние три дня изменений не записано
+
+mood.pill.from_rebelling={0} до бунта
+mood.pill.in_a_day={0} за день
+mood.pill.in_days.one={1} за {0} день
+mood.pill.in_days.few={1} за {0} дня
+mood.pill.in_days.many={1} за {0} дней
+mood.pill.steady=стабильно
+
+mood.report.dawn.one=Рассвет: {0} житель спал под крышей.
+mood.report.dawn.few=Рассвет: {0} жителя спали под крышей.
+mood.report.dawn.many=Рассвет: {0} жителей спали под крышей.
+mood.report.dawn_sleepless.one=Рассвет: {0} житель спал под крышей; без сна: {1}.
+mood.report.dawn_sleepless.few=Рассвет: {0} жителя спали под крышей; без сна: {1}.
+mood.report.dawn_sleepless.many=Рассвет: {0} жителей спали под крышей; без сна: {1}.
+mood.report.near={0} в шаге от бунта.
+mood.report.near_why={0} в шаге от бунта: {1}.
+mood.report.rebelled={0} бунтует.
+mood.report.rebelled_why={0} бунтует: {1}.
+
+mood.section.moral=МОРАЛЬ
+mood.section.moral.help=Их мораль, от -100 до 100: на -100 они бунтуют. Ночь под крышей — главный способ её поднять.
+
+mood.span.from_to=с {0} до {1}
+mood.span.none=Изменений не записано
+mood.span.since=С {0}
+mood.span.until=До {0}
+
+mood.today={0} сегодня
+
+mood.word.company=плохая компания
+mood.word.execution=видели казнь
+mood.word.food=плохая еда
+mood.word.heartbroken=разбитое сердце
+mood.word.no_bed=нет кровати
+mood.word.unhappy=не в духе
+
+observe.unknown=???
+
+observe.unknown.short=?
+
+orders.action.banish=Изгнать
+orders.action.call=Позвать
+
+orders.combat=Бой
+
+orders.combat.aggressive=Агрессивный
+orders.combat.aggressive.help=Нападает на любого врага, как только увидит.
+orders.combat.defensive=Оборонительный
+orders.combat.defensive.help=Отбивается, когда нападают, и не преследует.\nСледуя за вами: нападает на всех, кто враждебен к вам.
+orders.combat.guard=Охрана
+orders.combat.guard.help=Нападает на разведчиков и налётчиков, как только увидит, и не спит ночью.\nСледуя за вами: как «Агрессивный».
+orders.combat.name.aggressor=Агрессор
+orders.combat.name.defender=Защитник
+orders.combat.name.guarder=Страж
+orders.combat.name.other=Роль {0}
+orders.combat.name.survivor=Выживший
+orders.combat.survival=Выживание
+orders.combat.survival.help=Не сражается. Не получает урона.
+
+orders.edit_dialogue=Изменить реплики
+orders.face_left=Смотреть влево
+orders.face_right=Смотреть вправо
+orders.following=Следование
+
+orders.following.no=нет
+orders.following.yes=да
+
+orders.job=Работа
+
+orders.job.breeding=Разведение
+orders.job.breeding.help=Ухаживает за постройками для разведения поблизости.
+orders.job.breeding.needs=свиноферма или загон, ящик для урожая, доилка
+orders.job.digging=Раскопки
+orders.job.digging.help=Копает землю и складывает её на месте раскопок.
+orders.job.digging.needs=место раскопок
+orders.job.farming=Земледелие
+orders.job.farming.help=Ухаживает за грядками поблизости и кладёт урожай в ящик для урожая.
+orders.job.farming.needs=грядки и ящик для урожая
+orders.job.food=Еда
+orders.job.food.help=Собирает еду и складывает её в ящик для еды.
+orders.job.food.needs=ящик для еды
+orders.job.gathering=Сбор
+orders.job.gathering.help=Собирает ветки, листья, волокно и прочее в ящик для урожая.
+orders.job.gathering.needs=ящик для урожая
+orders.job.name.excavate=Раскопки
+orders.job.name.farm=Ферма
+orders.job.name.fishing=Рыбалка
+orders.job.name.food=Еда
+orders.job.name.harvest=Сбор
+orders.job.name.livestock=Скот
+orders.job.name.log=Лес
+orders.job.name.mine=Камень
+orders.job.name.none=Нет
+orders.job.name.other=Работа {0}
+orders.job.name.repair=Ремонт
+orders.job.name.train=Тренировка
+orders.job.needs=Нужно
+orders.job.none=Без работы
+orders.job.none.help=Не работает. Либидо восстанавливается быстрее.
+orders.job.repair=Ремонт
+orders.job.repair.help=Чинит повреждённые постройки, начиная с ближайших к месту ожидания.
+orders.job.stone=Камень
+orders.job.stone.help=Добывает камень и складывает его в каменоломне.
+orders.job.stone.needs=каменоломня
+orders.job.training=Тренировка
+orders.job.training.help=Тренируется на мешке с песком и получает опыт.
+orders.job.training.needs=мешок с песком
+orders.job.wood=Дерево
+orders.job.wood.help=Рубит деревья и складывает древесину на дровяном складе.
+orders.job.wood.needs=дровяной склад
+
+orders.option.house=Вход/выход из дома
+orders.option.love=Разрешить любовь
+orders.option.sex=Разрешить секс
+
+orders.permission.force=Принуждение
+orders.permission.force.off=Никого не принуждает
+orders.permission.force.on=Принуждает к сексу, когда захочется
+orders.permission.house=Дом
+orders.permission.house.off=Не заходит в дома
+orders.permission.house.on=Заходит в дома и выходит
+orders.permission.love=Любовь
+orders.permission.love.off=Ни любви, ни обид
+orders.permission.love.on=Развивает любовь с соседями
+orders.permission.sex=Секс
+orders.permission.sex.off=Без секса
+orders.permission.sex.on=Занимается сексом, когда захочется
+
+orders.permissions=Разрешения
+
+orders.pose.attack=Атаковать
+orders.pose.cheer=Подбадривать
+orders.pose.dance=Танцевать
+orders.pose.fan=Обмахиваться
+orders.pose.harvest=Собирать
+orders.pose.lewd_dance=Непристойный танец
+orders.pose.lie_down=Лежать
+orders.pose.mining=Копать
+orders.pose.none=Ничего
+orders.pose.repair=Чинить
+orders.pose.run=Бежать
+orders.pose.shower=Душ
+orders.pose.sit=Сидеть
+orders.pose.sleep=Спать
+orders.pose.walk=Идти
+orders.pose.walk_backward=Пятиться
+
+orders.section.assignment=НАЗНАЧЕНИЕ
+orders.section.permissions=РАЗРЕШЕНИЯ
+orders.section.standing=ГДЕ СТОЯТ
+
+orders.set_place=Задать место
+orders.standing=Где стоят
+orders.territory=Территория
+orders.title=Приказы
+orders.waiting_pose=Поза ожидания
+
+place.cancel=Отмена
+place.cancel.help=Оставляет их место, дом и территорию как были.
+place.cancel.note=или ПКМ, как в самой игре
+place.food=Еда
+
+place.food.edge_only.one=только на краю территории ({0} склад)
+place.food.edge_only.few=только на краю территории ({0} склада)
+place.food.edge_only.many=только на краю территории ({0} складов)
+place.food.held.one={0} склад, запас {1}
+place.food.held.few={0} склада, запас {1}
+place.food.held.many={0} складов, запас {1}
+place.food.none=нет склада в досягаемости
+
+place.head=Размещение: {0}
+
+place.head.cancel=отмена
+place.head.place=поставить
+place.head.size=размер
+place.head.walk=ходьба
+
+place.house=Дом
+
+place.house.barred=дом в {0}, {1}
+place.house.barred.why=но в дома их не пускают
+place.house.inside=этот: размещены внутри и живут здесь
+place.house.near=в {0}: +10 к настроению на рассвете
+place.house.none=нет в пределах {0}: на рассвете ничего
+place.house.past_widest=ближайший в {0}, дальше самой широкой территории
+place.house.widen=ближайший в {0}: расширьте территорию на {1}
+
+place.key.click=клик
+place.key.wheel=колесо
+
+place.keys.cancel={0} отмена
+place.keys.size={0} размер
+
+place.living_here=ЖИВУТ ЗДЕСЬ
+
+place.near.back=ОТВЕТ
+place.near.for={0} к {1}
+place.near.more.one=и ещё {0}
+place.near.more.few=и ещё {0}
+place.near.more.many=и ещё {0}
+place.near.more_plain.one=и ещё {0}, у всех +5 в обе стороны
+place.near.more_plain.few=и ещё {0}, у всех +5 в обе стороны
+place.near.more_plain.many=и ещё {0}, у всех +5 в обе стороны
+place.near.them=ним
+place.near.they=они
+place.near.tick=Любовный тик, шесть в день, пока их территории пересекаются:
+place.near.to_them=К НИМ
+
+place.neighbours=СОСЕДИ
+
+place.neighbours.love_off=Любовь у них выкл.: здесь никто не в счёт
+place.neighbours.none=Здесь ничья территория не пересекается с их территорией: любовь не меняется
+
+place.point_ground=Наведите на землю, чтобы оценить место
+
+place.rings.a_step=шаг
+place.rings.wheel=колесо над миром, {0} за щелчок, от {1} до {2}
+
+place.stores.and_edge={0}, +{1} на краю
+place.stores.nearest=ближайший в {0}, радиус {1}
+
+place.water=Вода
+
+place.water.edge_only.one=только на краю территории ({0} колодец)
+place.water.edge_only.few=только на краю территории ({0} колодца)
+place.water.edge_only.many=только на краю территории ({0} колодцев)
+place.water.held.one={0} колодец, запас {1}
+place.water.held.few={0} колодца, запас {1}
+place.water.held.many={0} колодцев, запас {1}
+place.water.none=нет колодца в досягаемости
+
+player.food=Еда
+player.hp=HP
+player.level=Уровень персонажа {0}
+player.lives=Жизни
+player.name_level={0}  ·  Уровень персонажа {1}
+player.needs_empty=Еда или вода на нуле: здоровье не восстанавливается и убывает
+
+player.points.attributes=Свободные очки характеристик
+
+player.skill_level=Уровень навыков {0}
+player.stun=Оглушение
+
+
+player.water=Вода
+player.xp=Опыт
+
+quicksave.no_slot=Некуда сохранить: сохранитесь один раз через меню и загрузите этот слот
+quicksave.saved=Сохранено в слот {0}
+quicksave.saved_backup=Сохранено в резервный слот
+quicksave.saving=Сохранение...
+
+reach.all_in=Сложить всё
+reach.all_in.help=Всё из ваших сумок отправляется в перечисленные здесь сундуки: сначала туда, где это уже лежит, затем в ближайший со свободным местом. Избранное остаётся.
+reach.all_out=Забрать всё
+reach.all_out.help=Всё из перечисленных сундуков переходит в ваши сумки, начиная с ближайшего сундука, пока они не заполнятся. Затем урожай: рыба из ловушек, яйца, мёд, травы и грибы.
+reach.body=Тело
+
+reach.body.dead=мёртв(а)
+reach.body.down=без сознания
+
+reach.button.hide=скрыть сундуки
+reach.button.show=сундуки рядом
+
+reach.chip.bags=Сумки ваших людей
+reach.chip.bags.help=Сумки ваших работников в досягаемости.
+reach.chip.benches=Полосы верстаков
+reach.chip.benches.help=Собственная полоса верстака на десять ячеек.
+reach.chip.bodies=Тела
+reach.chip.bodies.help=Карманы поверженных и мёртвых в досягаемости.
+reach.chip.breeding=Клетки, ловушки, грядки
+reach.chip.breeding.help=Клетки, ловушки, грядки, ульи, курятники, грибные брёвна, ящики для трав.
+reach.chip.bulk=Здесь работают: {0} · {1} · {2}.
+reach.chip.by_hand=В списке; перекладывайте вручную.
+reach.chip.chests=Сундуки и ящики
+reach.chip.chests.help=Деревянные и железные сундуки, ящики, выход шахты.
+reach.chip.click_hide=Нажмите, чтобы скрыть.
+reach.chip.harvest=«{0}» забирает урожай; остальное вручную.
+reach.chip.hidden=скрыто
+reach.chip.hidden.help=Здесь не показано. Нажмите, чтобы показать.
+reach.chip.let_stack=Нажмите, чтобы клавиша быстрого складывания тоже заполняла это.
+reach.chip.materials=Хранилища материалов
+reach.chip.materials.help=Хранилища, которые верстак считает своим запасом.
+reach.chip.shown=показано
+reach.chip.shown_stack=показано, заполняется быстрым складыванием
+reach.chip.shown_stack.help=Клавиша быстрого складывания тоже может класть сюда. Нажмите, чтобы скрыть.
+
+reach.compact=Компактно
+reach.container=Контейнер
+reach.only_filtered=Только то, что подходит под фильтр.
+reach.stack=Разложить
+reach.stack.help=То, что уже лежит в сундуке из списка, отправляется в него. Избранное остаётся.
+reach.title=В досягаемости
+
+recipe.bench=ВЕРСТАК
+
+recipe.bench.in_reach={0} · в досягаемости
+recipe.bench.not_in_reach={0} · вне досягаемости
+
+recipe.by_hand=Вручную
+
+recipe.counter.max=МАКС. {0}
+recipe.counter.set=ВЫБРАНО {0}
+
+recipe.craft=СОЗДАТЬ {0}
+recipe.have_need_makes=ЕСТЬ / НУЖНО · ДАЁТ {0}
+
+recipe.hint.by_hand=Создаётся вручную
+recipe.hint.gather=Добывается в мире
+recipe.hint.make_at=Создаётся на {0}
+recipe.hint.needs_materials=Для рецепта нужны материалы
+recipe.hint.not_in_reach={0} вне досягаемости
+
+recipe.makes=ДАЁТ {0}
+recipe.materials=СПИСОК МАТЕРИАЛОВ
+recipe.note=ПРИМЕЧАНИЕ
+recipe.quantity=КОЛИЧЕСТВО
+
+recipe.quantity.tip=Сколько
+recipe.quantity.tip.type=нажмите на число, чтобы ввести своё
+recipe.quantity.tip.wheel=колесо меняет по шагу
+
+recipe.return.back_to=Назад к {0}
+recipe.return.bench=Нужный верстак вне досягаемости
+recipe.return.job=Вернуться к работе
+recipe.return.needs_more=Нужно ещё {0} {1}
+
+recipe.return.other=Нужны и другие материалы
+
+recipe.return.ready=Можно создавать
+
+recipe.sheet_number=ЛИСТ {0}
+
+recipe.status.can_craft.one=Можно создать {0} раз
+recipe.status.can_craft.few=Можно создать {0} раза
+recipe.status.can_craft.many=Можно создать {0} раз
+recipe.status.crafted=Создано: {1} ×{0}
+recipe.status.need_more=Нужно ещё {0} {1}
+recipe.status.requires=Требуется {0} — вне досягаемости
+recipe.status.unavailable=Недоступно в этом меню
+
+relations.head=Отношения
+relations.history=История
+
+relations.history.deliveries=Роды
+relations.history.first_partner=Первый партнёр
+relations.history.masturbation=Мастурбация
+relations.history.pregnancies=Беременности
+relations.history.sex=Секс
+
+relations.matrix.count.one={0} отношение
+relations.matrix.count.few={0} отношения
+relations.matrix.count.many={0} отношений
+relations.matrix.plain={0} — {1}
+relations.matrix.plain_shown={0} — {1} (показано: {2})
+relations.matrix.shown_of={0} из {1}
+relations.matrix.title={0} · ОТНОШЕНИЯ
+
+relations.more=… ещё {0}
+
+roster.filter.unhappy=не в духе
+
+roster.job.breed=Разведение
+roster.job.dig=Раскопки
+roster.job.fishing=Рыбалка
+roster.job.following=Следует
+roster.job.food=Еда
+roster.job.harvest=Сбор
+roster.job.idle=Без дела
+roster.job.planter=Грядки
+roster.job.repair=Ремонт
+roster.job.stone=Камень
+roster.job.training=Тренировка
+roster.job.wood=Дерево
+roster.job.working=Работает
+
+roster.kind.numbered=Вид {0}
+roster.kind.story=Сюжетные персонажи
+
+roster.level=Ур. {0}
+
+roster.mood.at_risk=Под угрозой
+roster.mood.close=Близко к бунту
+roster.mood.content=Всё хорошо
+roster.mood.rebelling=Бунтует
+roster.mood.unhappy=Не в духе
+
+roster.section.at_home=Дома
+roster.section.away=В отлучке
+roster.section.in_reach=В досягаемости
+roster.section.no_personality=Без характера
+
+roster.send_home=Всех домой
+roster.send_home.help=Все возвращаются на свои территории
+
+roster.sort.job=Работа
+roster.sort.kind=Вид
+roster.sort.mood=Настроение
+roster.sort.personality=Характер
+roster.sort.vicinity=Окрестности
+
+roster.title=Состав
+
+roster.where.at_home=дома
+roster.where.away=в отлучке
+roster.where.in_reach=в досягаемости
+
+settings.action_bar.shift=Shift для перемещения
+settings.action_bar.shift.help=Чтобы переместить ячейку панели действий или инструмент на поясе, нужно держать Shift, чтобы случайное движение мыши её не потеряло. Выкл.: перетаскивайте свободно, а брошенная за пределы панели ячейка удаляется. Shift+щелчок удаляет в любом случае.
+settings.apply_note=Изменения применяются сразу.
+
+settings.camera.zoom_out=Отдаление
+settings.camera.zoom_out.help=Насколько колесо мыши отодвигает камеру по сравнению с пределом самой игры. Камера рисует так далеко, как отодвинута, поэтому дальний зум стоит кадров.\n100%  как в игре без модов
+settings.cursor.style.arrow=Стрелка
+settings.cursor.style.arrow_bold=Жирная стрелка
+settings.cursor.style.carved=Резной
+settings.cursor.style.claw=Коготь
+settings.cursor.style.crosshair=Перекрестие
+settings.cursor.style.help=Выберите «Выкл.», чтобы использовать системный указатель.
+settings.cursor.style.off=Выкл.
+settings.cursor.style.ring=Кольцо
+settings.cursor.style.spear=Копьё
+
+settings.done=Готово
+
+settings.effects.by_id=Эффект {0}
+settings.effects.by_id.help=Скрыт по номеру в списке [FX] Blocked в .cfg.
+settings.effects.by_name.help=Название этого эффекта в самой игре. Скрытие меняет только то, что видите вы.
+settings.effects.filter=Фильтр эффектов
+settings.effects.filter.help=Выкл. — видны все эффекты, как в игре без модов. Скрытое ниже сохраняется до повторного включения.
+settings.effects.group.hidden=Скрытые
+settings.effects.group.shown=Показанные, новые сверху
+settings.effects.none=Пока нет. Играйте дальше и откройте снова.
+settings.effects.none.help=Эффекты попадают в список, когда игра впервые показывает их в этом сеансе.
+
+settings.group.action_bar=Панель действий
+settings.group.chests=Сундуки
+settings.group.flights=Полёты
+settings.group.item_card=Карточка предмета
+settings.group.markers=Маркеры
+settings.group.marking=Отметка
+settings.group.plaque=Табличка
+settings.hotkeys.clash=Также назначено на {0}. {1}
+settings.hotkeys.close_all=Закрыть всё
+settings.hotkeys.close_all.help=Закрывает все открытые окна: сначала Island UI, затем игры.
+settings.hotkeys.console=Консоль
+settings.hotkeys.console.help=Опускает командную консоль с верхнего края экрана.
+settings.hotkeys.console.unbound=Слева от 1
+settings.hotkeys.crafting=Создание
+settings.hotkeys.crafting.help=Открывает и закрывает окно создания.
+settings.hotkeys.cursor_cycle=Следующий курсор
+settings.hotkeys.cursor_cycle.help=Перебирает стили курсора, чтобы выбрать на глаз.
+settings.hotkeys.group.game=Клавиши игры
+settings.hotkeys.inventory=Инвентарь
+settings.hotkeys.inventory.help=Открывает и закрывает окно инвентаря.
+settings.hotkeys.quick_save=Быстрое сохранение
+settings.hotkeys.quick_save.help=Сохраняет в слот, из которого загружена эта игра.
+settings.hotkeys.quick_stack=Быстро сложить
+settings.hotkeys.quick_stack.help=Кладёт складываемые в стопки предметы в хранилища рядом, отмеченные для быстрого складывания.
+settings.hotkeys.target=Цель
+settings.hotkeys.target.help=Выбирает целью то, что ближе всего к курсору, не подходя к нему; повторное нажатие — следующее ближайшее.
+settings.hotkeys.target_sheet=Досье цели
+settings.hotkeys.target_sheet.help=Открывает и закрывает досье того, кто сейчас ваша цель.
+settings.hotkeys.vicinity=Окрестности
+settings.hotkeys.vicinity.help=Открывает и закрывает окно окрестностей: хранилища в досягаемости.
+settings.hotkeys.world_focus=Назад в мир
+settings.hotkeys.world_focus.help=Закрывает окна Island UI, а также карту и окно заданий.
+
+settings.items.guide=Где взять
+settings.items.guide.help=Карточка говорит, как получить предмет: где он находится, с кого выпадает, кто им торгует. Составлено по данным, собранным игроками, поэтому охватывает и подземелье, и сундуки, и обмен.
+
+settings.language=Язык
+settings.language.help=«Как в игре» — язык, выбранный в настройках самой игры; в скобках указано, какой он сейчас. Фанатский перевод поверх английского текста игры всё равно значится там как английский, поэтому выберите его язык из списка. Переводы сделаны машиной; исправления приветствуются.
+
+settings.language.same_as_game=Как в игре (сейчас: {0})
+
+settings.page.camera=Камера
+settings.page.camera.about=Как далеко может отодвинуться камера.
+settings.page.combat=Бой
+settings.page.combat.about=Кто носит маркер в бою и за кем следует табличка.
+settings.page.cursor=Курсор
+settings.page.effects=Эффекты
+settings.page.effects.about=Включите эффект, чтобы скрыть его. Эффект появляется в списке, когда игра его покажет.
+settings.page.general=Общие
+settings.page.general.about=Ваш указатель и язык, на котором говорят моды.
+settings.page.hotkeys=Горячие клавиши
+settings.page.hotkeys.about=Нажмите на клавишу, затем на новую. Esc отменяет, Backspace очищает.
+settings.page.notices=Уведомления
+settings.page.notices.about=Как экран сообщает о происходящем: низкие показатели и что куда летит.
+settings.page.sheets=Досье
+settings.page.vicinity=Окрестности
+settings.page.steering=Навигация
+settings.page.steering.about=Как ваши люди и враги обходят то, что мешает им пройти.
+settings.page.story=Сюжет
+settings.page.story.about=Что сюжетные выборы сообщают вам до того, как вы выберете.
+settings.page.struggle=Борьба
+settings.page.struggle.about=Удержание кнопки в захвате вместо частых нажатий.
+settings.page.target=Цель
+settings.page.target.about=Как отмечается человек или предмет, с которым вы имеете дело.
+settings.page.tip=Настройки: {0}
+settings.page.vitals=Показатели
+settings.page.weather=Погода
+settings.page.weather.about=Где вас застаёт погода.
+settings.page.window=Окно
+settings.page.window.about=Что делает окно игры, когда вы отвлекаетесь от него.
+
+settings.page.windows=Окна
+settings.page.windows.about=Где стоят окна Island UI и что они показывают.
+settings.sheets.left=Досье слева
+settings.sheets.left.help=Досье персонажа переезжает на левую сторону, пока создание, окрестности и состав закрыты, и возвращается, когда одно из них открывается. Вкладка на краю досье тоже переключает это.
+settings.target.always_enemy_markers=Всегда на врагах
+settings.target.always_enemy_markers.help=Все враждебные на экране носят боевой маркер, в бою или нет: те, кто напал на вас или ваших людей. Заменяет для них число выше.
+settings.target.always_neutral_markers=Всегда на нейтральных
+settings.target.always_neutral_markers.help=Все на экране, кто не ваш и не враждебен, носят боевой маркер, в бою или нет, с янтарной полосой здоровья. Заменяет для них число выше.
+settings.target.always_friend_markers=Всегда на ваших людях
+settings.target.always_friend_markers.help=Все ваши люди на экране носят боевой маркер, в бою или нет, с зелёной полосой здоровья. Заменяет для них число выше.
+settings.vicinity.compact=Компактно
+settings.vicinity.compact.help=Каждое хранилище показывает свои занятые ячейки в их собственном порядке, а затем одно число свободных, вместо всех ячеек. Флажок «Компактно» внизу окна окрестностей тоже переключает это.
+settings.vicinity.hold_order=Держать порядок
+settings.vicinity.hold_order.help=Пока указатель на списке, строки остаются на своих местах, чтобы ни одна не сдвинулась под указателем. Строка, которая оказалась ближе, чем строка над ней, отмечена стрелкой, и список пересортируется, как только указатель уйдёт.\nВыкл.  всегда сначала ближайшее
+
+settings.steering.clearance=Зазор
+settings.steering.clearance.help=Насколько широк обзор впереди относительно тела идущего.\nВыше 100%  огибает углы с запасом, не лезет в узкие проходы\nНиже 100%  протискивается в щели чуть шире тела, задевает углы
+settings.steering.door_assist=Помощь у дверей
+settings.steering.door_assist.help=Ваши люди, выходящие из дома, выходят, дойдя до его двери. Выход Native House почти целиком в стене, и без этого они могут стоять рядом с ним вечно.
+settings.steering.enabled=Island AI
+settings.steering.enabled.help=Весь мод, вживую: выкл. — все движутся точно как в игре без модов.
+settings.steering.enemies=Враги обходят
+settings.steering.enemies.help=Враги обходят препятствия, а не упираются в них: в погоне, блуждая, убегая. Стены защищают хуже.
+settings.steering.friends=Ваши люди обходят
+settings.steering.friends.help=Спутники и жители обходят препятствия на улице: следуя за вами, преследуя врага, блуждая, идя ночью в дом.
+settings.steering.look_ahead=Обзор вперёд
+settings.steering.look_ahead.help=Как далеко вперёд идущий высматривает препятствия.
+settings.steering.method=Метод
+settings.steering.method.along_walls=Вдоль стен
+settings.steering.method.fan=Веер
+settings.steering.method.help=Как заблокированный идущий выбирает путь:\nВдоль стен  пробует и направление встреченной стены, берёт курс с наибольшим простором ближе к цели; находит узкие проходы\nВеер  первый вариант: ближайший из одиннадцати фиксированных курсов, который полностью свободен
+
+settings.story.hints=Подсказки сюжета
+settings.story.hints.always=Всегда
+settings.story.hints.click=По нажатию
+settings.story.hints.help=Каждый вариант сюжетного выбора и каждая клавиша сцены, которая её ждёт, говорит, к чему ведёт: симпатия, кто присоединится, что откроется. По нажатию они ждут за полосой, пока вы её не нажмёте. Смерти, концовки и расставания всегда скрыты до нажатия.
+settings.story.hints.off=Выкл.
+
+settings.struggle.hold=Удержание в борьбе
+settings.struggle.hold.help=Удерживайте кнопку атаки в захвате, и удары продолжатся. Без мода удержание повторяет удар только после прокачки навыка 9; до тех пор приходится часто жать кнопку.
+settings.struggle.interval=Удар каждые
+settings.struggle.interval.help=Время между ударами при удержании. Никогда не медленнее, чем уже позволяет ваш навык.\n0.10 с  примерно быстрые нажатия, и столько даёт игра на полном навыке
+
+settings.target.combat_markers=Боевые метки
+settings.target.combat_markers.help=Сколько врагов в бою несут над головой маленькую метку здоровья и оглушения: последние, кого вы ударили, затем ближайшие из тех, кто напал на вас. За краем экрана метка ждёт у края и указывает на них. 0 = нет.
+settings.target.flight_time=Время полёта
+settings.target.flight_time.help=Как долго летит уведомление.\nМенее ~0.35 с  число не прочитать в полёте\nБолее 0.8 с  ощущается как ожидание
+settings.target.friendly_markers=Метки своих
+settings.target.friendly_markers.help=В бою ваши спутники и ваши люди, сражающиеся рядом с вами, тоже несут боевую метку, а их полоска здоровья зелёная. У них свой счёт, столько же, сколько у врагов выше, так что враг никогда не уступит свою метку кому-то из ваших.
+settings.target.hover_health=Здоровье под курсором
+settings.target.hover_health.help=Наведите курсор на любого, у кого есть здоровье, в бою или нет, и над его головой будет боевая метка, пока курсор на нём. Не для тех, у кого метка уже есть: вашей цели или врага, отмеченного в бою.
+settings.target.pickup_flight=Полёт подобранного
+settings.target.pickup_flight.help=Уведомление о подобранном предмете летит от вас к ячейке, куда он попал, а не ждёт у края экрана.
+settings.target.ring=Кольцо на земле
+settings.target.ring.help=Кольцо на земле под вашей целью, цвета её метки:\nЗелёный  ваши\nКрасный  враждебные\nЯнтарный  чужой или предмет\nСерый  тело
+settings.target.ring_opacity=Непрозрачность кольца
+settings.target.ring_opacity.help=Насколько плотное кольцо.
+settings.target.ring_size=Размер кольца
+settings.target.ring_size.help=Насколько большое кольцо относительно размеров цели.
+settings.target.containers_open=Сундуки открываются сразу
+settings.target.containers_open.help=Когда вы выбираете сундук или что-то другое, что служит только хранилищем, его инвентарь открывается сразу. Если закрыть его, следующий сундук, на который вы переключитесь, останется закрытым, пока вы не снимете выбор.\nВыкл.  нажмите его кнопку «Инвентарь»
+settings.target.container_close_untargets=Закрытие сундука снимает выбор
+settings.target.container_close_untargets.help=Если закрыть инвентарь сундука или чего-то другого, что служит только хранилищем, выбор тоже снимается.\nВыкл.  он остаётся вашей целью с закрытым инвентарём
+settings.target.selection_pulse=Пульсация выбора
+settings.target.selection_pulse.help=Собственное пульсирующее белое свечение игры на выбранном персонаже. По умолчанию выкл.: метка и кольцо и так показывают, кто это.
+
+settings.unit.metres={0} м
+settings.unit.none=Нет
+settings.unit.percent={0}%
+settings.unit.seconds={0} с
+
+settings.vitals.health_at=Мало здоровья при
+settings.vitals.health_at.help=Доля от максимума здоровья. Критично на половине этой доли.
+settings.vitals.low=Предупреждение
+settings.vitals.low.help=Показатель, которого мало, светится на панели в своей форме:\nЯнтарный  мало, медленное дыхание\nКрасный  критично, частый пульс\nКаждый шаг к худшему вспыхивает один раз. Восстановленный, он гаснет.
+settings.vitals.needs_at=Мало еды и воды при
+settings.vitals.needs_at.help=Доля от полной шкалы. Критично на половине этой доли, а на нуле вспыхивает ещё раз: тогда игра перестаёт вас лечить и отнимает здоровье.
+
+settings.weather.dry_indoors=Сухо в доме
+settings.weather.dry_indoors.help=В доме дождь не идёт. Снаружи он продолжается, и у двери вы снова его видите. Без мода дождь идёт за вами внутрь.
+
+settings.window.keep_fullscreen=Оставаться на экране
+settings.window.keep_fullscreen.help=Игра не сворачивается, когда вы переключаете рабочий стол, жмёте Alt+Tab или щёлкаете по другому монитору. Без мода она сворачивается сама.
+settings.window.minimise_shortcuts=Win+M сворачивает
+settings.window.minimise_shortcuts.help=Win+M и Win+Down сворачивают игру, как и другие окна. Щелчок по панели задач и Win+D работают в любом случае.
+
+sheet.click_to_target=Нажмите, чтобы выбрать {0} целью
+sheet.cost={0} оч.
+sheet.lv=Ур. {0}
+sheet.no=нет
+sheet.points=Очки
+sheet.yes=да
+sheet.you=Вы
+
+skills.fallback_name=Навык {0}
+skills.head=Навыки
+skills.level=Уровень навыков {0}
+skills.max=Макс.
+
+skills.name.carry=Переноска
+skills.name.construction=Строительство
+skills.name.grapple=Захват
+skills.name.harvest=Сбор
+skills.name.leader=Вожак
+skills.name.observation=Наблюдательность
+skills.name.patience=Терпение
+skills.name.persuasive=Убеждение
+skills.name.self_healing=Самоисцеление
+skills.name.smash=Мощный удар
+skills.name.stomach=Железный желудок
+skills.name.swim=Плавание
+
+skills.tip.next=Далее, ур. {0}: {1}
+skills.tip.now=Сейчас, ур. {0}: {1}
+
+slot.filter=Фильтр...
+
+social.before_record=До начала записей
+social.cant_stand=не выносит
+social.cant_stand_each=не выносят друг друга
+social.cant_stand_who=не выносит {0}
+social.click_close=Нажмите, чтобы закрыть
+social.click_why=Нажмите, чтобы узнать почему
+social.not_shown=Не показано: {0}
+
+social.note.acquainted=знакомы
+social.note.loved_not_back={0} любит {1} без взаимности
+social.note.lovers=возлюбленные
+social.note.loves_not_back=любит {0} без взаимности
+
+social.show_less=Показать меньше
+social.none=Нет
+social.show_more=Показать ещё {0}
+
+split.take=Взять {0}
+
+story.spoiler=Спойлер — нажмите, чтобы показать
+story.show_hints=Подсказки — нажмите, чтобы показать
+story.show_hints.tip=К чему ведёт каждый вариант, скрыто за этой полосой. Чтобы показывать подсказки сразу или выключить их, откройте страницу «Сюжет» в настройках.\n
+strip.hp=HP
+strip.love_for_you=Любовь к вам
+strip.not_met=не встречались
+strip.pregnant=Беременность
+strip.pregnant_months={0} / 12 мес.
+
+talk.choice_unnamed=Вариант разговора
+talk.header=Разговор с {0}
+talk.nothing=Не о чем говорить
+
+target.tab.nothing=здесь нечего выбрать целью
+
+tip.fix=Решение
+
+unit.act=Действие
+
+unit.act.carry=Нести
+unit.act.change=Поменяться
+unit.act.craft=Создать
+unit.act.dissect=Разделать
+unit.act.follow=Взять с собой
+unit.act.give_birth=Родить
+unit.act.leave=Оставить
+unit.act.talk=Говорить
+unit.act.token_shop=Магазин токенов
+unit.act.token_shop_2=Магазин токенов 2
+unit.act.trade=Торговать
+unit.act.vacuum=Пылесос
+
+unit.bag=Сумка
+
+unit.caption.character=ПЕРСОНАЖ
+unit.caption.inventory=ИНВЕНТАРЬ
+
+unit.closer_by=на {0} м ближе
+unit.details=Подробности
+unit.more_actions=Ещё действия
+unit.opens_in_reach=откроется в досягаемости
+unit.opens_when_in_reach=откроется, когда вы будете рядом
+unit.out_of_reach=вне досягаемости
+unit.pockets=Карманы
+
+unit.portrait.sheet=Нажмите, чтобы открыть лист персонажа
+
+unit.prop.call=Отозвать
+unit.prop.caress=Ласкать
+unit.prop.connect=Соединить
+unit.prop.cosmetic=Пластика
+unit.prop.cosmetic_friend=Пластика (спутник)
+unit.prop.drink=Пить
+unit.prop.dye=Покрасить
+unit.prop.eat=Есть
+unit.prop.edit=Изменить
+unit.prop.enter=Войти
+unit.prop.execute=Казнить
+unit.prop.finish=Кончить
+unit.prop.give_birth=Родить
+unit.prop.hair_dress=Причёска
+unit.prop.hair_dress_friend=Причёска (спутник)
+unit.prop.hold=Остановиться
+unit.prop.insert=Вставить
+unit.prop.kill=Убить
+unit.prop.make_meat=Пустить на мясо
+unit.prop.male_display=Показать мужчину
+unit.prop.move=Двигаться
+unit.prop.outfit=Наряд
+unit.prop.outfit_friend=Наряд (спутник)
+unit.prop.peek=Подглядеть
+unit.prop.piss=Помочиться
+unit.prop.position_2=Поза 2
+unit.prop.pull_away=Отпустить
+unit.prop.rape=Изнасиловать
+unit.prop.rape_discreetly=Изнасиловать тихо
+unit.prop.rename=Переименовать
+unit.prop.reset=Сбросить
+unit.prop.roughness_2=Грубость 2
+unit.prop.scale=Размер
+unit.prop.show_face=Показать лицо
+unit.prop.sleep_morning=Спать до утра
+unit.prop.sleep_night=Спать до ночи
+unit.prop.sleeping_powder=Использовать Sleep Powder
+unit.prop.speed=Скорость
+unit.prop.start=Запустить
+unit.prop.summon=Призвать
+unit.prop.take_out=Достать
+unit.prop.use=Использовать
+unit.prop.visit=Посетить
+unit.prop.wash=Мыть
+
+unit.state.carried=несут
+unit.state.corpse=труп
+unit.state.knocked_out=без сознания
+
+use.not_on_you=Это нельзя использовать на себе. Перетащите на {0}, чтобы отдать.
+
+use.not_on_you.someone=Это нельзя использовать на себе. Перетащите на кого-нибудь, чтобы отдать.
+
+vitals.age=Возраст
+vitals.attack=Атака
+vitals.breeding=Разведение
+vitals.character_level=Уровень персонажа {0}
+vitals.class=Класс
+vitals.combat=Бой
+vitals.dislikes=Не любит
+vitals.father=Отец
+vitals.favourite=Избранное в составе
+vitals.following=Следование
+vitals.food=Еда
+vitals.guard=Защита
+vitals.health=Здоровье
+vitals.hp=HP
+vitals.job=Работа
+vitals.libido=Либидо
+vitals.likes=Любит
+vitals.love=Любовь
+
+vitals.love.not_met=не встречались
+
+vitals.moral=Мораль
+vitals.mother=Мать
+vitals.personality=Характер
+vitals.preferences=Предпочтения
+vitals.pregnant=Беременность
+vitals.prop=Объект
+vitals.show_name=Имя в мире
+vitals.speed=Скорость
+vitals.strength=Сила
+vitals.stun=Оглушение
+vitals.surgeries=Операции
+vitals.type=Тип
+vitals.water=Вода
+vitals.wear=Прочность
+vitals.where=Где

@@ -30,6 +30,8 @@ namespace IslandUI
         private static ItemInfo _unitThing;    // ...or what (D156)
         private static float _unitBoundAt;
         private static bool _unitHeadPressed; // a press begun on the reading band
+        private const int CardPressNone = 0, CardPressPortrait = 1, CardPressStar = 2, CardPressManage = 3;
+        private static int _cardPressed;      // what a press on the portrait card began on
         private static bool _unitDead;        // the strip stays down while the target is a corpse
 
         private const float UnitPadX = 5f;
@@ -88,6 +90,7 @@ namespace IslandUI
                 _unitFor = null;
                 _unitThing = null;
                 _unitHeadPressed = false;
+                _cardPressed = CardPressNone;
                 return;
             }
             if (thing != null)
@@ -172,6 +175,8 @@ namespace IslandUI
             _offerRing = null;
             _worldMarker = null;
             _ring = null;
+            CombatList.Clear();
+            ResetCombatMarkers();
             ResetThingForSceneLoad();
             _moreActsPanel = null; _moreActsOpen = false; MoreActs.Clear(); MoreButtons.Clear(); MoreLabels.Clear();
             _veils.Clear();
@@ -339,6 +344,11 @@ namespace IslandUI
             _unitKind.enableWordWrapping = false;
             _unitKind.overflowMode = TextOverflowModes.Overflow;
             _unitKind.alpha = 0.75f;
+            // A LIT DOOR STANDS IN FRONT OF THE TITLE: an open door rises out of the
+            // row into the head's band, and the head, made after the row, drew over
+            // it. The row goes in front of the head, its name and kind - not of
+            // what comes after (the alert, the gauge)
+            _unitRow.Go.transform.SetSiblingIndex(_unitKind.transform.GetSiblingIndex());
             // the alert: the cause word on a paper slip with the frown, present only
             // when true - a condition, not a field (§6.26's one surviving badge idea)
             _unitAlertPlate = Theme.KitImage(_unit.transform, "AlertPlate", "kit_paper", 8, Color.white);
@@ -363,7 +373,7 @@ namespace IslandUI
             stripRect.offsetMax = Vector2.zero;
             EnsureRowExtras(_unitStrip, new SheetLine { Kind = LineStrip });
 
-            _unitTip = KitTooltip.Create((RectTransform)parent, dark: true);
+            _unitTip = KitTooltip.Create((RectTransform)parent);
             LayoutUnit();
             Plugin.Log.LogInfo("The unit built");
             return true;
@@ -377,6 +387,16 @@ namespace IslandUI
             {
                 return _colWidth[CharacterColumn];
             }
+            return BarWidth();
+        }
+
+        // THE TARGET DOCK IS PLACED ON THE BAR ALONE (Forgejo #46): its left end
+        // is the bar's. UnitWidth's sheet column exists only once the window has first been built,
+        // and outlives its closing - so the first press of a door moved the dock 7
+        // right (and could reflow its rows: six acts went from 3 + 3 to one row),
+        // and nothing ever moved it back
+        private static float BarWidth()
+        {
             RectTransform bar = ActionBar.Rect;
             if (bar != null && bar.sizeDelta.x > 50f)
             {
@@ -386,23 +406,36 @@ namespace IslandUI
             return n * Theme.SlotPitch - (Theme.SlotPitch - Theme.SlotSize) + 4f;
         }
 
+        // how far the portrait card reaches left of the plank (PaintAnimeIdentity
+        // places it at board x -170)
+        private static float UnitCardLead() => 170f / AnimePieces.Px;
+
         private static void LayoutUnit()
         {
-            float w = 180f;
+            // the row alone sizes the plank (Forgejo #129): a name wider than the
+            // acts sticks out past its end on the tab (PaintAnimeIdentity). However
+            // many acts there are they stay one row: two rows break the board's design
+            float w = Mathf.Max(100, _unitRow.AnimeWidth);
             _unitRow.Layout(0f, 0f, w);
             _unitRect.sizeDelta = new Vector2(w, UnitFootH);
+            PaintAnimeIdentity(w);
             _unitChevron.gameObject.SetActive(false);
             _unitChevron.rectTransform.sizeDelta = new Vector2(UnitChip, UnitChip);
             Theme.Place(_unitChevronGlyph, 3f, 4f, UnitChip - 6f, UnitChip - 8f);
         }
 
+        // THE DOCK IS ANCHORED AT ITS LEFT END (Forgejo #47, #52): the portrait and
+        // the doors beside it hold still from target to target,
+        // and the dock grows to the right, past the bar's end when its acts need it.
+        // Its left end is the portrait card's, not the plank's: the
+        // card, left of the plank, starts where the bar and the window above do.
         private static void PlaceUnit()
         {
             RectTransform bar = ActionBar.Rect;
             float y = ActionBar.Lift + (bar != null ? bar.sizeDelta.y : 25f) + 6f;
             _unitRect.anchorMin = _unitRect.anchorMax = new Vector2(.5f, 0f);
-            _unitRect.pivot = new Vector2(.5f, 0f);
-            _unitRect.anchoredPosition = new Vector2(0f, y);
+            _unitRect.pivot = new Vector2(0f, 0f);
+            _unitRect.anchoredPosition = new Vector2(-BarWidth() * .5f + UnitCardLead(), y);
             LayoutUnit();
         }
 
@@ -434,16 +467,18 @@ namespace IslandUI
             _unitBoundAt = Time.unscaledTime;
             bool hostile = Hostile(who);
             // D89: a hostile withholds its name and condition - the bars and the acts
-            // against it are all it shows
-            string name = hostile ? string.Empty : (who.charaName ?? string.Empty);
+            // against it are all it shows. Not one of yours in revolt: you know
+            // their name, and the marker's red frame says what they are now.
+            bool withheld = hostile && !who.Employed();
+            string name = withheld ? string.Empty : (who.charaName ?? string.Empty);
             if (_unitName.text != name) { _unitName.text = name; }
-            string kind = hostile ? string.Empty : KindName(_mn != null ? _mn.npcMN : null, who);
+            string kind = withheld ? string.Empty : KindName(_mn != null ? _mn.npcMN : null, who);
             if (string.Equals(kind, who.charaName, System.StringComparison.OrdinalIgnoreCase))
             {
                 kind = string.Empty;
             }
-            string lv = "Lv " + who.level.ToString("0");
-            string apposition = string.IsNullOrEmpty(kind) ? lv : lv + " · " + kind;
+            string lv = Shared.Loc.Get("sheet.lv", "Lv {0}", Observe.Sees(who, Observe.Level) ? who.level.ToString("0") : Observe.Unknown);
+            string apposition = string.IsNullOrEmpty(kind) ? lv : lv + Shared.Loc.Separator + kind;
             // THE STATE AXIS (target-matrix.md D3): dead is 1 with life gone, knocked
             // out is 1 with life left, 5 is on someone's shoulder. A corpse has no
             // condition to read - its needs and bars say nothing a player can act on
@@ -453,14 +488,16 @@ namespace IslandUI
             bool dead = who.dead == 1 && who.life <= 0.0;
             bool downed = who.dead == 1 && !dead;
             bool carried = who.dead == 5;
-            string state = dead ? "corpse" : downed ? "knocked out" : carried ? "carried" : string.Empty;
+            string state = dead ? Shared.Loc.Get("unit.state.corpse", "corpse")
+                : downed ? Shared.Loc.Get("unit.state.knocked_out", "knocked out")
+                : carried ? Shared.Loc.Get("unit.state.carried", "carried") : string.Empty;
             if (!string.IsNullOrEmpty(state))
             {
-                apposition = hostile ? state : apposition + " · " + state;
+                apposition = withheld ? state : apposition + Shared.Loc.Separator + state;
             }
             if (_unitKind.text != apposition) { _unitKind.text = apposition; }
             bool warn = false;
-            string cause = hostile || dead ? string.Empty : DiscontentWord(who, out warn);
+            string cause = withheld || dead ? string.Empty : DiscontentWord(who, out warn);
             bool alert = !string.IsNullOrEmpty(cause);
             if (_unitAlertPlate.gameObject.activeSelf != alert) { _unitAlertPlate.gameObject.SetActive(alert); }
             if (alert && _unitAlert.text != cause) { _unitAlert.text = cause; }
@@ -485,9 +522,10 @@ namespace IslandUI
             {
                 ShowStrip(_unitStrip, false);   // a corpse: the word is the whole reading
             }
-            // the reading's icons hide on a hostile - no condition (D89) - and on a
-            // body that is down: the bars stay, the needs go
-            bool needs = !hostile && !dead && !downed && !carried;
+            // the reading's icons hide on a hostile stranger - no condition (D89) -
+            // and on a body that is down: the bars stay, the needs go. One of yours
+            // in revolt keeps theirs: why they revolted is the point
+            bool needs = !withheld && !dead && !downed && !carried;
             for (int i = 0; _unitStrip.IconFills != null && i < _unitStrip.IconFills.Length; i++)
             {
                 bool show = needs && (i < StripIcons - 1 || _unitStrip.DrewBaby);
@@ -524,6 +562,7 @@ namespace IslandUI
         private static void ReadUnitActs(CommonStates who)
         {
             _unitRow.Clear();
+            ManageActs.Clear();
             if (_mn == null)
             {
                 return;
@@ -547,15 +586,18 @@ namespace IslandUI
             bool hasBag = (who.bag != null && who.bag.slots != null && who.bag.slots.Length > 0) || HasLoadout(who);
             if (hasBag)
             {
-                _unitRow.Set(ActRow.Sockets - 2, BagDoor("Bag", !InReach(who)));
+                _unitRow.Set(ActRow.Sockets - 1, BagDoor(Shared.Loc.Get("unit.bag", "Bag"), !InReach(who),
+                    Shared.Loc.Get("unit.caption.inventory", "INVENTORY")));
             }
-            // ...and the sheet's door, where there is a sheet: a stranger's corpse has none
+            // ...and the sheet's door left of it, or last when there is no bag, where
+            // there is a sheet: a stranger's corpse has none
             if (TargetHasSheet(who))
             {
-                _unitRow.Set(ActRow.Sockets - 1, new ActRow.Slot
+                _unitRow.Set(ActRow.Sockets - (hasBag ? 2 : 1), new ActRow.Slot
                 {
                     Name = "details",
-                    Label = "Details",
+                    Label = Shared.Loc.Get("unit.details", "Details"),
+                    Caption = Shared.Loc.Get("unit.caption.character", "CHARACTER"),
                     Icon = HudGlyphs.Get("details"),
                     Lit = _sheetOpen,
                     Press = ToggleSheet,
@@ -569,6 +611,7 @@ namespace IslandUI
             bool near = InReach(who);
             var rest = new List<TargetVerbs.Verb>();
             var doors = new List<TargetVerbs.Verb>();
+            var foreign = new List<TargetVerbs.Verb>();
             for (int i = 0; i < live.Count; i++)
             {
                 TargetVerbs.Verb v = live[i];
@@ -585,6 +628,10 @@ namespace IslandUI
                 {
                     doors.Add(v);
                 }
+                else if (v.Foreign)
+                {
+                    foreign.Add(v);
+                }
                 else
                 {
                     rest.Add(v);
@@ -593,30 +640,65 @@ namespace IslandUI
             // THE REST TAKE THE ROW (with space on the bar, acts no longer wait inside
             // a More actions button). Every
             // act with a glyph takes the next free socket after the shape's three -
-            // the rarer acts first, the doors last - and More holds only what has no
-            // glyph to stand on, or no room left before the bag and details doors.
+            // the rarer acts first, the doors after them, a mod's acts last (Forgejo
+            // #52: Purpose trails Talk, Carry and Follow on a person, vanilla's before
+            // another mod's) - and More holds only what has no glyph to stand on, or no
+            // room left before the bag and details doors.
             rest.AddRange(doors);
+            rest.AddRange(foreign);
             var placed = new List<TargetVerbs.Verb>();
             MoreActs.Clear();
             for (int i = 0; i < rest.Count; i++)
             {
                 (ActGlyph(rest[i]) != null ? placed : MoreActs).Add(rest[i]);
             }
-            int room = ActRow.Sockets - 2 - ActRow.ShapeSockets;
+            int next = ActRow.ShapeSockets;
+            if (UnitOffersPlace(who))
+            {
+                _unitRow.Set(next++, PlaceSlot(who));
+            }
+            int room = ActRow.Sockets - 2 - next;
             while (placed.Count > (MoreActs.Count > 0 || placed.Count > room ? room - 1 : room))
             {
                 MoreActs.Insert(0, placed[placed.Count - 1]);
                 placed.RemoveAt(placed.Count - 1);
             }
-            int next = ActRow.ShapeSockets;
             for (int i = 0; i < placed.Count; i++)
             {
                 _unitRow.Set(next++, UnitSlot(who, placed[i], near));
             }
-            if (MoreActs.Count > 0) _unitRow.Set(next, new ActRow.Slot { Name = "more", Label = "More actions", Icon = HudGlyphs.Get("more"), Lit = _moreActsOpen, Press = ToggleMoreActs });
+            if (MoreActs.Count > 0) _unitRow.Set(next, new ActRow.Slot { Name = "more", Label = Shared.Loc.Get("unit.more_actions", "More actions"), Icon = HudGlyphs.Get("more"), Lit = _moreActsOpen, Press = ToggleMoreActs });
+            ApplyDockPreview();
             LayoutUnit();
             // an enemy's dock has nothing on it, and an empty dock is not drawn
             _unitRow.Show(_unitRow.Any);
+        }
+
+        // SET PLACE ON THE DOCK (Forgejo #166): the Orders page's Set place, for
+        // whom that page offers it, in the socket after Follow - an order, as
+        // Follow is, so a Character act, and like Follow pressed from anywhere. A
+        // press arms the same pick (TogglePlacing), a second ends it, and the tile
+        // wears Follow's check while it is up, whichever gate armed it.
+        private const string UnitPlace = "place";
+
+        private static bool UnitOffersPlace(CommonStates who)
+        {
+            PlayerMove p = _mn.gameMN != null ? _mn.gameMN.pMove : null;
+            return who.nMove != null && p != null && !ReferenceEquals(who, p.common) && HasAspect(Aspect.Orders, who, false)
+                && _mn.uiMN != null && _mn.uiMN.territorySlider != null && _mn.uiMN.chaseSlider != null;
+        }
+
+        private static ActRow.Slot PlaceSlot(CommonStates who)
+        {
+            return new ActRow.Slot
+            {
+                Name = UnitPlace,
+                Label = Shared.Loc.Get("orders.set_place", "Set place"),
+                Icon = HudGlyphs.Get(UnitPlace),
+                Lit = PlacingFor(who),
+                Kind = ActRow.ActKind.Character,
+                Press = () => TogglePlacing(who),
+            };
         }
 
         // A BODY'S DOCK (D159): Carry and Dissect where the game would light them -
@@ -655,18 +737,21 @@ namespace IslandUI
                     Label = BodyActWord(v),
                     Icon = ActGlyph(v),
                     Live = near,
+                    Kind = ActRow.ActKind.Character,
                     Press = () => PressBodyAct(who, name),
                 });
             }
-            if (who.bag != null && who.bag.slots != null && who.bag.slots.Length > 0)
+            bool pockets = who.bag != null && who.bag.slots != null && who.bag.slots.Length > 0;
+            if (pockets)
             {
-                _unitRow.Set(ActRow.Sockets - 2, BagDoor("Pockets", !near));
+                _unitRow.Set(ActRow.Sockets - 1, BagDoor(Shared.Loc.Get("unit.pockets", "Pockets"), !near));
             }
             if (TargetHasSheet(who))
             {
-                _unitRow.Set(ActRow.Sockets - 1, new ActRow.Slot
+                _unitRow.Set(ActRow.Sockets - (pockets ? 2 : 1), new ActRow.Slot
                 {
-                    Name = "details", Label = "Details", Icon = HudGlyphs.Get("details"),
+                    Name = "details", Label = Shared.Loc.Get("unit.details", "Details"), Icon = HudGlyphs.Get("details"),
+                    Caption = Shared.Loc.Get("unit.caption.character", "CHARACTER"),
                     Lit = _sheetOpen, Press = ToggleSheet,
                     Tag = AttributesToSpend(who) ? who.statusPoint.ToString() : null,
                     TagKind = PointsTag.Kind.Attribute,
@@ -812,13 +897,18 @@ namespace IslandUI
         // reach the door is drawn faded but still toggles; lit, it is armed, and the
         // window opens by itself once you are in reach (the Tick watches it). The
         // "Out of reach" caption window it replaces (D155) is gone.
-        private static ActRow.Slot BagDoor(string label, bool far)
+        // A container whose dock offers nothing else keeps its own door, which
+        // starts open; every other door is the other kind's (SeedDoor, §6.37).
+        // A thing's door wears a chest (ActRow), a person's the backpack.
+        private static ActRow.Slot BagDoor(string label, bool far, string caption = null, bool container = false, bool thing = false)
         {
+            SeedDoor(container);
             return new ActRow.Slot
             {
-                Name = "bag",
+                Name = thing ? "chest" : "bag",
                 Label = label,
-                Icon = HudGlyphs.Get("bag"),
+                Caption = caption,
+                Icon = HudGlyphs.Get(thing ? "vicinity" : "bag"),
                 Lit = _bagOpen,
                 Faded = far,
                 Press = () =>
@@ -826,7 +916,7 @@ namespace IslandUI
                     ToggleBag();
                     if (far && _bagOpen)
                     {
-                        CursorBadge.Show("opens when you're in reach");
+                        CursorBadge.Show(Shared.Loc.Get("unit.opens_when_in_reach", "opens when you're in reach"));
                     }
                 },
             };
@@ -835,34 +925,136 @@ namespace IslandUI
         // What a dimmed act says on hover: how much closer, in the target's own rule
         private static readonly string[] PlacementActs = { "MoveButton", "RemoveButton", "RepairButton" };
 
+        // THE NUMBER HOLDS A BEAT: read every frame it ran with each step and the
+        // tip twitched as you walked; it is read again twice a second, or at once
+        // for another target or rule
+        private const float CloserEvery = 0.5f;
+        // the language's separator, set wide: "out of reach  ·  2.0 m closer"
+        private static string CloserJoin => " " + Shared.Loc.Separator + " ";
+        private static string _closerSaid;
+        private static string _closerGapSaid;   // "N m closer" alone, or null: a faded door's tip
+        private static object _closerFor;
+        private static bool _closerPlacement;
+        private static float _closerAt = -1f;
+
         private static string CloserBy(ActRow.Slot slot)
         {
             object focus = Focus();
-            float gap;
-            if (focus is CommonStates who)
+            bool placement = !(focus is CommonStates) && slot != null && System.Array.IndexOf(PlacementActs, slot.Name) >= 0;
+            if (_closerSaid != null && ReferenceEquals(focus, _closerFor) && placement == _closerPlacement
+                && Time.unscaledTime - _closerAt < CloserEvery)
             {
-                gap = ReachRule.Gap(_mn, who);
+                return _closerSaid;
             }
-            else
+            float gap = focus is CommonStates who ? ReachRule.Gap(_mn, who) : ReachRule.Gap(_mn, FocusProp(focus), placement);
+            // the two phrases are kept apart, so the faded door's tip can say the
+            // distance without the "out of reach" (it used to cut the words out)
+            _closerGapSaid = gap > 0.05f ? Shared.Loc.Get("unit.closer_by", "{0} m closer", gap.ToString("0.0")) : null;
+            string outOfReach = Shared.Loc.Get("unit.out_of_reach", "out of reach");
+            _closerSaid = _closerGapSaid != null ? outOfReach + CloserJoin + _closerGapSaid : outOfReach;
+            _closerFor = focus;
+            _closerPlacement = placement;
+            _closerAt = Time.unscaledTime;
+            return _closerSaid;
+        }
+
+        // HARNESS PREVIEW of the target dock's states, presentation only, for 15 s:
+        // following (the check), a birth due (the sparkle), the bag out of reach
+        // (the footprints) and the sheet's window open (the lift). Presses do what
+        // they always do; nothing in the game or the save changes.
+        // PreviewTargetDock(n) adds n more acts with no board tile (the game's
+        // glyph on the blank tile, pressing does nothing), to see a row wrap.
+        private static float _dockPreviewUntil = -1f;
+        private static int _dockPreviewExtra;
+
+        internal static string PreviewTargetDock()
+        {
+            return PreviewTargetDock(0);
+        }
+
+        internal static string PreviewTargetDock(int extra)
+        {
+            _dockPreviewUntil = Time.unscaledTime + 15f;
+            _dockPreviewExtra = Mathf.Clamp(extra, 0, 8);
+            _unitBoundAt = 0f;
+            return "target dock preview for 15 s" + (extra > 0 ? ", " + _dockPreviewExtra + " more acts" : "");
+        }
+
+        private static void ApplyDockPreview()
+        {
+            if (Time.unscaledTime > _dockPreviewUntil) { return; }
+            ActRow.Slot follow = _unitRow.Get(2);
+            if (follow != null) { follow.Name = "goodbye"; follow.Lit = true; }
+            int free = ActRow.ShapeSockets;
+            bool due = false;
+            while (free < ActRow.Sockets - 2 && _unitRow.Get(free) != null) { due |= _unitRow.Get(free).Name == "delivery"; free++; }
+            if (free < ActRow.Sockets - 2 && !due)
             {
-                bool placement = slot != null && System.Array.IndexOf(PlacementActs, slot.Name) >= 0;
-                gap = ReachRule.Gap(_mn, FocusProp(focus), placement);
+                _unitRow.Set(free, new ActRow.Slot { Name = "delivery", Label = "Give birth", Due = true, Kind = ActRow.ActKind.Purpose, Press = () => { } });
             }
-            return gap > 0.05f ? "out of reach  ·  " + gap.ToString("0.0") + " m closer" : "out of reach";
+            string[] words = { "Bathe", "Sleep", "Massage", "Hug", "Pose", "Feed", "Gift", "Dress" };
+            for (int i = 0, at = free + 1; i < _dockPreviewExtra && at < ActRow.Sockets - 2; i++, at++)
+            {
+                if (_unitRow.Get(at) == null) { _unitRow.Set(at, new ActRow.Slot { Name = "preview" + i, Label = words[i], Kind = ActRow.ActKind.Purpose, Press = () => { } }); }
+            }
+            ActRow.Slot bag = _unitRow.Get(ActRow.Sockets - 1);
+            if (bag != null && bag.Name == "bag") { bag.Faded = true; }
+            ActRow.Slot sheet = _unitRow.Get(ActRow.Sockets - 2);
+            if (sheet != null && sheet.Name == "details") { sheet.Lit = true; }
         }
 
         private static ActRow.Slot UnitSlot(CommonStates who, TargetVerbs.Verb v, bool near)
         {
             string name = v.Name;
+            // TALK OPENS ITS CHOICES IN A BUBBLE (Forgejo #58): still vanilla's Talk
+            // pressed through, by TalkBubble, which then reads the panel it opened
+            bool talk = name == "talk";
+            // CRAFT IS A WINDOW'S KEY, as Character and Inventory are: drawn open
+            // while the crafting window is up, whoever opened it - the player
+            // panel's button shows it too - and pressed again it puts it away
+            bool craft = name == "craft";
             return new ActRow.Slot
             {
                 Name = name,
                 Label = BodyActWord(v),
                 Icon = ActGlyph(v),
                 Lit = name == "goodbye",             // following: the toggle is on
+                Due = name == "delivery",            // she is due: the act stands out
                 Live = near || ReachFree(name),       // D73: reach decides
-                Press = () => PressUnitAct(who, name),
+                // Forgejo #52: Talk, Carry, Follow are what every person offers; the rest
+                // is what this one is for
+                Kind = UnitShapeSlot(name) >= 0 ? ActRow.ActKind.Character : ActRow.ActKind.Purpose,
+                Held = talk ? () => TalkBubble.OpenFor(who) : (System.Func<bool>)null,
+                Open = craft ? () => HudOpen("craft") : (System.Func<bool>)null,
+                Press = talk ? () => TalkBubble.Toggle(_mn, who, () => PressUnitAct(who, name))
+                    : craft ? () => { if (HudOpen("craft")) _mn.uiMN.LeftPanelState(0); else PressUnitAct(who, name); }
+                    : (System.Action)(() => PressUnitAct(who, name)),
             };
+        }
+
+        // ...and what the bubble asks of the dock: that this person is still the one
+        // up on it and in reach, where their Talk stands, and the focus given back
+        internal static bool TalkHeld(CommonStates who)
+        {
+            return who != null && _unit != null && _unit.activeInHierarchy && ReferenceEquals(_unitFor, who)
+                && InReach(who);
+        }
+
+        internal static RectTransform TalkSocket()
+        {
+            return _unitRow != null && _unit != null && _unit.activeInHierarchy ? _unitRow.SocketRect("talk") : null;
+        }
+
+        internal static void FocusTalk(bool keyboard)
+        {
+            RectTransform socket = TalkSocket();
+            var es = UnityEngine.EventSystems.EventSystem.current;
+            if (socket == null || es == null)
+            {
+                return;
+            }
+            es.SetSelectedGameObject(socket.gameObject);
+            if (keyboard) { AnimeCell.KeyboardFocus(); }
         }
 
         private static int UnitShapeSlot(string name)
@@ -907,7 +1099,8 @@ namespace IslandUI
         private static string BodyActWord(TargetVerbs.Verb v)
         {
             if (!TargetVerbs.Wordless(v)) { return v.Label; }
-            return v.Name == "CarryButton" ? "Carry" : v.Name == "DissectButton" ? "Dissect" : v.Label;
+            return v.Name == "CarryButton" ? Shared.Loc.Get("unit.act.carry", "Carry")
+                : v.Name == "DissectButton" ? Shared.Loc.Get("unit.act.dissect", "Dissect") : v.Label;
         }
 
         // Pressed THROUGH vanilla's own button (D65), re-read first as ActPress does:
@@ -1077,9 +1270,41 @@ namespace IslandUI
         private static void ReadUnitInput()
         {
             bool onRow = _unitRow.ReadInput();
+            // THE PORTRAIT (Forgejo #49): the star on its corner is the favourite's
+            // switch, and the rest of the card a door that only opens the sheet, on
+            // its first page. A press on the one is never the other's, and each acts
+            // on a release over what it began on.
+            // A THING'S CARD wears the Manage key there instead (Forgejo #52)
+            CommonStates cardWho = Focus() as CommonStates;
+            bool onStar = !onRow && CanFavourite(cardWho) && OnCardStar;
+            bool onManage = !onRow && !onStar && ManageKeyUp && OnManageKey;
+            bool onCard = !onRow && !onStar && !onManage && _animeIdentity != null && _animeIdentity.gameObject.activeInHierarchy
+                && RectTransformUtility.RectangleContainsScreenPoint(_animeIdentity.rectTransform, Input.mousePosition, null);
+            if (Input.GetMouseButtonDown(0))
+            {
+                _cardPressed = onStar ? CardPressStar : onManage ? CardPressManage : onCard ? CardPressPortrait : CardPressNone;
+            }
+            PaintCardStar(cardWho, onStar, onStar && _cardPressed == CardPressStar && Input.GetMouseButton(0));
+            PaintManageKey(onManage, onManage && _cardPressed == CardPressManage && Input.GetMouseButton(0));
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (_cardPressed == CardPressStar && onStar)
+                {
+                    ToggleMark(cardWho, ToggleFavourite);
+                }
+                else if (_cardPressed == CardPressManage && onManage)
+                {
+                    ToggleManage();
+                }
+                else if (_cardPressed == CardPressPortrait && onCard && cardWho != null && TargetHasSheet(cardWho))
+                {
+                    OpenSheetOnFirstPage();
+                }
+                _cardPressed = CardPressNone;
+            }
             // THE HEAD IS THE SHEET'S DOOR (D107): a press-and-release on the
             // reading band, off any socket, folds or opens the target's sheet
-            bool onHead = !onRow && _unitHead != null && _unitHead.gameObject.activeInHierarchy
+            bool onHead = !onRow && !onStar && !onCard && _unitHead != null && _unitHead.gameObject.activeInHierarchy
                 && (RectTransformUtility.RectangleContainsScreenPoint(_unitHead.rectTransform, Input.mousePosition, null)
                     || (_unitChevron.gameObject.activeSelf && RectTransformUtility.RectangleContainsScreenPoint(_unitChevron.rectTransform, Input.mousePosition, null)));
             if (Input.GetMouseButtonDown(0) && onHead)
@@ -1098,9 +1323,22 @@ namespace IslandUI
             // - and an act beyond reach says so, on hover and on a press it refused
             ActRow.Slot hotSlot = _unitRow.Hot >= 0 ? _unitRow.Get(_unitRow.Hot) : null;
             string tip = hotSlot == null ? null
-                : hotSlot.Faded ? hotSlot.Label + "\n" + (hotSlot.Lit ? "opens when you're in reach" : "opens in reach")
-                    + CloserBy(hotSlot).Replace("out of reach", string.Empty)
-                : hotSlot.Live ? hotSlot.Label : hotSlot.Label + "\n" + CloserBy(hotSlot);
+                : hotSlot.Faded ? "<b>" + hotSlot.Label + "</b>\n"
+                    + (hotSlot.Lit ? Shared.Loc.Get("unit.opens_when_in_reach", "opens when you're in reach") : Shared.Loc.Get("unit.opens_in_reach", "opens in reach"))
+                    + (CloserBy(hotSlot) != null && _closerGapSaid != null ? CloserJoin + _closerGapSaid : string.Empty)
+                : hotSlot.Live ? hotSlot.Label : "<b>" + hotSlot.Label + "</b>\n" + CloserBy(hotSlot);
+            // an act that can run by itself says how to switch it (Forgejo #119)
+            if (hotSlot != null && hotSlot.Auto != null)
+            {
+                tip = (hotSlot.Live && !hotSlot.Faded ? "<b>" + hotSlot.Label + "</b>" : tip) + "\n" + hotSlot.Auto.Tip;
+            }
+            // Set place says what a press does, as its button on Orders does
+            if (hotSlot != null && hotSlot.Name == UnitPlace)
+            {
+                tip = "<b>" + hotSlot.Label + "</b>\n" + (hotSlot.Lit
+                    ? Shared.Loc.Get("unit.place.armed", "Click the ground to set their place. Press again, right-click or Esc to cancel.")
+                    : TipStanding[0]);
+            }
             if (_unitRow.RefusedRecently)
             {
                 CursorBadge.Show(CloserBy(_unitRow.RefusedSlot));
@@ -1124,6 +1362,26 @@ namespace IslandUI
                 }
             }
             if (!onRow && tip == null) { tip = MarkerStatusTip(); }
+            if (tip == null && onStar)
+            {
+                tip = cardWho.employ == CommonStates.Employ.Favorite
+                    ? Shared.Loc.Get("dossier.favourite.unmark", "Favourite: click to unmark")
+                    : Shared.Loc.Get("dossier.favourite.mark", "Click to make them a favourite");
+            }
+            if (tip == null && onManage)
+            {
+                tip = "<b>" + Shared.Loc.Get("unit.manage", "Manage") + "</b>\n"
+                    + Shared.Loc.Get("unit.manage.tip", "Move or remove it");
+            }
+            if (tip == null && onCard)
+            {
+                tip = cardWho != null && TargetHasSheet(cardWho)
+                    ? "<b>" + _unitName.text + "</b>\n" + Shared.Loc.Get("unit.portrait.sheet", "Click for their character sheet")
+                    : _unitName.text;
+            }
+            // an item held over the card is a give, and the cursor badge says so;
+            // the sheet's door is not what a release there does (Forgejo #89)
+            if (onCard && OfferUnderPointer) { tip = null; }
             if (_unitTip != null)
             {
                 if (!string.IsNullOrEmpty(tip)) { _unitTip.Tick(tip, null); }
@@ -1157,6 +1415,7 @@ namespace IslandUI
             {
                 ActRow.Slot s = _unitRow.Get(i);
                 sb.Append(" | ").Append(i).Append(':').Append(s != null ? s.Name : "-");
+                if (s != null && !s.Live) { sb.Append(" (out of reach)"); }
             }
             return sb.ToString();
         }

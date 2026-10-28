@@ -79,6 +79,23 @@ namespace IslandUI.UI
                     line(new float[] { 5, 10, 8, 10, 9, 17, 5, 17, 5, 10 });
                     line(new float[] { 15, 14, 18, 14, 19, 21, 15, 21, 15, 14 });
                     break;
+                // Set place: a pin standing on the ring of its territory
+                case "place":
+                    arc(12, 8, 5, 135, 405);
+                    line(new float[] { 8.5f, 11.5f, 12, 18, 15.5f, 11.5f });
+                    circle(12, 8, 1.8f);
+                    {
+                        // the ring lies flat, parted behind the pin's point
+                        var ring = new float[34];
+                        for (int i = 0; i <= 16; i++)
+                        {
+                            float t = Mathf.Deg2Rad * Mathf.Lerp(-65f, 245f, i / 16f);
+                            ring[i * 2] = 12 + Mathf.Cos(t) * 9;
+                            ring[i * 2 + 1] = 19 + Mathf.Sin(t) * 3;
+                        }
+                        line(ring);
+                    }
+                    break;
                 case "dissect":
                     line(new float[] { 10, 13, 19, 4, 21, 3, 20, 6, 12, 15 });
                     line(new float[] { 9, 12, 13, 16 });

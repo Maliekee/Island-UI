@@ -28,7 +28,6 @@ namespace IslandUI
         internal static ConfigEntry<KeyCode> WorldFocusKey;
         internal static ConfigEntry<KeyCode> ConsoleKey;
         internal static ConfigEntry<bool> SilenceVanillaConsole;
-        internal static ConfigEntry<bool> MapMood;
 
         // ---------- [Browser] ----------
         internal static ConfigEntry<bool> CustomGrid;
@@ -38,9 +37,7 @@ namespace IslandUI
         // ---------- [Card] ----------
         internal static ConfigEntry<bool> CustomItemTooltip;
         internal static ConfigEntry<bool> ItemGuide;
-        internal static ConfigEntry<bool> StoryHints;
-        internal static ConfigEntry<bool> StoryPromptHints;
-        internal static ConfigEntry<SpoilerMode> StorySpoilers;
+        internal static ConfigEntry<HintMode> StoryHints;
 
         // ---------- [Cursor] ----------
         internal static ConfigEntry<UI.GameCursor.Style> CursorStyle;
@@ -59,6 +56,8 @@ namespace IslandUI
         internal static ConfigEntry<ContainerPolicy.FamilyMode> ReachBags;
         internal static ConfigEntry<ContainerPolicy.FamilyMode> ReachBodies;
         internal static ConfigEntry<bool> ShowNearby;
+        internal static ConfigEntry<bool> VicinityCompact;
+        internal static ConfigEntry<bool> VicinityHoldOrder;
         internal static ConfigEntry<KeyCode> ReachKey;
         internal static ConfigEntry<bool> StatusOnColumn;
         internal static ConfigEntry<bool> RosterOnSlot;
@@ -68,17 +67,38 @@ namespace IslandUI
         internal static ConfigEntry<bool> PropWindow;
         internal static ConfigEntry<bool> PickupFlight;
         internal static ConfigEntry<float> PickupFlightSeconds;
+        internal static ConfigEntry<bool> NpcUseFlight;
         internal static ConfigEntry<bool> CascadeToCharacterBag;
         internal static ConfigEntry<KeyCode> QuickStackKey;
         internal static ConfigEntry<bool> QuickStackFlight;
         internal static ConfigEntry<bool> ActionBar;
         internal static ConfigEntry<int> ActionBarSlots;
+        internal static ConfigEntry<bool> ActionBarShiftToMove;
         internal static ConfigEntry<bool> TheUnit;
+        internal static ConfigEntry<bool> ContainersOpen;
+        internal static ConfigEntry<bool> ContainerCloseUntargets;
+        internal static ConfigEntry<bool> SheetFloatLeft;
         internal static ConfigEntry<KeyCode> SheetKey;
         internal static ConfigEntry<bool> TargetRing;
         internal static ConfigEntry<float> TargetRingScale;
         internal static ConfigEntry<float> TargetRingAlpha;
         internal static ConfigEntry<KeyCode> TargetKey;
+        internal static ConfigEntry<int> CombatMarkers;
+        internal static ConfigEntry<float> KillLinger;
+        internal const int CombatMarkersMax = 20;
+        internal const int CombatMarkersAll = CombatMarkersMax + 1;   // the slider's last step: no cap
+        internal static int CombatMarkersCap => CombatMarkers.Value >= CombatMarkersAll ? int.MaxValue : Mathf.Max(0, CombatMarkers.Value);
+        internal static ConfigEntry<bool> AlwaysFriendMarkers;
+        internal static ConfigEntry<bool> AlwaysEnemyMarkers;
+        internal static ConfigEntry<bool> AlwaysNeutralMarkers;
+        internal static ConfigEntry<bool> BossPriority;
+        internal static ConfigEntry<bool> FriendlyMarkers;
+        internal static ConfigEntry<bool> HoverHealth;
+
+        // ---------- [Vitals] ----------
+        internal static ConfigEntry<bool> LowVitals;
+        internal static ConfigEntry<float> LowHealthAt;
+        internal static ConfigEntry<float> LowNeedsAt;
 
         // ---------- [Crafting] ----------
         internal static ConfigEntry<bool> UseCharacterBag;
@@ -91,6 +111,9 @@ namespace IslandUI
         internal static ConfigEntry<bool> CoalesceCraftSweeps;
         internal static ConfigEntry<bool> DeferAggregationOnOpen;
         internal static ConfigEntry<float> MoveRefreshCooldown;
+
+        // ---------- [Language] ----------
+        internal static ConfigEntry<string> Language;
 
         internal static void Bind(ConfigFile cfg)
         {
@@ -109,12 +132,8 @@ namespace IslandUI
                 "An item's card says how to get it: where it is found, what drops it, who trades it. Based on what players have collected, not on your own world.");
 
             // ---------- [Story] ----------
-            StoryHints = cfg.Bind("Story", "ChoiceHints", true,
-                "When the story asks you to choose, each option says what it leads to: affection, who joins, what unlocks. Dramatic outcomes follow the Spoilers setting.");
-            StoryPromptHints = cfg.Bind("Story", "ScenePromptHints", true,
-                "Scenes that wait for a key instead of showing buttons say what each key leads to, hidden ones included (as spoilers).");
-            StorySpoilers = cfg.Bind("Story", "Spoilers", SpoilerMode.ClickToReveal,
-                "How a hint's dramatic part (deaths, endings, someone leaving for good) is shown: ClickToReveal hides it until clicked, Always shows it, Hide leaves it out.");
+            StoryHints = cfg.Bind("Story", "Hints", HintMode.OnClick,
+                "What a story choice, or a scene that waits for a key, says each option leads to: affection, who joins, what unlocks. Off shows none, OnClick waits behind a 'Hints' bar until clicked, Always shows them at once. A hint's dramatic part (deaths, endings, someone leaving for good) is always masked until clicked.");
 
             // ---------- [Cursor] ----------
             CursorStyle = cfg.Bind("Cursor", "Style", UI.GameCursor.Style.Arrow,
@@ -149,6 +168,12 @@ namespace IslandUI
                 "A picked-up item's notice flies from you to the slot it landed in, instead of waiting at the screen edge. Off = the game's notice. Applies to the next pickup.");
             PickupFlightSeconds = cfg.Bind("Inventory", "PickupFlightSeconds", 0.55f,
                 "How long the pickup notice takes to fly, in seconds. Below about 0.35 the count is hard to read; above 0.8 it feels slow.");
+            NpcUseFlight = cfg.Bind("Inventory", "NpcUseFlight", true,
+                "When one of your people eats from a food box or drinks from a well, the food or water icon flies from it to them, as it does to you. Applies live.");
+            VicinityCompact = cfg.Bind("Inventory", "VicinityCompact", false,
+                "The vicinity window's Compact view: each holder's taken slots in their own order, then one summary of how many are free, instead of every slot. The window's Compact box sets it too. Applies live.");
+            VicinityHoldOrder = cfg.Bind("Inventory", "VicinityHoldOrder", true,
+                "While the pointer is on the vicinity window's list, its rows keep their places; a row that has come nearer than one above it wears an arrow, and the list re-sorts once the pointer leaves. Off = always nearest first. Applies live.");
             ShowNearby = cfg.Bind("Inventory", "ShowNearby", true,
                 "Enables the vicinity window, which lists your storage within reach. Off also removes its button. Applies live.");
             ReachKey = cfg.Bind("Inventory", "ReachKey", KeyCode.V,
@@ -173,18 +198,50 @@ namespace IslandUI
                 "A bar of item actions on keys 1-9 and 0: drag a stack onto a slot and it eats, equips or uses that item, while the stack stays in your bag. Items with no action are refused. The bar is kept in the save. Off = no action bar.");
             ActionBarSlots = cfg.Bind("Inventory", "ActionBarSlots", 10,
                 "How many action bar slots, 1-10, on keys 1-9 then 0.");
+            ActionBarShiftToMove = cfg.Bind("Inventory", "ActionBarShiftToMove", false,
+                "Moving an action bar slot or a tool on the belt needs shift held, so a slip of the mouse can't lose one. Off = drag them freely; a slot dropped off the bar is removed. Shift+click removes one either way.");
             TheUnit = cfg.Bind("Inventory", "TheUnit", true,
                 "When you pick someone or something, a target panel above the action bar shows its name, mood, health, stamina and needs, with buttons for what you can do with it. Off = these are shown in the target's own window instead. Applies live.");
+            ContainersOpen = cfg.Bind("Inventory", "ContainersOpen", true,
+                "Targeting a chest, or anything else that is only storage, opens its inventory at once. Closed, the next chest you switch to stays closed until you deselect. Off = press its Inventory button. Applies from the next target.");
+            ContainerCloseUntargets = cfg.Bind("Inventory", "ContainerCloseUntargets", true,
+                "Closing the inventory of a chest, or anything else that is only storage, also deselects it. Off = it stays your target with its inventory closed. Applies live.");
+            SheetFloatLeft = cfg.Bind("Inventory", "SheetFloatLeft", false,
+                "A character's sheet moves to the left side while crafting, the vicinity and the roster are all closed, and moves back when one of them opens. The tab on the sheet's edge switches it too. Applies live.");
             TargetRing = cfg.Bind("Inventory", "TargetRing", true,
                 "A ring on the ground under your target, in its marker's colour: green yours, red hostile, amber a stranger or a thing, grey a body. Applies live.");
             TargetRingScale = cfg.Bind("Inventory", "TargetRingScale", 1f,
                 "The ground ring's size, 0.5-2, as a multiple of the target's footprint. Applies live.");
             TargetRingAlpha = cfg.Bind("Inventory", "TargetRingAlpha", 0.85f,
                 "How solid the ground ring is, 0-1. Applies live.");
+            CombatMarkers = cfg.Bind("Inventory", "CombatMarkers", 5,
+                "In a fight, how many enemies carry a small health and stun marker over their head, 0-20, or 21 for all of them: the ones you hit last, then the nearest of those on you. Off the screen, the marker waits at its edge and points to them. 0 = none. Applies live.");
+            KillLinger = cfg.Bind("Inventory", "KillLinger", 3f,
+                "How long the combat plaque stays on an enemy you downed, in seconds, 1-10: its tab says Slain, or the face stays as it was when they only fainted. Anyone still in the fight takes the plaque sooner. Applies live.");
+            AlwaysFriendMarkers = cfg.Bind("Inventory", "AlwaysFriendMarkers", false,
+                "Every one of your people on the screen carries the small combat marker, in a fight or not, its health bar green. Overrides the CombatMarkers count for them. Applies live.");
+            AlwaysEnemyMarkers = cfg.Bind("Inventory", "AlwaysEnemyMarkers", false,
+                "Every hostile one on the screen - one that has come for you or yours - carries the small combat marker, in a fight or not, its health bar red. Overrides the CombatMarkers count for them. Applies live.");
+            AlwaysNeutralMarkers = cfg.Bind("Inventory", "AlwaysNeutralMarkers", false,
+                "Everyone on the screen who is neither yours nor hostile carries the small combat marker, in a fight or not, its health bar amber. Overrides the CombatMarkers count for them. Applies live.");
+            BossPriority = cfg.Bind("Inventory", "BossPriority", true,
+                "In a fight, the boss comes first: the combat plaque and the markers go to the fight's own boss from the moment it starts, then to any boss, then to the rest, and last to what a boss summons, so hitting a summon or a lesser enemy never takes the plaque off the boss. Within each, the one you hit last, then the nearest on you. Off = the one you hit last, whoever it is. Applies live.");
+            FriendlyMarkers = cfg.Bind("Inventory", "FriendlyMarkers", true,
+                "In a fight, your followers and your people who fight beside you carry the small combat marker too, its health bar green. They have their own count, as many as CombatMarkers allows the enemies, so an enemy never gives up its marker to one of yours. Applies live.");
+            HoverHealth = cfg.Bind("Inventory", "HoverHealth", true,
+                "Pointing at anyone with health - an enemy, a villager, one of yours, in a fight or not - shows the fight's small health and stun marker over their head for as long as the pointer stays on them. Not for one who already carries a marker: your target, or an enemy marked in a fight. Applies live.");
             SheetKey = cfg.Bind("Inventory", "SheetKey", KeyCode.None,
                 "Opens and closes your target's sheet, the same as clicking the target panel's head. None = no key.");
             TargetKey = cfg.Bind("Inventory", "TargetKey", KeyCode.Tab,
                 "Targets what is nearest the cursor, one of your people or a thing, without walking there; press again for the next nearest. On Tab it replaces the game's menu key. None = no key.");
+
+            // ---------- [Vitals] ----------
+            LowVitals = cfg.Bind("Vitals", "LowVitals", true,
+                "Health, food or water running low glows on the vitals panel: amber when low, red and quicker when critical, with a short flash each time it gets worse. Off = no warning. Applies live.");
+            LowHealthAt = cfg.Bind("Vitals", "LowHealthAt", 0.3f,
+                "Health is low at or under this share of its maximum, 0.1-0.6, and critical at half of it.");
+            LowNeedsAt = cfg.Bind("Vitals", "LowNeedsAt", 0.25f,
+                "Food and water are low at or under this share of their maximum, 0.1-0.5, and critical at half of it. Empty is a step of its own: the game then stops healing you and drains your health.");
 
             // ---------- [Window] ----------
             CloseAllKey = cfg.Bind("Window", "CloseAllKey", KeyCode.None,
@@ -197,10 +254,6 @@ namespace IslandUI
                 "Opens the drop-down command console, which runs the game's own commands. None = the key left of 1, whatever your keyboard layout prints on it. While it is open it takes every key press; Escape closes it.");
             SilenceVanillaConsole = cfg.Bind("Console", "SilenceVanillaConsole", true,
                 "Stops the game's own command box (opened with Return) from appearing; the drop-down console runs the same commands. Off = the game's box works again.");
-
-            // ---------- [Map] ----------
-            MapMood = cfg.Bind("Map", "MapMood", true,
-                "Shows your villagers' moods on the map, plus yarn between neighbours who cannot stand each other; hover a pin for details. The map's Mood button also switches it. Applies live.");
 
             // ---------- [Crafting] ----------
             UseCharacterBag = cfg.Bind("Crafting", "UseCharacterBag", true,
@@ -221,6 +274,11 @@ namespace IslandUI
                 "The crafting window opens at once with its last contents and refreshes the recipe list a moment later. Off = the full list is rebuilt before it opens.");
             MoveRefreshCooldown = cfg.Bind("Performance", "MoveRefreshCooldown", 0.75f,
                 "Minimum seconds between recipe-list refreshes while you walk with the crafting window open. Raise it if a busy base still stutters.");
+
+            // ---------- [Language] ----------
+            // the settings window's Language page; one setting for all three mods (Shared/Loc.cs)
+            Language = cfg.Bind("Language", "Override", "",
+                "The language of Island UI, Island AI and Island Ex. Empty follows the game's language. A folder code (en, jp, cn, ru, ptbr, es, de) reads plugins/IslandUI/Localization/<code>/strings.txt; 'pseudo' is the test language, every string bracketed and lengthened.");
 
             GroupRecipesBy.SettingChanged += (_, __) => CraftLazyFill.InvalidateUnchangedCache();
         }

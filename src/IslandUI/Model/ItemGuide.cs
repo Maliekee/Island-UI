@@ -17,11 +17,15 @@ namespace IslandUI
     //
     // The file: `item_id <TAB> how to get it`, `#` starts a comment. Places and items
     // are named as the game names them in English, so a line can be checked against
-    // what the player sees.
+    // what the player sees. A translation lies beside the mod's strings,
+    // Localization/<lang>/item-guide.tsv, in the same form; a row it leaves out stays
+    // English (Forgejo #19).
     internal static class ItemGuide
     {
         private const string Resource = "IslandUI.item-guide.tsv";
+        private const string DataName = "item-guide.tsv";
         private static Dictionary<string, string> _lines;
+        private static int _generation = -1;
 
         internal static string Of(string itemKey)
         {
@@ -29,8 +33,11 @@ namespace IslandUI
             {
                 return null;
             }
-            if (_lines == null)
+            // read again when the language changes: Localization/<lang>/item-guide.tsv
+            // over the English, row by row (Forgejo #19)
+            if (_lines == null || _generation != Shared.Loc.Generation)
             {
+                _generation = Shared.Loc.Generation;
                 _lines = Load();
             }
             return _lines.TryGetValue(itemKey, out string line) ? line : null;
@@ -48,25 +55,55 @@ namespace IslandUI
                 }
                 using (var reader = new StreamReader(stream, Encoding.UTF8))
                 {
-                    string row;
-                    while ((row = reader.ReadLine()) != null)
-                    {
-                        if (row.Length == 0 || row[0] == '#')
-                        {
-                            continue;
-                        }
-                        int tab = row.IndexOf('\t');
-                        if (tab <= 0 || tab == row.Length - 1)
-                        {
-                            continue;
-                        }
-                        // "; " separates the ways to get it; each gets its own line
-                        lines[row.Substring(0, tab).Trim()] = row.Substring(tab + 1).Trim().Replace("; ", "\n");
-                    }
+                    Read(reader, lines, true);
                 }
             }
-            Plugin.Log.LogInfo("Item guide: " + lines.Count + " items");
+            int translated = 0;
+            foreach (string path in Shared.Loc.DataFiles(DataName))
+            {
+                try
+                {
+                    using (var reader = new StreamReader(path, Encoding.UTF8))
+                    {
+                        translated += Read(reader, lines, false);
+                    }
+                }
+                catch (IOException e)
+                {
+                    Plugin.Log.LogWarning("Item guide: could not read " + path + " - " + e.Message);
+                }
+            }
+            Plugin.Log.LogInfo("Item guide: " + lines.Count + " items"
+                + (translated > 0 ? ", " + translated + " in " + Shared.Loc.Language : ""));
             return lines;
+        }
+
+        // `item_id <TAB> how to get it`; the English's rows as the language shows them
+        private static int Read(TextReader reader, Dictionary<string, string> lines, bool english)
+        {
+            int read = 0;
+            string row;
+            while ((row = reader.ReadLine()) != null)
+            {
+                if (row.Length == 0 || row[0] == '#')
+                {
+                    continue;
+                }
+                int tab = row.IndexOf('\t');
+                if (tab <= 0 || tab == row.Length - 1)
+                {
+                    continue;
+                }
+                string how = row.Substring(tab + 1).Trim();
+                if (english)
+                {
+                    how = Shared.Loc.Untranslated(how);
+                }
+                // "; " separates the ways to get it; each gets its own line
+                lines[row.Substring(0, tab).Trim()] = how.Replace("; ", "\n");
+                read++;
+            }
+            return read;
         }
 
         // Harness door for writing the guide: the game's own names for a list of item

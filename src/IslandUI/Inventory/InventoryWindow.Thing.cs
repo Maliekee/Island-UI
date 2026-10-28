@@ -14,9 +14,11 @@ namespace IslandUI
     //   - the INDICATOR floats over the thing, as a person's does: its name, whose
     //     it is, and its readings as bars - a level, breeding, wear (WritePropSheet,
     //     the same writer the window used), or its name alone when it has none;
-    //   - the DOCK holds Move, Remove and Repair in the enamel icon family, Craft on a
-    //     bench, the acts vanilla lit for it (Drink, Read, Feed), and on a container
-    //     the Inventory door - the person's Bag door, one standing choice for both;
+    //   - the DOCK holds what you picked it for (Forgejo #52): Craft on a bench, the
+    //     acts vanilla lit for it (Drink, Eat, Make into Meat), a wreck's Repair, and on
+    //     a container the Inventory door - the person's Bag door, one standing choice
+    //     for both. Move, Scale, Edit and Remove are the card's Manage key
+    //     (InventoryWindow.Manage.cs);
     //   - a container's grid is the door's WINDOW (SheetOpenFor), and beyond reach
     //     the window is its caption and the acts are dim (D155).
     // Everything is still read off vanilla's own panels and pressed through them
@@ -40,7 +42,7 @@ namespace IslandUI
             _unitDead = false;
             _unitBoundAt = Time.unscaledTime;
             bool yours = _mn.buildMN != null && _mn.buildMN.OwnCheck(prop);
-            string text = PropTitle(prop) + (yours ? "  ·  yours" : string.Empty);
+            string text = PropTitle(prop) + (yours ? "  ·  " + Shared.Loc.Get("inv.thing.yours_lower", "yours") : string.Empty);
             if (_unitName.text != text) { _unitName.text = text; }
             ThingLines.Clear();
             WritePropSheet(ThingLines, prop);
@@ -97,12 +99,14 @@ namespace IslandUI
             }
         }
 
-        // The dock for a thing, socket by socket: the building's own three, Craft,
-        // vanilla's acts, and the Inventory door on the right.
+        // The dock for a thing, socket by socket (Forgejo #52): PURPOSE LEADS - a
+        // wreck's Repair, Craft, the touch, vanilla's own acts - then the Inventory door
+        // on the right. Move, Scale, Edit and Remove go to the card's Manage key.
         private static void ReadThingActs(ItemInfo prop, object focus, bool yours)
         {
             _unitRow.Clear();
             MoreActs.Clear();
+            ManageActs.Clear();
             bool live = ReachRule.LiveProp(_mn, prop);
             bool building = ReachRule.LivePlacement(_mn, prop);   // Move · Remove · Repair: build range
             if (VanillaShowing(prop))
@@ -114,6 +118,16 @@ namespace IslandUI
                 KeptActs.Clear();
                 _keptActsFor = prop;
             }
+            bool wreck = prop.lifeMax > 0f && prop.life <= 0f && prop.GetComponent<DefenceInfo>() != null;
+            // A REPAIR CHANGES WHAT IT OFFERS: what vanilla lit while it was a wreck
+            // was Repair alone, and kept for the same thing it stood in for the acts
+            // after the repair - a repaired milker kept Repair where Show face goes -
+            // until vanilla was asked again. Kept from the other side of a repair (or
+            // a break), the placement acts are dropped and drawn by the rule below
+            if (KeptActs.Exists(a => a.Placement) && KeptActs.Exists(a => a.Name == "RepairButton") != wreck)
+            {
+                KeptActs.RemoveAll(a => a.Placement);
+            }
             // A THING OF YOURS ALWAYS HAS ITS PLACEMENT ACTS, opened by vanilla or
             // not (a Tab-picked milker had nothing on its dock):
             // every building has Move and Remove, and Repair alone once it breaks -
@@ -121,7 +135,6 @@ namespace IslandUI
             // has lit its panel, and a press opens it and presses through
             if (yours && !KeptActs.Exists(a => a.Placement))
             {
-                bool wreck = prop.lifeMax > 0f && prop.life <= 0f && prop.GetComponent<DefenceInfo>() != null;
                 string[] names = wreck ? new[] { "RepairButton" } : new[] { "MoveButton", "RemoveButton" };
                 for (int i = 0; i < names.Length; i++)
                 {
@@ -137,27 +150,31 @@ namespace IslandUI
             // Type.FoodStorage -> text 13, state 4), so the same rule draws them
             // before it has lit its panel: greyed until you are in reach, and a press
             // opens vanilla and presses through by the state (PressThingAct).
-            if (!KeptActs.Exists(a => !a.Placement))
+            // THE SAME FOR EVERY CONTAINER WHOSE ACT IS UNCONDITIONAL (Forgejo #60,
+            // PredictActs): a pig farm Tabbed from afar never showed Make into
+            // Meat, not even once you had walked up, since nothing asks vanilla on
+            // the way. Yours only: vanilla lights a container's panel for its owner.
+            if (!KeptActs.Exists(a => !a.Placement) && yours)
             {
-                InventorySlot store = prop.GetComponent<InventorySlot>();
-                int textId = store == null ? -1
-                    : store.type == InventorySlot.Type.Water ? 12
-                    : store.type == InventorySlot.Type.FoodStorage ? 13 : -1;
-                string[] words = _mn.textMN != null ? _mn.textMN.actButtonTexts : null;
-                if (textId >= 0 && words != null && textId < words.Length)
-                {
-                    int state = textId == 12 ? 3 : 4;
-                    KeptActs.Add(new KeptAct { Name = "act" + state, Label = words[textId], State = state });
-                }
+                PredictActs(prop);
+                PredictManage(prop);
             }
             int next = 0;
             for (int i = 0; i < KeptActs.Count; i++)
             {
-                if (!KeptActs[i].Placement)
+                KeptAct act = KeptActs[i];
+                if (!act.Placement)
                 {
                     continue;
                 }
-                KeptAct act = KeptActs[i];
+                if (act.Name != "RepairButton")
+                {
+                    ManageActs.Add(act);
+                    continue;
+                }
+                // A WRECK'S REPAIR LEADS: vanilla swaps Move and Remove for it, it is the
+                // one thing to do and the reason you picked it - in the birth's pink
+                // enamel and spark, until it is repaired and the Manage key is back
                 _unitRow.Set(next++, new ActRow.Slot
                 {
                     Name = act.Name,
@@ -165,6 +182,8 @@ namespace IslandUI
                     Icon = PlacementDockIcon(act.Name),
                     OwnColors = true,
                     Live = building,
+                    Due = true,
+                    Kind = ActRow.ActKind.Purpose,
                     Press = () => PressThingAct(prop, act),
                 });
             }
@@ -172,14 +191,37 @@ namespace IslandUI
             {
                 _unitRow.Set(next++, new ActRow.Slot
                 {
-                    Name = "craft", Label = "Craft", Icon = HudGlyphs.Get("craft"), Live = live,
-                    Press = () => OpenBenchCraft(prop),
+                    Name = "craft", Label = Shared.Loc.Get("inv.act.craft", "Craft"), Icon = HudGlyphs.Get("craft"), Live = live,
+                    Kind = ActRow.ActKind.Purpose,
+                    // a window's key, as a crafter's Craft is: drawn open while the
+                    // crafting window is up, and pressed again it puts it away
+                    Open = () => HudOpen("craft"),
+                    Press = () => { if (HudOpen("craft")) _mn.uiMN.LeftPanelState(0); else OpenBenchCraft(prop); },
                 });
+            }
+            string touch = VanillaShowing(prop) ? null : TouchWord(prop, yours);
+            int touchAt = touch != null ? _unitRow.NextFree(next) : -1;
+            if (touchAt >= 0)
+            {
+                _unitRow.Set(touchAt, new ActRow.Slot
+                {
+                    Name = TouchName(prop),
+                    Label = touch,
+                    Live = live,
+                    Kind = ActRow.ActKind.Purpose,
+                    Press = () => PressThingTouch(prop),
+                });
+                next = touchAt + 1;
             }
             for (int i = 0; i < KeptActs.Count; i++)
             {
                 if (KeptActs[i].Placement)
                 {
+                    continue;
+                }
+                if (ManageState(KeptActs[i].State))
+                {
+                    ManageActs.Add(KeptActs[i]);
                     continue;
                 }
                 next = _unitRow.NextFree(next);
@@ -193,22 +235,87 @@ namespace IslandUI
                     Name = act.Name,
                     Label = act.Label,
                     Live = live,
+                    Kind = ActRow.ActKind.Purpose,
                     Press = () => PressThingAct(prop, act),
+                    Auto = AutoUse.SwitchFor(prop, act.State),   // Forgejo #119: Drink, Eat
+                    Look = PurposeLook(prop, act.State),          // Forgejo #130: a glyph, not its initial
+                    Due = act.State == 5,                         // Give Birth: due, as on a follower
                 });
             }
+            SortManage();
             if (focus is InventorySlot)
             {
-                _unitRow.Set(ActRow.Sockets - 2, BagDoor("Inventory", !live));
+                // nothing on the row before the door: the grid is all it is for, a
+                // container's door - a bench (Craft), a wreck (Repair) are not
+                bool onlyGrid = !_unitRow.Any;
+                _unitRow.Set(ActRow.Sockets - 1, BagDoor(Shared.Loc.Get("inv.act.inventory", "Inventory"), !live,
+                    container: onlyGrid, thing: true));
             }
             LayoutUnit();
-            // a stranger's thing with nothing to do has no dock
+            // a stranger's thing with nothing to do has no dock; a thing whose row is
+            // empty and that has a Manage key is its card and its name, no plank
             _unitRow.Show(_unitRow.Any);
+        }
+
+        // What vanilla's panel lights for a container of yours whatever is in it,
+        // by its Type (UIManager.PropPanelTypeChange: text id, then the state
+        // PropAction switches on). Only the kinds Tab opens from reach - a press
+        // opens vanilla there and presses through (PressThingAct) - and only for
+        // the owner, as UseProp lights a container's panel for its owner alone.
+        // Left to vanilla's own lighting: the acts that hang on who is in the
+        // container (a pole, a toilet, a rack, a restraint, a milker), which it
+        // reads off the container it has loaded, and the raft, whose use boards
+        // it - a walk to touch the reach kinds do not have.
+        private static void PredictActs(ItemInfo prop)
+        {
+            ItemData data = _mn.itemMN != null ? _mn.itemMN.FindItem(prop.itemKey) : null;
+            InventorySlot store = prop.GetComponent<InventorySlot>();
+            if (store == null || !OpensFromReach(data))
+            {
+                return;
+            }
+            switch (store.type)
+            {
+                case InventorySlot.Type.Water: Predict(12, 3); break;
+                case InventorySlot.Type.FoodStorage: Predict(13, 4); break;
+                case InventorySlot.Type.FleshCollector: Predict(24, 11); break;
+                case InventorySlot.Type.FactoryBreed: Predict(15, 7); break;
+                case InventorySlot.Type.Bath: Predict(0, 12); break;
+                case InventorySlot.Type.Block: Predict(0, 17); break;
+                case InventorySlot.Type.Light: Predict(0, 20); break;
+                case InventorySlot.Type.Capsule: Predict(30, 15); break;
+                case InventorySlot.Type.Dye: Predict(31, 16); break;
+                case InventorySlot.Type.BuildManager: Predict(0, 24); break;
+                case InventorySlot.Type.Assault: Predict(0, 26); break;
+                case InventorySlot.Type.Slave:
+                    if (GameManager.selectPlayer == 1) { Predict(0, 10); }
+                    break;
+                case InventorySlot.Type.Bench:
+                    if (prop.itemKey == "bench_workshop"
+                        && SaveManager.GameModeStatic.gameMode == SaveManager.GameMode.Adventure)
+                    {
+                        Predict(38, 28);
+                        Predict(39, 29);
+                    }
+                    break;
+            }
+        }
+
+        private static void Predict(int textId, int state)
+        {
+            TextManager tm = GameWords.Text(_mn);
+            string[] words = tm != null ? tm.actButtonTexts : null;
+            if (words != null && textId < words.Length)
+            {
+                KeptActs.Add(new KeptAct { Name = "act" + state, Label = words[textId], State = state });
+            }
         }
 
         private static string PlacementWord(string button)
         {
-            return button == "MoveButton" ? "Move" : button == "RemoveButton" ? "Remove"
-                : button == "RepairButton" ? "Repair" : button;
+            return button == "MoveButton" ? Shared.Loc.Get("inv.act.move", "Move")
+                : button == "RemoveButton" ? Shared.Loc.Get("inv.act.remove", "Remove")
+                : button == "RepairButton" ? Shared.Loc.Get("inv.act.repair", "Repair") : button;
         }
 
         private static Sprite PlacementDockIcon(string button)
@@ -217,6 +324,129 @@ namespace IslandUI
             // their reach/repair logic are still the source of the actions.
             string glyph = button == "MoveButton" ? "move" : button == "RemoveButton" ? "remove" : "repair";
             return Theme.Kit("kit_emblem_" + glyph, 0);
+        }
+
+        // THE TOUCH (Forgejo #60). A bed, a play prop and an interactive one keep
+        // vanilla's walk to touch (OpensFromReach), so Tab holds them without
+        // asking vanilla - and whatever its touch does never came: a targeted bed
+        // had Move and Remove and no way to lie in it. The dock offers the touch
+        // itself. A press walks you up as a click on the thing does, and vanilla
+        // uses it at contact (PlayerMove.InteractAction -> UseProp): a bed lays you
+        // down (PlayerMove.Sleep, any bed, refused when someone is in it), the
+        // others open their panel - and what vanilla lights there, a bed's sleep
+        // till morning or night among them, joins the dock (RememberThingActs).
+        // Offered only where the touch does something: any bed; a play prop of
+        // yours whose panel has a Purpose act (UseProp lights it for its owner alone,
+        // PlayLights for what it lights); an interactive
+        // one whose container vanilla's panel has acts for - a house's body has
+        // none, its door does (UIManager.PropPanelTypeChange). Not while vanilla
+        // holds the thing: in the bed, the touch is done.
+        private static string TouchWord(ItemInfo prop, bool yours)
+        {
+            ItemData data = _mn.itemMN != null ? _mn.itemMN.FindItem(prop.itemKey) : null;
+            if (data == null || data.itemType != ItemData.ItemType.Prop)
+            {
+                return null;
+            }
+            InventorySlot slot = prop.GetComponent<InventorySlot>();
+            switch (data.subType)
+            {
+                case ItemData.SubType.Bed:
+                    return Shared.Loc.Get("inv.act.sleep", "Sleep");
+                case ItemData.SubType.Play:
+                    return yours && PlayLights(prop) ? Shared.Loc.Get("inv.act.use", "Use") : null;
+                case ItemData.SubType.Interact:
+                    return slot != null && slot.type != InventorySlot.Type.None
+                        ? Shared.Loc.Get("inv.act.use", "Use") : null;
+                default:
+                    return null;
+            }
+        }
+
+        // Whether a play prop's panel has a Purpose act, by vanilla's own conditions
+        // (UIManager.PropPanelTypeChange, the branch for a thing with no
+        // container that is not a bed): one of the keys it names. Its size and its
+        // place to edit are Manage acts, predicted for the Manage key (PredictManage)
+        // with no walk. A decoration with none, or the delivery bed before the day,
+        // lights nothing - a touch there would walk you up for nothing.
+        private static bool PlayLights(ItemInfo prop)
+        {
+            switch (prop.itemKey)
+            {
+                case "deco_ball_beach_01":
+                case "deco_ball_beach_01_suika":
+                case "deco_signboard_01":
+                case "deco_signboard_02":
+                case "deco_signboard_03":
+                case "deco_signboard_04":
+                case "deco_tomb_01":
+                case "flag_01":
+                case "deco_fancy_melody_01":
+                    return true;
+                case "flag_02":
+                    return !_mn.gameMN.ChangePlayerEventLimit();
+                case "bed_delivery_01":
+                    return GameManager.selectPlayer == 0 && _mn.sexMN != null
+                        && _mn.sexMN.IsDueDate(_mn.gameMN.playerCommons[0]);
+                default:
+                    return false;
+            }
+        }
+
+        private static string TouchName(ItemInfo prop)
+        {
+            ItemData data = _mn.itemMN != null ? _mn.itemMN.FindItem(prop.itemKey) : null;
+            return data != null && data.subType == ItemData.SubType.Bed ? "sleep" : "use";
+        }
+
+        // THE GLYPH A THING'S ACT WEARS (Forgejo #130): the common acts by the state
+        // PropAction switches on, as auto-use knows them; ActRow.BoardGlyph draws the
+        // look. The state names the act but for 1 and 2, which PropPanelTypeChange
+        // gives by the container: a door's Peek and Enter, a toilet's and a chair's
+        // Use, a pole's or a rack's Execute and the daruma machine's Startup. Give
+        // Birth wears the tile a due follower's dock wears for it. The rest (the
+        // dress-ups, Execute, Startup, Visit, the one-building acts, a mod's) keep
+        // their initial.
+        private static string PurposeLook(ItemInfo prop, int state)
+        {
+            switch (state)
+            {
+                case 3: return "drink";
+                case 4: return "eat";
+                case 5: return "delivery";
+                case 7: return "meat";
+                case 8: return "sleep_morning";
+                case 9: return "sleep_night";
+                case 10: case 12: case 17: case 20: case 21: case 22: case 24: case 26: case 30:
+                    return "use";
+                case 1: case 2:
+                    InventorySlot store = prop != null ? prop.GetComponent<InventorySlot>() : null;
+                    switch (store != null ? store.type : InventorySlot.Type.None)
+                    {
+                        case InventorySlot.Type.Door: return state == 1 ? "peek" : "enter";
+                        case InventorySlot.Type.Toilet: return "use";
+                        case InventorySlot.Type.BodyRack:
+                            return _mn.itemMN != null && _mn.itemMN.IsChair(prop.itemKey) ? "use" : null;
+                        default: return null;
+                    }
+                default: return null;
+            }
+        }
+
+        // Vanilla's click, made from the dock: its target set, and its own walk
+        // and its own use at contact. Refused while vanilla is busy, as a press
+        // through it is (PressThingAct) - its hold on something else would end
+        // by clearing the target this sets.
+        private static void PressThingTouch(ItemInfo prop)
+        {
+            PlayerMove p = _mn != null && _mn.gameMN != null ? _mn.gameMN.pMove : null;
+            if (prop == null || p == null || _mn.gameMN.nowAction || VanillaShowing(prop))
+            {
+                return;
+            }
+            p.target = prop.gameObject;
+            Note("touch: walking to " + prop.itemKey);
+            _unitBoundAt = 0f;
         }
 
         // Pressed through vanilla (D65). A thing kept past vanilla's end is opened
@@ -351,36 +581,64 @@ namespace IslandUI
                 HideGroundRing();
                 return;
             }
-            PaintGroundRing(prop.transform, EmblemThing, ThingRadius(prop));
-            Vector3 screen = camera.WorldToScreenPoint(prop.transform.position + Vector3.up * (_thingTop + 0.25f));
-            bool visible = screen.z > 0;
-            _worldMarker.gameObject.SetActive(visible);
-            if (!visible)
+            // a door between you: the marker on that door (WorldMarker.Door.cs)
+            bool behind = DoorBetween(prop.gameObject, out Vector3 door, out bool inside);
+            Vector3 screen;
+            if (behind)
+            {
+                HideGroundRing();
+                screen = camera.WorldToScreenPoint(door + Vector3.up * DoorTagLift);
+            }
+            else
+            {
+                DoorTagOff();
+                PaintGroundRing(prop.transform, EmblemThing, ThingRadius(prop));
+                screen = camera.WorldToScreenPoint(prop.transform.position + Vector3.up * (_thingTop + 0.25f));
+            }
+            bool off = OffScreen(camera, behind ? door : prop.transform.position, ref screen);
+            bool shown = !MenuOverMarker();
+            _worldMarker.gameObject.SetActive(shown);
+            if (!shown)
             {
                 return;
             }
             int n = Mathf.Min(2, ThingLines.Count);
             _worldName.text = PropTitle(prop);
             bool mine = _mn.buildMN != null && _mn.buildMN.OwnCheck(prop);
-            _worldSubtitle.text = n == 1 ? ThingLines[0].Value ?? string.Empty : mine ? "Yours" : "Building";
+            _worldSubtitle.text = n == 1 ? ThingLines[0].Value ?? string.Empty : mine ? Shared.Loc.Get("inv.thing.yours", "Yours") : Shared.Loc.Get("inv.thing.building", "Building");
+            float height = n == 0 ? 33f : n == 1 ? 36f : 42f;
+            MarkerCard(height);
             float width = MarkerWidth();
-            float height = n == 0 ? 29f : n == 1 ? 35f : 42f;
-            PlaceWorldMarker(screen, width, height, false);
-            LayoutMarkerWords(width, true);
-            _worldMarker.enabled = true;
+            PlaceWorldMarker(screen, width, height, behind ? DoorTagExtra : 0f, FarWords(off, prop.transform.position));
+            if (behind)
+            {
+                PaintDoorTag(inside, width, height, 0f);
+            }
+            LayoutMarkerWords(width);
+            PaintMarkerPlate(width, height);
             // the emblem: a chest's box or a building's hammer, brass when it is yours
             PaintEmblem(prop.GetComponent<InventorySlot>() != null ? "chest" : "craft",
-                mine ? EmblemThing : EmblemTheirThing, 0, width, height, false);
+                mine ? EmblemThing : EmblemTheirThing, 0, width, height);
+            // the card shows the thing itself, as the target's card does: its item
+            // art on a pale enamel, the gold or brown kept as the enamel's warmth
+            ItemData art = _mn.itemMN != null ? _mn.itemMN.FindItem(prop.itemKey) : null;
+            if (art != null && art.itemSprite != null)
+            {
+                _emblemFill.color = ThingEnamel(mine);
+                if (_emblemGlyph.sprite != art.itemSprite) { _emblemGlyph.sprite = art.itemSprite; }
+                _emblemGlyph.preserveAspect = true;
+                _emblemGlyph.color = Color.white;
+            }
             ShowThingBars(n);
             for (int i = 0; i < n; i++)
             {
                 SheetLine line = ThingLines[i];
-                float barW = MarkerBarWidth - (n > 1 ? 34f : 0f);
-                PaintMarkerBar(ThingBack[i], ThingFill[i], EmblemPad, 26f + i * 7f, barW, 4.5f,
+                float barW = width - EmblemPad - MarkerRightPad - (n > 1 ? 34f : 0f);
+                PaintMarkerBar(ThingBack[i], ThingFill[i], EmblemPad, 27f + i * 7f, barW, 4.5f,
                     line.Frac, line.Tinted ? line.Tint : MarkerCream);
                 if (ThingValue[i].text != (line.Value ?? string.Empty)) { ThingValue[i].text = line.Value ?? string.Empty; }
                 ThingValue[i].gameObject.SetActive(n > 1);
-                Theme.Place(ThingValue[i], MarkerMinWidth - MarkerRightPad - 32f, 23.5f + i * 7f, 32f, 9f);
+                Theme.Place(ThingValue[i], width - MarkerRightPad - 32f, 24.5f + i * 7f, 32f, 9f);
             }
         }
 

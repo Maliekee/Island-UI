@@ -15,8 +15,9 @@ namespace IslandUI
 {
     // THE UI'S STATE INSIDE THE GAME'S OWN SAVE: our own block inside the save
     // file, chosen over YotanModCore's DataStore and a file beside the save. The
-    // action bar's bindings, the favourite marks and the tool
-    // board's hooks are written as one <IslandUI> element into SaveDataNN.xml, and
+    // action bar's bindings (a row each for Man and Yona), the favourite marks, the tool
+    // board's hooks (a belt each for Man and Yona) and the buildings' auto-use switches (AutoUse, by the game's
+    // buildID) are written as one <IslandUI> element into SaveDataNN.xml, and
     // read back from the same file on load.
     //
     // Why inside, not beside: a store beside the save is a second save file, and it
@@ -152,6 +153,7 @@ namespace IslandUI
         private static void ReadPending(string path)
         {
             MoodLedger.Clear();   // a load starts from the save's record, not this session's
+            LoveLedger.Clear();
             _pendingLoadFrom = path;
             try
             {
@@ -220,9 +222,22 @@ namespace IslandUI
                 List<ItemSlot> hung = ToolBelt.HungSlots(h);
                 hooks[h] = hung.Count > 0 ? hung[0] : null;
             }
+            // [2] the shown belt, as a generation before per-protagonist belts read
+            // it; [3] every belt, by protagonist
+            var belts = new Dictionary<int, ItemSlot[]>();
+            foreach (int who in ToolBelt.Owners)
+            {
+                var belt = new ItemSlot[ToolBelt.Hooks];
+                for (int h = 0; h < belt.Length; h++)
+                {
+                    List<ItemSlot> hung = ToolBelt.HungSlots(who, h);
+                    belt[h] = hung.Count > 0 ? hung[0] : null;
+                }
+                belts[who] = belt;
+            }
             AppDomain.CurrentDomain.SetData(HandoverKey, new object[]
             {
-                ActionBar.SnapshotBindings(), Favourites.Slots().ToArray(), hooks,
+                ActionBar.SnapshotBindings(), Favourites.Slots().ToArray(), hooks, belts,
             });
         }
 
@@ -231,18 +246,30 @@ namespace IslandUI
         {
             object[] state = AppDomain.CurrentDomain.GetData(HandoverKey) as object[];
             AppDomain.CurrentDomain.SetData(HandoverKey, null);
-            if (state == null || state.Length != 3
-                || !(state[0] is string[] bar) || !(state[1] is ItemSlot[] favs)
-                || !(state[2] is ItemSlot[] hooks))
+            if (state == null || state.Length < 3
+                || !(state[1] is ItemSlot[] favs) || !(state[2] is ItemSlot[] hooks))
+            {
+                return;
+            }
+            // a generation from before the bar was per character hands over one shared row: both get it
+            var bar = state[0] as Dictionary<int, string[]>;
+            if (bar == null && state[0] is string[] shared)
+            {
+                bar = new Dictionary<int, string[]> { { 0, shared }, { 1, shared } };
+            }
+            if (bar == null)
             {
                 return;
             }
             int bound = 0, marked = 0, hung = 0;
-            foreach (string k in bar)
+            foreach (KeyValuePair<int, string[]> row in bar)
             {
-                if (!string.IsNullOrEmpty(k)) { bound++; }
+                foreach (string k in row.Value)
+                {
+                    if (!string.IsNullOrEmpty(k)) { bound++; }
+                }
+                ActionBar.RestoreBindings(row.Key, row.Value);
             }
-            ActionBar.RestoreBindings(bar);
             foreach (ItemSlot slot in favs)
             {
                 // a destroyed slot compares equal to null; the scene is the same one
@@ -252,12 +279,37 @@ namespace IslandUI
                     marked++;
                 }
             }
-            for (int h = 0; h < hooks.Length && h < ToolBelt.Hooks; h++)
+            // a generation from before the belt was per protagonist hands over one
+            // belt: each hook goes to whoever owns the slot it is in, a Shared Bag
+            // tool to both
+            var belts = state.Length > 3 ? state[3] as Dictionary<int, ItemSlot[]> : null;
+            if (belts == null)
             {
-                if (hooks[h] != null && ToolBelt.Fits(h, hooks[h].toolType))
+                belts = new Dictionary<int, ItemSlot[]>();
+                ManagersScript mn = Mn();
+                for (int h = 0; h < hooks.Length && h < ToolBelt.Hooks; h++)
                 {
-                    ToolBelt.Hang(h, hooks[h]);
-                    hung++;
+                    foreach (int who in BeltOwners(mn, hooks[h]))
+                    {
+                        if (!belts.TryGetValue(who, out ItemSlot[] belt))
+                        {
+                            belt = new ItemSlot[ToolBelt.Hooks];
+                            belts[who] = belt;
+                        }
+                        belt[h] = hooks[h];
+                    }
+                }
+            }
+            foreach (KeyValuePair<int, ItemSlot[]> belt in belts)
+            {
+                for (int h = 0; h < belt.Value.Length && h < ToolBelt.Hooks; h++)
+                {
+                    ItemSlot slot = belt.Value[h];
+                    if (slot != null && ToolBelt.Fits(h, slot.toolType))
+                    {
+                        ToolBelt.Hang(belt.Key, h, slot);
+                        hung++;
+                    }
                 }
             }
             InventoryWindow.Invalidate();
@@ -273,12 +325,16 @@ namespace IslandUI
                 return null;
             }
             var body = new StringBuilder();
-            string[] bar = ActionBar.SnapshotBindings();
-            for (int i = 0; i < bar.Length; i++)
+            foreach (KeyValuePair<int, string[]> row in ActionBar.SnapshotBindings())
             {
-                if (!string.IsNullOrEmpty(bar[i]))
+                string[] bar = row.Value;
+                for (int i = 0; i < bar.Length; i++)
                 {
-                    body.Append("    <Bar i=\"").Append(i).Append("\" key=\"").Append(Esc(bar[i])).Append("\" />\n");
+                    if (!string.IsNullOrEmpty(bar[i]))
+                    {
+                        body.Append("    <Bar who=\"").Append(row.Key).Append("\" i=\"").Append(i)
+                            .Append("\" key=\"").Append(Esc(bar[i])).Append("\" />\n");
+                    }
                 }
             }
             var seen = new HashSet<string>();
@@ -290,20 +346,26 @@ namespace IslandUI
                     body.Append("    <Fav ").Append(at).Append(" key=\"").Append(Esc(slot.itemKey)).Append("\" />\n");
                 }
             }
-            for (int h = 0; h < ToolBelt.Hooks; h++)
+            foreach (int belt in ToolBelt.Owners)
             {
-                foreach (ItemSlot slot in ToolBelt.HungSlots(h))
+                for (int h = 0; h < ToolBelt.Hooks; h++)
                 {
-                    string at = AddressOf(mn, slot);
-                    if (at != null)
+                    foreach (ItemSlot slot in ToolBelt.HungSlots(belt, h))
                     {
-                        body.Append("    <Hook h=\"").Append(h).Append("\" ").Append(at)
-                            .Append(" key=\"").Append(Esc(slot.itemKey)).Append("\" />\n");
-                        break;
+                        string at = AddressOf(mn, slot);
+                        if (at != null)
+                        {
+                            body.Append("    <Hook belt=\"").Append(belt).Append("\" h=\"").Append(h)
+                                .Append("\" ").Append(at)
+                                .Append(" key=\"").Append(Esc(slot.itemKey)).Append("\" />\n");
+                            break;
+                        }
                     }
                 }
             }
             MoodLedger.WriteTo(body);
+            LoveLedger.WriteTo(body);
+            AutoUse.WriteTo(body);
             if (body.Length == 0)
             {
                 return null;   // nothing to keep: the file is left as the game wrote it
@@ -320,8 +382,8 @@ namespace IslandUI
             }
             var doc = new XmlDocument();
             doc.LoadXml(block);
-            var keys = new List<string>();
-            int favs = 0, hooks = 0, moods = 0, dropped = 0;
+            var rows = new Dictionary<int, List<string>>();
+            int favs = 0, hooks = 0, moods = 0, loves = 0, autos = 0, dropped = 0;
             foreach (XmlNode node in doc.DocumentElement.ChildNodes)
             {
                 var e = node as XmlElement;
@@ -333,18 +395,30 @@ namespace IslandUI
                 switch (e.Name)
                 {
                     case "Bar":
+                    {
                         int i = Int(e, "i");
                         if (i < 0 || i > 64 || string.IsNullOrEmpty(key))
                         {
                             dropped++;
                             break;
                         }
-                        while (keys.Count <= i)
+                        // a save from before the bar was per character has one row, shared by Man and Yona: both keep it
+                        int[] whose = e.HasAttribute("who") ? new[] { Int(e, "who") } : new[] { 0, 1 };
+                        foreach (int who in whose)
                         {
-                            keys.Add(null);
+                            if (!rows.TryGetValue(who, out List<string> keys))
+                            {
+                                keys = new List<string>();
+                                rows[who] = keys;
+                            }
+                            while (keys.Count <= i)
+                            {
+                                keys.Add(null);
+                            }
+                            keys[i] = key;
                         }
-                        keys[i] = key;
                         break;
+                    }
                     case "Fav":
                     {
                         ItemSlot slot = Resolve(mn, e);
@@ -370,9 +444,16 @@ namespace IslandUI
                             dropped++;
                             break;
                         }
+                        // a save from before the belt was per protagonist has one belt:
+                        // the hook goes to whoever owns the slot, a Shared Bag tool to both
+                        IEnumerable<int> belts = e.HasAttribute("belt")
+                            ? new[] { Int(e, "belt") } : BeltOwners(mn, slot);
                         if (!dryRun)
                         {
-                            ToolBelt.Hang(h, slot);
+                            foreach (int belt in belts)
+                            {
+                                ToolBelt.Hang(belt, h, slot);
+                            }
                         }
                         hooks++;
                         break;
@@ -381,19 +462,30 @@ namespace IslandUI
                         if (MoodLedger.Restore(mn, Int(e, "f"), e.GetAttribute("e"), dryRun)) { moods++; }
                         else { dropped++; }
                         break;
+                    case "Love":
+                        if (LoveLedger.Restore(mn, Int(e, "f"), e.GetAttribute("e"), dryRun)) { loves++; }
+                        else { dropped++; }
+                        break;
+                    case "Auto":
+                        if (AutoUse.Restore(mn, Int(e, "b"), key, dryRun)) { autos++; }
+                        else { dropped++; }
+                        break;
                 }
             }
             int bound = 0;
-            foreach (string k in keys)
+            foreach (KeyValuePair<int, List<string>> row in rows)
             {
-                if (!string.IsNullOrEmpty(k)) { bound++; }
+                foreach (string k in row.Value)
+                {
+                    if (!string.IsNullOrEmpty(k)) { bound++; }
+                }
+                if (!dryRun)
+                {
+                    ActionBar.RestoreBindings(row.Key, row.Value);
+                }
             }
-            if (!dryRun && keys.Count > 0)
-            {
-                ActionBar.RestoreBindings(keys);
-            }
-            return $"{bound} binding(s), {favs} favourite(s), {hooks} hook(s), {moods} mood record(s)"
-                + (dropped > 0 ? $", {dropped} dropped (their cell or person is gone)" : "");
+            return $"{bound} binding(s), {favs} favourite(s), {hooks} hook(s), {moods} mood record(s), {loves} love record(s), {autos} auto-use switch(es)"
+                + (dropped > 0 ? $", {dropped} dropped (their cell, person or building is gone)" : "");
         }
 
         // Your cells as the save stores them: the Shared Bag by index, and each
@@ -433,6 +525,29 @@ namespace IslandUI
                 }
             }
             return null;
+        }
+
+        // Whose belt a hook from a single-belt save or generation belongs on: the
+        // protagonist whose own bag or equipment holds the slot, or both for the
+        // Shared Bag and anything else.
+        private static int[] BeltOwners(ManagersScript mn, ItemSlot slot)
+        {
+            CommonStates[] players = mn != null && mn.gameMN != null ? mn.gameMN.playerCommons : null;
+            for (int p = 0; slot != null && players != null && p < players.Length; p++)
+            {
+                CommonStates who = players[p];
+                if (who == null)
+                {
+                    continue;
+                }
+                ItemSlot[] bag = who.bag != null ? who.bag.slots : null;
+                if ((bag != null && Array.IndexOf(bag, slot) >= 0)
+                    || (who.equip != null && Array.IndexOf(who.equip, slot) >= 0))
+                {
+                    return new[] { who.npcID };
+                }
+            }
+            return new[] { 0, 1 };
         }
 
         private static ItemSlot Resolve(ManagersScript mn, XmlElement e)

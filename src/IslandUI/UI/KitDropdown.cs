@@ -97,6 +97,10 @@ namespace IslandUI.UI
             d._label.enableWordWrapping = false;
             Theme.FlattenType(d._label);
             if (settingsArt != null) { settingsArt.Type(d._label); }
+            // a longer word shrinks a little before it is cut short
+            d._label.enableAutoSizing = true;
+            d._label.fontSizeMax = d._label.fontSize;
+            d._label.fontSizeMin = d._label.fontSize * 0.8f;
             float textX = PadX;
             if (d._icons != null)
             {

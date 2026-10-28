@@ -9,13 +9,14 @@ namespace IslandUI
     // InventoryWindow — Close chips, scroll mark, reach content layout, group frames.
     internal static partial class InventoryWindow
     {
-        private static void EnsureClose(Plate plate, float rise = 0f)
+        private static void EnsureClose(Plate plate, float rise = 0f, float size = CloseChip.Size,
+            float fromRight = CloseChip.FromRight)
         {
             if (plate.Close == null)
             {
                 plate.Close = CloseChip.Create(plate.Window.Go.transform);
             }
-            CloseChip.Place(plate.Close, rise);
+            CloseChip.Place(plate.Close, rise, size, fromRight);
         }
 
         // The chips: hit-tested BEFORE the cells, since a chip overhangs its frame
@@ -76,7 +77,14 @@ namespace IslandUI
                         continue;
                     }
                     bool over = ReferenceEquals(p, hot);
-                    CloseChip.Paint(p.Close, over, over && ReferenceEquals(p, _pressedClose));
+                    if (p.IsGroupFrame && IsVicinity(p.Group))
+                    {
+                        PaintVicinityClose(p.Close, over, over && ReferenceEquals(p, _pressedClose));
+                        continue;
+                    }
+                    CloseChip.Paint(p.Close, over, over && ReferenceEquals(p, _pressedClose),
+                        !p.IsGroupFrame ? CloseChip.Face : IsDossier(p.Group) ? SheetCloseFace
+                        : IsLeather(p.Group) ? LeatherCloseFace : CloseChip.Face);
                 }
             }
             return hot;
@@ -109,9 +117,11 @@ namespace IslandUI
                     {
                         // D156: a thing's window is its Inventory door's, as a
                         // person's bag window is - the chip folds it, the target stays
+                        // (a container's ends, by setting: CloseEndsContainer)
                         _bagOpen = false;
                         _forceRefresh = true;
                         _nextRefresh = 0f;
+                        CloseEndsContainer();
                     }
                     else { CloseFocus(_mn); }
                     break;
@@ -340,6 +350,11 @@ namespace IslandUI
                 }
             }
             // hover and press paint, so it looks like the control it now is
+            if (IsVicinity(GroupReach))
+            {
+                SkinVicinityScroll(w, over, _scrollDrag);
+                return _scrollDrag || over;
+            }
             Color accent = ShedThumb;
             w.ScrollThumb.color = _scrollDrag ? Color.Lerp(accent, Color.black, 0.18f)
                 : over ? Color.Lerp(accent, Color.white, 0.2f) : accent;
@@ -370,12 +385,22 @@ namespace IslandUI
                 window.ScrollThumb = Theme.KitImage(go.transform, "Thumb", "kit_cross", 0, Color.white);
                 window.ScrollThumb.raycastTarget = false;
             }
-            window.Scroll.sprite = Theme.RoundedFill;
-            window.Scroll.type = Image.Type.Sliced;
-            window.Scroll.color = ShedTrack;
-            window.ScrollThumb.sprite = Theme.RoundedFill;
-            window.ScrollThumb.type = Image.Type.Sliced;
-            window.ScrollThumb.color = ShedThumb;
+            bool vic = IsVicinity(GroupReach);
+            if (vic)
+            {
+                SkinVicinityScroll(window, false, false);
+            }
+            else
+            {
+                window.Scroll.sprite = Theme.RoundedFill;
+                window.Scroll.type = Image.Type.Sliced;
+                window.Scroll.color = ShedTrack;
+                window.ScrollThumb.sprite = Theme.RoundedFill;
+                window.ScrollThumb.type = Image.Type.Sliced;
+                window.ScrollThumb.color = ShedThumb;
+                window.ScrollThumb.pixelsPerUnitMultiplier = Theme.KitPpu;   // as KitImage made it
+                window.Scroll.pixelsPerUnitMultiplier = 1f;
+            }
             window.ScrollThumb.gameObject.SetActive(true);
 
             // Measured against the WINDOW, which is the whole scrollable extent -
@@ -402,8 +427,15 @@ namespace IslandUI
             float x = _slotKnown && _reachOpen
                 ? _slotW - GroupPadX() - Slot.Inset - KitBarW
                 : size.x + Slot.BarGap;
-            Theme.Place(window.Scroll, x, 0f, KitBarW, trackH);
-            Theme.Place(window.ScrollThumb, 0f, y, KitBarW, markH);
+            float barW = KitBarW;
+            if (vic && _slotKnown)
+            {
+                // in the design's gutter: x = 770 of the frame, 12 px
+                x = VicBarX - GroupPadX();
+                barW = VicBarW;
+            }
+            Theme.Place(window.Scroll, x, 0f, barW, trackH);
+            Theme.Place(window.ScrollThumb, 0f, y, barW, markH);
             if (!window.Scroll.gameObject.activeSelf)
             {
                 window.Scroll.gameObject.SetActive(true);
@@ -501,6 +533,9 @@ namespace IslandUI
             // bottom-left inside the window; y walks down from its top edge.
             float y = _reachViewH + _reachScroll;
             _reachAnchor = null;
+            // a row whose place changed glides there (Vicinity.cs: SlideTo)
+            bool slides = SlidesLive();
+            float listTop = 0f;
             for (int i = 0; i < _reachPlatesUsed; i++)
             {
                 Plate m = ReachPlates[i];
@@ -509,7 +544,10 @@ namespace IslandUI
                 r.anchorMax = Vector2.zero;
                 r.pivot = Vector2.zero;
                 y -= m.Height;
-                r.anchoredPosition = new Vector2(bandX, y);
+                m.ReachY = y;
+                float slide = SlideTo(i < ReachOrder.Count ? ReachOrder[i] : null, listTop, slides);
+                listTop += m.Height + memberGap;
+                r.anchoredPosition = new Vector2(bandX, y - slide);
                 if (_reachAnchor == null && y < _reachViewH && i < ReachOrder.Count)
                 {
                     // the highest member still on screen: what the scroll is
@@ -667,6 +705,16 @@ namespace IslandUI
             {
                 // a character sheet is a dossier: kraft folder, paper on it
                 SkinDossierFrame(plate, group);
+            }
+            else if (kit && IsLeather(group))
+            {
+                // your inventory and the other's: look 07's painted leather
+                SkinLeatherFrame(plate, group);
+            }
+            else if (kit && IsVicinity(group))
+            {
+                // the vicinity: facelift look 02's leather (Vicinity.cs)
+                SkinVicinityFrame(plate);
             }
             else if (kit && (IsCrate(group) || IsCork(group)))
             {

@@ -1,0 +1,172 @@
+# Island UI: Brazilian Portuguese story choice hints, machine-translated from en/story-choices.tsv.
+# Corrections are welcome: edit the option, plain and spoiler columns and keep the site and choice id.
+Kana01#1	51	Brag	Kana não se junta · os eventos dela acabam · a rota de amor de Kana só existe nos caminhos do enterro ou do renascimento com Cassie	Lulu Cyborg mata Kana
+Kana01#1	52	Make Excuse	Kana se junta como amiga · não pode ser convidada · H forçado ainda permitido	Prende Kana na amizade · sem mais eventos de Kana
+Kana02#1	33	Yes.	Lulu é enterrada · Lulu's Grave é colocado · sua próxima resposta decide a rota de Kana	Lulu nunca mais pode ser revivida nem reconstruída no Lab
+Kana02#1	34	No.	Sem efeito duradouro · você pode enterrá-la depois · ou revivê-la no Lab Basement quando Cassie tiver se juntado	Só reviver Lulu com Cassie mantém a rota de amor de Kana · uma Lulu Cyborg a fecha
+Kana02#2	41	I love XXXX.	Kana se junta · afeição -20 · não pode ser convidada · Lulu é enterrada	Prende Kana na amizade · sem mais eventos de Kana
+Kana02#2	17	Scream.	Três nativos atacam · perca para tentar de novo · vença para escolher: Agree abre a rota de amor de Kana, Deny a mantém como amiga	
+Kana02#2	29	Be sarcastic.	Afeição -999 · Kana não se junta · Lulu é enterrada	Kana se mata · Suicidal Kana fica como objeto posicionável
+Kana02#3	48	Agree	Afeição +20 · Kana se junta · o evento da casa dela abre com afeição 75, onde a rota dela é decidida	
+Kana02#3	49	Deny	Afeição -20 · Kana se junta · não pode ser convidada	Prende Kana na amizade · sem mais eventos de Kana
+Kana03#1	53	Compliment	O encontro continua · suas próximas respostas decidem se ela vira amante, parceira ou amiga	
+Kana03#1	29	Be sarcastic.	O evento acaba · Kana continua seguidora sem poder ser convidada · a casa dela fica, mas não pode mais ser fabricada	Prende Kana na amizade · sem mais eventos de Kana
+Kana03#2	20	Yes.	Só a resposta dela muda · sem efeito duradouro	
+Kana03#2	21	No.	Só a resposta dela muda · sem efeito duradouro	
+Kana03#3	41	I love XXXX.	Cena íntima com Kana · sua última resposta decide então amante ou parceira casual	
+Kana03#3	47	Support	O evento acaba · ela pode ser convidada · H forçado permitido · casa de Kana fabricável	Encerra a rota dela sem a cena de amor e sem virarem amantes
+Kana03#3	49	Deny	O evento acaba · não pode ser convidada · H forçado permitido · casa de Kana fabricável	Prende Kana na amizade
+Kana03#4	23	Persuade.	Afeição +20 · convite ligado · H forçado desligado · casa de Kana fabricável	Kana vira sua amante
+Kana03#4	49	Deny	Afeição -50 · convite e H forçado permitidos · casa de Kana não é mais fabricável	Kana vira parceira casual, não amante
+Kana03#4	52	Make Excuse	Afeição -30 · convite e H forçado permitidos · casa de Kana não é mais fabricável	Kana vira parceira casual, não amante
+Lulu00#1	33	Yes.	Precisa de um braço direito, uma perna direita e uma perna esquerda · as partes são usadas · Lulu se junta · não pode mais ser enterrada	Lulu é reconstruída como Cyborg sem a própria mente · fecha a rota de amor de Kana
+Lulu00#1	34	No.	Sem efeito duradouro · você pode decidir depois · enterrá-la continua possível	
+Lulu00#1	50	Talk to Cassie	Missão: 1 Core, 1000 Flesh, 200 Strong Bone, 3 Liquid Fish · depois Lulu e Kana se juntam · a rota de Kana continua aberta	Lulu volta à vida com a mente intacta
+Little#1	yes	Yes	Dá 1 Fnickers · Little & Nickey se juntam como amigos	
+Little#1	no	No	Little & Nickey fogem · você fica com os Fnickers · pode encontrá-los de novo depois de recarregar	
+Mermaid01#1	0	Do.	A cena continua · ela não se junta · só o presente do maiô a recruta · ela volta depois de recarregar	
+Mermaid01#1	1	Don't.	A cena acaba · ela não se junta · só o presente do maiô a recruta · ela volta depois de recarregar	
+Mermaid01#1	2	Gift the rainbow seashell swimsuit.	Gasta o Rainbow Seashell Swimsuit · a Mermaid se junta · mais uma escolha define a afeição dela	
+Mermaid01#2	0	Do.	A Mermaid se junta · afeição +75 · a cena continua	
+Mermaid01#2	1	Don't.	A Mermaid se junta · afeição +50	
+BossHunter00#1	10	Resist.	Só uma fala muda · você renasce e pode lutar contra eles de novo	
+BossHunter00#1	11	Give up.	Só uma fala muda · você renasce e pode lutar contra eles de novo	
+BossHunter00#2	11	Give up.	A cena de derrota continua · você renasce e pode lutar contra eles de novo	
+BossHunter00#2	12	Bite.	Uma cena de derrota mais dura · você renasce e pode lutar contra eles de novo	Yona é morta na cena
+SubGiant00#1	6	Attractive.	Cena íntima · se junta como amante · afeição +100 · pode ser convidada · luta na batalha do Ent King	Depois ela é capturada pelos Ents e morre, a menos que você volte para libertá-la
+SubGiant00#1	7	Uninteresting.	A Giant se junta como amiga · afeição +51 · não pode ser convidada · luta na batalha do Ent King	Como amiga, ela nunca é capturada pelos Ents nem corre risco
+SubGiant00#2	4	Kill.	Sem seguidora · o corpo dela pode ser destrinchado (Giant Orb, segundo a wiki) · sem Giant na batalha do Ent King	A Giant morre para sempre
+SubGiant00#2	8	Tie up.	Coloca uma Giant amarrada usável em cenas H · ela não se junta · sem Giant na batalha do Ent King	
+EventRuinsDoor#1	yes	Yes	Abre a porta · as Ruins subterrâneas ficam acessíveis	
+EventRuinsDoor#1	no	No	Sem efeito duradouro · você pode abri-la depois	
+EventGate#1	yes	Yes	Abre o Gate · começa a missão da ponte, que leva aos eventos da Prison e do Ent King	
+EventGate#1	no	No	Sem efeito duradouro · você pode abri-lo depois	
+Cassie00#1	yes	Yes	A cabeça de Cassie acorda · ela pede que você encontre o corpo dela · primeiro passo para Cassie se juntar	
+Cassie00#1	no	No	Sem efeito duradouro · você pode tentar de novo	
+Cassie00#2	yes	Yes	Pega o corpo dela · volte à cabeça para revivê-la · ela se junta · abre o evento do Dr. Daruman e o renascimento de Lulu	
+Cassie00#2	no	No	Sem efeito duradouro · você pode tentar de novo	
+Labo2Door#1	yes	Yes	Abre a porta do Lab · desbloqueia o evento de Cassie, que leva Cassie a se juntar e ao renascimento de Lulu	
+Labo2Door#1	no	No	Sem efeito duradouro · você pode abri-la depois	
+MainTakumi00#1	13	Observe.	Primeiro uma cena, depois a luta com Takumi · Keigo e Reika se juntam se você vencer · uma vitória abre a rota de Reika	Takumi estupra Reika · a vitória separa Keigo e Reika na hora
+MainTakumi00#1	14	Help.	Direto para a luta com Takumi · Keigo e Reika se juntam se você vencer · a rota de Reika é decidida depois da luta	Ficar do lado de Keigo depois da luta os separa e abre a rota de Reika · proteger Reika os mantém como casal
+MainTakumi00#2	16	Go along with Keigo.	Desbloqueia o evento de consolo de Reika, que abre a rota de romance dela	Keigo e Reika terminam
+MainTakumi00#2	15	Protect Reika.	Keigo e Reika continuam um casal · desbloqueia um evento com os dois onde a rota de Reika ainda pode abrir	Lá, fazer barulho os separa e abre a rota dela · observar os mantém juntos e a fecha
+MainTakumi01#1	23	Persuade.	Sem efeito duradouro · o evento continua de qualquer forma	
+MainTakumi01#1	3	Leave.	Sem efeito duradouro · o evento continua de qualquer forma	
+MainTakumi01#2	24	Obey Takumi.	Conta como derrota · você renasce e pode refazer o evento · sem efeito duradouro	Takumi abusa de você
+MainTakumi01#2	4	Kill.	Encerra a história de Takumi · a ponte para a Prison pode ser construída na hora	Takumi morre · o rádio dele se perde para sempre
+MainTakumi01#2	8	Tie up.	Takumi se junta amarrado · mantenha comida na bolsa dele até ele comer 10 · a ponte da Prison espera o desfecho	Alimentado, ele entrega o rádio a você, depois é capturado e se junta após o resgate na Prison · se passar fome, morre
+MainReika00#1	13	Observe.	Mostra a cena de Keigo e Reika · sem efeito duradouro · o evento de Takumi abre de qualquer forma	
+MainReika00#1	17	Scream.	Pula a cena · sem efeito duradouro · o evento de Takumi abre de qualquer forma	
+MainReika01#1	18	Insult Keigo.	Afeição de Reika -50 · ela continua amiga sem poder ser convidada	A rota de romance de Reika acaba aqui para sempre
+MainReika01#1	19	Console Reika.	Afeição de Reika +50 · com afeição 75, o próximo evento dela pode torná-la sua amante	
+MainReika01#2	20	Yes.	Sem efeito duradouro · Reika pergunta de novo na próxima vez · só 'I love Reika' a faz avançar	
+MainReika01#2	21	No.	Sem efeito duradouro · Reika pergunta de novo na próxima vez · só 'I love Reika' a faz avançar	
+MainReika01#2	22	I love Reika.	Reika vira sua amante e pode ser convidada · desbloqueia o confronto com Keigo, que decide se ela fica	Mais tarde, dizer a Nami que você ama Yona custa 70 de afeição de Nami em vez de nada
+Keigo00#1	22	I love Reika.	Keigo pergunta de novo · se manter firme começa uma luta · vença e Reika continua sua amante	
+Keigo00#1	11	Give up.	Sem luta · Reika volta a ser amiga e não pode mais ser convidada	O romance com Reika acaba para sempre · ela e Keigo voltam a ficar juntos
+Keigo00#1	25	I just wanna fuck her.	Começa uma luta com Keigo · uma derrota permite tentar de novo · se Reika fica é decidido depois da vitória	Poupe-o e Reika ouve tudo e larga você · mate-o e ela continua sua amante
+Keigo00#2	22	I love Reika.	Começa uma luta com Keigo · uma derrota permite tentar de novo · vença e Reika continua sua amante	
+Keigo00#2	11	Give up.	Sem luta · Reika volta a ser amiga e não pode mais ser convidada	O romance com Reika acaba para sempre · ela e Keigo voltam a ficar juntos
+Keigo00#3	13	Observe.	Keigo vive e continua companheiro · o desfecho segue sua resposta anterior	Se disse que a ama: Reika fica com você, nova cena de convite · se disse que quer sexo: ela ouviu e larga você
+Keigo00#3	4	Kill.	Reika continua sua amante, não importa o que você disse · segue uma escolha entre verdade e mentira	Keigo morre para sempre · ele deixa o Keigo's Locket Pendant
+Keigo00#4	0	Do.	Cena íntima com Reika · de qualquer forma ela continua sua amante e a cena de convite dela muda	
+Keigo00#4	1	Don't.	Sem cena · de qualquer forma Reika continua sua amante e a cena de convite dela muda	
+Keigo00#5	26	Tell the truth.	Afeição de Reika -20 · Moral -10 · ela continua sua amante de qualquer forma	
+Keigo00#5	27	Lie.	Moral -20 · afeição de Reika inalterada · ela continua sua amante de qualquer forma	
+Keigo01#1	13	Observe.	Mostra a cena de Keigo e Reika · eles continuam um casal	A rota de romance de Reika se fecha para sempre
+Keigo01#1	37	Make sounds.	Sem cena · Keigo fica emburrado · desbloqueia o evento de consolo de Reika, que abre a rota de romance dela	Keigo e Reika terminam
+Shino00#1	28	Nothing.	Sem efeito duradouro · você sai e o evento se repete	
+Shino00#1	29	Be sarcastic.	Segue um aviso: clique para sair, F para matar, R para abusar · Shino's Clothes entram na lista de fabricação	Shino não pode mais se juntar a você
+Shino00#1	30	Present the steak.	Só aparece com um bife · pedir desculpas em seguida faz Shino se juntar · Shino's Clothes entram na lista de fabricação	
+Shino00#2	31	Apologize.	Gasta o bife · jantar com Shino · ela se junta como amiga	
+Shino00#2	32	Demand an apology.	Segue um aviso: clique para sair, F para matar, R para abusar · você fica com o bife	Shino não pode mais se juntar a você
+Shino00#3	33	Yes.	Cena íntima · Shino se junta como amiga · a próxima escolha define a afeição dela	
+Shino00#3	34	No.	Sem cena · Shino se junta como amiga (afeição 51)	
+Shino00#4	35	Hold it.	Cena completa · Shino se junta com +20 de afeição extra (71)	
+Shino00#4	36	Bust a nut.	A cena acaba cedo · Shino se junta, sem afeição extra (51)	
+Shino00#5	4	Kill.	O evento acaba · Shino não se junta	Shino morre para sempre
+Shino00#5	8	Tie up.	Você recebe uma Shino amarrada para colocar em qualquer lugar e usar em cenas	Shino nunca se junta como seguidora
+Prison#1	3	Leave.	Sally se junta como amiga (afeição 51) · memorando de fabricação (novas receitas de móveis)	
+Prison#1	8	Tie up.	Você recebe uma Sally amarrada para colocar e usar · memorando de fabricação (novas receitas de móveis)	Sally nunca se junta como seguidora
+Prison#1	4	Kill.	Memorando de fabricação (novas receitas de móveis) · o evento acaba	Sally morre para sempre
+Prison#2	3	Leave.	Sally se junta a você · afeição +51 · ela se junta seja qual for a próxima escolha (Punish a perde)	
+Prison#2	38	Punish.	Cena de sexo · depois Tie up ou Kill · Sally nunca se junta (só Leave a recruta)	Uma cena forçada, com Takumi participando se estiver lá
+Prison#2	8	Tie up.	Sally não se junta · você recebe uma Sally amarrada para colocar e usar · ela continua viva (ao contrário de Kill)	
+Prison#2	4	Kill.	Sally não se junta · Takumi fica chateado com isso na construção da ponte depois (se estiver com você)	Sally morre
+Prison#3	0	Do.	Cena de sexo com Sally · depois Dildo ou Fleshlight: ela se junta de qualquer forma, só o acesso ao sexo muda	
+Prison#3	1	Don't.	Sally se junta a você · afeição +51 · sexo com ela desbloqueado sem limite de libido	
+Prison#4	39	Become a Dildo.	Sally se junta a você · afeição +51 · ela só aceita sexo com libido 80+ (Fleshlight não tem limite)	
+Prison#4	40	Be my fleshlight.	Sally se junta a você · afeição +51 · sexo com ela desbloqueado, sem limite de libido (ao contrário de Dildo)	
+Prison#5	8	Tie up.	Sally não se junta · você recebe uma Sally amarrada para colocar e usar · ela continua viva (ao contrário de Kill)	
+Prison#5	4	Kill.	Sally não se junta · Takumi fica chateado com isso na construção da ponte depois (se estiver com você)	Sally morre
+Entking02#1	41	I love XXXX.	Afeição de Nami inalterada · −70 se você estiver namorando Reika · nenhum outro efeito duradouro	
+Entking02#1	42	I love Nami.	Afeição de Nami −50 · nenhum outro efeito duradouro	
+Entking02#1	43	I want to help XXXX.	Afeição de Nami +20, a única resposta que a aumenta · nenhum outro efeito duradouro	
+Entking03#1	44	Fight	Revanche com o Ent King, o homem luta sozinho · para onde você anda depois da vitória decide o destino de uma Giant capturada	Saia sem voltar à sala do chefe e a Giant capturada morre · voltar a salva
+Entking03#1	11	Give up.	O evento falha · tente de novo de antes da revanche · sem efeito duradouro	O homem morre na frente de Nami · fim de jogo
+Nami#1	41	I love XXXX.	A seguir: Blackmail desbloqueia sexo com Nami, Apologize não · o evento dela com Yona vem de qualquer forma	
+Nami#1	7	Uninteresting.	A seguir: Deceive desbloqueia sexo com Nami, Support não · o evento dela com Yona vem de qualquer forma	Nami confessa que ama Yona
+Nami#2	45	Blackmail	Afeição de Nami −20 · o homem pode convidar Nami para sexo (Apologize não) · o evento dela com Yona a seguir	Ele força Nami ao sexo para que ela fique calada
+Nami#2	31	Apologize.	Afeição inalterada · sem cena · o homem não pode convidar Nami para sexo · o evento dela com Yona a seguir	Ele desiste de Yona e apoia Nami
+Nami#3	47	Support	Afeição inalterada · sem cena · o homem não pode convidar Nami para sexo · o evento dela com Yona a seguir	Ele apoia o amor de Nami por Yona
+Nami#3	46	Deceive	Afeição de Nami +20 · o homem pode convidar Nami para sexo (Support não) · o evento dela com Yona a seguir	Ele a engana para um sexo de "treino"
+NamiYona#1	33	Yes.	Yona e Nami viram um casal · Yona pode convidar Nami para sexo (com No, não pode) · segue Do ou Don't	
+NamiYona#1	34	No.	Afeição inalterada · Nami continua no seu grupo · Yona não pode convidar Nami para sexo	Yona rejeita Nami e Nami foge
+NamiYona#2	0	Do.	Cena de amor · afeição de Nami +50 · continuam um casal de qualquer forma	
+NamiYona#2	1	Don't.	Sem cena · sem ganho de afeição (Do dá +50) · continuam um casal, sexo ainda desbloqueado	
+Yona00#1	54	I don’t know.	Só diálogo · as mesmas escolhas da caverna vêm de qualquer forma · Yona pode engravidar depois deste evento	
+Yona00#1	55	Won’t return	Só diálogo · as mesmas escolhas da caverna vêm de qualquer forma · Yona pode engravidar depois deste evento	
+Yona00#2	54	I don’t know.	Só diálogo · sem efeito duradouro · as mesmas escolhas da caverna vêm de qualquer forma	
+Yona00#2	55	Won’t return	Só diálogo · sem efeito duradouro · as mesmas escolhas da caverna vêm de qualquer forma	
+Yona00#3	56	Demand compensation	Yona responde: constrangedor, muito constrangedor ou (se não for virgem) masturbador · só masturbador desbloqueia sexo	
+Yona00#3	41	I love XXXX.	Yona responde: amantes (sexo entre eles desbloqueado), o amor dele continua não correspondido, ou ela o rejeita	
+Yona00#3	13	Observe.	Yona fala primeiro · amantes, companheiros, não correspondido, rejeitado ou (se não for virgem) amigos coloridos	
+Yona00#4	48	Agree	A relação deles: constrangedora · sem sexo entre eles (só masturbador desbloqueia)	
+Yona00#4	52	Make Excuse	A relação deles: muito constrangedora · sem sexo entre eles (só masturbador desbloqueia)	
+Yona00#4	58	Become a fleshlight.	Cena de sexo · Yona e o homem podem se convidar para sexo · a cena pode engravidar Yona	
+Yona00#5	41	I love XXXX.	Viram amantes · podem se convidar para sexo · depois Do ou Don't, amantes de qualquer forma	
+Yona00#5	47	Support	Sem romance · o amor do homem continua não correspondido · sem sexo entre eles	
+Yona00#5	49	Deny	Yona rejeita o homem · sem sexo entre eles	
+Yona00#6	41	I love XXXX.	O homem responde: amantes (sexo desbloqueado), o amor dela continua não correspondido, ou ele a rejeita	
+Yona00#6	13	Observe.	Continuam companheiros · sem romance · sem sexo entre eles · nenhum outro efeito duradouro	
+Yona00#6	57	Seduce	O homem responde: Yes os torna amigos coloridos (sexo desbloqueado), No deixa tudo constrangedor	
+Yona00#7	41	I love XXXX.	Viram amantes · podem se convidar para sexo · depois Do ou Don't, amantes de qualquer forma	
+Yona00#7	47	Support	Sem romance · o amor de Yona continua não correspondido · sem sexo entre eles	
+Yona00#7	49	Deny	O homem rejeita Yona · sem sexo entre eles	
+Yona00#8	33	Yes.	Cena de sexo · viram amigos coloridos e podem se convidar para sexo · pode engravidar Yona	
+Yona00#8	34	No.	A relação deles: constrangedora · sem sexo entre eles	
+Yona00#9	0	Do.	Cena de amor · pode engravidar Yona · depois Continue ou Quit · amantes de qualquer forma	
+Yona00#9	1	Don't.	Sem cena · continuam amantes · ainda podem se convidar para sexo	
+Yona00#8	0	Do.	Cena de amor · pode engravidar Yona · depois Continue ou Quit · amantes de qualquer forma	
+Yona00#8	1	Don't.	Sem cena · continuam amantes · ainda podem se convidar para sexo	
+Yona00#6	0	Do.	Cena de amor · pode engravidar Yona · depois Continue ou Quit · amantes de qualquer forma	
+Yona00#6	1	Don't.	Sem cena · continuam amantes · ainda podem se convidar para sexo	
+Yona00#10	59	Continue	Mais duas posições · mais chances de Yona engravidar · continuam amantes	
+Yona00#10	60	Quit	A cena acaba · continuam amantes · nada mais muda	
+Santa#1	33	Yes.	Os Presents param de surgir na natureza · peça a Merry de novo para reativá-los	
+Santa#1	34	No.	Os Presents continuam surgindo · sem efeito duradouro	
+Santa#2	33	Yes.	Os Presents voltam a surgir na natureza, até o save ser carregado de novo	
+Santa#2	34	No.	Sem efeito duradouro · peça a Merry de novo quando quiser	
+Santa#3	33	Yes.	Só diálogo · sem efeito duradouro · o próximo Yes ou No decide a missão	
+Santa#3	34	No.	Só diálogo · sem efeito duradouro · o próximo Yes ou No decide a missão	
+Santa#4	33	Yes.	Começa a missão: traga 20 Santa's Lost Item · presentes surgem · depois encontre o Reindeer, e Merry se junta	
+Santa#4	34	No.	Missão não iniciada · fale com Merry de novo para tentar outra vez · nada se perde	
+Santa#5	33	Yes.	Só Merry se junta · afeição de Merry +50 · você recebe Reindeer BBQ · o Reindeer nunca se junta	O Reindeer é cozido · a cabeça dele vai para um suporte
+Santa#5	34	No.	Merry e o Reindeer se juntam · sem Reindeer BBQ e sem ganho de afeição (Yes dá os dois)	
+Sadako#1	yes	Yes	Gasta 1 Mandrake · começa uma luta · o inimigo dropa um Curse Orb (wiki)	Sua Underground Woman morre no poço, volta como Sadako hostil e sai do seu grupo
+Sadako#1	no	No	Nada acontece · sem efeito duradouro	
+SubGiant00!1	click	[Left-Click] Leave.	Ela se recupera e se junta como amiga · não pode ser convidada · luta na batalha do Ent King	Como amiga, ela nunca é capturada pelos Ents nem corre risco
+SubGiant00!1	f	[F] Kill.	O evento acaba · sem seguidora · o corpo dela pode ser destrinchado (Giant Orb, segundo a wiki)	A Giant morre para sempre
+SubGiant00!1	r	[R] (oculta)	Uma opção oculta · segue uma escolha entre Kill ou Tie up · ela nunca se junta	Cena de abuso
+SubGiant00!1	wait	Espere cerca de 30 s	Aparece uma quarta opção: [Q] Seduce · o único jeito de torná-la sua amante	
+SubGiant00!2	click	[Left-Click] Leave.	Ela se recupera e se junta como amiga · não pode ser convidada · luta na batalha do Ent King	Como amiga, ela nunca é capturada pelos Ents nem corre risco
+SubGiant00!2	f	[F] Kill.	O evento acaba · sem seguidora · o corpo dela pode ser destrinchado (Giant Orb, segundo a wiki)	A Giant morre para sempre
+SubGiant00!2	r	[R] (oculta)	Uma opção oculta · segue uma escolha entre Kill ou Tie up · ela nunca se junta	Cena de abuso
+SubGiant00!2	q	[Q] Seduce.	Convença-a · depois Attractive a torna uma amante que você pode convidar, Uninteresting, uma amiga	Uma Giant amante é capturada depois pelos Ents e morre, a menos que você a liberte
+Shino00!1	click	[Left-Click] Leave.	Vá embora · Shino fica, mas só conversa e ignora você	Ela nunca se junta · ainda pode ser abusada depois
+Shino00!1	f	[F] Kill.	O evento acaba · Shino nunca se junta	Shino morre para sempre
+Shino00!1	r	[R] (oculta)	Uma opção oculta	Cena de abuso, depois Kill ou Tie up · amarrada, você recebe uma Shino amarrada · ela nunca se junta
+Shino00!5	click	[Left-Click] Leave.	Vá embora · Shino fica, mas só conversa e ignora você	Ela nunca se junta · ainda pode ser abusada depois
+Shino00!5	f	[F] Kill.	O evento acaba · Shino nunca se junta	Shino morre para sempre
+Shino00!5	r	[R] (oculta)	Uma opção oculta	Cena de abuso, depois Kill ou Tie up · amarrada, você recebe uma Shino amarrada · ela nunca se junta

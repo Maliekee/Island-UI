@@ -91,8 +91,9 @@ namespace IslandUI
                 return false;
             }
             string name = InventoryWindow.GiveName();
-            string hint = "You can't use this on yourself. Drag it onto "
-                + (name ?? "someone") + " to give it.";
+            string hint = name != null
+                ? Shared.Loc.Get("use.not_on_you", "You can't use this on yourself. Drag it onto {0} to give it.", name)
+                : Shared.Loc.Get("use.not_on_you.someone", "You can't use this on yourself. Drag it onto someone to give it.");
             if (mn.eventMN != null)
             {
                 mn.eventMN.StartCoroutine(mn.eventMN.GoCautionSt(hint));

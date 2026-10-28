@@ -17,6 +17,16 @@ namespace IslandUI
             Cards[0].OpenQuantity();
         }
 
+        // A craft made elsewhere - a right-click on the grid - says so on the card,
+        // when the card is showing that recipe
+        internal static void NoteCrafted(CraftInfo recipe, int made)
+        {
+            Card card = Cards[0];
+            if (recipe == null || card == null || !ReferenceEquals(card.ShownLink.Recipe, recipe)) return;
+            card.NoteCrafted(made);
+            RenderAll();
+        }
+
         private static int AvailableCrafts(CraftInfo recipe)
         {
             if (recipe == null || _inv == null || _mn == null
@@ -65,7 +75,7 @@ namespace IslandUI
             // never crafts: Craft does.
             private GameObject _counter;
             private Image _counterField;
-            private TextMeshProUGUI _counterNumber, _counterMax;
+            private TextMeshProUGUI _counterNumber, _counterMax, _counterLabel;
             private SheetButton _counterLess, _counterMore, _counterSet;
             private bool _counting;
             private string _typed;          // the digits typed since it opened or stepped, or null
@@ -74,6 +84,19 @@ namespace IslandUI
             private const float CounterH = 38f;
             public bool CountingNow => _counting;
             private int _craftedFrame = -1;
+            // "Crafted 2 Iron Ingot" in the status line, for a moment after a craft
+            private string _craftedNote;
+            private float _craftedUntil;
+            private const float CraftedSeconds = 2.5f;
+            private int _craftedCount;
+
+            // crafts in quick succession add up: three right-clicks read "Crafted 3"
+            internal void NoteCrafted(int made)
+            {
+                _craftedCount = Time.unscaledTime < _craftedUntil ? _craftedCount + made : made;
+                _craftedNote = Shared.Loc.Get("recipe.status.crafted", "Crafted {0} {1}", _craftedCount, ShownLink.Item.GetItemName());
+                _craftedUntil = Time.unscaledTime + CraftedSeconds;
+            }
             public Link ShownLink;
             public int Quantity => _quantity;
 
@@ -167,7 +190,10 @@ namespace IslandUI
                     Theme.Place(Highlight, 0, 0.5f, width + 2 * Bleed, H - 1);
                     Theme.Place(Icon, Bleed + 1, (H - 12) / 2, 12, 12);
                     Theme.Place(Name, Bleed + 17, top, width - 62, 11);
-                    Theme.Place(Hint, Bleed + 17, 11, width - 24, 7);
+                    // centred where a 7-high box puts it, but 9 high: a kana or kanji line is
+                    // taller than the blueprint face's, and an ellipsis box that a line overruns
+                    // in height is cut at its first character (Forgejo #19)
+                    Theme.Place(Hint, Bleed + 17, 10, width - 24, 9);
                     float right = Bleed + width - 1 - (chevron ? 7 : 0);
                     Theme.Place(Count, right - 50, top, 50, 11);
                     Centre(Arrow, Bleed + width - 3.5f, top + 5.5f, 5, 5, 90);
@@ -223,7 +249,6 @@ namespace IslandUI
                 _class.overflowMode = TextOverflowModes.Ellipsis;
                 Theme.Place(_class, w - 44, 9, 43, 9);
                 _benchLabel = Blueprint.Text(root, "BenchLabel", 5.2f, Blueprint.Dim, TextAlignmentOptions.MidlineLeft);
-                _benchLabel.text = "BENCH";
                 Theme.Place(_benchLabel, 1, 21, 22, 12);
                 _recipeBench = Blueprint.Text(root, "Bench", 6.2f, Blueprint.Ink, TextAlignmentOptions.MidlineLeft);
                 _recipeBench.overflowMode = TextOverflowModes.Ellipsis;
@@ -248,14 +273,12 @@ namespace IslandUI
                 _makes = Blueprint.Text(root, "Makes", 5.4f, Blueprint.Ink, TextAlignmentOptions.Center);
 
                 _noteLabel = Blueprint.Text(root, "NoteLabel", 5.2f, Blueprint.Dim, TextAlignmentOptions.MidlineLeft);
-                _noteLabel.text = "NOTE";
                 _recipeTip = Blueprint.Text(root, "Description", 6f, Blueprint.Ink, TextAlignmentOptions.TopLeft);
                 _recipeTip.enableWordWrapping = true;
                 _recipeTip.overflowMode = TextOverflowModes.Ellipsis;
 
                 // the bill of materials
                 _recipeHeading = Blueprint.Text(root, "MaterialsHeading", 6.2f, Blueprint.Ink, TextAlignmentOptions.MidlineLeft);
-                _recipeHeading.text = "BILL OF MATERIALS";
                 _recipeOutput = Blueprint.Text(root, "Output", 5.2f, Blueprint.Dim, TextAlignmentOptions.MidlineRight);
                 _recipeStatus = Blueprint.Text(root, "Availability", 6.4f, Blueprint.Ink, TextAlignmentOptions.TopLeft);
                 _recipeStatus.enableWordWrapping = true;
@@ -282,10 +305,9 @@ namespace IslandUI
                 lift.effectDistance = new Vector2(0f, -2.5f);
                 Image slipRule = Theme.KitImage(_counter.transform, "Rule", "kit_bp_box", 6, Blueprint.Ink);
                 Theme.Place(slipRule, 0, 0, w + 2, CounterH);
-                TextMeshProUGUI counterLabel = Blueprint.Text(_counter.transform, "Label", 5.2f, Blueprint.Dim,
+                _counterLabel = Blueprint.Text(_counter.transform, "Label", 5.2f, Blueprint.Dim,
                     TextAlignmentOptions.MidlineLeft);
-                counterLabel.text = "QUANTITY";
-                Theme.Place(counterLabel, 4, 2.5f, 60, 8);
+                Theme.Place(_counterLabel, 4, 2.5f, 60, 8);
                 _counterMax = Blueprint.Text(_counter.transform, "Max", 5.2f, Blueprint.Dim, TextAlignmentOptions.MidlineRight);
                 Theme.Place(_counterMax, w + 2 - 84, 2.5f, 80, 8);
                 _counterLess = new SheetButton(_counter.transform, "Less", 14, 17, 9, () => StepCount(-1));
@@ -360,14 +382,27 @@ namespace IslandUI
                 SetRecipeVisible(true);
                 float w = Window.Content.sizeDelta.x;
                 _recipeName.text = link.Item.GetItemName().ToUpperInvariant();
-                _sheetNo.text = "SHEET " + (History.Count + 1);
+                // the sheet's fixed words, lettered at each render so a language switch reaches them
+                _benchLabel.text = Shared.Loc.Get("recipe.bench", "BENCH");
+                _noteLabel.text = Shared.Loc.Get("recipe.note", "NOTE");
+                _recipeHeading.text = Shared.Loc.Get("recipe.materials", "BILL OF MATERIALS");
+                _counterLabel.text = Shared.Loc.Get("recipe.quantity", "QUANTITY");
+                _sheetNo.text = Shared.Loc.Get("recipe.sheet_number", "SHEET {0}", History.Count + 1);
                 _class.text = CardFacets.FriendlyType(link.Item).ToUpperInvariant();
+                Theme.FitLanguage(_class, 6.2f);
+                // the bench's name starts where its label ends, which is 23 in English
+                float benchX = Mathf.Max(23f, _benchLabel.GetPreferredValues(_benchLabel.text).x + 3f);
+                Theme.Place(_benchLabel, 1, 21, benchX - 1, 12);
+                Theme.Place(_recipeBench, benchX, 21, w - benchX - 1, 12);
                 RecipeCatalog.Entry entry = RecipeCatalog.Of(link.Recipe);
                 int panel = RecipeCatalog.DisplayPanel(entry);
-                string bench = RecipeCatalog.PanelOwnerName(_mn, panel) ?? "By hand";
+                string bench = RecipeCatalog.PanelOwnerName(_mn, panel) ?? Shared.Loc.Get("recipe.by_hand", "By hand");
                 bool reachable = RecipeCatalog.IsReachable(entry);
-                _recipeBench.text = (panel == 0 ? bench : bench + (reachable ? " · in reach" : " · not in reach"))
+                _recipeBench.text = (panel == 0 ? bench
+                    : reachable ? Shared.Loc.Get("recipe.bench.in_reach", "{0} · in reach", bench)
+                    : Shared.Loc.Get("recipe.bench.not_in_reach", "{0} · not in reach", bench))
                     .ToUpperInvariant();
+                Theme.FitLanguage(_recipeBench, 6.2f);   // "NICHT IN REICHWEITE" outruns the English
                 _recipeBench.color = reachable ? Blueprint.Ink : Blueprint.Short;
                 Span(_rules[0], 20, w);
                 Span(_rules[1], 33.5f, w);
@@ -385,7 +420,7 @@ namespace IslandUI
                 drawnW = Mathf.Max(drawnW, 30f);
                 float dimY = 34 + DrawingH - 7;
                 float x0 = w / 2 - drawnW / 2, x1 = w / 2 + drawnW / 2;
-                _makes.text = "MAKES " + output;
+                _makes.text = Shared.Loc.Get("recipe.makes", "MAKES {0}", output);
                 float gap = _makes.GetPreferredValues(_makes.text).x + 4f;
                 Theme.Place(_makes, w / 2 - 30, dimY - 4, 60, 8);
                 Centre(_dimension[0], x0, dimY, 0.5f, 6, 0);
@@ -406,15 +441,20 @@ namespace IslandUI
                 if (note)
                 {
                     _recipeTip.text = tips;
-                    float noteW = w - 23;
+                    float noteX = Mathf.Max(22f, _noteLabel.GetPreferredValues(_noteLabel.text).x + 3f);
+                    float noteW = w - 1 - noteX;
                     float noteH = Mathf.Min(_recipeTip.GetPreferredValues(tips, noteW, 0f).y + 1f, 40f);
-                    Theme.Place(_noteLabel, 1, y + 3, 20, 8);
-                    Theme.Place(_recipeTip, 22, y + 3.5f, noteW, noteH);
+                    Theme.Place(_noteLabel, 1, y + 3, noteX - 2, 8);
+                    Theme.Place(_recipeTip, noteX, y + 3.5f, noteW, noteH);
                     y += noteH + 7;
                     Span(_rules[3], y, w);
                 }
 
-                Theme.Place(_recipeHeading, 1, y + 1, w / 2 + 10, 10);
+                // the English heading runs 10 into the counts' half; a longer one keeps to its own
+                bool english = Shared.Loc.Language == "en";
+                Theme.FitLanguage(_recipeHeading, 6.2f);
+                Theme.FitLanguage(_recipeOutput, 5.2f);
+                Theme.Place(_recipeHeading, 1, y + 1, english ? w / 2 + 10 : w / 2 - 2, 10);
                 Theme.Place(_recipeOutput, w / 2, y + 1, w / 2 - 1, 10);
                 y += 12;
                 Span(_rules[4], y, w, 0.4f);
@@ -423,13 +463,15 @@ namespace IslandUI
                 {
                     _lastCrafts = AvailableCrafts(link.Recipe);
                     if (!_counting && _lastCrafts > 0) _quantity = Mathf.Clamp(_quantity, 1, _lastCrafts);
-                    _recipeOutput.text = "HAVE / NEED · MAKES " + (_quantity * (long)output);
+                    _recipeOutput.text = Shared.Loc.Get("recipe.have_need_makes", "HAVE / NEED · MAKES {0}",
+                        _quantity * (long)output);
                     int cursor = 0;
                     string shortage = null;
                     foreach (CraftInfo.Required required in link.Recipe.required)
                     {
                         ItemData item = required?.itemData;
-                        if (item == null) continue;
+                        // a free recipe's placeholder ("none" x0, the last boss's raw parts)
+                        if (item == null || required.count <= 0f) continue;
                         while (_recipeRows.Count <= cursor) _recipeRows.Add(new RecipeRow(_recipeRoot.transform));
                         RecipeRow row = _recipeRows[cursor++];
                         float need = Mathf.Max(1f, required.count) * _quantity;
@@ -439,13 +481,16 @@ namespace IslandUI
                         bool hasRecipe = producer.Recipe != null;
                         bool inReach = hasRecipe && RecipeCatalog.IsReachable(RecipeCatalog.Of(producer.Recipe));
                         bool makeable = inReach && AvailableCrafts(producer.Recipe) > 0;
+                        // null for a recipe made by hand
                         string owner = hasRecipe ? RecipeCatalog.PanelOwnerName(_mn,
-                            RecipeCatalog.DisplayPanel(RecipeCatalog.Of(producer.Recipe))) ?? "By hand" : null;
+                            RecipeCatalog.DisplayPanel(RecipeCatalog.Of(producer.Recipe))) : null;
                         string hint = !shortfall ? ""
-                            : !hasRecipe ? "Gather in the world"
-                            : !inReach ? owner + " not in reach"
-                            : makeable ? (owner == "By hand" ? "Make by hand" : "Make at " + owner)
-                            : "Recipe needs materials";
+                            : !hasRecipe ? Shared.Loc.Get("recipe.hint.gather", "Gather in the world")
+                            : !inReach ? Shared.Loc.Get("recipe.hint.not_in_reach", "{0} not in reach",
+                                owner ?? Shared.Loc.Get("recipe.by_hand", "By hand"))
+                            : makeable ? (owner == null ? Shared.Loc.Get("recipe.hint.by_hand", "Make by hand")
+                                : Shared.Loc.Get("recipe.hint.make_at", "Make at {0}", owner))
+                            : Shared.Loc.Get("recipe.hint.needs_materials", "Recipe needs materials");
                         bool lit = shortfall && makeable;
                         row.Key = item.name;
                         row.Y = y;
@@ -462,24 +507,29 @@ namespace IslandUI
                         row.Hint.text = hint.ToUpperInvariant();
                         row.Hint.color = lit ? Blueprint.Lit : Blueprint.Dim;
                         row.Highlight.enabled = lit;
-                        if (shortfall && shortage == null) shortage = $"Need {Mathf.CeilToInt(need - have)} more {item.GetItemName()}";
+                        if (shortfall && shortage == null)
+                            shortage = Shared.Loc.Get("recipe.status.need_more", "Need {0} more {1}",
+                                Mathf.CeilToInt(need - have), item.GetItemName());
                         y += row.H;
                     }
                     for (int i = cursor; i < _recipeRows.Count; i++) _recipeRows[i].Go.SetActive(false);
                     Span(_rules[5], y, w);
                     bool bad = !reachable || shortage != null;
-                    _recipeStatus.text = (!reachable ? $"Requires {bench} — not in reach"
-                        : shortage ?? (_lastCrafts == 0 ? "Not available in this menu" : $"Can craft {_lastCrafts} times"))
+                    bool crafted = Time.unscaledTime < _craftedUntil && _craftedNote != null;
+                    _recipeStatus.text = (crafted ? _craftedNote : !reachable ? Shared.Loc.Get("recipe.status.requires", "Requires {0} — not in reach", bench)
+                        : shortage ?? (_lastCrafts == 0 ? Shared.Loc.Get("recipe.status.unavailable", "Not available in this menu")
+                            : Shared.Loc.Plural("recipe.status.can_craft", "Can craft {0} time", "Can craft {0} times", _lastCrafts)))
                         .ToUpperInvariant();
-                    _recipeStatus.color = bad ? Blueprint.Short : Blueprint.Ink;
+                    _recipeStatus.color = crafted ? Blueprint.Lit : bad ? Blueprint.Short : Blueprint.Ink;
                     y += 5;
                     Theme.Place(_recipeStatus, 1, y, w - 2, 10);
+                    Theme.FitLanguage(_recipeStatus, 6.4f);
                     y += 14;
                     _actionsY = y;
                     _less.Place(1, y + 1); _quantityButton.Place(17, y + 1); _more.Place(47, y + 1);
                     _craft.Place(w - 65, y);
                     _quantityButton.Label.text = _quantity.ToString();
-                    _craft.Label.text = $"CRAFT {_quantity}";
+                    _craft.Label.text = Shared.Loc.Get("recipe.craft", "CRAFT {0}", _quantity);
                     _craft.Enabled = _lastCrafts >= _quantity;
                     _quantityButton.Enabled = _lastCrafts > 0;
                     _less.Enabled = _quantity > 1;
@@ -522,13 +572,14 @@ namespace IslandUI
                 _returnEdge.enabled = sheet && _returnIcon.sprite != null;
                 _returnArrow.color = tone;
                 _returnRule.color = ink;
-                _return.Label.text = ("Back to " + parent.Link.Item.GetItemName()).ToUpperInvariant();
-                string status = "Return to the job";
+                _return.Label.text = Shared.Loc.Get("recipe.return.back_to", "Back to {0}", parent.Link.Item.GetItemName())
+                    .ToUpperInvariant();
+                string status = Shared.Loc.Get("recipe.return.job", "Return to the job");
                 if (parent.Link.Recipe != null)
                 {
-                    if (ready) status = "Ready to craft";
+                    if (ready) status = Shared.Loc.Get("recipe.return.ready", "Ready to craft");
                     else if (!RecipeCatalog.IsReachable(RecipeCatalog.Of(parent.Link.Recipe)))
-                        status = "Required bench not in reach";
+                        status = Shared.Loc.Get("recipe.return.bench", "Required bench not in reach");
                     else
                     {
                         float need = 0;
@@ -536,8 +587,9 @@ namespace IslandUI
                             if (req?.itemData != null && req.itemData.name == ShownLink.Key)
                                 need += Mathf.Max(1, req.count) * parent.Quantity;
                         int missing = Mathf.CeilToInt(need - CraftingPatches.CountAvailable(_inv, ShownLink.Key, false));
-                        status = missing > 0 ? $"Needs {missing} more {ShownLink.Item.GetItemName()}"
-                            : "Other materials still needed";
+                        status = missing > 0
+                            ? Shared.Loc.Get("recipe.return.needs_more", "Needs {0} more {1}", missing, ShownLink.Item.GetItemName())
+                            : Shared.Loc.Get("recipe.return.other", "Other materials still needed");
                     }
                 }
                 _returnStatus.text = status.ToUpperInvariant();
@@ -567,6 +619,11 @@ namespace IslandUI
 
             private void TickRecipe(Vector2 local)
             {
+                if (_craftedUntil > 0f && Time.unscaledTime >= _craftedUntil)
+                {
+                    _craftedUntil = 0f;   // the note has had its moment: the usual status again
+                    RenderAll();
+                }
                 if (_counting) { DropHover(); TickCounter(local); return; }
                 float w = Window.Content.sizeDelta.x;
                 RecipeRow over = null;
@@ -600,7 +657,9 @@ namespace IslandUI
                 TickReturn(local);
                 if (local.y <= -_actionsY && local.y >= -_actionsY - 19 && local.x >= 0 && local.x <= 62)
                 {
-                    ReasonTip.Show("How many · click the number to type one · wheel steps");
+                    ReasonTip.Show(string.Join(Shared.Loc.Separator, Shared.Loc.Get("recipe.quantity.tip", "How many"),
+                        Shared.Loc.Get("recipe.quantity.tip.type", "click the number to type one"),
+                        Shared.Loc.Get("recipe.quantity.tip.wheel", "wheel steps")));
                     if (Mathf.Abs(Input.mouseScrollDelta.y) > 0.01f)
                         StepQuantity(Input.mouseScrollDelta.y > 0 ? 1 : -1);
                 }
@@ -690,8 +749,8 @@ namespace IslandUI
 
             private void PaintCounter()
             {
-                _counterMax.text = "MAX " + _countMax;
-                _counterSet.Label.text = "SET " + _quantity;
+                _counterMax.text = Shared.Loc.Get("recipe.counter.max", "MAX {0}", _countMax);
+                _counterSet.Label.text = Shared.Loc.Get("recipe.counter.set", "SET {0}", _quantity);
                 _counterLess.Enabled = _quantity > 1;
                 _counterMore.Enabled = _quantity < _countMax;
                 _counterLess.Paint(false); _counterMore.Paint(false); _counterSet.Paint(false);
@@ -749,6 +808,7 @@ namespace IslandUI
                 CraftManager.CraftData menu = _mn.craftMN.craftData[0];
                 CraftInfo[] shown = menu.craftInfo;
                 CraftInfo[] single = { recipe };
+                int made = 0;
                 try
                 {
                     for (int i = 0; i < requested; i++)
@@ -759,6 +819,7 @@ namespace IslandUI
                             || !RecipeCatalog.IsReachable(RecipeCatalog.Of(recipe))) break;
                         menu.craftInfo = single;
                         _inv.CraftItem(100, craftableCheck: true);
+                        made++;
                         // a craft that refilled the menu left a fresh array: that one
                         // is the grid's now, and must not be overwritten with the old
                         if (menu.craftInfo == single) { menu.craftInfo = shown; }
@@ -772,6 +833,7 @@ namespace IslandUI
                         menu.craftInfo = shown;
                     }
                 }
+                if (made > 0) NoteCrafted(made);
                 // anything CraftItem swept while the arrays were swapped is re-swept
                 _inv.CraftableCheck();
                 RenderAll();

@@ -78,6 +78,7 @@ namespace IslandUI
             plate.IsTitle = false;
             _lastGroupBound = plate.Group;
             _prevMemberLoadout = false;
+            _prevMemberShared = false;
             plate.Shown = 0;
             plate.Cols = 0;
             plate.LaidOutCols = -1;
@@ -101,8 +102,12 @@ namespace IslandUI
             plate.Back.enabled = false;
             plate.Edge.enabled = false;
 
-            // the sheet's own width rule, so the row is cut to what the grid set
-            width = _inventoryW[group] > 0f
+            // the sheet's own width rule, so the row is cut to what the grid set -
+            // on the leather the grid itself, which has no gutter (and the row is a
+            // member, so a width taken from the frame would keep its own)
+            width = IsLeather(group)
+                ? maxCols * CellPitch - (CellPitch - CellBox)
+                : _inventoryW[group] > 0f
                 ? _inventoryW[group]
                 : SheetFallbackWidth(null, maxCols, column == OwnColumn, full: true);
             if (plate.Acts == null)
@@ -112,6 +117,7 @@ namespace IslandUI
             }
             plate.Acts.Show(true);
             plate.Acts.Shed = IsCrate(group);
+            plate.Acts.Leather = IsLeather(group);
             return plate;
         }
 
@@ -159,7 +165,7 @@ namespace IslandUI
             {
                 row.Set(next++, new ActRow.Slot
                 {
-                    Name = "craft", Label = "Craft",
+                    Name = "craft", Label = Shared.Loc.Get("inv.act.craft", "Craft"),
                     Press = () => OpenBenchCraft(prop),
                 });
             }
@@ -175,6 +181,7 @@ namespace IslandUI
                     Name = live[i].Name ?? ("act" + state),
                     Label = live[i].Label,
                     Press = () => PressPropAct(prop, state),
+                    Auto = AutoUse.SwitchFor(prop, state),
                 });
             }
         }
@@ -185,7 +192,6 @@ namespace IslandUI
         private static void SetContainerActs(ActRow row, InventorySlot chest)
         {
             Transform panel = _mn.inventory.subInventory != null ? _mn.inventory.subInventory.transform : null;
-            string[] fallback = { "All in", "Stack", "All out" };
             for (int i = 0; i < ContainerActs.Length; i++)
             {
                 Transform t = panel != null ? panel.Find(ContainerActs[i]) : null;
@@ -194,7 +200,7 @@ namespace IslandUI
                 row.Set(ActRow.Sockets - 3 + i, new ActRow.Slot
                 {
                     Name = ContainerActs[i],
-                    Label = text != null && !string.IsNullOrEmpty(text.text) ? text.text : fallback[i],
+                    Label = text != null && !string.IsNullOrEmpty(text.text) ? text.text : ReachVerbLabel(i),
                     Press = () => ContainerAct(chest, which),
                 });
             }
@@ -234,7 +240,14 @@ namespace IslandUI
         {
             int panel = BenchPanel(prop);
             if (_mn == null || panel == 0 || !ReferenceEquals(FocusProp(Focus()), prop)) { return; }
-            if (!_mn.uiMN.craftPanel.activeSelf) { _mn.uiMN.LeftPanelState(1); }
+            // A GATEWAY TO OUR CRAFTING WINDOW, as the HUD's chip opens it, onto the
+            // bench's section (the redirect turns CraftOpen(panel) into the whole
+            // menu, that section unfolded and scrolled to)
+            if (!_mn.uiMN.craftPanel.activeSelf)
+            {
+                CloseReach();
+                _mn.uiMN.LeftPanelState(1);
+            }
             _mn.inventory.CraftOpen(panel);
         }
 

@@ -16,21 +16,72 @@ namespace IslandUI
     //
     // One tool to a hook, but one tool may hang on two: a picknaxe is both an axe
     // and a pickaxe. Kept inside the save with the favourites (SaveBlock).
+    //
+    // ONE BELT PER PROTAGONIST (Forgejo #175), as the action bar keeps a row each:
+    // Man and Yona each hang their own tools, keyed by the played character's
+    // npcID (0 and 1), and the belt shown and reached for is the one of whoever
+    // is played. A mark still travels with its item whichever belt it is on, so
+    // a move updates every belt, not only the shown one.
     internal static class ToolBelt
     {
         internal const int Axe = 0, Pick = 1, Knife = 2, Hooks = 3;
 
-        // Per hook, the slots holding its tool: one, except for the length of a move
-        // (a load copies before the clear) and while a copy of your bag is shown.
-        private static readonly Dictionary<ItemSlot, string>[] Marked =
-        {
-            new Dictionary<ItemSlot, string>(),
-            new Dictionary<ItemSlot, string>(),
-            new Dictionary<ItemSlot, string>(),
-        };
+        // Per protagonist, per hook, the slots holding its tool: one, except for the
+        // length of a move (a load copies before the clear) and while a copy of your
+        // bag is shown.
+        private static readonly Dictionary<int, Dictionary<ItemSlot, string>[]> Belts =
+            new Dictionary<int, Dictionary<ItemSlot, string>[]>();
+        private static int _who;
 
-        internal static bool Any => Marked[Axe].Count + Marked[Pick].Count + Marked[Knife].Count > 0;
+        private static Dictionary<ItemSlot, string>[] Marked => BeltOf(_who);
+
+        private static Dictionary<ItemSlot, string>[] BeltOf(int who)
+        {
+            if (!Belts.TryGetValue(who, out Dictionary<ItemSlot, string>[] belt))
+            {
+                belt = new[]
+                {
+                    new Dictionary<ItemSlot, string>(),
+                    new Dictionary<ItemSlot, string>(),
+                    new Dictionary<ItemSlot, string>(),
+                };
+                Belts[who] = belt;
+            }
+            return belt;
+        }
+
+        // any belt: the moves' fast path, which must see the belt not shown too
+        internal static bool Any
+        {
+            get
+            {
+                foreach (Dictionary<ItemSlot, string>[] belt in Belts.Values)
+                {
+                    if (belt[Axe].Count + belt[Pick].Count + belt[Knife].Count > 0)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
         internal static int Revision { get; private set; }
+
+        // the protagonists whose belts exist, for the save and a reload
+        internal static List<int> Owners => new List<int>(Belts.Keys);
+
+        // The played character changed: the belt turns to theirs.
+        internal static void Follow(ManagersScript mn)
+        {
+            CommonStates player = mn != null && mn.gameMN != null && mn.gameMN.pMove != null
+                ? mn.gameMN.pMove.common : null;
+            if (player != null && player.npcID != _who)
+            {
+                _who = player.npcID;
+                Revision++;
+            }
+        }
 
         internal static bool IsEquipped(int hook, CommonStates owner)
         {
@@ -74,8 +125,13 @@ namespace IslandUI
         // it can address)
         internal static List<ItemSlot> HungSlots(int hook)
         {
+            return HungSlots(_who, hook);
+        }
+
+        internal static List<ItemSlot> HungSlots(int who, int hook)
+        {
             var slots = new List<ItemSlot>();
-            foreach (KeyValuePair<ItemSlot, string> m in Marked[hook])
+            foreach (KeyValuePair<ItemSlot, string> m in BeltOf(who)[hook])
             {
                 if (m.Key != null && m.Key.itemKey == m.Value)
                 {
@@ -87,8 +143,13 @@ namespace IslandUI
 
         internal static bool On(int hook, ItemSlot slot)
         {
+            return On(Marked, hook, slot);
+        }
+
+        private static bool On(Dictionary<ItemSlot, string>[] belt, int hook, ItemSlot slot)
+        {
             return slot != null && !string.IsNullOrEmpty(slot.itemKey)
-                && Marked[hook].TryGetValue(slot, out string key) && key == slot.itemKey;
+                && belt[hook].TryGetValue(slot, out string key) && key == slot.itemKey;
         }
 
         internal static bool IsHung(ItemSlot slot)
@@ -98,11 +159,18 @@ namespace IslandUI
 
         internal static void Hang(int hook, ItemSlot slot)
         {
+            Hang(_who, hook, slot);
+        }
+
+        // on a named protagonist's belt: a load, for the one not being played too
+        internal static void Hang(int who, int hook, ItemSlot slot)
+        {
             Revision++;
-            Marked[hook].Clear();
+            Dictionary<ItemSlot, string>[] belt = BeltOf(who);
+            belt[hook].Clear();
             if (slot != null && !string.IsNullOrEmpty(slot.itemKey))
             {
-                Marked[hook][slot] = slot.itemKey;
+                belt[hook][slot] = slot.itemKey;
             }
         }
 
@@ -116,57 +184,84 @@ namespace IslandUI
         // slots, and whatever `to` held was overwritten, its marks with it
         internal static void Loaded(ItemSlot from, ItemSlot to, bool yours)
         {
-            for (int h = 0; h < Hooks; h++)
+            foreach (Dictionary<ItemSlot, string>[] belt in Belts.Values)
             {
-                if (yours && On(h, from))
+                for (int h = 0; h < Hooks; h++)
                 {
-                    if (!On(h, to)) { Revision++; }
-                    Marked[h][to] = to.itemKey;
-                }
-                else
-                {
-                    if (Marked[h].Remove(to)) { Revision++; }
+                    if (yours && On(belt, h, from))
+                    {
+                        if (!On(belt, h, to)) { Revision++; }
+                        belt[h][to] = to.itemKey;
+                    }
+                    else
+                    {
+                        if (belt[h].Remove(to)) { Revision++; }
+                    }
                 }
             }
         }
 
         internal static void Cleared(ItemSlot slot)
         {
-            for (int h = 0; h < Hooks; h++)
+            foreach (Dictionary<ItemSlot, string>[] belt in Belts.Values)
             {
-                if (Marked[h].Remove(slot)) { Revision++; }
+                for (int h = 0; h < Hooks; h++)
+                {
+                    if (belt[h].Remove(slot)) { Revision++; }
+                }
             }
         }
 
         // StackSameItem's full-stack swap: two tools of one kind trade contents in
         // place, the slots do not move - so the marks trade. `was` are the hooks
-        // each side was on before, as bits.
-        internal static void Traded(ItemSlot a, ItemSlot b, int aWas, int bWas, bool aYours, bool bYours)
+        // each side was on before, as bits, by belt (HooksOf).
+        internal static void Traded(ItemSlot a, ItemSlot b, Dictionary<int, int> aWas,
+            Dictionary<int, int> bWas, bool aYours, bool bYours)
         {
-            if (aWas != 0 || bWas != 0) { Revision++; }
-            for (int h = 0; h < Hooks; h++)
+            if (aWas == null && bWas == null)
             {
-                Marked[h].Remove(a);
-                Marked[h].Remove(b);
-                if ((aWas & (1 << h)) != 0 && bYours)
+                return;
+            }
+            Revision++;
+            foreach (KeyValuePair<int, Dictionary<ItemSlot, string>[]> pair in Belts)
+            {
+                Dictionary<ItemSlot, string>[] belt = pair.Value;
+                int aBits = aWas != null && aWas.TryGetValue(pair.Key, out int x) ? x : 0;
+                int bBits = bWas != null && bWas.TryGetValue(pair.Key, out int y) ? y : 0;
+                for (int h = 0; h < Hooks; h++)
                 {
-                    Marked[h][b] = b.itemKey;
-                }
-                if ((bWas & (1 << h)) != 0 && aYours)
-                {
-                    Marked[h][a] = a.itemKey;
+                    belt[h].Remove(a);
+                    belt[h].Remove(b);
+                    if ((aBits & (1 << h)) != 0 && bYours)
+                    {
+                        belt[h][b] = b.itemKey;
+                    }
+                    if ((bBits & (1 << h)) != 0 && aYours)
+                    {
+                        belt[h][a] = a.itemKey;
+                    }
                 }
             }
         }
 
-        internal static int HooksOf(ItemSlot slot)
+        // the hooks a slot is on, as bits, for each belt it is on; null for none
+        internal static Dictionary<int, int> HooksOf(ItemSlot slot)
         {
-            int bits = 0;
-            for (int h = 0; h < Hooks; h++)
+            Dictionary<int, int> bits = null;
+            foreach (KeyValuePair<int, Dictionary<ItemSlot, string>[]> pair in Belts)
             {
-                if (On(h, slot))
+                int b = 0;
+                for (int h = 0; h < Hooks; h++)
                 {
-                    bits |= 1 << h;
+                    if (On(pair.Value, h, slot))
+                    {
+                        b |= 1 << h;
+                    }
+                }
+                if (b != 0)
+                {
+                    bits = bits ?? new Dictionary<int, int>();
+                    bits[pair.Key] = b;
                 }
             }
             return bits;
@@ -175,10 +270,8 @@ namespace IslandUI
         internal static void ResetForSceneLoad()
         {
             if (Any) { Revision++; }
-            for (int h = 0; h < Hooks; h++)
-            {
-                Marked[h].Clear();
-            }
+            Belts.Clear();
+            _who = 0;
         }
     }
 }

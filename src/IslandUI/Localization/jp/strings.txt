@@ -1,0 +1,1577 @@
+# Island UI: Japanese strings, machine-translated from en/strings.txt.
+# Corrections are welcome: edit the right side of a line and keep the key and every {0}.
+
+badge.off=オフ  -  クリックでオン
+badge.on=オン  -  クリックでオフ
+badge.turns_off=次回の起動でオフ  -  クリックで取り消し
+badge.turns_on=次回の起動でオン  -  クリックで取り消し
+
+board.assign.axe=割り当て  →  斧ホルダー
+board.assign.knife=割り当て  →  ナイフホルダー
+board.assign.pickaxe=割り当て  →  ピッケルホルダー
+
+board.choose=自分のバッグから道具を選ぶ
+
+board.drop.axe=バッグの斧をここにドロップ
+board.drop.knife=バッグのナイフをここにドロップ
+board.drop.pickaxe=バッグのピッケルをここにドロップ
+
+board.durability=耐久
+board.equipped=装備中
+
+board.takes.axe=斧ホルダーに入るのは斧だけ
+board.takes.knife=ナイフホルダーに入るのはナイフだけ
+board.takes.pickaxe=ピッケルホルダーに入るのはピッケルだけ
+
+board.used.axe=仕事で斧が必要なときに使う
+board.used.knife=仕事でナイフが必要なときに使う
+board.used.pickaxe=仕事でピッケルが必要なときに使う
+
+bonds.all.section=すべての関係
+
+bonds.desires.help=ゲームが選んだ相手。クリックで理由を表示
+
+bonds.family.child=子
+bonds.family.father=父
+bonds.family.mother=母
+bonds.family.not_yours=仲間にいない
+bonds.family.section=家族
+bonds.family.you={0}（あなた）
+
+bonds.grudge.dropped=離れていれば、恨みは次の判定で消える
+bonds.grudge.kept=セックスしたことがあるので、離れていても恨みは残る
+bonds.grudge.none=直近6回の判定で、二人の間に記録はありません。
+
+bonds.head.days=3日間
+bonds.head.days.help=直近3日間の愛情判定で{0}の気持ちが動いた量
+bonds.head.mine.help={0}から相手への愛情
+bonds.head.they=相手
+bonds.head.they.help=相手から{0}への愛情
+
+bonds.love_each_way=双方向の愛情: 相手から{0}へ、とその逆
+
+bonds.love_each_way.them=双方向の愛情: 相手からその人へ、とその逆
+
+bonds.moved.help=直近1日の判定で、{0}の{1}への気持ちがこれだけ動きました。クリックで理由を表示
+
+bonds.pick.cant=今は無理
+bonds.pick.cant.why={0}は今は無理（取り込み中、同行中、または性行為オフ）
+bonds.pick.ends_it=解消するには: 二人を同じ家に、10m以内に使用中の便器、または性行為オフ
+bonds.pick.highest={0}は、行動範囲にいる中で最も愛情の高い相手です（{1}）。
+bonds.pick.no=拒否: {0}。
+bonds.pick.pining=拒否: 片想い
+bonds.pick.pining.cost=性欲90では、拒否されるたびに気分が5下がります（1日に数回）。
+bonds.pick.rule=性欲が20以上になると誘います。承諾には同じ家と、相手からの愛情が必要です。
+bonds.pick.toilet=拒否: 代わりに便器へ
+bonds.pick.why.house={0}は別の家に住んでいる
+bonds.pick.why.no={0}が拒否
+bonds.pick.why.no_love={0}からの愛情がない
+bonds.pick.why.no_mood={0}はその気がない
+bonds.pick.yes=承諾する
+bonds.pick.yes.why=承諾: 同じ家に住み、{0}も愛情を返している。
+
+bonds.section=絆
+
+bonds.why.bond_fades=離れていると、気持ちは判定ごとに5薄れ、0で消える
+bonds.why.bond_kept=セックスしたことがあるので、離れていても絆は残る
+bonds.why.not_met=直近6回の判定で会っていません: 行動範囲が重なっていません。
+
+bonds.word.desires=お目当て
+bonds.word.grudge=恨み
+
+bonds.you.cant_stand=あなたが大嫌い
+bonds.you.cold=あなたに冷たい
+bonds.you.fond=あなたに好意的
+bonds.you.head=あなたへ
+bonds.you.head.help=あなたへの愛情
+bonds.you.loves=あなたを愛している
+
+card.attack=攻撃力
+card.bench=作業台
+
+card.bench.none=なし（手作業）
+
+card.class=クラス
+card.crafter=製作者
+card.durability=耐久
+card.equip=装備
+card.food=食料
+card.get=入手
+card.hp=体力
+card.kind=種類
+card.level=レベル
+card.likes=好物
+
+card.names.more=他{0}件
+
+card.npc_numbered=NPC {0}
+card.state=状態
+card.stun=気絶値
+
+card.type.accessory=アクセサリ
+card.type.ammo=弾薬
+card.type.animal=動物
+card.type.armor=防具
+card.type.arrow=矢
+card.type.axe=斧
+card.type.bait=餌
+card.type.bed=ベッド
+card.type.bottle=ボトル
+card.type.bow=弓
+card.type.building=建物
+card.type.chest=チェスト
+card.type.cloth=服
+card.type.clothing=衣類
+card.type.consumable=消耗品
+card.type.cooking=料理
+card.type.decoration=装飾
+card.type.drink=飲み物
+card.type.equipment=装備
+card.type.feed=飼料
+card.type.fish=魚
+card.type.fishing=釣り
+card.type.food=食料
+card.type.hat=帽子
+card.type.knife=ナイフ
+card.type.light=照明
+card.type.material=素材
+card.type.melee=近接
+card.type.net=網
+card.type.npc=NPC
+card.type.pickaxe=ピッケル
+card.type.plant=植物
+card.type.prop=設置物
+card.type.ranged=遠距離
+card.type.resource=資源
+card.type.rod=釣り竿
+card.type.shield=盾
+card.type.shoes=靴
+card.type.shovel=シャベル
+card.type.storage=収納
+card.type.stun=気絶
+card.type.support=サポート
+card.type.throwing=投擲
+card.type.tool=道具
+card.type.torch=松明
+card.type.underwear=下着
+card.type.weapon=武器
+
+card.use=使用
+
+card.use.food=食料 {0}
+card.use.hp=体力 {0}
+card.use.water=水分 {0}
+
+card.used_in=使い道
+
+card.used_in.caps=使い道
+
+card.water=水分
+
+chart.day={0}日目
+chart.now=現在
+
+combat.more.other=戦闘中 +{0}
+
+company.cost=モラル{0}: {1}
+
+company.cost.why={0}の{1}への愛情は{2}: -10以下では、愛情が変わるたびに1ずつ下がる
+
+company.dawn.full=上限: 増えない
+company.dawn.in=屋内で一晩: モラルが上がる
+company.dawn.out=屋内で寝ていない: 回復なし
+
+company.elsewhere=他の場所
+
+company.elsewhere.kin={0}（{1}）
+
+company.fix.fold=クリックで対策をたたむ
+company.fix.unfold=対策があります: クリックで表示
+
+company.head.back=相手から
+company.head.back.help=それぞれから{0}への愛情
+company.head.love=愛情
+company.head.love.help={0}からそれぞれへの愛情
+
+company.key.mood_cost=モラル -1
+company.key.per_meeting=会うたびの愛情
+
+company.nights=夜
+
+company.nights.count=屋内 {0}/{1}
+
+company.nights.help=3日間それぞれの夜明け
+company.section=関係
+
+company.tag.cant_stand=大嫌い
+company.tag.cant_stand_each=互いに大嫌い
+company.tag.cant_stand_who={0}が大嫌い
+company.tag.child=子
+company.tag.desires=お目当て
+company.tag.father=父
+company.tag.mother=母
+
+company.ticks.cost=モラル -1: {0}の相手への愛情が-10以下のときに愛情が変化
+
+company.ticks.help=3日間のすべての愛情判定、1列ずつ
+company.what_moves=気分を動かすもの
+
+company.why.pair={0}と{1}
+
+console.commands.other=コマンド{0}個（ゲーム本体の一覧より。引数はゲームのもの）:
+
+console.hint.close={0} 閉じる
+console.hint.complete={0} 補完
+
+console.hint.help={0} 全コマンドを表示
+
+console.hint.history={0} 履歴
+console.hint.scroll={0} スクロール
+
+console.missing_argument={0}: 引数が足りません
+console.no_handler=このシーンにはゲームのコマンド処理がありません
+console.no_match={0}で始まるコマンドはありません
+console.number_argument={0}: 引数は数値で指定してください
+console.own=コンソール独自のもの: {0}
+console.placeholder=コマンドを入力
+console.unknown=不明なコマンド {0}
+console.unknown.help=（{0}で一覧）
+console.welcome.other=ゲームのコマンドライン。コマンドは{0}個、{1}で一覧を表示。
+
+craft.no_matches=該当なし
+
+craft.section.bench_numbered=作業台 {0}
+craft.section.by_hand=手作業
+
+craft.section.other=その他
+
+craft.section.type.acce=アクセサリ
+craft.section.type.animal=動物
+craft.section.type.bottle=ボトル
+craft.section.type.cloth=トップス
+craft.section.type.clothu=ボトムス
+craft.section.type.consumables=消耗品
+craft.section.type.food=食料
+craft.section.type.hat=帽子
+craft.section.type.hip=ヒップ
+craft.section.type.item=アイテム
+craft.section.type.none=なし
+craft.section.type.npc=NPC
+craft.section.type.prop=設置物
+craft.section.type.resource=素材
+craft.section.type.resourcew=素材W
+craft.section.type.shield=盾
+craft.section.type.shoes=靴
+craft.section.type.support=サポート
+craft.section.type.tool=道具
+craft.section.type.tool2=道具2
+
+
+dossier.personality=性格
+dossier.personality.a_tick=判定ごとに{0}
+dossier.personality.click=クリックで該当者を一覧表示
+dossier.personality.dislikes=嫌いな性格: {0}
+dossier.personality.likes=好きな性格: {0}
+dossier.personality.near_one=近くにいると
+
+dossier.age=年齢
+dossier.attack=攻撃力
+
+dossier.attr.health=生命力
+dossier.attr.strength=腕力
+
+dossier.attributes=能力
+dossier.class=クラス
+dossier.combat=戦闘
+dossier.deliveries=出産回数
+dossier.exp=経験値
+
+dossier.favourite.mark=クリックでお気に入りにする
+dossier.favourite.unmark=お気に入り: クリックで解除
+
+dossier.food=食料
+dossier.guard=ガード率
+dossier.hidden=非表示
+dossier.hp=体力
+dossier.kind=種類
+dossier.level=レベル
+dossier.libido=性欲
+dossier.masturbation=自慰回数
+dossier.max=最大
+dossier.moral=モラル
+dossier.name=名前
+dossier.next_cost=次 {0}pt
+dossier.points.other={0}ポイント
+dossier.pregnancies=妊娠回数
+dossier.pregnant=妊娠
+dossier.sex=エッチした
+dossier.shown_in_world=ワールドに表示
+dossier.skill_lv=スキルLv
+dossier.skills=スキル
+dossier.speed=スピード
+dossier.stun=気絶値
+
+dossier.type.anyone_else=それ以外
+dossier.type.click=クリックで{0}の全員を表示
+dossier.type.near_one=近くにいると{0}
+dossier.type.worth_near={0}、近くにいると{1}
+
+dossier.vitals=ステータス
+dossier.water=水分
+
+drop.cant_take=これは受け取れない
+drop.give_to=渡す  →  {0}
+drop.out_of_reach=範囲外
+drop.them=相手
+drop.this_chest=このチェスト
+drop.use_on=使う  →  {0}
+drop.walk_give_to=歩いて行って渡す  →  {0}
+drop.walk_use_on=歩いて行って使う  →  {0}
+
+hud.caption.menu=メニュー
+hud.caption.toolbelt=ツールベルト
+
+hud.chip.bag=バッグ
+hud.chip.character=キャラクター
+hud.chip.crafting=クラフト
+hud.chip.map=マップ
+hud.chip.quests=クエスト
+hud.chip.settings=設定
+hud.chip.tools=ツールベルト
+hud.chip.vicinity=周辺
+
+hud.collections_link=コレクション
+
+hud.enemy.age=年齢 {0}
+hud.enemy.faint=気絶
+hud.enemy.slain=撃破
+hud.enemy.fainted=気絶
+hud.enemy.boss=ボス
+
+hud.roster.unhappy=不満 {0}人
+hud.roster.unhappy.help=気分で並べ替えると理由がわかります
+hud.roster.unhappy_near=不満 {0}人、反乱寸前 {1}人
+
+inv.act.craft=クラフト
+inv.act.inventory=インベントリ
+inv.act.move=移動
+inv.act.remove=撤去
+inv.act.repair=修理
+inv.act.sleep=眠る
+inv.act.use=使用
+
+inv.bag=バッグ
+inv.character=キャラクター
+
+inv.chest.click_to_open=クリックで開く
+inv.chest.locked=鍵がかかっている
+inv.chest.unopened=未開封
+
+inv.hint.butcher={0}  →  解体
+inv.hint.cannot_wear={0}   →   {1}は着られない
+inv.hint.cannot_wear_you={0}   →   あなたは着られない
+inv.hint.drop=Ctrl+クリック  →  捨てる
+inv.hint.favourite=お気に入り
+inv.hint.happiness=幸福度 {0}/100
+inv.hint.happiness_max=幸福度MAX — 部族に加えられる
+inv.hint.kept=お気に入り  ·  先にAlt+クリックで解除
+inv.hint.mark=Alt+クリック  →  お気に入り
+inv.hint.mark_never_stacked=Alt+クリック  →  お気に入り（クイックスタックされない）
+inv.hint.move=Ctrl+クリック  →  {0}
+inv.hint.remove_action=Shift+クリック  →  外す    Shift+ドラッグ  →  移動
+inv.hint.split=Shift+クリック  →  分割
+inv.hint.take_off=左クリック  →  手に取る    右クリック  →  {0}
+inv.hint.unmark=Alt+クリック  →  解除
+inv.hint.wear={0}   →   {1} · {2}
+inv.hint.wear_you={0}   →   あなた · {1}
+inv.hint.worn_by={0}が装備中
+inv.hint.worn_by_them=相手が装備中
+inv.hint.worn_by_you=あなたが装備中
+
+inv.loadout=装備
+
+inv.move.bag_of={0}のバッグ
+inv.move.body_pockets=死体のポケット
+inv.move.drop=捨てる
+inv.move.nearby_storage=近くの収納
+inv.move.pockets_of={0}のポケット
+inv.move.their_bag=相手のバッグ
+inv.move.your_bags=自分のバッグ
+
+inv.pocket.bag_of={0}のバッグ
+inv.pocket.cannot_expand={0}は拡張できない
+inv.pocket.capped={0}は上限の50枠
+inv.pocket.expand=右クリック  →  {0}  +1枠
+inv.pocket.nothing=拡張できるものがない
+inv.pocket.that_container=その入れ物
+inv.pocket.their_bag=相手のバッグ
+inv.pocket.your_bag=自分のバッグ
+
+inv.shared_bag=共有バッグ
+
+inv.slot.acce=アクセサリ
+inv.slot.cloth=トップス
+inv.slot.hat=帽子
+inv.slot.hip=ヒップ
+inv.slot.off_hand=手2
+inv.slot.shoes=靴
+inv.slot.support=サポート
+inv.slot.tool=道具
+inv.slot.under=ボトムス
+
+inv.tab.character=キャラクター
+inv.tab.fight=戦闘
+inv.tab.inventory=インベントリ
+inv.tab.overview=概要
+inv.tab.skills=スキル
+inv.tab.social=交流
+
+inv.thing.building=建物
+inv.thing.yours=あなたの物
+inv.thing.yours_lower=あなたの物
+
+inv.tip.always_run=走るキーを押し続けているかのように、移動するときは常に走ります。
+inv.tip.and_so_on={0}、以下同様
+inv.tip.at_0=0になると
+inv.tip.at_n={0}で
+inv.tip.attack=基本攻撃力
+inv.tip.attack.deals=1撃のダメージ
+inv.tip.attack.help=この値＋武器の攻撃力（括弧内）－相手のガード
+inv.tip.attribute_cost=1ポイント、購入済み10ごとに+1
+inv.tip.attribute_points=能力ポイント
+inv.tip.attribute_points.spend=能力に振り分けるポイント。レベルアップでもらえる数:
+inv.tip.below_level=レベル{0}未満
+inv.tip.call_over=10m以内にいれば、あなたのもとへ呼び寄せます。イベント中は不可。
+inv.tip.class=戦闘クラス
+inv.tip.class.help=攻撃の間合い、タイミング、モーションが変わり、種類によっては特殊攻撃が加わります。
+inv.tip.combat_area=行動範囲からどこまで敵を追いかけてからあきらめるか。フォロワーには関係ありません。
+inv.tip.cost=コスト
+inv.tip.drained_by=減る原因
+inv.tip.edit_dialogue=話すセリフを変更します。
+inv.tip.empty=空になると
+inv.tip.exp=経験値
+inv.tip.exp.also_fills=同時に増える
+inv.tip.exp.as_follower=フォロワーのとき
+inv.tip.exp.from=入手源
+inv.tip.exp.from_what=採集、撃破、仕事、一部の食べ物
+inv.tip.exp.full_bar=バーが満タンで1レベル。余りは持ち越されます。
+inv.tip.exp.quarter=あなたの4分の1
+inv.tip.exp.skill_level=スキルレベル
+inv.tip.face_left=左を向く
+inv.tip.face_right=右を向く
+inv.tip.facing=行動範囲0のとき、待機位置でどちらを向くか。選択中のものを押すと解除されます。
+inv.tip.favourite=名簿のお気に入りに載り、マップで追跡されます。
+inv.tip.first_partner=合意の有無を問わず、最初にセックスした相手。
+inv.tip.following=あなたについて来て、あなたの経験値の4分の1を得ます。フォロワー1人ごとにパーティー容量を使います。
+inv.tip.following_off=同行していない: 待機位置にとどまる
+inv.tip.following_on=同行中
+inv.tip.food=食料
+inv.tip.food.hunger=飢えで力尽きると、ハートが残っていても死亡します。
+inv.tip.food.spend_to_heal=消費して回復する
+inv.tip.food.stop_healing=回復しなくなる
+inv.tip.from_level=レベル{0}以上
+inv.tip.guard=ガード率
+inv.tip.guard.armed=武器あり
+inv.tip.guard.bare=素手
+inv.tip.guard.percent=ガード中に防ぐダメージの割合（%）:
+inv.tip.guard.shield=盾あり
+inv.tip.guard.shield_value=盾の値
+inv.tip.guard.theirs=ゲームが表示する数値。ガードできるのはあなただけです。
+inv.tip.health=生命力
+inv.tip.health.help=1ポイントごとに、種族ごとの増加量だけ最大体力が上がります。
+inv.tip.history.births=恋人の誰かを父親として産んだ子の数。
+inv.tip.history.masturbated=一人で自慰をした回数。
+inv.tip.history.pregnant=妊娠した回数。
+inv.tip.history.sex=すべての相手とのセックスの回数。合意か強制かを問いません。
+inv.tip.hp=体力
+inv.tip.hp.gets_up=90秒後にわずかな体力で起き上がる
+inv.tip.hp.last_heart=最後のハートで0
+inv.tip.hp.lose_heart=ハートを1つ失いダウンする
+inv.tip.hp.one_of_yours=あなたの仲間
+inv.tip.hp.they_go_down=ダウンする
+inv.tip.hp.you_die=死亡する
+inv.tip.level=キャラクターレベル
+inv.tip.level.own=この人物自身のもの。レベルアップでもらえる能力ポイント:
+inv.tip.libido=性欲
+inv.tip.libido.refills=時間とともに回復します。
+inv.tip.libido.refusal=断られるとモラルが下がる
+inv.tip.libido.seek=恋人にセックスを求める
+inv.tip.lose_hp=時間とともに体力が減り、回復しなくなる
+inv.tip.lowered_by=下がる原因
+inv.tip.moral=モラル
+inv.tip.moral.lowered=拒絶
+inv.tip.moral.raised=睡眠、セックス、一部の食べ物
+inv.tip.moral.revolt=反乱して戦う
+inv.tip.moral.revolt_chance=反乱中の村人は、100からこの値を引いた確率（%）であなたを攻撃します。
+inv.tip.outlaw=確認すると無法者として去ります。攻撃されれば反撃し、ダウンさせない限り2分後にいなくなります。
+inv.tip.past_n={0}超で
+inv.tip.perm.force=性欲が5以上になると、近くの村人を強姦するようになります。
+inv.tip.perm.houses=自分で家に出入りし、夜は家に帰って眠るようになります。
+inv.tip.perm.love=近くの村人と、同行中はあなたとも、愛情を育てるようになります。
+inv.tip.perm.sex=性欲が20以上になると、セックスを求めたり受け入れたりするようになります。
+inv.tip.place_while_following=同行中は待機位置が保留され、同行をやめると再び有効になります。
+inv.tip.pregnant=妊娠の進み具合。
+inv.tip.raised_by=上がる原因
+inv.tip.refilled_by=回復する方法
+inv.tip.rename=クリックで名前を変更。Enterで確定、Escで元の名前のまま。
+inv.tip.resting=休息中
+inv.tip.send_to_place=すぐに待機位置へ向かわせます。フォロワーや捕虜には使えません。
+inv.tip.set_place=地面をクリックして待機位置を設定。右クリックで取り消し。
+inv.tip.show_name=ワールドで頭上に名前が表示されます。
+inv.tip.show_name_own=ワールドであなたの頭上に名前が表示されます。
+inv.tip.skill_exp=スキルレベルの経験値。バーが満タンで1レベル。
+inv.tip.skill_level=スキルレベル
+inv.tip.skill_level.help=キャラクターごとではなく、セーブ全体で1つ。あなたが得た経験値を、キャラクターレベルと並んで得ます。1レベルごとにもらえるスキルポイント:
+inv.tip.skill_points=スキルポイント
+inv.tip.skill_points.cost=5、スキルのレベル1ごとに+5
+inv.tip.skill_points.next=次のレベルのコスト
+inv.tip.skill_points.spend=スキルに振り分けるポイント。
+inv.tip.speed=スピード
+inv.tip.speed.help=装備、重量超過、減速を反映した歩く速さ。走るとこれに倍率がかかります。
+inv.tip.speed_point.help=1ポイントごとに基本移動速度が0.005上がります。
+inv.tip.spent_on=使い道
+inv.tip.strength=腕力
+inv.tip.strength.help=1ポイントごとに、種族ごとの増加量だけ基本攻撃力が上がります。
+inv.tip.stun=気絶値
+inv.tip.stun.bed=ベッドで眠る
+inv.tip.stun.knocked_out=気絶する
+inv.tip.stun.resting=休息（水分を使う）
+inv.tip.stun.weapons=気絶武器
+inv.tip.stun.you_die=ハートに関係なく死亡する
+inv.tip.surgeries=手術台で体の形や色を変えた回数。
+inv.tip.territory=待機位置の周りをどこまで歩き回るか。0ならその場から動きません。
+inv.tip.waiting_pose=待機位置で待っている間に何をするか。行動範囲0で、同行していないときのみ。
+inv.tip.water=水分
+inv.tip.water.neither=どちらもしなくなる
+inv.tip.water.stun_work=気絶値の回復と仕事
+inv.tip.water.thirst=渇きで力尽きると、ハートが残っていても死亡します。
+
+keybind.listening=キーを押してください
+keybind.numpad=テンキー {0}
+keybind.unbound=未設定
+
+keymap.action=アクション（長押し）
+keymap.backpack=バックパック
+keymap.carry=運ぶ / 拾う
+keymap.confirm=決定 / 送信
+keymap.confirm.note=変更するとダイアログが動かなくなることがあります。
+keymap.context=状況アクション / 乗る
+keymap.disassemble=動物を解体
+keymap.drone_hide=ドローン: モデルを隠す
+keymap.drone_hide.note=ドローンの操作中にのみ使います。
+keymap.drop=アイテムを捨てる / メニューを閉じる
+keymap.help=ゲーム本来のキーは{0}です。なし = キーなし。
+keymap.interact=インタラクト
+keymap.jump=ジャンプ / 決定 / 会話をスキップ
+keymap.map=マップ
+keymap.menu=メニュー
+keymap.mod_alt=修飾キー: 別動作
+keymap.mod_bulk=修飾キー: まとめて
+keymap.mod_split=修飾キー: 分割 / まとめて+
+keymap.move_back=後ろへ移動
+keymap.move_forward=前へ移動
+keymap.move_left=左へ移動
+keymap.move_right=右へ移動
+keymap.mute=ミュート
+keymap.next_character=次のキャラクター / 時間を早める
+keymap.pause=ポーズ
+keymap.prev_character=前のキャラクター / 時間を遅くする
+keymap.right_click=右クリックの代わり
+keymap.run=走り固定 on/off
+
+links.arc.apart=近くにいない: 次の判定では何も起きない
+links.arc.head=判定のたびに会う
+links.arc.love_off=恋愛オフ: 何も変わらない
+
+links.away.carried={0}は運ばれている（ゲームが読み込んでいない入れ物の中）
+links.away.head=ワールドにいない
+links.away.prisoner={0}は敵に捕らえられています。救出の機会はあなたの近くでランダムに訪れます
+links.away.target_it=クリックでターゲット
+links.away.where={0}は{1}。
+
+links.back=元の場所に戻る
+links.back_to={0}に戻る
+links.level=Lv {0}
+links.type.help={0}: クリックで該当者を一覧表示
+
+links.where.bag=あなたのバッグの中
+links.where.container=入れ物の中
+links.where.in={0}の中
+links.where.with={0}と一緒
+
+loc.separator=・
+
+marker.carried=運搬中
+marker.corpse=死体
+marker.dead=死亡
+
+marker.door.inside=屋内
+marker.door.outside=屋外
+
+marker.hostile=敵対
+marker.knocked_out=気絶
+marker.metres={0}m
+
+marker.neutral=中立
+met.count={0}人と会った
+
+met.end.area_away=一方の行動範囲を{0}m遠ざける
+met.end.ends_it=解消するには: {0}
+met.end.gone=絆は消えました。また会えばゼロから始まります
+met.end.houses_apart=家をもっと離す
+met.end.keeps_it=続く理由: 行動範囲が重なっている
+met.end.love_off_they.help=恋愛オフ: 愛情も恨みも育たない（あなたに対しても）
+met.end.love_off_who={0}: 恋愛オフ
+met.end.love_off_who.help=恋愛オフ: {0}は愛情も恨みも育てない（あなたに対しても）
+met.end.or=、または
+met.end.other_house=どちらかを別の家に
+
+met.head.day_ago=1日前
+met.head.they=相手
+
+met.hours.and={0}と{1}
+met.hours.comma=、
+
+met.love_off=恋愛オフ
+met.love_off.help=誰とも愛情も恨みも育てない
+
+met.next.apart=今は行動範囲が重なっていない: 離れていると、どちらの絆も5薄れる
+met.next.meet=今は行動範囲が重なっているので会う:
+
+met.next_tick=次の判定、{0}
+met.none=記録なし
+met.none.help=直近6回の判定で、誰の行動範囲も重なっていません
+
+met.note.by_day={0}、昼間
+met.note.dislike_each=互いに嫌い
+met.note.dislikes=嫌い
+met.note.dislikes_who={0}が嫌い
+met.note.dropped_at={0}で消えた
+met.note.fading=離れて薄れている
+met.note.housemates={0}、夜は同じ家
+met.note.like_each=互いに好き
+met.note.likes=好き
+met.note.likes_who={0}が好き
+met.note.nights={0}、夜
+
+met.row.help=クリックで理由と、解消する方法を表示
+met.section=会う相手
+met.section.help=直近6回の愛情判定で会った相手と、それぞれが気持ちに与えた影響
+
+met.tick.apart=離れている: 絆が薄れる、愛情-5
+met.tick.disliked=愛情-5: 嫌いな性格
+met.tick.liked=愛情+10: 好きな性格
+met.tick.not_met=会っていない
+met.tick.plain=愛情+5: 会った
+
+met.ticks.help=直近6回の愛情判定。古い順に現在まで並び、月の下で影になっているものは夜（多くは屋内で眠る）。白抜きの四角: 会っていない。ダッシュ: 離れていて絆が5薄れた。点: 記録より前。現在の線より先は、今の状態での次の判定: 会うなら淡色、離れているなら破線
+
+met.why.distance=昼間の行動範囲は{0}m離れています。{1}m以内なら会います。
+met.why.every_known=記録にあるすべての判定で会っています。
+met.why.every_tick=昼も夜も、すべての判定で会っています。
+met.why.grudge_dropped=1回の判定で離れていたので、恨みは消えました。また会えば0から始まります。
+met.why.grudge_kept=セックスしたことがあるので、離れていても恨みは残ります。増えるのを止められるのは恋愛オフだけです。
+met.why.met_at={0}には会い、{1}には会っていません。
+met.why.near_houses=夜は別々の家で眠りますが、家が近いので会います。
+met.why.not_met=直近の判定で会っていません: 行動範囲がもう重なっていません。
+met.why.rule_dislikes={0}は{1}が嫌いで、{2}はそれに当たる: 判定ごとに−5。
+met.why.rule_likes={0}は{1}が好きで、{2}はそれに当たる: 判定ごとに+10。
+met.why.same_house=夜は同じ家で眠るので会います。
+
+mood.cause.company=不仲
+mood.cause.crush=片想い
+mood.cause.execution=処刑
+mood.cause.food=食べ物
+mood.cause.forced=強姦
+mood.cause.no_bed=ベッドなし
+
+mood.cause.other=その他
+
+mood.cause.pining={0}に片想い
+mood.cause.rebel=反乱
+mood.cause.relief=発散
+mood.cause.sex=セックス
+mood.cause.sleep=睡眠
+mood.cause.torture=拷問
+mood.cause.training=訓練
+
+mood.cause_row.help=記録から見た、モラルを動かした原因。
+
+mood.cause_row.three_days=直近3日間
+
+mood.chart.caption1=モラル、
+mood.chart.caption2=3日間
+mood.chart.next=次
+mood.chart.no_change=変化なし
+mood.chart.no_record=記録なし
+mood.chart.past=3日間
+mood.chart.rebels_at={0}で反乱
+
+mood.check.a_time=1回ごとに-5
+mood.check.apart.fix=二人の行動範囲を離すか、どちらかの恋愛をオフにする
+mood.check.area_zero=睡眠なし: 範囲0
+mood.check.area_zero.fix=家を含む行動範囲を与える
+mood.check.area_zero.text=行動範囲が0なので、一切眠らない
+mood.check.cant_stand={0}が大嫌い
+mood.check.cant_stand.effect=1日-6
+mood.check.cant_stand.text={0}が大嫌い: 1日に6回、気分-1
+mood.check.dislikes={0}が嫌い
+mood.check.dislikes.days={0}日で悪化
+mood.check.dislikes.hours={0}時間で悪化
+mood.check.dislikes.text_days.other={1}の性格が嫌いで、行動範囲が重なっている: 約{0}日後から下がり始める
+mood.check.dislikes.text_hours.other={1}の性格が嫌いで、行動範囲が重なっている: 約{0}時間後から下がり始める
+mood.check.far=範囲外
+mood.check.far.effect=ここでは眠らない
+mood.check.far.fix=近くで夜を過ごす
+mood.check.far.text=あなたの範囲外: 村人はあなたが近くにいるときしか眠らない
+mood.check.following=睡眠なし: 同行中
+mood.check.following.fix=夜は家に置いていく
+mood.check.following.text=あなたに同行しているので、一切眠らない
+mood.check.guard=睡眠なし: 警備中
+mood.check.guard.fix=別の戦闘命令を与える
+mood.check.guard.text=警備型なので、一切眠らない
+mood.check.near_rebellion=反乱寸前
+mood.check.near_rebellion.effect=-100で反乱
+mood.check.near_rebellion.text=反乱まであと一歩（-100で反乱）
+mood.check.never_sleeps=眠らない
+mood.check.never_sleeps.fix=気分を上げるのは食べ物、セックス、発散だけ: 下がる原因を遠ざける
+mood.check.never_sleeps.text=この種族は眠らない
+mood.check.no_bed={0}と寝るベッドなし
+mood.check.no_bed.fix=家の中の、10m以内にベッドを置く
+mood.check.no_bed.text=本人と{0}の空きベッドがない: {1}
+mood.check.no_house=範囲内に家なし
+mood.check.no_house.fix=行動範囲を広げて家を含めるか、範囲内に家を建てる
+mood.check.no_house.text=行動範囲の中に家の出入口がない
+mood.check.no_recovery=回復なし
+mood.check.no_recovery.text={0} - 夜明けに気分が回復しない
+mood.check.outside=屋外で眠る
+mood.check.outside.text=家に入れないので、屋外で眠る
+mood.check.pining={0}に片想い
+mood.check.pining.fix=二人を同じ家に、10m以内に使用中の便器、または性行為をオフ
+mood.check.pining.text={0}に片想い - {1}: {2}
+mood.check.rebelling=反乱中
+mood.check.rebelling.effect=戦う
+mood.check.rebelling.fix=倒して（気分+20）、下がる原因を取り除く
+mood.check.rebelling.text=反乱中: あなたや村人と戦う
+mood.check.sleeps=屋内で眠る
+mood.check.sleeps.effect=夜明けに+10
+mood.check.sleeps.effect_low=夜明けに+20
+mood.check.sleeps.text=屋内で眠る: 夜明けに+10
+mood.check.sleeps.text_low=屋内で眠る: 夜明けに+20（10まで）
+mood.check.sore.effect=確認ごとに-1
+mood.check.sore.text={0}をまだ根に持っている（愛情{1}）: -10を超えるまで確認ごとに気分-1
+mood.check.survivor=生存型で抑制
+mood.check.survivor.effect=-100で止まる
+mood.check.survivor.text=反乱を抑えているのは生存型の命令だけ
+mood.check.when.morning=性欲が90に達すると気分-5（毎朝）
+mood.check.when.urgent=気分-5、1日に数回
+mood.check.why.house={0}は別の家に住んでいる
+mood.check.why.no={0}が拒否
+mood.check.why.not_in_mood={0}はその気がない
+mood.check.why.unloved={0}からの愛情がない
+mood.check.you=あなたが嫌い
+mood.check.you.effect=変化ごとに-1
+mood.check.you.fix=連れていく: 同行するとあなたへの愛情が上がる
+mood.check.you.text=あなたが嫌い（愛情{0}）: 変化のたびに気分-1
+
+mood.day_clock={0}日目、{1}
+
+mood.fix.allow_houses=家への出入りを許可する（命令、許可）
+mood.fix.houses=家の入出を許可
+mood.fix.houses.help=家に出入りし、家に帰って眠れるようにする
+mood.fix.love_off=恋愛オフ
+mood.fix.love_off.help=近所の人との愛情（と恨み）を育てないようにします。あなたへの愛情も増えなくなります。
+mood.fix.love_off.short=近所の人との愛情（と恨み）を育てないようにする
+mood.fix.love_off_other=恋愛オフ: {0}
+mood.fix.love_off_other.help={0}が近所の人との愛情（と恨み）を育てないようにします。あなたへの愛情も増えなくなります。
+mood.fix.open={0}を開く
+mood.fix.orders=命令
+mood.fix.orders.away=行動範囲: 相手から遠ざける
+mood.fix.orders.away_from=行動範囲: {0}から遠ざける
+mood.fix.orders.free_bed=行動範囲: 空きベッドのある家へ移す
+mood.fix.orders.help=行動範囲、戦闘命令、許可
+mood.fix.orders.sex=行動範囲と許可: 性行為はここ
+mood.fix.orders.with=行動範囲と家: {0}と同じ家にする
+mood.fix.orders.with_them=行動範囲と家: 相手と同じ家にする
+mood.fix.sex_off=性行為オフ
+mood.fix.sex_off.help=誘わなくなるので誰にも断られません。ただしセックスもなくなり、その気分+3も得られません
+
+mood.head=気分
+
+mood.label.company=不仲な相手
+mood.label.company_with=不仲な相手: {0}
+mood.label.no_bed=ベッドなし
+mood.label.no_bed_with={0}と寝るベッドなし
+mood.label.pining=片想い
+mood.label.pining_for={0}に片想い
+mood.label.sex=セックス
+mood.label.sex_with={0}とセックス
+mood.label.sleep=屋内で眠る
+
+mood.last_day=直近1日
+mood.last_day.help=昨日の同じ時刻から気分を動かしたもの（原因別）
+mood.level=モラル {0}
+mood.moral_after=変化後のモラル
+mood.night=夜
+mood.night.help=21:00〜06:00。屋内で一晩過ごすと夜明けに回復:\n最大+10、0未満なら+20
+
+mood.now.moved=昨日の同じ時刻から: {0}
+mood.now.none=直近3日間に変化の記録なし
+
+mood.pill.from_rebelling=反乱まで{0}
+mood.pill.in_a_day=1日で{0}
+mood.pill.in_days.other={0}日で{1}
+mood.pill.steady=横ばい
+
+mood.report.dawn.other=夜明け: {0}が屋内で眠りました。
+mood.report.dawn_sleepless.other=夜明け: {0}が屋内で眠りました。眠れなかった人: {1}。
+mood.report.near={0}は反乱寸前です。
+mood.report.near_why={0}は反乱寸前です: {1}。
+mood.report.rebelled={0}が反乱を起こしました。
+mood.report.rebelled_why={0}が反乱を起こしました: {1}。
+
+mood.section.moral=モラル
+mood.section.moral.help=モラルは-100〜100。-100で反乱します。屋内で一晩過ごすのが主な回復手段です。
+
+mood.span.from_to={0}〜{1}
+mood.span.none=変化の記録なし
+mood.span.since={0}から
+mood.span.until={0}まで
+
+mood.today=今日 {0}
+
+mood.word.company=不仲
+mood.word.execution=処刑を見た
+mood.word.food=まずい食べ物
+mood.word.heartbroken=失恋
+mood.word.no_bed=ベッドなし
+mood.word.unhappy=不満
+
+observe.unknown=???
+
+observe.unknown.short=?
+
+orders.action.banish=追放
+orders.action.call=呼び出し
+
+orders.combat=戦闘
+
+orders.combat.aggressive=攻撃型
+orders.combat.aggressive.help=敵を見つけるとすべて攻撃します。
+orders.combat.defensive=防御型
+orders.combat.defensive.help=攻撃されると反撃し、追いかけません。\nフォロー中: あなたと敵対している相手を攻撃します。
+orders.combat.guard=警備型
+orders.combat.guard.help=偵察者と襲撃者を見つけると攻撃し、夜も眠りません。\nフォロー中: 攻撃型と同じ。
+orders.combat.name.aggressor=攻撃型
+orders.combat.name.defender=防御型
+orders.combat.name.guarder=警備型
+orders.combat.name.other=役割 {0}
+orders.combat.name.survivor=生存型
+orders.combat.survival=生存型
+orders.combat.survival.help=戦闘しません。ダメージを受けません。
+
+orders.chase_range=追尾範囲
+orders.edit_dialogue=セリフ編集
+orders.face_left=左を向く
+orders.face_right=右を向く
+orders.following=同行
+
+orders.following.no=いいえ
+orders.following.yes=はい
+
+orders.warp_to_place=待機位置へ
+orders.job=仕事
+
+orders.job.breeding=飼育
+orders.job.breeding.help=近くの飼育設備の世話をします。
+orders.job.breeding.needs=養豚場か飼育場、収穫箱、搾乳機
+orders.job.digging=発掘
+orders.job.digging.help=土を掘り、発掘場に蓄えます。
+orders.job.digging.needs=発掘場
+orders.job.farming=農作
+orders.job.farming.help=近くのプランターの世話をして、収穫物を収穫箱に入れます。
+orders.job.farming.needs=プランターと収穫箱
+orders.job.food=食料
+orders.job.food.help=食料を集め、食料箱に蓄えます。
+orders.job.food.needs=食料箱
+orders.job.gathering=採集
+orders.job.gathering.help=枝、葉、繊維などを集めて収穫箱に入れます。
+orders.job.gathering.needs=収穫箱
+orders.job.name.excavate=発掘
+orders.job.name.farm=農作
+orders.job.name.fishing=釣り
+orders.job.name.food=食料
+orders.job.name.harvest=採集
+orders.job.name.livestock=飼育
+orders.job.name.log=伐採
+orders.job.name.mine=採掘
+orders.job.name.none=なし
+orders.job.name.other=仕事 {0}
+orders.job.name.repair=修理
+orders.job.name.train=訓練
+orders.job.needs=必要
+orders.job.none=なし
+orders.job.none.help=働きません。性欲の回復が早くなります。
+orders.job.repair=修理
+orders.job.repair.help=ダメージを受けた建物を、待機位置に近いものから修理します。
+orders.job.stone=採掘
+orders.job.stone.help=石を採掘し、採掘場に蓄えます。
+orders.job.stone.needs=採掘場
+orders.job.training=訓練
+orders.job.training.help=サンドバッグで訓練し、経験値を得ます。
+orders.job.training.needs=サンドバッグ
+orders.job.wood=伐採
+orders.job.wood.help=木を伐採し、伐採場に蓄えます。
+orders.job.wood.needs=伐採場
+
+orders.option.house=家の入出
+orders.option.love=恋愛を許可
+orders.option.sex=性行為を許可
+
+orders.permission.force=強姦
+orders.permission.force.off=誰も襲わない
+orders.permission.force.on=その気になると強姦する
+orders.permission.house=家の入出
+orders.permission.house.off=家に入らない
+orders.permission.house.on=家に出入りする
+orders.permission.love=恋愛
+orders.permission.love.off=愛情も恨みも育たない
+orders.permission.love.on=近所の人と愛情を育てる
+orders.permission.sex=性行為
+orders.permission.sex.off=セックスしない
+orders.permission.sex.on=その気になるとセックスする
+
+orders.permissions=許可
+
+orders.pose.attack=攻撃
+orders.pose.cheer=応援
+orders.pose.dance=ダンス
+orders.pose.fan=扇ぐ
+orders.pose.harvest=収穫
+orders.pose.lewd_dance=下品なダンス
+orders.pose.lie_down=横たわる
+orders.pose.mining=採掘
+orders.pose.none=なし
+orders.pose.repair=修理
+orders.pose.run=走り
+orders.pose.shower=シャワー
+orders.pose.sit=座る
+orders.pose.sleep=寝る
+orders.pose.walk=歩き
+orders.pose.walk_backward=後ろ歩き
+
+orders.section.assignment=割り当て
+orders.section.permissions=許可
+orders.section.standing=待機場所
+
+orders.set_place=待機位置を設定
+orders.standing=待機場所
+orders.territory=行動範囲
+orders.title=命令
+orders.waiting_pose=待機ポーズ
+
+place.cancel=取り消し
+place.cancel.help=待機位置、家、行動範囲を元のままにします。
+place.cancel.note=または右クリック（ゲームと同じ）
+place.food=食料
+
+place.food.edge_only.other=行動範囲の端でのみ（食料箱{0}個）
+place.food.held.other=食料箱{0}個、{1}保管
+place.food.none=届く範囲に食料箱なし
+
+place.head={0}を配置中
+
+place.head.cancel=取り消し
+place.head.place=配置
+place.head.size=サイズ
+place.head.walk=移動
+
+place.house=家
+
+place.house.barred={0}先に1軒、{1}
+place.house.barred.why=ただし家に入ることが許可されていない
+place.house.inside=この家: 中に配置したので、ここに住む
+place.house.near={0}先: 夜明けに気分+10
+place.house.none={0}以内になし: 夜明けの回復なし
+place.house.past_widest=最寄りは{0}先、最大の行動範囲の外
+place.house.widen=最寄りは{0}先: 行動範囲を{1}広げる
+
+place.key.click=クリック
+place.key.wheel=ホイール
+
+place.keys.cancel={0} 取り消し
+place.keys.size={0} サイズ
+
+place.living_here=ここに住む人
+
+place.near.back=相手から
+place.near.for={1}への{0}
+place.near.more.other=他{0}人
+place.near.more_plain.other=他{0}人、すべて双方+5
+place.near.them=相手
+place.near.they=相手
+place.near.tick=愛情判定。行動範囲が重なっている間、1日6回:
+place.near.to_them=相手へ
+
+place.neighbours=近所の人
+
+place.neighbours.love_off=恋愛オフ: ここでは誰も影響しない
+place.neighbours.none=ここでは誰の行動範囲も重ならない: 愛情は変化しない
+
+place.point_ground=地面を指すとその地点の情報を表示
+
+place.rings.a_step=1段階
+place.rings.wheel=ワールド上でホイール、1目盛り{0}、{1}〜{2}
+
+place.stores.and_edge={0}、端に+{1}
+place.stores.nearest=最寄りは{0}先、届く距離{1}
+
+place.water=水分
+
+place.water.edge_only.other=行動範囲の端でのみ（井戸{0}個）
+place.water.held.other=井戸{0}個、{1}保管
+place.water.none=届く範囲に井戸なし
+
+player.food=食料
+player.hp=体力
+player.level=キャラクターレベル {0}
+player.lives=ハート
+player.name_level={0}  ·  キャラクターレベル {1}
+player.needs_empty=食料か水分が空: 回復せず、体力が減っていく
+
+player.points.attributes=振り分け可能な能力ポイント
+
+player.skill_level=スキルレベル {0}
+player.stun=気絶値
+
+
+player.water=水分
+player.xp=経験値
+
+quicksave.no_slot=セーブ先のスロットがありません: 一度メニューからセーブし、そのスロットをロードしてください
+quicksave.saved=スロット{0}にセーブしました
+quicksave.saved_backup=バックアップスロットにセーブしました
+quicksave.saving=セーブ中...
+
+reach.all_in=すべて入れる
+reach.all_in.help=バッグの中身をすべて、ここに並ぶチェストへ入れます。同じ物が入っているチェストを優先し、次に空きのある最寄りのチェストへ。お気に入りは残ります。
+reach.all_out=すべて取り出す
+reach.all_out.help=並んでいるチェストの中身を、最寄りのチェストから順に、バッグがいっぱいになるまで取り出します。その後は収穫物: 罠の魚、卵、ハチミツ、薬草、キノコ。
+reach.body=死体
+
+reach.body.dead=死亡
+reach.body.down=ダウン
+
+reach.button.hide=チェストを隠す
+reach.button.show=範囲内のチェスト
+
+reach.chip.bags=仲間のバッグ
+reach.chip.bags.help=範囲内にいる、雇っている人たちのバッグ。
+reach.chip.benches=作業台の枠
+reach.chip.benches.help=各作業台が持つ10枠の列。
+reach.chip.bodies=死体
+reach.chip.bodies.help=範囲内の、ダウンした人や死体のポケット。
+reach.chip.breeding=ケージ、罠、プランター
+reach.chip.breeding.help=ケージ、罠、プランター、ハチの巣、養鶏場、キノコの原木、薬草プランター。
+reach.chip.bulk={0}・{1}・{2}の対象。
+reach.chip.by_hand=表示のみ。手作業で移動してください。
+reach.chip.chests=チェストと箱
+reach.chip.chests.help=木と鉄のチェスト、箱、採掘場の産出物。
+reach.chip.click_hide=クリックで隠す。
+reach.chip.harvest={0}で収穫物を取り出せます。それ以外は手作業。
+reach.chip.hidden=非表示
+reach.chip.hidden.help=ここには表示されません。クリックで表示。
+reach.chip.let_stack=クリックすると、クイックスタックのキーでもここに入れるようになります。
+reach.chip.materials=素材の収納
+reach.chip.materials.help=作業台が自分の在庫として数える収納。
+reach.chip.shown=表示
+reach.chip.shown_stack=表示、クイックスタックで入れる
+reach.chip.shown_stack.help=クイックスタックのキーでもここに入れられます。クリックで隠す。
+
+reach.compact=コンパクト
+reach.container=入れ物
+reach.only_filtered=フィルターに合う物だけ。
+reach.stack=スタック
+reach.stack.help=並んでいるチェストにすでに入っている物を、そのチェストへ入れます。お気に入りは残ります。
+reach.title=範囲内
+
+recipe.bench=作業台
+
+recipe.bench.in_reach={0}・範囲内
+recipe.bench.not_in_reach={0}・範囲外
+
+recipe.by_hand=手作業
+
+recipe.counter.max=最大 {0}
+recipe.counter.set=指定 {0}
+
+recipe.craft=クラフト {0}
+recipe.have_need_makes=所持 / 必要・完成 {0}
+
+recipe.hint.by_hand=手作業で作る
+recipe.hint.gather=ワールドで集める
+recipe.hint.make_at={0}で作る
+recipe.hint.needs_materials=レシピに素材が必要
+recipe.hint.not_in_reach={0}が範囲外
+
+recipe.makes=完成 {0}
+recipe.materials=必要素材
+recipe.note=メモ
+recipe.quantity=数量
+
+recipe.quantity.tip=作る数
+recipe.quantity.tip.type=数字をクリックして入力
+recipe.quantity.tip.wheel=ホイールで増減
+
+recipe.return.back_to={0}に戻る
+recipe.return.bench=必要な作業台が範囲外
+recipe.return.job=作業に戻る
+recipe.return.needs_more={1}があと{0}必要
+
+recipe.return.other=他の素材もまだ必要
+
+recipe.return.ready=クラフトできます
+
+recipe.sheet_number=シート {0}
+
+recipe.status.can_craft.other={0}回クラフトできる
+recipe.status.crafted={1}を{0}個作成
+recipe.status.need_more={1}があと{0}必要
+recipe.status.requires={0}が必要 — 範囲外
+recipe.status.unavailable=このメニューでは作れません
+
+relations.head=関係
+relations.history=経歴
+
+relations.history.deliveries=出産回数
+relations.history.first_partner=初H
+relations.history.masturbation=自慰回数
+relations.history.pregnancies=妊娠回数
+relations.history.sex=エッチした
+
+relations.matrix.count.other=関係 {0}件
+relations.matrix.plain={0} — {1}
+relations.matrix.plain_shown={0} — {1}（{2}件表示）
+relations.matrix.shown_of={0} / {1}
+relations.matrix.title={0}・関係
+
+relations.more=… 他{0}件
+
+roster.filter.unhappy=不満
+
+roster.job.breed=飼育
+roster.job.dig=発掘
+roster.job.fishing=釣り
+roster.job.following=同行
+roster.job.food=食料
+roster.job.harvest=採集
+roster.job.idle=待機
+roster.job.planter=農作
+roster.job.repair=修理
+roster.job.stone=採掘
+roster.job.training=訓練
+roster.job.wood=伐採
+roster.job.working=仕事中
+
+roster.kind.numbered=種族 {0}
+roster.kind.story=ストーリーキャラ
+
+roster.level=Lv {0}
+
+roster.mood.at_risk=危険
+roster.mood.close=反乱寸前
+roster.mood.content=満足
+roster.mood.rebelling=反乱中
+roster.mood.unhappy=不満
+
+roster.section.at_home=在宅
+roster.section.away=外出
+roster.section.in_reach=範囲内
+roster.section.no_personality=性格なし
+
+roster.send_home=全員を帰す
+roster.send_home.help=全員が自分の行動範囲へ歩いて戻ります
+
+roster.sort.job=仕事
+roster.sort.kind=種族
+roster.sort.mood=気分
+roster.sort.personality=性格
+roster.sort.vicinity=周辺
+
+roster.title=名簿
+
+roster.where.at_home=在宅
+roster.where.away=外出
+roster.where.in_reach=範囲内
+
+settings.action_bar.shift=Shiftで移動
+settings.action_bar.shift.help=アクションバーの枠や腰の道具を動かすにはShiftを押し続ける必要があり、マウスの滑りで失うことがない。オフ: 自由にドラッグでき、バーの外に落とすと外れる。Shift+クリックはどちらでも外す。
+settings.apply_note=変更はすぐに反映されます。
+
+settings.camera.zoom_out=ズームアウト
+settings.camera.zoom_out.help=マウスホイールでカメラをどこまで引けるか、ゲーム本来の最大距離に対する割合。カメラは引いた分だけ遠くまで描画するので、大きく引くとフレームレートが下がる。\n100%  未改造のゲームと同じ
+settings.cursor.style.arrow=矢印
+settings.cursor.style.arrow_bold=太い矢印
+settings.cursor.style.carved=彫刻
+settings.cursor.style.claw=爪
+settings.cursor.style.crosshair=照準
+settings.cursor.style.help=オフを選ぶとシステムのポインターを使います。
+settings.cursor.style.off=オフ
+settings.cursor.style.ring=リング
+settings.cursor.style.spear=槍
+
+settings.done=完了
+
+settings.effects.by_id=エフェクト {0}
+settings.effects.by_id.help=.cfgの[FX] Blockedリストに番号で登録されて非表示。
+settings.effects.by_name.help=このエフェクトのゲーム内での名前。隠しても変わるのは見た目だけです。
+settings.effects.filter=エフェクトフィルター
+settings.effects.filter.help=オフにすると、MODなしのゲームと同じくすべてのエフェクトが表示されます。下で非表示にしたものは、再びオンにしたときのために残ります。
+settings.effects.group.hidden=非表示
+settings.effects.group.shown=表示中（新しい順）
+settings.effects.none=まだありません。プレイを続けてから、もう一度開いてください。
+settings.effects.none.help=エフェクトは、このセッションでゲームが初めて表示したときに一覧に載ります。
+
+settings.group.action_bar=アクションバー
+settings.group.chests=チェスト
+settings.group.flights=フライト
+settings.group.item_card=アイテムカード
+settings.group.markers=マーカー
+settings.group.marking=目印
+settings.group.plaque=プレート
+settings.hotkeys.clash={0}にも割り当てられています。{1}
+settings.hotkeys.close_all=すべて閉じる
+settings.hotkeys.close_all.help=開いているウィンドウをすべて閉じます。Island UIのものが先、次にゲームのもの。
+settings.hotkeys.console=コンソール
+settings.hotkeys.console.help=画面上部からコマンドコンソールを下ろします。
+settings.hotkeys.console.unbound=1の左
+settings.hotkeys.crafting=クラフト
+settings.hotkeys.crafting.help=クラフトウィンドウを開閉します。
+settings.hotkeys.cursor_cycle=次のカーソル
+settings.hotkeys.cursor_cycle.help=カーソルのスタイルを順に切り替えるので、見ながら選べます。
+settings.hotkeys.group.game=ゲームのキー
+settings.hotkeys.inventory=インベントリ
+settings.hotkeys.inventory.help=インベントリウィンドウを開閉します。
+settings.hotkeys.quick_save=クイックセーブ
+settings.hotkeys.quick_save.help=このゲームをロードしたスロットにセーブします。
+settings.hotkeys.quick_stack=クイックスタック
+settings.hotkeys.quick_stack.help=スタックできるアイテムを、スタックに設定した近くの収納へ入れます。
+settings.hotkeys.target=ターゲット
+settings.hotkeys.target.help=歩いて近づかずに、カーソルに最も近いものをターゲットします。もう一度押すと次に近いもの。
+settings.hotkeys.target_sheet=ターゲットのシート
+settings.hotkeys.target_sheet.help=ターゲットしている相手のシートを開閉します。
+settings.hotkeys.vicinity=周辺
+settings.hotkeys.vicinity.help=周辺ウィンドウ（範囲内の収納）を開閉します。
+settings.hotkeys.world_focus=ワールドに戻る
+settings.hotkeys.world_focus.help=Island UIのウィンドウと、マップやクエストの画面を閉じます。
+
+settings.items.guide=入手方法
+settings.items.guide.help=アイテムのカードに入手方法を表示します: どこで見つかるか、何が落とすか、誰と交換できるか。プレイヤーが集めた情報をもとにしているので、ダンジョン、チェスト、トレードも網羅しています。
+
+settings.language=言語
+settings.language.help=「ゲームと同じ」では、ゲーム本体のオプションで設定した言語を使います。括弧内は現在の言語です。ゲームの英語を置き換えるファン翻訳は英語と表示されるので、一覧からその言語を選んでください。翻訳は機械翻訳です。修正を歓迎します。
+
+settings.language.same_as_game=ゲームと同じ（現在：{0}）
+
+settings.page.camera=カメラ
+settings.page.camera.about=カメラをどこまで引けるか。
+settings.page.combat=戦闘
+settings.page.combat.about=戦闘中に誰がマーカーを持ち、プレートが誰を追うか。
+settings.page.cursor=カーソル
+settings.page.effects=エフェクト
+settings.page.effects.about=オンにしたエフェクトは非表示になります。エフェクトはゲームが一度表示すると一覧に載ります。
+settings.page.general=一般
+settings.page.general.about=ポインターと、MODが話す言語。
+settings.page.hotkeys=ホットキー
+settings.page.hotkeys.about=キーをクリックしてから、新しいキーを押してください。Escで取り消し、Backspaceで解除。
+settings.page.notices=通知
+settings.page.notices.about=画面が出来事を伝える方法：ステータスの低下と、何がどこへ飛ぶか。
+settings.page.sheets=シート
+settings.page.vicinity=周辺
+settings.page.steering=移動制御
+settings.page.steering.about=仲間や敵が、行く手をふさぐ物をどう避けて進むか。
+settings.page.story=ストーリー
+settings.page.story.about=ストーリーの選択肢を選ぶ前に教えてくれること。
+settings.page.struggle=抵抗
+settings.page.struggle.about=掴まれたとき、ボタンを連打する代わりに長押しします。
+settings.page.target=ターゲット
+settings.page.target.about=相手にしている人や物の示し方。
+settings.page.tip={0}の設定
+settings.page.vitals=ステータス
+settings.page.weather=天候
+settings.page.weather.about=天候の影響を受ける場所。
+settings.page.window=ウィンドウ
+settings.page.window.about=ゲームから目を離したときの、ゲームウィンドウの動作。
+
+settings.page.windows=ウィンドウ
+settings.page.windows.about=Island UI のウィンドウの位置と、表示する内容。
+settings.sheets.left=シートを左に
+settings.sheets.left.help=クラフト、周辺、名簿が閉じている間はキャラクターのシートを左側に移し、どれかを開くと戻します。シートの端のタブでも切り替えられます。
+settings.target.always_enemy_markers=常に敵に表示
+settings.target.always_enemy_markers.help=画面上の敵対者全員に戦闘マーカーを表示する（戦闘中かどうかを問わない）：自分か仲間に向かってきた者。上の数の代わりになる。
+settings.target.always_neutral_markers=常に中立に表示
+settings.target.always_neutral_markers.help=画面上の仲間でも敵対者でもない全員に戦闘マーカーを表示する（戦闘中かどうかを問わない）。体力バーは琥珀色。上の数の代わりになる。
+settings.target.always_friend_markers=常に仲間に表示
+settings.target.always_friend_markers.help=画面上の仲間全員に戦闘マーカーを表示する（戦闘中かどうかを問わない）。体力バーは緑。上の数の代わりになる。
+settings.vicinity.compact=コンパクト
+settings.vicinity.compact.help=各収納は、すべての枠の代わりに、使用中の枠をその順に表示し、続けて空き枠の数をひとつ表示します。周辺ウィンドウ下部の「コンパクト」チェックでも切り替えられます。
+settings.vicinity.hold_order=並び順を保つ
+settings.vicinity.hold_order.help=ポインターがリストの上にある間は、ポインターの下で行が動かないよう、各行はその場に留まります。上の行より近くなった行には矢印が付き、ポインターが離れるとリストが並べ直されます。\nオフ  常に近い順
+
+settings.steering.clearance=余裕幅
+settings.steering.clearance.help=歩く者自身の体に対して、先読みの幅をどれだけ取るか。\n100%超  余裕を持って角を回り、狭いすき間は避ける\n100%未満  体よりわずかに広いすき間にも入り、角をかすめる
+settings.steering.door_assist=ドア補助
+settings.steering.door_assist.help=家から出る仲間は、ドアに着いた時点で外に出ます。かやぶきの家の出口はほとんど壁の内側にあるため、これがないと横に立ったまま動けなくなることがあります。
+settings.steering.enabled=Island AI
+settings.steering.enabled.help=MOD全体をその場で切り替え: オフにすると、全員がMODなしのゲームとまったく同じように動きます。
+settings.steering.enemies=敵の回避
+settings.steering.enemies.help=敵が障害物に押し付けられず、回り込んで歩きます（追跡、徘徊、逃走のとき）。壁の守りは弱くなります。
+settings.steering.friends=仲間の回避
+settings.steering.friends.help=フォロワーと村人が屋外で障害物を回り込んで歩きます（あなたについて来るとき、敵を追うとき、徘徊するとき、夜に家へ向かうとき）。
+settings.steering.look_ahead=先読み
+settings.steering.look_ahead.help=歩く者が、行く手をふさぐ物をどこまで先まで探すか。
+settings.steering.method=方式
+settings.steering.method.along_walls=壁沿い
+settings.steering.method.fan=扇形
+settings.steering.method.help=ふさがれた者が進む道の選び方:\n壁沿い  ぶつかった壁の方向も試し、目標に最も近く最も余裕のある向きを取る。狭い通路も見つける\n扇形  最初の方式: 固定された11方向のうち、完全に空いている最も近い向き
+
+settings.story.hints=ストーリーヒント
+settings.story.hints.always=常に表示
+settings.story.hints.click=クリックで表示
+settings.story.hints.help=ストーリーの選択肢の各項目と、キー入力を待つ場面の各キーが、何につながるかを示す: 好感度、誰が仲間になるか、何が解放されるか。クリックで表示では、バーをクリックするまで表示されない。死亡、結末、別れは常にクリックするまで伏せる。
+settings.story.hints.off=オフ
+
+settings.struggle.hold=長押しで抵抗
+settings.struggle.hold.help=掴まれたときに攻撃ボタンを長押しすると、叩き続けます。MODなしでは、長押しで連打になるのはスキル9を上げてからで、それまではボタンを連打する必要があります。
+settings.struggle.interval=叩く間隔
+settings.struggle.interval.help=長押し中の1回ごとの間隔。スキルですでに可能な速さより遅くなることはありません。\n0.10 s  速い連打くらいで、スキル最大時のゲームの速さ
+
+settings.target.combat_markers=戦闘マーカー
+settings.target.combat_markers.help=戦闘中、頭上に小さな体力・気絶値マーカーを付ける敵の数: 最後に攻撃した敵、次にあなたを狙う中で最も近い敵。画面外では、マーカーは画面の端で待機して敵の方向を指します。0 = なし。
+settings.target.flight_time=飛行時間
+settings.target.flight_time.help=通知が飛んでいく時間。\n約0.35 s未満  飛んでいる間は数が読めない\n0.8 s超  待たされている感じになる
+settings.target.friendly_markers=味方マーカー
+settings.target.friendly_markers.help=戦闘中、あなたのフォロワーと一緒に戦う仲間も戦闘マーカーを付け、その体力バーは緑になります。数は敵とは別に数え、上の敵の数と同じだけ付くので、敵のマーカーが味方に譲られることはありません。
+settings.target.hover_health=ホバーで体力表示
+settings.target.hover_health.help=体力のある相手にポインターを合わせると、戦闘中かどうかに関わらず、ポインターが乗っている間その頭上に戦闘マーカーを表示します。すでにマーカーを付けている相手には出ません: ターゲット、または戦闘でマークされた敵。
+settings.target.pickup_flight=拾得時の飛行
+settings.target.pickup_flight.help=拾ったアイテムの通知が、画面の端で待たずに、あなたから入ったスロットへ飛んでいきます。
+settings.target.ring=足元リング
+settings.target.ring.help=ターゲットの足元の地面に、マーカーと同じ色のリング:\n緑  自分の仲間\n赤  敵対\n琥珀色  他人や物\n灰色  死体
+settings.target.ring_opacity=リングの不透明度
+settings.target.ring_opacity.help=リングの濃さ。
+settings.target.ring_size=リングのサイズ
+settings.target.ring_size.help=ターゲットの足元の大きさに対する、リングの大きさ。
+settings.target.containers_open=チェストをすぐ開く
+settings.target.containers_open.help=チェストなど、収納だけのものを選ぶと、すぐにインベントリが開きます。閉じると、選択を解除するまで、次に切り替えたチェストも閉じたままです。\nオフ  インベントリボタンで開く
+settings.target.container_close_untargets=チェストを閉じると選択解除
+settings.target.container_close_untargets.help=チェストなど、収納だけのもののインベントリを閉じると、選択も解除されます。\nオフ  インベントリを閉じたまま、ターゲットのまま残ります
+settings.target.selection_pulse=選択時の点滅
+settings.target.selection_pulse.help=選択した人物に付く、ゲーム本来の白い点滅の光。初期設定はオフ: マーカーとリングで誰なのかはわかります。
+
+settings.unit.metres={0}m
+settings.unit.none=なし
+settings.unit.percent={0}%
+settings.unit.seconds={0} s
+
+settings.vitals.health_at=体力の警告ライン
+settings.vitals.health_at.help=最大体力に対する割合。その半分で危険になります。
+settings.vitals.low=残量の警告
+settings.vitals.low.help=残り少ない項目が、パネル上でその形のまま光ります:\n琥珀色  少ない、ゆっくり脈打つ\n赤  危険、速く脈打つ\n悪化するたびに一度点滅し、回復するとフェードアウトします。
+settings.vitals.needs_at=食料・水分の警告ライン
+settings.vitals.needs_at.help=満タンに対する割合。その半分で危険になり、空になるともう一度点滅します: そうなるとゲームは回復を止め、体力を削っていきます。
+
+settings.weather.dry_indoors=屋内は雨なし
+settings.weather.dry_indoors.help=家の中には雨が降りません。外では降り続いていて、ドアの所でまた見えます。MODなしでは、雨が家の中までついて来ます。
+
+settings.window.keep_fullscreen=画面に残す
+settings.window.keep_fullscreen.help=デスクトップの切り替え、Alt+Tab、別のモニターのクリックをしても、ゲームが表示されたままになります。MODなしでは自動的に最小化されます。
+settings.window.minimise_shortcuts=Win+Mで最小化
+settings.window.minimise_shortcuts.help=Win+MとWin+↓で、他のウィンドウと同じようにゲームを最小化します。タスクバーのクリックとWin+Dはどちらでも効きます。
+
+sheet.click_to_target=クリックで{0}をターゲット
+sheet.cost={0}pt
+sheet.lv=Lv {0}
+sheet.no=いいえ
+sheet.points=ポイント
+sheet.yes=はい
+sheet.you=あなた
+
+skills.fallback_name=スキル {0}
+skills.head=スキル
+skills.level=スキルレベル {0}
+skills.max=最大
+
+skills.name.carry=運搬
+skills.name.construction=建築
+skills.name.grapple=捕縛
+skills.name.harvest=採集
+skills.name.leader=先導
+skills.name.observation=観察
+skills.name.patience=忍耐
+skills.name.persuasive=説得
+skills.name.self_healing=自然治癒
+skills.name.smash=強打
+skills.name.stomach=驚異の胃袋
+skills.name.swim=水泳
+
+skills.tip.next=次、Lv {0}: {1}
+skills.tip.now=現在、Lv {0}: {1}
+
+slot.filter=フィルター...
+
+social.before_record=記録より前
+social.cant_stand=大嫌い
+social.cant_stand_each=互いに大嫌い
+social.cant_stand_who={0}が大嫌い
+social.click_close=クリックで閉じる
+social.click_why=クリックで理由を表示
+social.not_shown=他{0}人は非表示
+
+social.note.acquainted=知り合い
+social.note.loved_not_back={0}は{1}が好き、片想い
+social.note.lovers=恋人
+social.note.loves_not_back={0}が好き、片想い
+
+social.show_less=表示を減らす
+social.none=なし
+social.show_more=さらに{0}件表示
+
+split.take={0}個取る
+
+story.spoiler=ネタバレ - クリックで表示
+story.show_hints=ヒント - クリックで表示
+story.show_hints.tip=各選択肢の行き先はこのバーの後ろに隠れている。ヒントをすぐ表示する、またはオフにするには、設定のストーリーのページへ。\n
+strip.hp=体力
+strip.love_for_you=あなたへの愛情
+strip.not_met=未対面
+strip.pregnant=妊娠
+strip.pregnant_months={0} / 12か月
+
+talk.choice_unnamed=会話の選択肢
+talk.header={0}と会話
+talk.nothing=話すことがない
+
+target.tab.nothing=ここにはターゲットできるものがない
+
+tip.fix=対策
+
+unit.act=操作
+
+unit.act.carry=運ぶ
+unit.act.change=交代
+unit.act.craft=クラフト
+unit.act.dissect=解体
+unit.act.follow=連れていく
+unit.act.give_birth=出産
+unit.act.leave=置いていく
+unit.act.talk=会話
+unit.act.token_shop=トークン商店
+unit.act.token_shop_2=トークン商店2
+unit.act.trade=トレード
+unit.act.vacuum=バキューム
+
+unit.bag=バッグ
+
+unit.caption.character=キャラクター
+unit.caption.inventory=インベントリ
+
+unit.closer_by=あと{0}m近づく
+unit.details=詳細
+unit.more_actions=その他の操作
+unit.opens_in_reach=範囲内で開く
+unit.opens_when_in_reach=範囲内に入ると開く
+unit.out_of_reach=範囲外
+unit.pockets=ポケット
+
+unit.portrait.sheet=クリックでキャラクターシートを表示
+
+unit.prop.call=呼び戻す
+unit.prop.caress=愛撫
+unit.prop.connect=結合
+unit.prop.cosmetic=整形
+unit.prop.cosmetic_friend=整形（仲間）
+unit.prop.drink=飲む
+unit.prop.dye=染色
+unit.prop.eat=食べる
+unit.prop.edit=編集
+unit.prop.enter=入る
+unit.prop.execute=処刑
+unit.prop.finish=フィニッシュ
+unit.prop.give_birth=出産する
+unit.prop.hair_dress=美容
+unit.prop.hair_dress_friend=美容（仲間）
+unit.prop.hold=止める
+unit.prop.insert=挿入
+unit.prop.kill=殺害する
+unit.prop.make_meat=肉にする
+unit.prop.male_display=男性表示
+unit.prop.move=動く
+unit.prop.outfit=コーディネート
+unit.prop.outfit_friend=コーディネート（仲間）
+unit.prop.peek=覗く
+unit.prop.piss=放尿
+unit.prop.position_2=ポーズ2
+unit.prop.pull_away=離れる
+unit.prop.rape=強引に犯す
+unit.prop.rape_discreetly=そっと犯す
+unit.prop.rename=名前変更
+unit.prop.reset=リセット
+unit.prop.roughness_2=速度2
+unit.prop.scale=大きさ
+unit.prop.show_face=顔出し
+unit.prop.sleep_morning=朝まで眠る
+unit.prop.sleep_night=夜まで眠る
+unit.prop.sleeping_powder=睡眠粉を使う
+unit.prop.speed=速度
+unit.prop.start=起動
+unit.prop.summon=召喚
+unit.prop.take_out=取り出す
+unit.prop.use=使用
+unit.prop.visit=訪問
+unit.prop.wash=洗う
+
+unit.state.carried=運搬中
+unit.state.corpse=死体
+unit.state.knocked_out=気絶
+
+use.not_on_you=自分には使えません。{0}にドラッグすると渡せます。
+
+use.not_on_you.someone=自分には使えません。誰かにドラッグすると渡せます。
+
+vitals.age=年齢
+vitals.attack=攻撃力
+vitals.breeding=飼育
+vitals.character_level=キャラクターレベル {0}
+vitals.class=クラス
+vitals.combat=戦闘
+vitals.dislikes=嫌いな性格
+vitals.father=父
+vitals.favourite=名簿のお気に入り
+vitals.following=同行
+vitals.food=食料
+vitals.guard=ガード率
+vitals.health=生命力
+vitals.hp=体力
+vitals.job=仕事
+vitals.libido=性欲
+vitals.likes=好きな性格
+vitals.love=愛情
+
+vitals.love.not_met=未対面
+
+vitals.moral=モラル
+vitals.mother=母
+vitals.personality=性格
+vitals.preferences=好み
+vitals.pregnant=妊娠
+vitals.prop=設置物
+vitals.show_name=ワールドに名前を表示
+vitals.speed=スピード
+vitals.strength=腕力
+vitals.stun=気絶値
+vitals.surgeries=整形数
+vitals.type=種類
+vitals.water=水分
+vitals.wear=耐久
+vitals.where=場所

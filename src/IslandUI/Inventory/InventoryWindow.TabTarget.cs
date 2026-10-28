@@ -127,7 +127,7 @@ namespace IslandUI
             {
                 if (!Untarget("tab on nothing"))
                 {
-                    Say("nothing to target here");
+                    Say(Shared.Loc.Get("target.tab.nothing", "nothing to target here"));
                 }
                 return;
             }
@@ -256,25 +256,33 @@ namespace IslandUI
             return true;
         }
 
+        // a person picked from afar (Tab, a map pin): one of yours as a roster pick,
+        // anyone else held as ours
+        private static void TargetPerson(CommonStates who, string why)
+        {
+            PlayerMove p = _mn.gameMN.pMove;
+            if (Yours(who, p) && who.life > 0.0)
+            {
+                _adoptWhy = why;
+                PressRosterRow(who);
+                return;
+            }
+            // D159: an enemy, a stranger or a body is held as ours, the game not
+            // asked - nothing of theirs is the game's to hold until an act of the
+            // dock asks it (a body's search)
+            Adopt(Held.Person, who, Begun.Roster, why);
+            if (_mn.gameMN.nowAction)
+            {
+                p.target = null;   // vanilla lets go of what it held, as a click elsewhere makes it
+            }
+        }
+
         private static void TargetFromTab(object pick)
         {
             PlayerMove p = _mn.gameMN.pMove;
             if (pick is CommonStates who)
             {
-                if (Yours(who, p) && who.life > 0.0)
-                {
-                    _adoptWhy = "tab";
-                    PressRosterRow(who);
-                    return;
-                }
-                // D159: an enemy, a stranger or a body is held as ours, the game not
-                // asked - nothing of theirs is the game's to hold until an act of the
-                // dock asks it (a body's search)
-                Adopt(Held.Person, who, Begun.Roster, "tab");
-                if (_mn.gameMN.nowAction)
-                {
-                    p.target = null;   // vanilla lets go of what it held, as a click elsewhere makes it
-                }
+                TargetPerson(who, "tab");
                 return;
             }
             var go = pick as GameObject;
@@ -371,9 +379,12 @@ namespace IslandUI
 
         // For the harness (D159): Tab onto the nearest "body", "enemy" (anyone
         // standing who is not yours) or "friend" (one of yours), as if it were the
-        // one nearest the cursor
+        // one nearest the cursor; "-far" after the kind ("friend-far") passes over
+        // those in reach, to see a dock out of reach
         internal static string TabPickNearest(string kind)
         {
+            bool farOnly = kind.EndsWith("-far");
+            if (farOnly) { kind = kind.Substring(0, kind.Length - 4); }
             PlayerMove p = _mn != null && _mn.gameMN != null ? _mn.gameMN.pMove : null;
             if (p == null)
             {
@@ -390,7 +401,7 @@ namespace IslandUI
                 bool body = ReachRule.Body(c) && !(c.Employed() && c.life > 0.0);
                 bool enemy = c.dead == 0 && !Yours(c, p);
                 bool friend = c.dead == 0 && Yours(c, p);
-                if (kind == "body" ? !body : kind == "friend" ? !friend : !enemy)
+                if ((kind == "body" ? !body : kind == "friend" ? !friend : !enemy) || farOnly && ReachRule.Live(_mn, c))
                 {
                     continue;
                 }
@@ -408,6 +419,37 @@ namespace IslandUI
             TargetFromTab(best);
             return (string.IsNullOrEmpty(best.charaName) ? "someone" : best.charaName) + " at "
                 + Mathf.Sqrt(bestD).ToString("0.0") + " m, live " + ReachRule.Live(_mn, best);
+        }
+
+        // ...or onto the nearest one called `name`, yours or not, standing or down
+        // ("Male Native|alive" passes over the dead)
+        internal static string TabPickAnyNamed(string name)
+        {
+            bool alive = name.EndsWith("|alive");
+            if (alive) { name = name.Substring(0, name.Length - 6); }
+            PlayerMove p = _mn != null && _mn.gameMN != null ? _mn.gameMN.pMove : null;
+            CommonStates best = null;
+            float bestD = float.MaxValue;
+            foreach (CommonStates c in Object.FindObjectsOfType<CommonStates>())
+            {
+                if (p == null || c == null || ReferenceEquals(c, p.common) || !c.gameObject.activeInHierarchy || c.charaName != name
+                    || alive && c.life <= 0.0)
+                {
+                    continue;
+                }
+                float d = (c.transform.position - p.transform.position).sqrMagnitude;
+                if (d < bestD)
+                {
+                    bestD = d;
+                    best = c;
+                }
+            }
+            if (best == null)
+            {
+                return "no " + name;
+            }
+            TargetFromTab(best);
+            return name + " at " + Mathf.Sqrt(bestD).ToString("0.0") + " m, employ " + best.employ + ", sheet " + TargetHasSheet(best);
         }
 
         // For the harness: Tab onto the nearest container of a kind ("Water" a well,
@@ -442,6 +484,229 @@ namespace IslandUI
             TargetFromTab(best.gameObject);
             return best.name + " at " + Mathf.Sqrt(bestD).ToString("0.0") + " m, live "
                 + ReachRule.LiveProp(_mn, best.GetComponent<ItemInfo>());
+        }
+
+        // For the harness: Tab onto the nearest placed thing that is not a container
+        // (a totem, a bed), optionally one whose item key contains `key`.
+        internal static string TabPickThing(string key)
+        {
+            PlayerMove p = _mn != null && _mn.gameMN != null ? _mn.gameMN.pMove : null;
+            if (p == null)
+            {
+                return "no player";
+            }
+            ItemInfo best = null;
+            float bestD = float.MaxValue;
+            foreach (ItemInfo info in Object.FindObjectsOfType<ItemInfo>())
+            {
+                if (info == null || !info.gameObject.activeInHierarchy || info.GetComponent<InventorySlot>() != null
+                    || string.IsNullOrEmpty(info.itemKey)
+                    || !string.IsNullOrEmpty(key) && info.itemKey.IndexOf(key, System.StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    continue;
+                }
+                float d = (info.transform.position - p.transform.position).sqrMagnitude;
+                if (d < bestD)
+                {
+                    bestD = d;
+                    best = info;
+                }
+            }
+            if (best == null)
+            {
+                return "no thing " + key;
+            }
+            TargetFromTab(best.gameObject);
+            return best.itemKey + " at " + Mathf.Sqrt(bestD).ToString("0.0") + " m, live " + ReachRule.LiveProp(_mn, best);
+        }
+
+        // For the harness: Tab onto the nearest placed thing whose key is exactly
+        // `key`, a container or not; with `stand`, first put the player a step
+        // from it, as if they had walked up (the survey of Forgejo #60)
+        internal static string TabPickKey(string key, bool stand)
+        {
+            PlayerMove p = _mn != null && _mn.gameMN != null ? _mn.gameMN.pMove : null;
+            if (p == null)
+            {
+                return "no player";
+            }
+            ItemInfo best = null;
+            float bestD = float.MaxValue;
+            foreach (ItemInfo info in Object.FindObjectsOfType<ItemInfo>())
+            {
+                if (info == null || !info.gameObject.activeInHierarchy || info.itemKey != key)
+                {
+                    continue;
+                }
+                float d = (info.transform.position - p.transform.position).sqrMagnitude;
+                if (d < bestD)
+                {
+                    bestD = d;
+                    best = info;
+                }
+            }
+            if (best == null)
+            {
+                return "no " + key;
+            }
+            if (stand)
+            {
+                StandBy(p, best.transform);
+            }
+            TargetFromTab(best.gameObject);
+            return best.itemKey + " at " + Vector3.Distance(best.transform.position, p.transform.position).ToString("0.0")
+                + " m, yours " + (_mn.buildMN != null && _mn.buildMN.OwnCheck(best)) + ", live " + ReachRule.LiveProp(_mn, best);
+        }
+
+        // ...or onto the nearest one carrying a component, by its type's name - a person
+        // ("ShopInfo": a trader) or a thing of yours ("BuildScaler", "PositionEdit") -
+        // or a person by npcID ("npc:18,19,71": a crafter), and stood beside it
+        // (Forgejo #52's targets)
+        internal static string TabPickWith(string component)
+        {
+            int[] ids = component.StartsWith("npc:")
+                ? System.Array.ConvertAll(component.Substring(4).Split('|'), int.Parse) : null;
+            PlayerMove p = _mn != null && _mn.gameMN != null ? _mn.gameMN.pMove : null;
+            if (p == null)
+            {
+                return "no player";
+            }
+            Component best = null;
+            float bestD = float.MaxValue;
+            foreach (CommonStates c in Object.FindObjectsOfType<CommonStates>())
+            {
+                if (c == null || ReferenceEquals(c, p.common) || !c.gameObject.activeInHierarchy
+                    || (ids != null ? System.Array.IndexOf(ids, c.npcID) < 0 || c.life <= 0.0 : c.GetComponent(component) == null))
+                {
+                    continue;
+                }
+                float d = (c.transform.position - p.transform.position).sqrMagnitude;
+                if (d < bestD) { bestD = d; best = c; }
+            }
+            foreach (ItemInfo info in ids != null ? new ItemInfo[0] : Object.FindObjectsOfType<ItemInfo>())
+            {
+                if (info == null || !info.gameObject.activeInHierarchy || info.GetComponent(component) == null
+                    || _mn.buildMN == null || !_mn.buildMN.OwnCheck(info))
+                {
+                    continue;
+                }
+                float d = (info.transform.position - p.transform.position).sqrMagnitude;
+                if (d < bestD) { bestD = d; best = info; }
+            }
+            if (best == null)
+            {
+                return "no " + component;
+            }
+            StandBy(p, best.transform);
+            if (best is CommonStates who) { TargetFromTab(who); }
+            else { TargetFromTab(best.gameObject); }
+            return best.name + " (" + (best is ItemInfo thing ? thing.itemKey
+                : ((CommonStates)best).charaName + ", npcID " + ((CommonStates)best).npcID + ", age " + ((CommonStates)best).age) + ")";
+        }
+
+        // ...and only the step: the target stays what it was, as when you walk up
+        // to a thing Tabbed from afar
+        internal static string HarnessStandBy(string key)
+        {
+            PlayerMove p = _mn != null && _mn.gameMN != null ? _mn.gameMN.pMove : null;
+            ItemInfo best = null;
+            float bestD = float.MaxValue;
+            foreach (ItemInfo info in Object.FindObjectsOfType<ItemInfo>())
+            {
+                if (p == null || info == null || !info.gameObject.activeInHierarchy || info.itemKey != key)
+                {
+                    continue;
+                }
+                float d = (info.transform.position - p.transform.position).sqrMagnitude;
+                if (d < bestD)
+                {
+                    bestD = d;
+                    best = info;
+                }
+            }
+            if (best == null)
+            {
+                return "no " + key;
+            }
+            StandBy(p, best.transform);
+            return "by " + key + ", live " + ReachRule.LiveProp(_mn, best);
+        }
+
+        // ...and beside whatever is the target now, a person or a body among them
+        internal static string HarnessStandByTarget()
+        {
+            PlayerMove p = _mn != null && _mn.gameMN != null ? _mn.gameMN.pMove : null;
+            object focus = Focus();
+            Component at = focus as CommonStates ?? (Component)FocusProp(focus);
+            if (p == null || at == null)
+            {
+                return "no target";
+            }
+            StandBy(p, at.transform);
+            return "by " + at.name;
+        }
+
+        // ...or `metres` from the nearest person called `name`, centre to centre
+        // across the ground, on the side you stand: a step either way over the
+        // reach line (Forgejo #93)
+        internal static string HarnessStandFrom(string name, float metres)
+        {
+            PlayerMove p = _mn != null && _mn.gameMN != null ? _mn.gameMN.pMove : null;
+            CommonStates best = null;
+            float bestD = float.MaxValue;
+            foreach (CommonStates c in Object.FindObjectsOfType<CommonStates>())
+            {
+                if (p == null || c == null || ReferenceEquals(c, p.common) || !c.gameObject.activeInHierarchy
+                    || c.charaName != name)
+                {
+                    continue;
+                }
+                float d = (c.transform.position - p.transform.position).sqrMagnitude;
+                if (d < bestD)
+                {
+                    bestD = d;
+                    best = c;
+                }
+            }
+            if (best == null)
+            {
+                return "no " + name;
+            }
+            Vector3 away = p.transform.position - best.transform.position;
+            away.y = 0f;
+            away = away.sqrMagnitude > 0.01f ? away.normalized : Vector3.back;
+            Vector3 at = best.transform.position + away * metres;
+            at.y = p.transform.position.y;
+            p.transform.position = at;
+            _lastHere = at;   // a placed step, not another area
+            return name + " at " + metres.ToString("0.0") + " m, live " + ReachRule.Live(_mn, best);
+        }
+
+        private static void StandBy(PlayerMove p, Transform thing)
+        {
+            Vector3 away = p.transform.position - thing.position;
+            away.y = 0f;
+            away = away.sqrMagnitude > 0.01f ? away.normalized : Vector3.back;
+            p.transform.position = thing.position + away * 1.5f;
+            _lastHere = p.transform.position;   // a placed step, not another area
+        }
+
+        // For the harness: walk through a house's door the way its trigger takes
+        // you (DoorScript.OnTriggerEnter), so the game knows you are inside
+        // (gameMN.tmpHouse) - a bed offers its sleep till morning only there
+        internal static string HarnessDoor(string path)
+        {
+            PlayerMove p = _mn != null && _mn.gameMN != null ? _mn.gameMN.pMove : null;
+            GameObject door = GameObject.Find(path);
+            DoorScript script = door != null ? door.GetComponent<DoorScript>() : null;
+            Collider body = p != null ? p.GetComponent<Collider>() : null;
+            if (script == null || body == null)
+            {
+                return "no door or no player";
+            }
+            script.EnterDoor(body);
+            _lastHere = p.transform.position;
+            return "through " + path + ", house " + _mn.gameMN.tmpHouse;
         }
 
         // For the harness: Tab at the cursor as it stands, and what it came to.

@@ -17,8 +17,13 @@ namespace IslandUI
         {
             switch (aspect)
             {
-                case Aspect.Profile: return "Character";
-                case Aspect.Relations: return "Social";
+                case Aspect.Inventory: return Shared.Loc.Get("inv.tab.inventory", "Inventory");
+                case Aspect.Overview: return Shared.Loc.Get("inv.tab.overview", "Overview");
+                case Aspect.Fight: return Shared.Loc.Get("inv.tab.fight", "Fight");
+                case Aspect.Skills: return Shared.Loc.Get("inv.tab.skills", "Skills");
+                case Aspect.Profile: return Shared.Loc.Get("inv.tab.character", "Character");
+                case Aspect.Relations: return Shared.Loc.Get("inv.tab.social", "Social");
+                case Aspect.Orders: return Shared.Loc.Get("mood.fix.orders", "Orders");
                 default: return aspect.ToString();
             }
         }
@@ -37,6 +42,7 @@ namespace IslandUI
             }
             if (plate.SheetMask == null) { plate.SheetMask = plate.Window.Go.AddComponent<RectMask2D>(); }
             plate.SheetMask.enabled = true;
+            plate.SheetMasked = true;
             if (plate.SheetTrack == null)
             {
                 plate.SheetTrack = Theme.KitImage(plate.Window.Go.transform, "SheetScroll", "kit_plank_walnut", 18, Color.white);
@@ -61,13 +67,16 @@ namespace IslandUI
 
         private static float OwnSheetTop()
         {
-            return Mathf.Min(360f, _root != null ? ((RectTransform)_root.transform).rect.height - 30f : 360f);
+            return Mathf.Min(395f, _root != null ? ((RectTransform)_root.transform).rect.height - 30f : 395f);
         }
 
         private static void PlaceSheetGroup(int group, int bagGroup, int column, float top)
         {
             if (_groupMembers[group] == 0) { return; }
-            float pad = GroupPadY();
+            // a dossier's paper prints a double rule round its edge: the page
+            // keeps inside it, or the rule cuts its first and last rows
+            float pad = IsDossier(group) ? DossierPadTop : GroupPadY();
+            float padFoot = IsDossier(group) ? DossierPadFoot : GroupPadY();
             float floor = Mathf.Max(MarginY, _groupHi[bagGroup])
                 + PlateGap + CloseChipSize * 0.5f;
             // THE TARGET'S SHEET CLEARS THE UNIT, bag or no bag. With the bag
@@ -78,6 +87,8 @@ namespace IslandUI
             {
                 floor = Mathf.Max(floor, UnitStanding() + PlateGap + CloseChipSize * 0.5f);
             }
+            // ...or, floated to the left slot, the slot's floor (Float.cs)
+            floor = FloatFloor(group, floor);
             float other = 0f;
             Plate sheet = null;
             for (int i = 0; i < _platesUsed; i++)
@@ -88,8 +99,8 @@ namespace IslandUI
                 else { other += p.Height + GroupMemberGap; }
             }
             if (sheet == null) { return; }
-            top = Mathf.Max(top, floor + 2f * pad + other + SheetRowH * 2f);
-            float available = Mathf.Max(SheetRowH, top - floor - 2f * pad - other);
+            top = Mathf.Max(top, floor + pad + padFoot + other + SheetRowH * 2f);
+            float available = Mathf.Max(SheetRowH, top - floor - pad - padFoot - other);
             sheet.Height = Mathf.Min(sheet.SheetContentH, available);
             sheet.Window.Rect.sizeDelta = new Vector2(sheet.Window.Rect.sizeDelta.x, sheet.Height);
             sheet.LaidOutH = sheet.Height;
@@ -104,7 +115,7 @@ namespace IslandUI
                 y -= GroupMemberGap;
             }
             _groupHi[group] = top;
-            _groupLo[group] = y + GroupMemberGap - pad;
+            _groupLo[group] = y + GroupMemberGap - padFoot;
             _colY[column] = Mathf.Max(_colY[column], top);
             ApplySheetScroll(sheet);
         }

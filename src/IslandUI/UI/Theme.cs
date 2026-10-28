@@ -295,32 +295,16 @@ namespace IslandUI.UI
             {
                 // via a RenderTexture, because an atlas page is not CPU-readable -
                 // the same route SpriteDump takes for the same reason
-                Rect r = source.textureRect;
-                int w = Mathf.Max(1, (int)r.width);
-                int h = Mathf.Max(1, (int)r.height);
                 // The sprite's own rect, not its page: the items' atlas is 8192 px
                 // square, and a target that size per mask was a quarter of a gigabyte
                 // allocated to read 256 px of it (found with the blueprint's drawings,
-                // which read the same way - Blueprint.ReadRect).
-                Texture2D page = source.texture;
-                RenderTexture rt = RenderTexture.GetTemporary(w, h, 0, RenderTextureFormat.ARGB32,
-                    RenderTextureReadWrite.Linear);
-                RenderTexture previous = RenderTexture.active;
-                Texture2D flat;
-                try
-                {
-                    Graphics.Blit(page, rt, new Vector2(r.width / page.width, r.height / page.height),
-                        new Vector2(r.x / page.width, r.y / page.height));
-                    RenderTexture.active = rt;
-                    flat = new Texture2D(w, h, TextureFormat.RGBA32, false);
-                    flat.ReadPixels(new Rect(0f, 0f, w, h), 0, 0);
-                }
-                finally
-                {
-                    RenderTexture.active = previous;
-                    RenderTexture.ReleaseTemporary(rt);
-                }
-                Color32[] px = flat.GetPixels32();
+                // which read the same way - Blueprint.ReadSprite, which also draws a
+                // tight-packed sprite from its mesh, having no rectangle to read).
+                Rect r = Blueprint.SourceRect(source);
+                int w = Mathf.Max(1, (int)r.width);
+                int h = Mathf.Max(1, (int)r.height);
+                Color32[] px = Blueprint.ReadSprite(source, w, h);
+                var flat = new Texture2D(w, h, TextureFormat.RGBA32, false);
                 for (int i = 0; i < px.Length; i++)
                 {
                     if (grey)
@@ -410,6 +394,16 @@ namespace IslandUI.UI
             image.sprite = Kit(name, border);
             image.type = border > 0 ? Image.Type.Sliced : Image.Type.Simple;
             image.preserveAspect = border == 0;
+            image.pixelsPerUnitMultiplier = KitPpu;
+        }
+
+        // A cut piece (Kit with a border per side) on an Image, sliced at its
+        // designed size.
+        public static void KitSkin(Image image, string name, Vector4 border)
+        {
+            image.sprite = Kit(name, border);
+            image.type = Image.Type.Sliced;
+            image.preserveAspect = false;
             image.pixelsPerUnitMultiplier = KitPpu;
         }
 
@@ -509,6 +503,16 @@ namespace IslandUI.UI
         // the caller, because only the kit knows it.
         public static Sprite Kit(string name, int border)
         {
+            float b = Mathf.Max(0, border);
+            return Kit(name, new Vector4(b, b, b, b));
+        }
+
+        // ...or a border per side - left, bottom, right, top, Sprite.border's order -
+        // for a piece cut whole out of a painting rather than drawn to the kit's
+        // table, whose corners are not square: the sheet's clipboard pieces
+        // (make_sheet_facelift.py). A sprite is cut once, so one name, one border.
+        public static Sprite Kit(string name, Vector4 border)
+        {
             if (string.IsNullOrEmpty(name))
             {
                 return null;
@@ -532,10 +536,8 @@ namespace IslandUI.UI
                         // stretched well past their own size, and Point turns the
                         // kit's deliberate edge wobble into stair-steps.
                         tex.filterMode = FilterMode.Bilinear;
-                        float b = Mathf.Max(0, border);
                         made = Sprite.Create(tex, new Rect(0f, 0f, tex.width, tex.height),
-                            new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect,
-                            new Vector4(b, b, b, b));
+                            new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect, border);
                     }
                 }
             }
@@ -724,9 +726,14 @@ namespace IslandUI.UI
         public static float SlotIconFill = 0.9f;
         // the vanilla slot's own box size and centre-to-centre spacing. Our cells
         // were 22/25 against the game's 20/x, so a bag drawn beside or above the
-        // shared bar could never line up with it column for column.
-        public static float SlotSize = 22f;
-        public static float SlotPitch = 25f;
+        // shared bar could never line up with it column for column. FIXED, not
+        // measured: they were read off the game's slots at harvest, and anything
+        // sized before that - the crafting window opened right after a hot reload
+        // or a start - took the old 22 and stood wider until the next layout.
+        // The game's slot is 20 on a 23 pitch in its canvas units at every
+        // resolution.
+        public const float SlotSize = 20f;
+        public const float SlotPitch = 23f;
 
         public static bool Ensure(ManagersScript mn, InventoryManager inv)
         {
@@ -789,6 +796,7 @@ namespace IslandUI.UI
             FrameType = panelImage.type;
             FramePixelsPerUnit = panelImage.pixelsPerUnitMultiplier;
             Font = reference.font;
+            WireGlobalFallback(Font);
             if (inv.itemSlot.Length > 100 && inv.itemSlot[100] != null)
             {
                 Image slotImage = inv.itemSlot[100].GetComponent<Image>();
@@ -889,23 +897,10 @@ namespace IslandUI.UI
                 if (slotW > 1f && iconW > 1f)
                 {
                     SlotIconFill = Mathf.Clamp(iconW / slotW, 0.5f, 1f);
-                    SlotSize = slotW;
-                    // centre-to-centre spacing, read off two adjacent slots of the
-                    // same strip; falls back to a snug gap when unavailable
-                    SlotPitch = slotW + 3f;
-                    if (id + 1 < inv.itemSlot.Length && inv.itemSlot[id + 1] != null)
+                    if (!Mathf.Approximately(slotW, SlotSize))
                     {
-                        var next = inv.itemSlot[id + 1].transform as RectTransform;
-                        if (next != null && next.parent == slotRect.parent)
-                        {
-                            float d = Mathf.Abs(next.anchoredPosition.x - slotRect.anchoredPosition.x);
-                            if (d > slotW * 0.5f && d < slotW * 3f)
-                            {
-                                SlotPitch = d;
-                            }
-                        }
+                        Plugin.Log.LogWarning($"Theme: the game's slot is {slotW:0.#}, not the fixed {SlotSize:0.#}");
                     }
-                    Plugin.Log.LogInfo($"Theme: slot size {SlotSize:0.#}, pitch {SlotPitch:0.#}");
                     Plugin.Log.LogInfo($"Theme: slot icon fill {SlotIconFill:0.000} "
                         + $"(itemImage {iconW:0.#} / slot {slotW:0.#}, from slot {id})");
                     return;
@@ -1268,10 +1263,34 @@ namespace IslandUI.UI
                 : new Color32(153, 190, 116, 255);
         }
 
+        // A CELL'S COUNT, the inventory's and the action bar's: the wear inks,
+        // the cream and the creature's magenta lifted until they clear the leather's
+        // filled bed, on a darker edge (OutlineCount). The tool belt's number wears
+        // them too; its wear bar keeps WearInk.
+        public static readonly Color CountCream = new Color32(255, 251, 240, 255);
+        public static readonly Color CountHappiness = new Color32(255, 128, 238, 255);
+
+        public static Color CountInk(float fraction)
+        {
+            return fraction <= 0.25f ? new Color32(255, 122, 92, 255)
+                : fraction <= 0.5f ? new Color32(255, 204, 84, 255)
+                : new Color32(168, 236, 112, 255);
+        }
+
+        public static bool OutlineCount(TMP_Text text)
+        {
+            return OutlineNumber(text, 0.38f, 0.28f, new Color32(20, 12, 7, 255));
+        }
+
         // Dark ink round a small number that sits over the world rather than on a
         // plate (PointsTag's recipe). The material is instanced by fontMaterial, so
         // no other text is reached. False while the face is not built yet: ask again.
         public static bool OutlineNumber(TMP_Text text)
+        {
+            return OutlineNumber(text, 0.22f, 0.34f, new Color32(32, 21, 14, 255));
+        }
+
+        private static bool OutlineNumber(TMP_Text text, float dilate, float width, Color32 edge)
         {
             if (text == null || text.font == null || text.fontSharedMaterial == null)
             {
@@ -1283,11 +1302,44 @@ namespace IslandUI.UI
                 return false;
             }
             m.EnableKeyword(ShaderUtilities.Keyword_Outline);
-            m.SetFloat(ShaderUtilities.ID_FaceDilate, 0.22f);
-            m.SetFloat(ShaderUtilities.ID_OutlineWidth, 0.34f);
-            m.SetColor(ShaderUtilities.ID_OutlineColor, new Color32(32, 21, 14, 255));
+            m.SetFloat(ShaderUtilities.ID_FaceDilate, dilate);
+            m.SetFloat(ShaderUtilities.ID_OutlineWidth, width);
+            m.SetColor(ShaderUtilities.ID_OutlineColor, edge);
             text.UpdateMeshPadding();
             return true;
+        }
+
+        // EVERY LANGUAGE WE SHIP HAS ITS GLYPHS (Forgejo #19). Our faces are static
+        // Latin-1 atlases that fall back to the game's M+ 1p (dynamic: Latin Extended,
+        // Cyrillic, kana, kanji), which falls back to the game's Noto Sans CJK SC (dynamic,
+        // 20,928 characters) - FontCoverage.Report. What did not reach that chain was a
+        // text set in TMP's default LiberationSans, which has no fallbacks (a text built
+        // before the game's face was harvested). TMP's global fallback list is read only
+        // for a glyph a face and its own fallbacks lack, so this changes nothing that
+        // renders today; it turns a box into a letter.
+        private static void WireGlobalFallback(TMP_FontAsset font)
+        {
+            System.Collections.Generic.List<TMP_FontAsset> global = TMP_Settings.instance != null ? TMP_Settings.fallbackFontAssets : null;
+            if (font != null && global != null && !global.Contains(font))
+            {
+                global.Add(font);
+            }
+        }
+
+        // A LABEL MEASURED TO ITS ENGLISH (Forgejo #19): a longer language shrinks to the
+        // box, down to 60%, instead of running into its neighbour; English stays as drawn.
+        // `size` is the drawn size, since auto-size leaves its last one behind.
+        public static void FitLanguage(TMP_Text text, float size)
+        {
+            bool fit = Shared.Loc.Language != "en";
+            if (text.enableAutoSizing == fit && (fit ? text.fontSizeMax == size : text.fontSize == size))
+            {
+                return;
+            }
+            text.enableAutoSizing = fit;
+            text.fontSizeMax = size;
+            text.fontSizeMin = size * 0.6f;
+            text.fontSize = size;
         }
 
         public static void FlattenType(TMP_Text text)
@@ -1453,6 +1505,62 @@ namespace IslandUI.UI
                 {
                     float dx = Mathf.Abs(x + 0.5f - size / 2f);
                     tex.SetPixel(x, y, new Color(1f, 1f, 1f, Mathf.Clamp01(halfWidth - dx + 0.5f)));
+                }
+            }
+            tex.Apply();
+            Sprite sprite = Sprite.Create(tex, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), 100f);
+            sprite.hideFlags = HideFlags.HideAndDontSave;
+            return sprite;
+        }
+
+        // an arrow, a head on a stem (white, tintable): up, or down. PERSONALITY's
+        // tags on the type they like (up) and dislike (down)
+        private static Sprite _arrowUp, _arrowDown;
+        public static Sprite ArrowUp
+        {
+            get
+            {
+                if (_arrowUp == null) _arrowUp = BuildArrow(true);
+                return _arrowUp;
+            }
+        }
+
+        public static Sprite ArrowDown
+        {
+            get
+            {
+                if (_arrowDown == null) _arrowDown = BuildArrow(false);
+                return _arrowDown;
+            }
+        }
+
+        private static Sprite BuildArrow(bool up)
+        {
+            const int size = 24;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            tex.hideFlags = HideFlags.HideAndDontSave;
+            tex.filterMode = FilterMode.Bilinear;
+            for (int y = 0; y < size; y++)
+            {
+                // texture y=0 is the BOTTOM; f runs 0 at the tip to 1 at the tail
+                float py = y + 0.5f;
+                float f = up ? (size - py) / size : py / size;
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = Mathf.Abs(x + 0.5f - size / 2f);
+                    float a;
+                    if (f < 0.5f)
+                    {
+                        // the head: a triangle from the tip, full width at its base
+                        float halfWidth = f / 0.5f * (size * 0.5f - 1f);
+                        a = Mathf.Clamp01(halfWidth - dx + 0.5f) * Mathf.Clamp01(f * size - 1f);
+                    }
+                    else
+                    {
+                        // the stem: a third of the width, down to the tail
+                        a = Mathf.Clamp01(size / 6f - dx + 0.5f) * Mathf.Clamp01((1f - f) * size - 1f);
+                    }
+                    tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
                 }
             }
             tex.Apply();

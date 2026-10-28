@@ -1,0 +1,627 @@
+# Island UI: Russian item guide, machine-translated from en/item-guide.tsv.
+# Corrections are welcome: edit the text after the tab and keep the item id and every "; ".
+acce_00	Начальное снаряжение Female Native
+acce_01	Начальное снаряжение Female Native
+acce_02	Начальное снаряжение Female Native
+acce_03	Начальное снаряжение Female Native
+acce_04	Сундуки в Ruins
+acce_05	Создаётся на Iron Workbench
+acce_06	Создаётся на Sand Workbench
+acce_07	Создаётся у Elder Sister Native
+acce_08	Создаётся у Elder Sister Native
+acce_09	Создаётся у Elder Sister Native
+acce_10	Начальное снаряжение Reika
+acce_30	Покупается в магазине
+acce_32	Создаётся на Wing Workbench
+acce_33	Создаётся на Sand Workbench
+acce_34	Создаётся на Meat Workbench
+acce_36	Создаётся на Christmas Workbench
+acce_37	Создаётся на Christmas Workbench
+acce_38	Создаётся на Christmas Workbench
+acce_40	Начальное снаряжение Takumi
+acce_46	От Specter
+acce_48	От Halloween Ghost
+acce_67	От туземцев в хэллоуинских набегах
+acce_68	Создаётся на Halloween Workbench
+acce_71	От туземцев в хэллоуинских набегах
+acce_74	От туземцев в хэллоуинских набегах
+acce_76	От туземцев в хэллоуинских набегах
+acce_78	От туземцев в хэллоуинских набегах
+acce_80	Начальное снаряжение Sally
+acce_s_00	Создаётся у костра
+acce_s_01	Создаётся на Wood Workbench
+acce_s_02	Выпадает из Guardian Warrior, босса 10-го уровня Ruins
+acce_s_03	Выпадает из Guard в набегах (не тех, что в Prison)
+acce_s_04	Убить Keigo
+acorn_01	Рубить деревья топором
+animal_bee_01	ПКМ по Bee из Beehive на деревьях с Iron Bug Net или лучше
+animal_centipede_01	ПКМ по Centipede с Bug Net в Mine Underground (через любую шахту)
+animal_chicken_01	Ловится в Cage Trap; Оглушить Rooster и поймать
+animal_chicken_02	Ловится в Cage Trap; Оглушить Hen и поймать
+animal_crab_01	ПКМ по Crab на пляже с надетой Bug Net
+animal_pig_01	Оглушить Pig и поймать; Поручить работникам разводить Pig на Pig Farm
+animal_ruck_01	Оглушить и поймать Ruck в осквернённых землях за Gate (север)
+animal_turtle_01	Оглушить и поймать Turtle в Mountain Cave (северо-восток острова)
+arrow_00	Создаётся вручную
+arrow_01	Создаётся вручную
+arrow_02	Создаётся вручную
+arrow_chaos_01	Создаётся на Chaos Workbench
+arrow_glass_01	Создаётся на Sand Workbench
+arrow_pretty_01	Создаётся на Pretty Workbench
+arrow_spider_01	Создаётся на Spider Workbench
+arrow_wing_01	Создаётся на Wing Workbench
+bench_halloween	Обмен у Trader на 1 Small Candy, 1 Green Blood и 1 Pumpkin
+bench_iron	Создаётся из 4 Iron Ingot на Wood Workbench
+bench_spring	Обмен у Trader на 1 Yellow Flower
+bench_summer	Обмен у Trader на 1 Shell
+bench_wood	Создаётся из 20 Wood
+bench_xmas	Обмен у Trader на 1 Berry
+berry_01	Собирать с кустов с красными ягодами; Поручить сбор работникам
+berry_corrupt_01	Растёт у воды в Cave of Chaos
+berry_exp_01	Поручить сбор работникам
+berry_exp_02	Выпадает из Big Native, Underground Woman, Mummy и Daddy
+berry_exp_03	Выпадает из Werewolf, Bigfoot и Corrupt Goat
+berry_exp_04	Выпадает из White Tiger и Ent Root
+block_stairs_01	Создаётся на Wood Workbench
+block_stairs_02	Создаётся на Wood Workbench
+block_water_01	Создаётся из Wonder Berry S у Mermaid, находясь в воде
+bone_01	Выпадает из Bat и Skeleton
+bone_02	Выпадает из Under Ground Man и Skeleton
+brain	Только командой консоли (коллекционный предмет события, как предмет бесполезен)
+branch_01	Подбирать с земли; Собирать с кустов; Создаётся из 2 Wood; Поручить сбор работникам
+cactus_01	Рубить кактусы
+charcoal_01	Создаётся из 2 Wood в Furnace
+chest_pretty_01	Создаётся из 5 Gold Ingot, 10 Hard Wood и 2 Fabric на Pretty Workbench
+chest_wing_01	Создаётся из 1 Diamond, 10 Feather и 5 Purple Ore на Wing Workbench
+claw_01	Выпадает из Mogle в Cave of Chaos
+clay_01	Копать грязь лопатой; Поручить копку работникам на болоте
+cloth_01	Создаётся вручную; Начальное снаряжение Yona
+cloth_05	Создаётся вручную
+cloth_08	Начальное снаряжение Reika
+cloth_10	Создаётся на Spider Workbench
+cloth_100	Команда консоли
+cloth_11	Создаётся у Old Woman Native
+cloth_12	Создаётся у Old Woman Native
+cloth_13	Создаётся у Old Woman Native
+cloth_14	Создаётся на Mens Workbench
+cloth_15	Сундуки в Ruins
+cloth_16	Сундуки в Ruins
+cloth_17	Создаётся на Wood Workbench
+cloth_18	Создаётся на Sand Workbench
+cloth_19	Начальное снаряжение Underground Woman
+cloth_20	Создаётся вручную
+cloth_21	Создаётся на Pretty Workbench
+cloth_22	Из элитных набегов
+cloth_23	Начальное снаряжение Elder Sister Native; Создаётся у Elder Sister Native
+cloth_24	Создаётся у Elder Sister Native
+cloth_25	Создаётся у Elder Sister Native
+cloth_26	Создаётся на Pretty Workbench
+cloth_27	Создаётся на Pretty Workbench
+cloth_28	Создаётся у Elder Sister Native
+cloth_30	У Trader
+cloth_31	Создаётся на Sand Workbench
+cloth_32	Создаётся на Wing Workbench
+cloth_33	Создаётся на Sand Workbench
+cloth_35	Создаётся на Plant Workbench
+cloth_36	Создаётся на Christmas Workbench
+cloth_37	Создаётся на Christmas Workbench
+cloth_38	Создаётся на Christmas Workbench
+cloth_39	Начальное снаряжение Cassie
+cloth_40	Начальное снаряжение Takumi
+cloth_41	Из элитных набегов
+cloth_42	От Female Large Native в набегах
+cloth_43	Сундуки в Ruins
+cloth_45	Начальное снаряжение Keigo
+cloth_46	От Specter
+cloth_47	Создаётся на Plant Workbench
+cloth_49	Есть у Guard
+cloth_50	Создаётся на Summer Workbench
+cloth_51	Создаётся на Summer Workbench
+cloth_52	Создаётся на Summer Workbench
+cloth_53	Создаётся на Summer Workbench
+cloth_54	Создаётся на Summer Workbench
+cloth_55	Создаётся на Summer Workbench
+cloth_56	Создаётся на Summer Workbench
+cloth_57	Создаётся на Summer Workbench
+cloth_58	Создаётся на Summer Workbench
+cloth_59	Начальное снаряжение Shino
+cloth_60	Из элитных набегов
+cloth_61	Начальное снаряжение в деревне Native Girl
+cloth_62	Начальное снаряжение в деревне Native Girl
+cloth_63	Создаётся на Halloween Workbench
+cloth_65	От туземцев в хэллоуинских набегах
+cloth_66	От Small Native в хэллоуинских набегах
+cloth_67	От туземцев в хэллоуинских набегах
+cloth_68	Создаётся на Halloween Workbench
+cloth_69	Создаётся на Halloween Workbench
+cloth_70	От туземцев в хэллоуинских набегах
+cloth_71	От туземцев в хэллоуинских набегах
+cloth_72	От туземцев в хэллоуинских набегах
+cloth_73	Создаётся на Halloween Workbench
+cloth_74	От туземцев в хэллоуинских набегах
+cloth_75	От туземцев в хэллоуинских набегах
+cloth_76	От туземцев в хэллоуинских набегах
+cloth_77	Создаётся на Halloween Workbench
+cloth_78	От туземцев в хэллоуинских набегах
+cloth_80	Начальное снаряжение Sally
+cloth_81	От туземцев в Prison
+clothu_00	Создаётся вручную
+clothu_01	Создаётся вручную
+clothu_04	Начальное снаряжение туземцев; Создаётся у Old Woman Native
+clothu_05	Начальное снаряжение туземцев; Создаётся у Old Woman Native
+clothu_06	Начальное снаряжение туземцев; Создаётся у Old Woman Native
+clothu_08	Начальное снаряжение Reika
+clothu_10	Создаётся на Spider Workbench
+clothu_100	Команда консоли
+clothu_14	Создаётся на Mens Workbench
+clothu_16	Сундуки в Ruins
+clothu_17	Создаётся на Wood Workbench
+clothu_18	Создаётся на Sand Workbench
+clothu_21	Создаётся на Pretty Workbench
+clothu_22	Из элитных набегов
+clothu_23	Начальное снаряжение Old Woman Native и Elder Sister Native; Создаётся у Elder Sister Native
+clothu_24	Создаётся у Elder Sister Native
+clothu_25	Создаётся у Elder Sister Native
+clothu_26	Создаётся на Pretty Workbench
+clothu_27	Создаётся на Pretty Workbench
+clothu_28	Создаётся у Elder Sister Native
+clothu_30	Покупается в магазине
+clothu_31	Создаётся на Sand Workbench
+clothu_32	Создаётся на Wing Workbench
+clothu_33	Создаётся на Sand Workbench
+clothu_35	Создаётся на Plant Workbench
+clothu_36	Создаётся на Christmas Workbench
+clothu_38	Создаётся на Christmas Workbench
+clothu_39	Начальное снаряжение Cassie
+clothu_40	Начальное снаряжение Takumi
+clothu_41	Из элитных набегов
+clothu_42	От Female Large Native в набегах
+clothu_43	Сундуки в Ruins
+clothu_44	Создаётся на Summer Workbench
+clothu_45	Начальное снаряжение Keigo
+clothu_47	Создаётся на Plant Workbench
+clothu_49	Есть у Guard
+clothu_50	Создаётся на Summer Workbench
+clothu_51	Создаётся на Summer Workbench
+clothu_53	Создаётся на Summer Workbench
+clothu_54	Создаётся на Summer Workbench
+clothu_55	Создаётся на Summer Workbench
+clothu_56	Создаётся на Summer Workbench
+clothu_57	Создаётся на Summer Workbench
+clothu_58	Создаётся на Summer Workbench
+clothu_59	Начальное снаряжение Shino
+clothu_60	Из элитных набегов
+clothu_61	Начальное снаряжение в деревне Native Girl
+clothu_63	Создаётся на Halloween Workbench
+clothu_65	От туземцев в хэллоуинских набегах
+clothu_67	От туземцев в хэллоуинских набегах
+clothu_68	Создаётся на Halloween Workbench
+clothu_69	Создаётся на Halloween Workbench
+clothu_70	От туземцев в хэллоуинских набегах
+clothu_71	Создаётся на Summer Workbench
+clothu_72	Создаётся на Summer Workbench
+clothu_73	Создаётся на Halloween Workbench
+clothu_74	От туземцев в хэллоуинских набегах
+clothu_75	От туземцев в хэллоуинских набегах
+clothu_76	От туземцев в хэллоуинских набегах
+clothu_77	Создаётся на Halloween Workbench
+clothu_78	От туземцев в хэллоуинских набегах
+clothu_80	Начальное снаряжение Sally
+clothu_81	От туземцев в Prison
+cobweb_01	Рвать паутину в Cave of Spiders (юго-запад); Выпадает из Spider в Cave of Spiders и лесах на тёмной земле
+cook_ancientfruit_01	Сундуки в Ruins
+cook_bread_01	Создаётся из 4 Flour и 1 Butter на Cooking Table
+cook_cheese_01	Создаётся из 2 Milk на Cooking Table
+cook_hallo_candy_01	Создаётся из 2 Small Candy на Halloween Workbench
+cook_roastedpork_01	Создаётся из 1 high-grade Raw Pork и 1 Honey на Cooking Table
+cook_satsuma_01	(не проверено) Только командой консоли item (на 8/18)
+cook_tempura_shrimp_01	Создаётся из 1 Egg, 1 Flour и 1 Shrimp на Cooking Table
+coral_blue_01	Собирать синий коралл в море
+coral_green_01	Собирать зелёный коралл в море
+coral_rainbow_01	Собирать радужный коралл в море
+coral_red_01	Собирать красный коралл в море
+crabshell_01	Выпадает из Crab
+deco_arch_ruins_01	(не проверено) Только командой консоли item (на 8/18)
+deco_barrel_01	Создаётся из 10 Wood
+deco_basket_01	Создаётся из 20 Fiber
+deco_doll_lulu_01	Событие Kana и Lulu, путь похорон: подобрать в доме Kana
+deco_flagstone_01	Создаётся из 2 Stone
+deco_grave_01_lulu	Событие Kana и Lulu: подобрать могилу Lulu после её похорон
+deco_pole_bone_01	(не проверено) Только командой консоли item (на 8/18)
+deco_pool_01	Создаётся из 25 Stone
+deco_rope_01	Создаётся из 1 Rope
+deco_weed_01	Убрать с зажатым Ctrl (режим удаления)
+deco_weed_03	Убрать с зажатым Ctrl в осквернённых землях за Gate
+deco_weed_04	Убрать с зажатым Ctrl (режим удаления) в лесах
+def_ass_awake_01	Создаётся на Meat Workbench
+def_ass_awake_10	Обмен у Trader на 1 Dead Orb (северо-запад острова)
+def_ass_awake_44	Создаётся на Chaos Workbench
+def_jar_cursed_01	(не проверено) Только командой консоли item (на 8/18)
+diamond_01	Сундуки в Ruins; Обмен у Trader на 2 Fighter Orb (северо-запад); Поручить добычу работникам в осквернённых землях за Gate
+elecmuscle_01	Выпадает из Eleceel в болоте на востоке острова
+explosionbag_01	Разбивать киркой взрывные мешки в болоте на востоке острова
+fabric_01	Создаётся из 5 Fiber; Выпадает из врагов; Разбивать киркой кучи хлама
+feather_01	Выпадает из птиц
+fiber_01	Собирать с кустов; Выпадает из врагов; Попутно с толстых деревьев на тёмно-зелёной земле; Поручить сбор работникам
+fish_angler_01	Рыбалка в маленьком озере в Mountain Cave (север-северо-восток)
+fish_ass_01	Рыбалка в горячем источнике деревни у горячих источников
+fish_babyface_01	Рыбалка в кровавой зоне Bottom of the Earth
+fish_bigeye_01	Рыбалка в парящих прудах и горячих источниках на горе на север-северо-востоке
+fish_bigot_01	Рыбалка в парящих прудах и горячих источниках на горе на север-северо-востоке; Fish Trap в тех же водах
+fish_cathead_01	Рыбалка в море
+fish_clione_01	Рыбалка в маленьком озере в Mountain Cave (север-северо-восток)
+fish_egg_01	Рыбалка в парящих прудах и горячих источниках на горе на север-северо-востоке
+fish_eyeball_01	Рыбалка в кровавой зоне Bottom of the Earth
+fish_firog_01	Рыбалка в прудах, водоёмах и озёрах
+fish_fish_01	Рыбалка в море или реках; Поставить Fish Trap в море
+fish_fishoil_01	Выпадает из Eleceel в болоте на востоке острова
+fish_glow_01	Рыбалка в маленьком озере в Mountain Cave (север-северо-восток)
+fish_goldfish_01	Рыбалка в прудах, водоёмах и озёрах; Fish Trap в прудах, водоёмах и озёрах
+fish_goldfish_02	Рыбалка в прудах, водоёмах и озёрах
+fish_jellyfish_01	Рыбалка у рифов на юго-востоке (область Mermaid)
+fish_killer_01	Рыбалка в болоте на востоке острова; Fish Trap в восточном болоте
+fish_left_01	Рыбалка в кровавой зоне Bottom of the Earth; Fish Trap в тех же водах
+fish_liquid_01	Рыбалка в оазисе пустыни
+fish_meat_01	Выпадает из Shark в море
+fish_meat_02	Выпадает из Shark в море
+fish_melty_01	Рыбалка в болоте на востоке острова
+fish_monkish_01	Рыбалка в парящих прудах и горячих источниках на горе на север-северо-востоке
+fish_mutantoctopus_01	Рыбалка в фиолетовых прудах и озере хаоса на севере
+fish_paiot_01	Рыбалка в горячем источнике деревни у горячих источников
+fish_peach_01	Рыбалка в фиолетовых прудах и озере хаоса на севере
+fish_penguish_02	Рыбалка в море
+fish_rainbowsalmon_01	Рыбалка в реках, например на юго-востоке острова
+fish_red_01	Рыбалка в болоте на востоке острова
+fish_rock_01	Рыбалка в маленьком озере в Mountain Cave (север-северо-восток); Fish Trap в тех же водах
+fish_salmon_01	Рыбалка в реках, например на юго-востоке острова
+fish_sandfugu_01	Рыбалка в оазисах северо-западной пустыни
+fish_shrimp_01	Рыбалка в море; Поставить Fish Trap в море
+fish_tentacle_01	Рыбалка в фиолетовых прудах и озере хаоса на севере; Fish Trap в тех же водах
+flag_01	Создаётся из 2 Hide и 4 Branch
+flag_02	После победы над Boss Native и разговора с другим протагонистом создаётся из 2 Hide и 4 Branch на Iron Workbench (один на карту)
+flower_ajisai_blue_01	Леса (тёмно-зелёные на карте) только в дождливые дни, рядом с Snail, исчезает, когда дождь кончается
+flower_ajisai_red_01	Леса (тёмно-зелёные на карте) только в дни кровавого дождя, рядом с Blood Snail, исчезает, когда дождь кончается
+flower_blue_01	Собирать в Mountain Cave (там, где Turtle)
+flower_mutantlotus_01	Растёт на болотах
+flower_red_01	Собирать у алтаря в центре Ruins
+flower_yellow_01	Собирать в низинах у воды (светло-зелёные на карте)
+food_butter_01	Создаётся из 2 Milk на Cooking Table
+food_cabbage_01	Вырастить из Cabbage Seed на грядке (если не убрать, даёт семена)
+food_carrot_01	Вырастить из Carrot Seed на грядке (если не убрать, даёт семена); Выпадает из Big Native
+food_coconut_01	Рубить пальмы топором: оазис в северо-западной пустыне, островки на западе и юго-востоке
+food_corn_01	Вырастить из Corn Seed на грядке (если не убрать, даёт семена)
+food_egg_01	Посадить Hen в Poultry Farming и поручить сбор работникам
+food_egg_02	(не проверено) Поймать редкую курицу и растить её в Poultry Farming
+food_eye_01	Создаётся на Meat Workbench из головы Male Native, Female Native или Native Girl
+food_finger_01	Создаётся на Meat Workbench из руки Male Native или Female Native (не ноги)
+food_flesh_01	Подбирать в Dump of Exiles; Собирать трупы с помощью Flesh Collector
+food_flour_soybean_01	Создаётся из 4 Soybean Seed на Stone Mill
+food_flour_wheat_01	Создаётся из 4 Wheat на Stone Mill
+food_fnickers_01	Очень редко встречается на песчаных пляжах; Изредка выкапывается лопатой на пляжах
+food_garlic_01	Растёт на грядке (если не убрать, даёт семена)
+food_hallo_candy_01	Выпадает из врагов хэллоуинских набегов
+food_hallo_pumpkin_01	Выпадает из врагов хэллоуинских набегов
+food_hallo_source_01	Выпадает из врагов хэллоуинских набегов
+food_honey_01	Собирать ульи с деревьев
+food_mandora_01	Убивать Mandrake, притворяющихся травой, на грибном болоте; Изредка выкапывается лопатой из грязи; Изредка приносят работники, копающие на болоте
+food_meat_01	Выпадает из мелких и более крупных животных
+food_meat_02	Выпадает из крошечных животных
+food_meat_03	Разделать Pork, который изредка рождается на Pig Farm
+food_meat_04	Выпадает из коров (гора на северо-востоке) и Milky
+food_milk_01	Поместить родившую женщину в Milker
+food_milk_02	Поручить работникам разводить коров или Milky в Livestock Pen
+food_onion_01	Растёт на грядке (если не убрать, даёт семена)
+food_pimento_01	Вырастить из Pimento Seed на грядке (если не убрать, даёт семена)
+food_potato_01	Вырастить из Seed Potato на грядке; Выпадает из Big Native
+food_snail_01	Убивать Snail или Blood Snail, что появляются с гортензиями (это еда, в отличие от пойманных Bug Net)
+food_soybean_01	Вырастить из Soybean Seed на грядке (если не убрать, становится Soybean Seed)
+food_tomato_01	Растёт на грядке (если не убрать, даёт семена)
+food_wheat_01	Вырастить из Wheat Seed на грядке
+foodstorage_01	Создаётся из 10 Wood и 4 Charcoal на Wood Workbench
+glass_01	Создаётся из 5 Sand и 1 Charcoal в Furnace
+gold_01	Разбивать киркой камни в Mine (North); Выпадает из похожих на собак врагов в Ruins
+goldingot_01	Создаётся из 10 Gold в Furnace
+hat_04	От Female Native
+hat_05	От Female Native
+hat_06	От Female Native
+hat_07	От Small Native
+hat_08	Создаётся вручную
+hat_09	Создаётся на Spider Workbench
+hat_10	Создаётся на Meat Workbench
+hat_11	Создаётся на Plant Workbench
+hat_12	Создаётся на Mens Workbench
+hat_13	Сундуки в Ruins
+hat_14	Создаётся вручную
+hat_15	Создаётся на Wood Workbench
+hat_16	Создаётся на Iron Workbench
+hat_17	Создаётся на Wood Workbench
+hat_18	Создаётся на Sand Workbench
+hat_20	Из элитных набегов
+hat_21	Из элитных набегов
+hat_22	Из элитных набегов
+hat_23	Создаётся у Elder Sister Native
+hat_25	Создаётся у Elder Sister Native
+hat_31	Создаётся на Sand Workbench
+hat_32	Создаётся на Wing Workbench
+hat_33	Создаётся на Sand Workbench
+hat_34	Создаётся на Meat Workbench
+hat_35	Создаётся на Plant Workbench
+hat_36	Создаётся на Christmas Workbench
+hat_37	Создаётся на Christmas Workbench
+hat_41	Из элитных набегов
+hat_42	От Mummy (вид с видимыми волосами)
+hat_43	От Mummy (вид с видимыми волосами)
+hat_44	От Small Guardian
+hat_45	От Small Guardian
+hat_46	От Specter
+hat_47	Создаётся на Plant Workbench
+hat_48	От туземцев в хэллоуинских набегах
+hat_60	Из элитных набегов
+hat_61	Начальное снаряжение в деревне Native Girl
+hat_62	Начальное снаряжение в деревне Native Girl
+hat_63	Создаётся на Halloween Workbench
+hat_65	От Female Native в хэллоуинских набегах
+hat_66	От Small Native в хэллоуинских набегах
+hat_67	От туземцев в хэллоуинских набегах
+hat_68	Создаётся на Halloween Workbench
+hat_69	Создаётся на Halloween Workbench
+hat_70	От туземцев в хэллоуинских набегах
+hat_71	От Native Girl в хэллоуинских набегах
+hat_72	От Native Girl в хэллоуинских набегах
+hat_73	От туземцев в хэллоуинских набегах
+hat_74	От туземцев в хэллоуинских набегах
+hat_75	От туземцев в хэллоуинских набегах
+hat_76	От туземцев в хэллоуинских набегах
+hat_77	Создаётся на Halloween Workbench
+hat_78	От туземцев в хэллоуинских набегах
+hat_80	Начальное снаряжение Sally
+hat_81	От туземцев в Prison
+herb_01	Собирать с кустов; Выпадает из врагов; Растёт в Herb Planter
+herb_02	Собирать дикие красные травы на горе на север-северо-востоке; Растёт в Red Herb Planter
+hide_01	Выпадает из животных
+hip_31	Создаётся на Sand Workbench
+hip_32	Создаётся на Wing Workbench
+hip_33	Создаётся на Sand Workbench
+hip_38	Создаётся на Christmas Workbench
+hip_69	Создаётся на Halloween Workbench
+hive_01	Собирать ульи с деревьев
+iron_01	Разбивать киркой камни с железной рудой; Выпадает из врагов; Разбивать киркой кучи хлама; Поручить добычу работникам
+ironingot_01	Создаётся из 10 Iron в Furnace; Выпадает из Big Native
+l_cloth_00	Создаётся у Old Woman Native
+l_cloth_01	Создаётся у Old Woman Native
+l_clothu_00	Создаётся у Old Woman Native
+l_clothu_01	Начальное снаряжение туземцев; Создаётся у Old Woman Native
+l_clothu_02	Начальное снаряжение туземцев; Создаётся у Old Woman Native
+leaf_01	Собирать с кустов; Выпадает из врагов; Поручить сбор работникам
+light_candle_01	Сундуки в Ruins
+light_candle_02	Сундуки в Ruins
+light_candle_03	Сундуки в Ruins
+light_candle_04	Сундуки в Ruins
+light_candle_prison_01	Разбивать бочки в Prison
+light_lantern_01	Сундуки в Ruins
+light_lantern_02	Сундуки в Ruins
+liquid_01	Выпадает из Sandworm в северо-западной пустыне
+m_cloth_00	Начальное снаряжение мужчин; Создаётся у Old Woman Native
+m_cloth_05	От элитных туземцев в набегах
+m_cloth_07	Из элитных набегов
+m_clothu_00	Начальное снаряжение туземцев; Создаётся у Old Woman Native
+m_clothu_01	Начальное снаряжение туземцев; Создаётся у Old Woman Native
+m_clothu_02	Начальное снаряжение туземцев; Создаётся у Old Woman Native
+m_clothu_03	Начальное снаряжение мужчин; Создаётся у Old Woman Native
+m_clothu_05	От элитных туземцев в набегах
+m_clothu_07	Из элитных набегов
+m_shoes_00	Начальное снаряжение мужчин
+mushroom_01	Собирать красные грибы в лесах; Поставить Mushroom log
+mushroom_02	Собирать на горе на северо-востоке острова; Поставить Mushroom log на горе на северо-востоке
+mushroom_03	Собирать в болоте на востоке острова; Поставить Mushroom log в восточном болоте
+mushroom_04	Собирать в осквернённых землях за Gate; Поставить Mushroom log в осквернённых землях за Gate
+orb_core_01	Выпадает из Scrap, босса 5-го этажа Ruins
+orb_curse_01	Выпадает из Sadako
+orb_dead_01	Выпадает из Specter и Jack
+orb_earth_01	Победить Giant в событии Giant, затем выбрать убийство
+orb_fighter_01	Выпадает из налётчиков в элитном снаряжении на высоких уровнях набегов (например, Angry Pot)
+orb_life_01	Получается при мертворождении; Применить Abortion Potion на беременном персонаже
+orb_mad_01	Разбивать горшки в Dump of Exiles; Выпадает из Under Ground Man
+orb_soul_01	Выпадает из Servant of Death в набеге Death
+orb_soul_02	Выпадает из Death в набеге Death
+ore_blood_01	Добывать Blood Stone в Dump of Exiles (запад) железной или лучшей киркой
+ore_chaos_01	Добывать Chaos Ore в осквернённых землях за Gate железной или лучшей киркой
+ore_purple_01	Выпадает из Angler в шахте
+parts_g2_L_arm	Разделать тело Native Girl топором
+parts_g2_L_leg	Разделать тело Native Girl топором
+parts_g2_R_arm	Разделать тело Native Girl топором
+parts_g2_R_leg	Разделать тело Native Girl топором
+parts_g_L_arm	Разделать тело Female Native топором
+parts_g_L_leg	Разделать тело Female Native топором
+parts_g_R_arm	Разделать тело Female Native топором
+parts_g_R_leg	Разделать тело Female Native топором
+parts_gengiant_01_oppai	Победить Giant в её событии, выбрать убийство, затем разделать тело ножом
+parts_genunder_01_oppai	Разделать тело Underground Woman ножом
+parts_m_L_arm	Разделать тело Male Native топором
+parts_m_L_leg	Разделать тело Male Native топором
+parts_m_R_arm	Разделать тело Male Native топором
+parts_m_R_leg	Разделать тело Male Native топором
+parts_m_tinko	Разделать тело Male Native ножом (Big Native, Small Native и Native Boy дают другие размеры)
+parts_mummy_01_oppai	Разделать тело Mummy ножом
+pedestal_01	Команда консоли
+platform_01	Создаётся на Wood Workbench
+platform_04	Создаётся из 10 Glass
+pocket_01	Обмен у Trader на 1 Ruck
+poop_01	Выпадает из животных; Поручить работникам ухаживать за Pig Farm; Разбивать киркой кучи хлама
+pot_00	Создаётся из 1 Iron Ingot на Iron Workbench
+potion_abortion_01	Создаётся из 1 Red Herb и 1 Rotten Food у Old Man Native
+potion_age_01	Создаётся из 1 Herb, 1 Carrot и 1 Gold Fish у Old Man Native
+potion_age_02	Обмен у Trader на 1 Rejuvenate Potion и 1 Life Orb
+potion_love_01	Создаётся из 1 Perfume Potion, 1 Honey и 1 Mother's Milk на Cooking Table (после получения Takumi's Notebook)
+potion_perfume_01	Создаётся из 1 Green Mushroom и 1 Red Herb на Cooking Table (после получения Takumi's Notebook)
+raincollector_01	Создаётся из 5 Wood и 2 Fabric на Wood Workbench
+repairkit_01	Обмен у Trader на 1 Fighter Orb; Создаётся из 1 Iron Ingot, 1 Rope и 1 Sap на Iron Workbench
+rope_01	Создаётся из 4 Fiber; Деревянные ящики в деревнях туземцев; Разбивать киркой кучи хлама
+rotten_01	Разбивать киркой кучи хлама; Создаётся из 1 Raw Meat у Old Man Native
+sand_01	Копать пляжи или пустыню (север-северо-запад) лопатой; Поручить копку работникам в пустыне
+sap_01	Рубить деревья топором; Поручить рубку работникам
+seed_cabbage_01	Выпадает из Sheep; Оставить созревший Cabbage на грядке, чтобы дал семена
+seed_carrot_01	Выпадает из туземцев; Оставить созревший Carrot на грядке, чтобы дал семена
+seed_corn_01	Выпадает из туземцев; Оставить созревший Corn на грядке, чтобы дал семена
+seed_garlic_01	Выпадает из Big Native; Оставить созревший Garlic на грядке, чтобы дал семена
+seed_onion_01	Выпадает из Small Native; Оставить созревший Onion на грядке, чтобы дал семена
+seed_pimento_01	Иногда выпадает из Nepenthes; Оставить созревший Pimento на грядке, чтобы дал семена
+seed_potato_01	Выпадает из туземцев; Создаётся из 1 Potato
+seed_soybean_01	Выпадает из мелких птиц; Вырастить в поле и оставить до увядания (работники собирают как Green Soybean)
+seed_tomato_01	Выпадает из мелких птиц; Оставить созревший Tomato на грядке, чтобы дал семена
+seed_wheat_01	Выпадает из кур
+shell_01	Подбирать на песчаных пляжах; Попутно при копании пляжей лопатой; Поручить копку работникам на пляжах
+shell_turtle_01	Выпадает из Turtle в Mountain Cave (север-северо-восток)
+shield_01	Создаётся на Wood Workbench
+shield_02	Создаётся на Iron Workbench
+shield_03	Создаётся на Wood Workbench
+shield_04	Создаётся на Spider Workbench
+shield_05	Создаётся на Meat Workbench
+shield_06	Создаётся на Wing Workbench
+shield_07	Создаётся на Plant Workbench
+shield_08	Создаётся на Sand Workbench
+shield_09	Сундук босса 5-го уровня в Ruins
+shield_10	Есть у Female Large Native
+shield_11	Сундук босса 10-го уровня в Ruins
+shield_12	Есть у Female Large Native на Хэллоуин
+shield_13	Создаётся на Wing Workbench
+shield_40	Создаётся на Iron Workbench
+shield_41	Создаётся на Wing Workbench
+shield_44	У Trader
+shield_45	Создаётся вручную
+shoes_00	Начальное снаряжение Yona
+shoes_08	Начальное снаряжение Reika
+shoes_17	Создаётся на Wood Workbench
+shoes_21	Создаётся на Pretty Workbench
+shoes_28	Создаётся у Elder Sister Native
+shoes_30	Покупается в магазине
+shoes_31	Создаётся на Sand Workbench
+shoes_32	Создаётся на Wing Workbench
+shoes_33	Создаётся на Sand Workbench
+shoes_35	Создаётся на Plant Workbench
+shoes_36	Создаётся на Christmas Workbench
+shoes_37	Создаётся на Christmas Workbench
+shoes_38	Создаётся на Christmas Workbench
+shoes_40	Начальное снаряжение Takumi
+shoes_41	Из элитных набегов
+shoes_43	Начальное снаряжение Keigo
+shoes_44	Создаётся на Pretty Workbench
+shoes_45	Создаётся на Pretty Workbench
+shoes_46	Создаётся на Pretty Workbench
+shoes_47	Создаётся на Pretty Workbench
+shoes_59	Начальное снаряжение Shino
+shoes_62	Начальное снаряжение в деревне Native Girl
+shoes_63	Создаётся на Halloween Workbench
+shoes_65	От туземцев в хэллоуинских набегах
+shoes_67	От туземцев в хэллоуинских набегах
+shoes_68	Создаётся на Halloween Workbench
+shoes_69	Создаётся на Halloween Workbench
+shoes_70	От туземцев в хэллоуинских набегах
+shoes_71	От туземцев в хэллоуинских набегах
+shoes_72	От туземцев в хэллоуинских набегах
+shoes_73	Создаётся на Halloween Workbench
+shoes_74	От туземцев в хэллоуинских набегах
+shoes_76	От туземцев в хэллоуинских набегах
+shoes_77	Создаётся на Halloween Workbench
+shoes_78	От туземцев в хэллоуинских набегах
+shoes_80	Начальное снаряжение Sally
+skin_gorilla_01	Выпадает из Gorola и Gorela, боссов Cave of Chaos
+skin_spider_01	Выпадает из Spike, босса Cave of Spiders (юго-запад)
+skin_whitetiger_01	Выпадает из White Tiger
+soil_01	Копать равнины лопатой; Выпадает из врагов; Поручить копку работникам
+stone_01	Подбирать с земли; Разбивать киркой камни; Поручить добычу работникам
+stone_blue	Только командой консоли (коллекционный предмет события, как предмет бесполезен)
+stone_green	Только командой консоли (коллекционный предмет события, как предмет бесполезен)
+stone_red	Только командой консоли (коллекционный предмет события, как предмет бесполезен)
+stone_tinko	Только командой консоли (коллекционный предмет события, как предмет бесполезен)
+suicide_kana_01	Событие Kana и Lulu: подобрать Kana после её самоубийства
+titanium_01	Выпадает из врагов в The Lab; Создать Cyborg и победить его
+token_kill_01	Побеждать NPC в набеге на другое сохранение
+token_talk_01	Говорить с NPC в гостях в другом сохранении
+torch_01	Создаётся вручную
+torch_chaos_01	Создаётся на Chaos Workbench
+vine_01	Выпадает из Nepenthes в восточном болоте; Попутно при копании болот лопатой; Поручить копку работникам на болоте
+vine_02	Собирать мелкие колючие кусты (слегка ранят) в осквернённых землях за Gate
+wall_01	Создаётся из 4 Wood
+wall_02	Создаётся из 4 Stone
+wall_glass_01	Создаётся из 4 Glass на Sand Workbench
+waterbag_01	Применить Water Bag (empty) у источника воды
+waterbag_02	Применить Water Bag (empty) у колодца или бака с водой; Применить где угодно во время дождя; Создаётся из 1 Water Bag (dirty water) и 1 Pot у костра (после питья остаётся пустой мешок)
+wood_01	Рубить деревья топором; Поручить рубку работникам
+wood_02	Рубить крепкие деревья железным или лучшим топором в осквернённых землях за Gate; Выпадает из Ent в осквернённых землях за Gate; Поручить рубку работникам в осквернённых землях за Gate
+wood_03	Рубить Dark Tree с помощью Chaos Axe
+woodbowl_01	Применить Wood Bowl (empty) у источника воды
+woodbowl_02	Создаётся из 1 Wood Bowl (dirty water) у костра (при питье миска расходуется)
+wool_01	Выпадает из Sheep
+worm_01	Собирать с кустов; Убивать Bee; Копать землю лопатой; Поручить копку работникам
+wp_axe_01	Создаётся из 2 Stone, 1 Branch и 1 Fiber
+wp_axe_02	Создаётся на Iron Workbench
+wp_axe_03	Создаётся на Iron Workbench
+wp_axe_bloody_01	Есть у туземцев на Хэллоуин
+wp_bat_01	Создаётся на Wood Workbench
+wp_bat_02	Создаётся на Mens Workbench
+wp_battleaxe_01	Создаётся у Elder Brother Native
+wp_battleaxe_02	Есть у Female Large Native
+wp_bigpen_01	Есть у Bigfoot
+wp_borg_00	От Cassie
+wp_borg_01	От Cassie
+wp_bow_01	Создаётся вручную
+wp_bow_chaos_01	Создаётся на Chaos Workbench
+wp_bow_pretty_01	Создаётся на Pretty Workbench
+wp_bow_spider_01	Создаётся на Spider Workbench
+wp_bow_wing_01	Создаётся на Wing Workbench
+wp_chainsaw	Выпадает из Halloween Ghost
+wp_club_01	Создаётся вручную
+wp_club_02	Создаётся на Iron Workbench
+wp_club_03	Создаётся на Iron Workbench
+wp_club_04	Создаётся на Chaos Workbench
+wp_club_10	Есть у Big Native
+wp_club_head	Создаётся на Meat Workbench
+wp_cracker_01	Создаётся на Summer Workbench
+wp_cursedhand_01	У Trader
+wp_deb_club	Команда консоли
+wp_fishingrod_01	Создаётся вручную
+wp_fishingrod_02	Команда консоли
+wp_foldingfan_01	Создаётся на Spring Workbench
+wp_gen_saw_01	Создаётся на Meat Workbench
+wp_gianthand_01	У Trader
+wp_hallo_broom_01	Есть у Female Native на Хэллоуин
+wp_hallo_club_01	От туземцев в хэллоуинских набегах
+wp_hallo_spear_01	Есть у Elder Sister Native на Хэллоуин
+wp_hallo_sword_cross	Есть у Female Large Native на Хэллоуин
+wp_katana_01	Сундук босса 5-го уровня в Ruins
+wp_knife_01	Создаётся на Mens Workbench
+wp_knife_blood_01	Создаётся на Meat Workbench
+wp_kodachi_01	Создаётся на Spring Workbench
+wp_kunai_01	Создаётся на Spring Workbench
+wp_leaffan_01	Создаётся на Plant Workbench
+wp_net_01	Создаётся из 4 Branch и 10 Fiber
+wp_net_02	Создаётся на Iron Workbench
+wp_net_03	Создаётся на Chaos Workbench
+wp_pickax_01	Создаётся из 1 Branch, 2 Stone и 1 Fiber
+wp_pickax_02	Создаётся на Iron Workbench
+wp_pickax_03	Создаётся на Iron Workbench
+wp_picknaxe_01	Создаётся на Chaos Workbench
+wp_shovel_01	Создаётся из 2 Wood и 1 Branch на Wood Workbench
+wp_shovel_02	Создаётся на Iron Workbench
+wp_shovel_03	Создаётся на Chaos Workbench
+wp_shuriken_01	Создаётся на Spring Workbench
+wp_sickle_cuctus	Создаётся на Sand Workbench
+wp_spear_01	Создаётся на Wood Workbench
+wp_spear_chaos_01	Создаётся на Chaos Workbench
+wp_stungun_01	От Takumi
+wp_sword_blood	Создаётся на Meat Workbench
+wp_sword_chaos	Создаётся на Chaos Workbench
+wp_sword_crystal	Сундук босса 10-го уровня в Ruins
+wp_sword_dia	Создаётся на Iron Workbench
+wp_sword_dia_02	Создаётся на Iron Workbench
+wp_sword_iron	Создаётся на Iron Workbench
+wp_sword_odachi_01	Есть у элитных Big Native на Хэллоуин
+wp_sword_ruins_01	Есть у босса 10-го уровня в Ruins
+wp_sword_stone	Обычные сундуки в Ruins; Создаётся на Wood Workbench
+wp_sword_wood	Создаётся на Wood Workbench
+wp_wand_heart	Сундук босса 5-го уровня в Ruins
+wp_wand_heart_02	Создаётся на Chaos Workbench
+wp_watergun_01	Создаётся на Summer Workbench
+xmas_box_figure_01	Выпадает из Present во время рождественского события
+xmas_box_santa_01	Выпадает из Present во время рождественского события

@@ -1,0 +1,627 @@
+# Island UI: Simplified Chinese item guide, machine-translated from en/item-guide.tsv.
+# Corrections are welcome: edit the text after the tab and keep the item id and every "; ".
+acce_00	女原住民的初始装备
+acce_01	女原住民的初始装备
+acce_02	女原住民的初始装备
+acce_03	女原住民的初始装备
+acce_04	遗迹中的箱子
+acce_05	在铁工作台制作
+acce_06	在沙工作台制作
+acce_07	在御姐原住民处制作
+acce_08	在御姐原住民处制作
+acce_09	在御姐原住民处制作
+acce_10	麗華的初始装备
+acce_30	在商店购买
+acce_32	在羽翼工作台制作
+acce_33	在沙工作台制作
+acce_34	在肉类工作台制作
+acce_36	在圣诞工作台制作
+acce_37	在圣诞工作台制作
+acce_38	在圣诞工作台制作
+acce_40	拓海的初始装备
+acce_46	来自幽灵
+acce_48	来自Halloween Ghost
+acce_67	来自万圣节袭击中的原住民
+acce_68	在万圣节工作台制作
+acce_71	来自万圣节袭击中的原住民
+acce_74	来自万圣节袭击中的原住民
+acce_76	来自万圣节袭击中的原住民
+acce_78	来自万圣节袭击中的原住民
+acce_80	莎莉的初始装备
+acce_s_00	在篝火制作
+acce_s_01	在木工作台制作
+acce_s_02	遗迹10层的头目守护战士掉落
+acce_s_03	袭击中的看守掉落（监狱里的不会）
+acce_s_04	杀死圭吾
+acorn_01	用斧头砍树
+animal_bee_01	用强化捉虫网或更好的捕虫网右键点击树上蜂巢里的蜜蜂
+animal_centipede_01	在矿山地下（从任一矿山进入）用捉虫网右键点击蜈蚣
+animal_chicken_01	用笼式陷阱捕获; 击倒鸡（公）并捕获
+animal_chicken_02	用笼式陷阱捕获; 击倒鸡（母）并捕获
+animal_crab_01	装备捉虫网后右键点击沙滩上的螃蟹
+animal_pig_01	击倒猪并捕获; 让工人在养猪场饲养猪
+animal_ruck_01	在大门另一侧的腐化之地（北部）击倒并捕获帆布背包
+animal_turtle_01	在山上的洞穴（岛的东北部）击倒并捕获乌龟
+arrow_00	手工制作
+arrow_01	手工制作
+arrow_02	手工制作
+arrow_chaos_01	在混沌工作台制作
+arrow_glass_01	在沙工作台制作
+arrow_pretty_01	在可爱工作台制作
+arrow_spider_01	在蜘蛛工作台制作
+arrow_wing_01	在羽翼工作台制作
+bench_halloween	在交易员处用1个小糖果、1个绿色的血和1个南瓜交换
+bench_iron	在木工作台用4个铁锭制作
+bench_spring	在交易员处用1个黄色的花交换
+bench_summer	在交易员处用1个贝壳交换
+bench_wood	用20个木材制作
+bench_xmas	在交易员处用1个浆果交换
+berry_01	从结着红色浆果的灌木丛采集; 让工人采集
+berry_corrupt_01	生长在混沌的洞穴的水边
+berry_exp_01	让工人采集
+berry_exp_02	大块头原住民、地底女、妈咪和爹地掉落
+berry_exp_03	狼人、大脚怪和黑山羊掉落
+berry_exp_04	白老虎和树妖根掉落
+block_stairs_01	在木工作台制作
+block_stairs_02	在木工作台制作
+block_water_01	在水中时，在人鱼处用不可思议的果实（小）制作
+bone_01	蝙蝠和骷髏掉落
+bone_02	地下的男和骷髏掉落
+brain	只能通过控制台命令获得（事件收藏品，作为物品没有用处）
+branch_01	从地上拾取; 从灌木丛采集; 用2个木材制作; 让工人采集
+cactus_01	砍伐仙人掌
+charcoal_01	在熔炉用2个木材制作
+chest_pretty_01	在可爱工作台用5个金锭、10个结实的木材和2个布制作
+chest_wing_01	在羽翼工作台用1个钻石、10个羽毛和5个紫色的矿石制作
+claw_01	混沌的洞穴的鼹鼠掉落
+clay_01	用铲子挖掘泥地; 让工人在沼泽挖掘
+cloth_01	手工制作; 与菜的初始装备
+cloth_05	手工制作
+cloth_08	麗華的初始装备
+cloth_10	在蜘蛛工作台制作
+cloth_100	控制台命令
+cloth_11	在原住民老太婆处制作
+cloth_12	在原住民老太婆处制作
+cloth_13	在原住民老太婆处制作
+cloth_14	在男人工作台制作
+cloth_15	遗迹中的箱子
+cloth_16	遗迹中的箱子
+cloth_17	在木工作台制作
+cloth_18	在沙工作台制作
+cloth_19	地底女的初始装备
+cloth_20	手工制作
+cloth_21	在可爱工作台制作
+cloth_22	来自精英袭击
+cloth_23	御姐原住民的初始装备; 在御姐原住民处制作
+cloth_24	在御姐原住民处制作
+cloth_25	在御姐原住民处制作
+cloth_26	在可爱工作台制作
+cloth_27	在可爱工作台制作
+cloth_28	在御姐原住民处制作
+cloth_30	来自交易员
+cloth_31	在沙工作台制作
+cloth_32	在羽翼工作台制作
+cloth_33	在沙工作台制作
+cloth_35	在植物工作台制作
+cloth_36	在圣诞工作台制作
+cloth_37	在圣诞工作台制作
+cloth_38	在圣诞工作台制作
+cloth_39	凯西的初始装备
+cloth_40	拓海的初始装备
+cloth_41	来自精英袭击
+cloth_42	来自袭击中的女大块头原住民
+cloth_43	遗迹中的箱子
+cloth_45	圭吾的初始装备
+cloth_46	来自幽灵
+cloth_47	在植物工作台制作
+cloth_49	看守携带
+cloth_50	在夏之工作台制作
+cloth_51	在夏之工作台制作
+cloth_52	在夏之工作台制作
+cloth_53	在夏之工作台制作
+cloth_54	在夏之工作台制作
+cloth_55	在夏之工作台制作
+cloth_56	在夏之工作台制作
+cloth_57	在夏之工作台制作
+cloth_58	在夏之工作台制作
+cloth_59	紫乃的初始装备
+cloth_60	来自精英袭击
+cloth_61	女孩原住民村子里的初始装备
+cloth_62	女孩原住民村子里的初始装备
+cloth_63	在万圣节工作台制作
+cloth_65	来自万圣节袭击中的原住民
+cloth_66	来自万圣节袭击中的小个子原住民
+cloth_67	来自万圣节袭击中的原住民
+cloth_68	在万圣节工作台制作
+cloth_69	在万圣节工作台制作
+cloth_70	来自万圣节袭击中的原住民
+cloth_71	来自万圣节袭击中的原住民
+cloth_72	来自万圣节袭击中的原住民
+cloth_73	在万圣节工作台制作
+cloth_74	来自万圣节袭击中的原住民
+cloth_75	来自万圣节袭击中的原住民
+cloth_76	来自万圣节袭击中的原住民
+cloth_77	在万圣节工作台制作
+cloth_78	来自万圣节袭击中的原住民
+cloth_80	莎莉的初始装备
+cloth_81	来自监狱中的原住民
+clothu_00	手工制作
+clothu_01	手工制作
+clothu_04	原住民的初始装备; 在原住民老太婆处制作
+clothu_05	原住民的初始装备; 在原住民老太婆处制作
+clothu_06	原住民的初始装备; 在原住民老太婆处制作
+clothu_08	麗華的初始装备
+clothu_10	在蜘蛛工作台制作
+clothu_100	控制台命令
+clothu_14	在男人工作台制作
+clothu_16	遗迹中的箱子
+clothu_17	在木工作台制作
+clothu_18	在沙工作台制作
+clothu_21	在可爱工作台制作
+clothu_22	来自精英袭击
+clothu_23	原住民老太婆和御姐原住民的初始装备; 在御姐原住民处制作
+clothu_24	在御姐原住民处制作
+clothu_25	在御姐原住民处制作
+clothu_26	在可爱工作台制作
+clothu_27	在可爱工作台制作
+clothu_28	在御姐原住民处制作
+clothu_30	在商店购买
+clothu_31	在沙工作台制作
+clothu_32	在羽翼工作台制作
+clothu_33	在沙工作台制作
+clothu_35	在植物工作台制作
+clothu_36	在圣诞工作台制作
+clothu_38	在圣诞工作台制作
+clothu_39	凯西的初始装备
+clothu_40	拓海的初始装备
+clothu_41	来自精英袭击
+clothu_42	来自袭击中的女大块头原住民
+clothu_43	遗迹中的箱子
+clothu_44	在夏之工作台制作
+clothu_45	圭吾的初始装备
+clothu_47	在植物工作台制作
+clothu_49	看守携带
+clothu_50	在夏之工作台制作
+clothu_51	在夏之工作台制作
+clothu_53	在夏之工作台制作
+clothu_54	在夏之工作台制作
+clothu_55	在夏之工作台制作
+clothu_56	在夏之工作台制作
+clothu_57	在夏之工作台制作
+clothu_58	在夏之工作台制作
+clothu_59	紫乃的初始装备
+clothu_60	来自精英袭击
+clothu_61	女孩原住民村子里的初始装备
+clothu_63	在万圣节工作台制作
+clothu_65	来自万圣节袭击中的原住民
+clothu_67	来自万圣节袭击中的原住民
+clothu_68	在万圣节工作台制作
+clothu_69	在万圣节工作台制作
+clothu_70	来自万圣节袭击中的原住民
+clothu_71	在夏之工作台制作
+clothu_72	在夏之工作台制作
+clothu_73	在万圣节工作台制作
+clothu_74	来自万圣节袭击中的原住民
+clothu_75	来自万圣节袭击中的原住民
+clothu_76	来自万圣节袭击中的原住民
+clothu_77	在万圣节工作台制作
+clothu_78	来自万圣节袭击中的原住民
+clothu_80	莎莉的初始装备
+clothu_81	来自监狱中的原住民
+cobweb_01	打破蜘蛛的洞穴（西南）里的蜘蛛网; 蜘蛛的洞穴和深色地面森林中的蜘蛛掉落
+cook_ancientfruit_01	遗迹中的箱子
+cook_bread_01	在烹饪桌用4个小麦粉和1个黄油制作
+cook_cheese_01	在烹饪桌用2个牛奶制作
+cook_hallo_candy_01	在万圣节工作台用2个小糖果制作
+cook_roastedpork_01	在烹饪桌用1个高级猪肉和1个蜂蜜制作
+cook_satsuma_01	（未验证）只能通过物品控制台命令获得（截至8/18）
+cook_tempura_shrimp_01	在烹饪桌用1个鸡蛋、1个小麦粉和1个虾制作
+coral_blue_01	采集海中生长的珊瑚（蓝色）
+coral_green_01	采集海中生长的珊瑚（绿色）
+coral_rainbow_01	采集海中生长的珊瑚（彩虹色）
+coral_red_01	采集海中生长的珊瑚（红色）
+crabshell_01	螃蟹掉落
+deco_arch_ruins_01	（未验证）只能通过物品控制台命令获得（截至8/18）
+deco_barrel_01	用10个木材制作
+deco_basket_01	用20个纤维制作
+deco_doll_lulu_01	卡娜与露露事件的埋葬路线：在卡娜的家中拾取
+deco_flagstone_01	用2个石头制作
+deco_grave_01_lulu	卡娜与露露事件：埋葬露露后拾取她的坟墓
+deco_pole_bone_01	（未验证）只能通过物品控制台命令获得（截至8/18）
+deco_pool_01	用25个石头制作
+deco_rope_01	用1个绳子制作
+deco_weed_01	按住Ctrl将其拆除（拆除模式）
+deco_weed_03	在大门另一侧的腐化之地按住Ctrl将其拆除
+deco_weed_04	在森林区域按住Ctrl将其拆除（拆除模式）
+def_ass_awake_01	在肉类工作台制作
+def_ass_awake_10	在交易员处（岛的西北部）用1个死者的球体交换
+def_ass_awake_44	在混沌工作台制作
+def_jar_cursed_01	（未验证）只能通过物品控制台命令获得（截至8/18）
+diamond_01	遗迹中的箱子; 在交易员处（西北）用2个斗士的球体交换; 让工人在大门另一侧的腐化之地采矿
+elecmuscle_01	岛东部沼泽的电鳗掉落
+explosionbag_01	在岛东部的沼泽用镐开采爆炸包
+fabric_01	用5个纤维制作; 敌人掉落; 用镐开采垃圾堆
+feather_01	鸟掉落
+fiber_01	从灌木丛采集; 敌人掉落; 深绿色地面上生长的粗树的副产品; 让工人采集
+fish_angler_01	在山上的洞穴（北北东）的小湖钓鱼
+fish_ass_01	在温泉村的温泉钓鱼
+fish_babyface_01	在地底的洞穴的血之区域钓鱼
+fish_bigeye_01	在北北东山上冒着热气的池塘和温泉钓鱼
+fish_bigot_01	在北北东山上冒着热气的池塘和温泉钓鱼; 在同一水域放置捕鱼器
+fish_cathead_01	在海中钓鱼
+fish_clione_01	在山上的洞穴（北北东）的小湖钓鱼
+fish_egg_01	在北北东山上冒着热气的池塘和温泉钓鱼
+fish_eyeball_01	在地底的洞穴的血之区域钓鱼
+fish_firog_01	在池塘、水池和湖泊钓鱼
+fish_fish_01	在海中或河流中钓鱼; 在海中放置捕鱼器
+fish_fishoil_01	岛东部沼泽的电鳗掉落
+fish_glow_01	在山上的洞穴（北北东）的小湖钓鱼
+fish_goldfish_01	在池塘、水池和湖泊钓鱼; 在池塘、水池和湖泊放置捕鱼器
+fish_goldfish_02	在池塘、水池和湖泊钓鱼
+fish_jellyfish_01	在东南外海的礁石附近钓鱼（人鱼所在区域）
+fish_killer_01	在岛东部的沼泽钓鱼; 在东部沼泽放置捕鱼器
+fish_left_01	在地底的洞穴的血之区域钓鱼; 在同一水域放置捕鱼器
+fish_liquid_01	在沙漠绿洲钓鱼
+fish_meat_01	海中的鲨鱼掉落
+fish_meat_02	海中的鲨鱼掉落
+fish_melty_01	在岛东部的沼泽钓鱼
+fish_monkish_01	在北北东山上冒着热气的池塘和温泉钓鱼
+fish_mutantoctopus_01	在北部的紫色池塘和混沌之湖钓鱼
+fish_paiot_01	在温泉村的温泉钓鱼
+fish_peach_01	在北部的紫色池塘和混沌之湖钓鱼
+fish_penguish_02	在海中钓鱼
+fish_rainbowsalmon_01	在河流中钓鱼，例如岛东南部的河流
+fish_red_01	在岛东部的沼泽钓鱼
+fish_rock_01	在山上的洞穴（北北东）的小湖钓鱼; 在同一水域放置捕鱼器
+fish_salmon_01	在河流中钓鱼，例如岛东南部的河流
+fish_sandfugu_01	在西北沙漠的绿洲钓鱼
+fish_shrimp_01	在海中钓鱼; 在海中放置捕鱼器
+fish_tentacle_01	在北部的紫色池塘和混沌之湖钓鱼; 在同一水域放置捕鱼器
+flag_01	用2个皮和4个树枝制作
+flag_02	击败原住民老大并与另一位主角交谈后，在铁工作台用2个皮和4个树枝制作（每张地图一个）
+flower_ajisai_blue_01	仅在下雨的日子出现在森林（地图上的深绿色区域）中的蜗牛附近，雨停后消失
+flower_ajisai_red_01	仅在下血雨的日子出现在森林（地图上的深绿色区域）中的血螺附近，雨停后消失
+flower_blue_01	在山上的洞穴（有乌龟的那个）采集
+flower_mutantlotus_01	生长在沼泽中
+flower_red_01	在遗迹中央的祭坛附近采集
+flower_yellow_01	在低地水边区域（地图上的浅绿色区域）采摘
+food_butter_01	在烹饪桌用2个牛奶制作
+food_cabbage_01	在花盆中种植卷心菜的种子（成熟后留着不收会结出种子）
+food_carrot_01	在花盆中种植萝卜的种子（成熟后留着不收会结出种子）; 大块头原住民掉落
+food_coconut_01	用斧头砍伐棕榈树：西北沙漠的绿洲、西部和东南的小岛
+food_corn_01	在花盆中种植玉米的种子（成熟后留着不收会结出种子）
+food_egg_01	把鸡（母）放进养鸡场，让工人收集
+food_egg_02	（未验证）捕获稀有的鸡，在养鸡场饲养
+food_eye_01	在肉类工作台用原住民、女原住民或女孩原住民的头制作
+food_finger_01	在肉类工作台用原住民或女原住民的手臂制作（不能用腿）
+food_flesh_01	在流放者被丢弃的洞穴拾取; 用血肉收集器收集死尸
+food_flour_soybean_01	在石臼用4个大豆制作
+food_flour_wheat_01	在石臼用4个小麦制作
+food_fnickers_01	极少在沙滩上发现; 用铲子挖掘沙滩时偶尔获得
+food_garlic_01	在花盆中种植（成熟后留着不收会结出种子）
+food_hallo_candy_01	万圣节袭击的敌人掉落
+food_hallo_pumpkin_01	万圣节袭击的敌人掉落
+food_hallo_source_01	万圣节袭击的敌人掉落
+food_honey_01	从树上采集蜂巢
+food_mandora_01	在蘑菇沼泽杀死伪装成草的曼陀罗; 用铲子挖掘泥地时偶尔获得; 工人在沼泽挖掘时偶尔获得
+food_meat_01	小型及更大的动物掉落
+food_meat_02	超小型动物掉落
+food_meat_03	解体猪肉（养猪场偶尔会生出）
+food_meat_04	牛（东北的山）和奶牛掉落
+food_milk_01	把生过孩子的女性放进挤奶机
+food_milk_02	让工人在饲养场饲养牛或奶牛
+food_onion_01	在花盆中种植（成熟后留着不收会结出种子）
+food_pimento_01	在花盆中种植青椒的种子（成熟后留着不收会结出种子）
+food_potato_01	在花盆中种植种薯; 大块头原住民掉落
+food_snail_01	杀死与绣球花一同出现的蜗牛或血螺（得到的是食物，与用捉虫网捕获的不同）
+food_soybean_01	在花盆中种植大豆（成熟后留着不收会变成大豆）
+food_tomato_01	在花盆中种植（成熟后留着不收会结出种子）
+food_wheat_01	在花盆中种植小麦的种子
+foodstorage_01	在木工作台用10个木材和4个木炭制作
+glass_01	在熔炉用5个沙子和1个木炭制作
+gold_01	在矿山（北）用镐开采岩石; 遗迹中的犬类敌人掉落
+goldingot_01	在熔炉用10个金子制作
+hat_04	来自女原住民
+hat_05	来自女原住民
+hat_06	来自女原住民
+hat_07	来自小个子原住民
+hat_08	手工制作
+hat_09	在蜘蛛工作台制作
+hat_10	在肉类工作台制作
+hat_11	在植物工作台制作
+hat_12	在男人工作台制作
+hat_13	遗迹中的箱子
+hat_14	手工制作
+hat_15	在木工作台制作
+hat_16	在铁工作台制作
+hat_17	在木工作台制作
+hat_18	在沙工作台制作
+hat_20	来自精英袭击
+hat_21	来自精英袭击
+hat_22	来自精英袭击
+hat_23	在御姐原住民处制作
+hat_25	在御姐原住民处制作
+hat_31	在沙工作台制作
+hat_32	在羽翼工作台制作
+hat_33	在沙工作台制作
+hat_34	在肉类工作台制作
+hat_35	在植物工作台制作
+hat_36	在圣诞工作台制作
+hat_37	在圣诞工作台制作
+hat_41	来自精英袭击
+hat_42	来自妈咪（露出头发的那种）
+hat_43	来自妈咪（露出头发的那种）
+hat_44	来自小个子守护者
+hat_45	来自小个子守护者
+hat_46	来自幽灵
+hat_47	在植物工作台制作
+hat_48	来自万圣节袭击中的原住民
+hat_60	来自精英袭击
+hat_61	女孩原住民村子里的初始装备
+hat_62	女孩原住民村子里的初始装备
+hat_63	在万圣节工作台制作
+hat_65	来自万圣节袭击中的女原住民
+hat_66	来自万圣节袭击中的小个子原住民
+hat_67	来自万圣节袭击中的原住民
+hat_68	在万圣节工作台制作
+hat_69	在万圣节工作台制作
+hat_70	来自万圣节袭击中的原住民
+hat_71	来自万圣节袭击中的女孩原住民
+hat_72	来自万圣节袭击中的女孩原住民
+hat_73	来自万圣节袭击中的原住民
+hat_74	来自万圣节袭击中的原住民
+hat_75	来自万圣节袭击中的原住民
+hat_76	来自万圣节袭击中的原住民
+hat_77	在万圣节工作台制作
+hat_78	来自万圣节袭击中的原住民
+hat_80	莎莉的初始装备
+hat_81	来自监狱中的原住民
+herb_01	从灌木丛采集; 敌人掉落; 在药草花盆中生长
+herb_02	在北北东的山上采集野生红药草; 在红药草花盆中生长
+hide_01	动物掉落
+hip_31	在沙工作台制作
+hip_32	在羽翼工作台制作
+hip_33	在沙工作台制作
+hip_38	在圣诞工作台制作
+hip_69	在万圣节工作台制作
+hive_01	从树上采集蜂巢
+iron_01	用镐开采铁矿石; 敌人掉落; 用镐开采垃圾堆; 让工人采矿
+ironingot_01	在熔炉用10个铁制作; 大块头原住民掉落
+l_cloth_00	在原住民老太婆处制作
+l_cloth_01	在原住民老太婆处制作
+l_clothu_00	在原住民老太婆处制作
+l_clothu_01	原住民的初始装备; 在原住民老太婆处制作
+l_clothu_02	原住民的初始装备; 在原住民老太婆处制作
+leaf_01	从灌木丛采集; 敌人掉落; 让工人采集
+light_candle_01	遗迹中的箱子
+light_candle_02	遗迹中的箱子
+light_candle_03	遗迹中的箱子
+light_candle_04	遗迹中的箱子
+light_candle_prison_01	打破监狱里的木桶
+light_lantern_01	遗迹中的箱子
+light_lantern_02	遗迹中的箱子
+liquid_01	西北沙漠的Sandworm掉落
+m_cloth_00	男性角色的初始装备; 在原住民老太婆处制作
+m_cloth_05	来自袭击中的精英原住民
+m_cloth_07	来自精英袭击
+m_clothu_00	原住民的初始装备; 在原住民老太婆处制作
+m_clothu_01	原住民的初始装备; 在原住民老太婆处制作
+m_clothu_02	原住民的初始装备; 在原住民老太婆处制作
+m_clothu_03	男性角色的初始装备; 在原住民老太婆处制作
+m_clothu_05	来自袭击中的精英原住民
+m_clothu_07	来自精英袭击
+m_shoes_00	男性角色的初始装备
+mushroom_01	在森林中采集红蘑菇; 放置蘑菇原木
+mushroom_02	在岛东北部的山上采集; 在东北的山上放置蘑菇原木
+mushroom_03	在岛东部的沼泽采集; 在东部沼泽放置蘑菇原木
+mushroom_04	在大门另一侧的腐化之地采集; 在大门另一侧的腐化之地放置蘑菇原木
+orb_core_01	遗迹5层的头目废品掉落
+orb_curse_01	贞子掉落
+orb_dead_01	幽灵和骷髅人掉落
+orb_earth_01	在女巨人事件中击败女巨人，然后选择杀死她
+orb_fighter_01	高袭击等级时身穿精英装备的袭击者掉落（如愤怒之壶）
+orb_life_01	胎死腹中时获得; 对怀孕的角色使用流产药
+orb_mad_01	打破流放者被丢弃的洞穴里的罐子; 地下的男掉落
+orb_soul_01	死神袭击中的死之仆从掉落
+orb_soul_02	死神袭击中死神掉落
+ore_blood_01	在流放者被丢弃的洞穴（西部）用铁镐或更好的镐开采血石
+ore_chaos_01	在大门另一侧的腐化之地用铁镐或更好的镐开采混沌的矿石
+ore_purple_01	矿山内的钓鱼者掉落
+parts_g2_L_arm	用斧头解体女孩原住民的身体
+parts_g2_L_leg	用斧头解体女孩原住民的身体
+parts_g2_R_arm	用斧头解体女孩原住民的身体
+parts_g2_R_leg	用斧头解体女孩原住民的身体
+parts_g_L_arm	用斧头解体女原住民的身体
+parts_g_L_leg	用斧头解体女原住民的身体
+parts_g_R_arm	用斧头解体女原住民的身体
+parts_g_R_leg	用斧头解体女原住民的身体
+parts_gengiant_01_oppai	在女巨人的事件中击败她，选择杀死她，然后用小刀解体她的身体
+parts_genunder_01_oppai	用小刀解体地底女的身体
+parts_m_L_arm	用斧头解体原住民的身体
+parts_m_L_leg	用斧头解体原住民的身体
+parts_m_R_arm	用斧头解体原住民的身体
+parts_m_R_leg	用斧头解体原住民的身体
+parts_m_tinko	用小刀解体原住民的身体（大块头原住民、小个子原住民和男孩原住民会得到其他尺寸）
+parts_mummy_01_oppai	用小刀解体妈咪的身体
+pedestal_01	控制台命令
+platform_01	在木工作台制作
+platform_04	用10个玻璃制作
+pocket_01	在交易员处用1个背包交换
+poop_01	动物掉落; 让工人照料养猪场; 用镐开采垃圾堆
+pot_00	在铁工作台用1个铁锭制作
+potion_abortion_01	在原住民老爷爷处用1个红药草和1个腐败的食物制作
+potion_age_01	在原住民老爷爷处用1个药草、1个胡萝卜和1个朴素的金鱼制作
+potion_age_02	在交易员处用1个返老还童药和1个生命的球体交换
+potion_love_01	在烹饪桌用1个媚药、1个蜂蜜和1个母乳制作（获得拓海的日记本之后）
+potion_perfume_01	在烹饪桌用1个绿蘑菇和1个红药草制作（获得拓海的日记本之后）
+raincollector_01	在木工作台用5个木材和2个布制作
+repairkit_01	在交易员处用1个斗士的球体交换; 在铁工作台用1个铁锭、1个绳子和1个树液制作
+rope_01	用4个纤维制作; 原住民村子里的木箱; 用镐开采垃圾堆
+rotten_01	用镐开采垃圾堆; 在原住民老爷爷处用1个生肉制作
+sand_01	用铲子挖掘沙滩或沙漠（北北西）; 让工人在沙漠挖掘
+sap_01	用斧头砍树; 让工人采伐
+seed_cabbage_01	羊掉落; 将成熟的卷心菜留在花盆中，使其结出种子
+seed_carrot_01	原住民掉落; 将成熟的胡萝卜留在花盆中，使其结出种子
+seed_corn_01	原住民掉落; 将成熟的玉米留在花盆中，使其结出种子
+seed_garlic_01	大块头原住民掉落; 将成熟的大蒜留在花盆中，使其结出种子
+seed_onion_01	小个子原住民掉落; 将成熟的洋葱留在花盆中，使其结出种子
+seed_pimento_01	猪笼草有时会掉落; 将成熟的青椒留在花盆中，使其结出种子
+seed_potato_01	原住民掉落; 用1个土豆制作
+seed_soybean_01	小鸟掉落; 种在田里，放到枯萎为止（工人会收获为毛豆）
+seed_tomato_01	小鸟掉落; 将成熟的西红柿留在花盆中，使其结出种子
+seed_wheat_01	鸡掉落
+shell_01	在沙滩上拾取; 用铲子挖掘沙滩时的副产品; 让工人在沙滩挖掘
+shell_turtle_01	山上的洞穴（北北东）的乌龟掉落
+shield_01	在木工作台制作
+shield_02	在铁工作台制作
+shield_03	在木工作台制作
+shield_04	在蜘蛛工作台制作
+shield_05	在肉类工作台制作
+shield_06	在羽翼工作台制作
+shield_07	在植物工作台制作
+shield_08	在沙工作台制作
+shield_09	遗迹5层头目的箱子
+shield_10	女大块头原住民携带
+shield_11	遗迹10层头目的箱子
+shield_12	万圣节时女大块头原住民携带
+shield_13	在羽翼工作台制作
+shield_40	在铁工作台制作
+shield_41	在羽翼工作台制作
+shield_44	来自交易员
+shield_45	手工制作
+shoes_00	与菜的初始装备
+shoes_08	麗華的初始装备
+shoes_17	在木工作台制作
+shoes_21	在可爱工作台制作
+shoes_28	在御姐原住民处制作
+shoes_30	在商店购买
+shoes_31	在沙工作台制作
+shoes_32	在羽翼工作台制作
+shoes_33	在沙工作台制作
+shoes_35	在植物工作台制作
+shoes_36	在圣诞工作台制作
+shoes_37	在圣诞工作台制作
+shoes_38	在圣诞工作台制作
+shoes_40	拓海的初始装备
+shoes_41	来自精英袭击
+shoes_43	圭吾的初始装备
+shoes_44	在可爱工作台制作
+shoes_45	在可爱工作台制作
+shoes_46	在可爱工作台制作
+shoes_47	在可爱工作台制作
+shoes_59	紫乃的初始装备
+shoes_62	女孩原住民村子里的初始装备
+shoes_63	在万圣节工作台制作
+shoes_65	来自万圣节袭击中的原住民
+shoes_67	来自万圣节袭击中的原住民
+shoes_68	在万圣节工作台制作
+shoes_69	在万圣节工作台制作
+shoes_70	来自万圣节袭击中的原住民
+shoes_71	来自万圣节袭击中的原住民
+shoes_72	来自万圣节袭击中的原住民
+shoes_73	在万圣节工作台制作
+shoes_74	来自万圣节袭击中的原住民
+shoes_76	来自万圣节袭击中的原住民
+shoes_77	在万圣节工作台制作
+shoes_78	来自万圣节袭击中的原住民
+shoes_80	莎莉的初始装备
+skin_gorilla_01	混沌的洞穴的头目戈罗拉和戈雷拉掉落
+skin_spider_01	蜘蛛的洞穴（西南）的头目Spike掉落
+skin_whitetiger_01	白老虎掉落
+soil_01	用铲子挖掘平原; 敌人掉落; 让工人挖掘
+stone_01	从地上拾取; 用镐开采岩石; 让工人采矿
+stone_blue	只能通过控制台命令获得（事件收藏品，作为物品没有用处）
+stone_green	只能通过控制台命令获得（事件收藏品，作为物品没有用处）
+stone_red	只能通过控制台命令获得（事件收藏品，作为物品没有用处）
+stone_tinko	只能通过控制台命令获得（事件收藏品，作为物品没有用处）
+suicide_kana_01	卡娜与露露事件：卡娜自杀后拾取她
+titanium_01	实验室中的敌人掉落; 制造人造人并击败它
+token_kill_01	袭击其他存档时击败NPC
+token_talk_01	访问其他存档时与NPC交谈
+torch_01	手工制作
+torch_chaos_01	在混沌工作台制作
+vine_01	东部沼泽的猪笼草掉落; 用铲子挖掘沼泽时的副产品; 让工人在沼泽挖掘
+vine_02	在大门另一侧的腐化之地采集小荆棘丛（会受到少量伤害）
+wall_01	用4个木材制作
+wall_02	用4个石头制作
+wall_glass_01	在沙工作台用4个玻璃制作
+waterbag_01	在水源处使用皮袋（空）
+waterbag_02	在井或给水槽旁使用皮袋（空）; 下雨时在任何地方使用; 在篝火用1个皮袋（脏水）和1个铁锅制作（喝完后留下空皮袋）
+wood_01	用斧头砍树; 让工人采伐
+wood_02	在大门另一侧的腐化之地用铁斧或更好的斧头砍伐结实的树; 大门另一侧腐化之地的Ent掉落; 让工人在大门另一侧的腐化之地采伐
+wood_03	用混沌之斧砍伐黑暗之树
+woodbowl_01	在水源处使用木制容器
+woodbowl_02	在篝火用1个木制容器（脏水）制作（喝完后容器会被消耗）
+wool_01	羊掉落
+worm_01	从灌木丛采集; 杀死蜜蜂; 用铲子挖掘土壤; 让工人挖掘
+wp_axe_01	用2个石头、1个树枝和1个纤维制作
+wp_axe_02	在铁工作台制作
+wp_axe_03	在铁工作台制作
+wp_axe_bloody_01	万圣节时原住民携带
+wp_bat_01	在木工作台制作
+wp_bat_02	在男人工作台制作
+wp_battleaxe_01	在原住民大哥处制作
+wp_battleaxe_02	女大块头原住民携带
+wp_bigpen_01	大脚怪携带
+wp_borg_00	来自凯西
+wp_borg_01	来自凯西
+wp_bow_01	手工制作
+wp_bow_chaos_01	在混沌工作台制作
+wp_bow_pretty_01	在可爱工作台制作
+wp_bow_spider_01	在蜘蛛工作台制作
+wp_bow_wing_01	在羽翼工作台制作
+wp_chainsaw	Halloween Ghost掉落
+wp_club_01	手工制作
+wp_club_02	在铁工作台制作
+wp_club_03	在铁工作台制作
+wp_club_04	在混沌工作台制作
+wp_club_10	大块头原住民携带
+wp_club_head	在肉类工作台制作
+wp_cracker_01	在夏之工作台制作
+wp_cursedhand_01	来自交易员
+wp_deb_club	控制台命令
+wp_fishingrod_01	手工制作
+wp_fishingrod_02	控制台命令
+wp_foldingfan_01	在春之工作台制作
+wp_gen_saw_01	在肉类工作台制作
+wp_gianthand_01	来自交易员
+wp_hallo_broom_01	万圣节时女原住民携带
+wp_hallo_club_01	来自万圣节袭击中的原住民
+wp_hallo_spear_01	万圣节时御姐原住民携带
+wp_hallo_sword_cross	万圣节时女大块头原住民携带
+wp_katana_01	遗迹5层头目的箱子
+wp_knife_01	在男人工作台制作
+wp_knife_blood_01	在肉类工作台制作
+wp_kodachi_01	在春之工作台制作
+wp_kunai_01	在春之工作台制作
+wp_leaffan_01	在植物工作台制作
+wp_net_01	用4个树枝和10个纤维制作
+wp_net_02	在铁工作台制作
+wp_net_03	在混沌工作台制作
+wp_pickax_01	用1个树枝、2个石头和1个纤维制作
+wp_pickax_02	在铁工作台制作
+wp_pickax_03	在铁工作台制作
+wp_picknaxe_01	在混沌工作台制作
+wp_shovel_01	在木工作台用2个木材和1个树枝制作
+wp_shovel_02	在铁工作台制作
+wp_shovel_03	在混沌工作台制作
+wp_shuriken_01	在春之工作台制作
+wp_sickle_cuctus	在沙工作台制作
+wp_spear_01	在木工作台制作
+wp_spear_chaos_01	在混沌工作台制作
+wp_stungun_01	来自拓海
+wp_sword_blood	在肉类工作台制作
+wp_sword_chaos	在混沌工作台制作
+wp_sword_crystal	遗迹10层头目的箱子
+wp_sword_dia	在铁工作台制作
+wp_sword_dia_02	在铁工作台制作
+wp_sword_iron	在铁工作台制作
+wp_sword_odachi_01	万圣节时精英大块头原住民携带
+wp_sword_ruins_01	遗迹10层的头目携带
+wp_sword_stone	遗迹中的普通箱子; 在木工作台制作
+wp_sword_wood	在木工作台制作
+wp_wand_heart	遗迹5层头目的箱子
+wp_wand_heart_02	在混沌工作台制作
+wp_watergun_01	在夏之工作台制作
+xmas_box_figure_01	圣诞活动期间的礼物掉落
+xmas_box_santa_01	圣诞活动期间的礼物掉落

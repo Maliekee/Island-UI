@@ -126,8 +126,10 @@ namespace Shared
                 : running ? Color.white : new Color(0.62f, 0.62f, 0.62f, 1f);
             _pip.SetActive(running != wanted);
             string state = running
-                ? (wanted ? "on  -  click to turn off" : "turns off at the next start  -  click to cancel")
-                : (wanted ? "turns on at the next start  -  click to cancel" : "off  -  click to turn on");
+                ? (wanted ? Loc.Get("badge.on", "on  -  click to turn off")
+                    : Loc.Get("badge.turns_off", "turns off at the next start  -  click to cancel"))
+                : (wanted ? Loc.Get("badge.turns_on", "turns on at the next start  -  click to cancel")
+                    : Loc.Get("badge.off", "off  -  click to turn on"));
             _text.text = _caption + "\n<color=#CEA064>" + state + "</color>";
         }
 
@@ -188,7 +190,12 @@ namespace Shared
 
             GameObject tip = BuildTip(badge.transform);
             EventTrigger trigger = badge.AddComponent<EventTrigger>();
-            Listen(trigger, EventTriggerType.PointerEnter, () => tip.SetActive(true));
+            // lettered as it opens, so the words are in the language of the moment
+            Listen(trigger, EventTriggerType.PointerEnter, () =>
+            {
+                Refresh();
+                tip.SetActive(true);
+            });
             Listen(trigger, EventTriggerType.PointerExit, () => tip.SetActive(false));
             Listen(trigger, EventTriggerType.PointerClick, () =>
             {

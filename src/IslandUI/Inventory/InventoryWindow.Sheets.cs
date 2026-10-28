@@ -80,26 +80,29 @@ namespace IslandUI
         // none of it, alive or dead. Death revokes nothing a friend showed you
         // and grants nothing an enemy withheld.
         //
-        // Read from vanilla's OWN hostility tests rather than a list of ours
-        // (D65): charaType 100 is what InteractNPC attacks on sight, and
-        // debuff.discontent == 4 is what makes a follower attack you back. Outlaw
-        // is the third, and it is the employ value, not a kind.
+        // ALLEGIANCE IS THE STANCE (target-matrix D4): what they have shown you,
+        // not what they are. "Hostile" here is every one that is NOT YOURS -
+        // a hostile that came for you, and, for now, a neutral the same way:
+        // every option there is today treats the two alike, until Forgejo #160
+        // decides what a neutral should offer. Yours is employed
+        // and not remembered against you; a follower who died (Employ.Dead) was
+        // yours and keeps every column (D2); you are always your own.
         //
-        // Animals are deliberately absent. They are charaType 10 and not hostile
-        // by this test, so presence keeps giving them whatever they have - the
-        // penned-animal question is deferred, with no special logic for now
-        // (target-matrix.md F5.2).
-        private static bool Hostile(CommonStates who)
+        // The old test read charaType 100 as hostility - it is only "a click
+        // attacks it" (PlayerMove.cs:626), so birds and bee hives were hostile and
+        // natives were not - and gave the whole revolt (discontent 4) away
+        // before it had touched you.
+        internal static bool Hostile(CommonStates who)
         {
-            if (who == null)
+            if (who == null || who.CompareTag("Player"))
             {
                 return false;
             }
-            if (who.charaType == 100 || who.employ == CommonStates.Employ.Outlaw)
+            if (Stance.Remembered(who))
             {
                 return true;
             }
-            return who.debuff != null && who.debuff.discontent == 4;
+            return !who.Employed() && who.employ != CommonStates.Employ.Dead;
         }
 
         // A BODY THAT IS NOT A FRIEND'S HAS NO SHEET: a dead enemy pulls up no
@@ -166,7 +169,9 @@ namespace IslandUI
                 case Aspect.Fight:
                     return !Hostile(who) && who.status != null && who.status.Length > 2;
                 case Aspect.Relations:
-                    return !Hostile(who) && who.lovers != null;
+                    // a stranger's relations are never yours to read: vanilla's status
+                    // panel opens on the employed alone, and no skill opens it (Observe.cs)
+                    return !Hostile(who) && who.lovers != null && Observe.Known(who);
                 case Aspect.Orders:
                     // you order the people you employ, and you do not order yourself
                     return !own && !Hostile(who) && who.Employed();
@@ -228,6 +233,40 @@ namespace IslandUI
                 case Aspect.Orders: return VanillaTabIcon(3);
                 default: return null;
             }
+        }
+
+        // harness: anyone of yours' sheet by name, from any distance, on page
+        // "Name|index" (0 if none), "|all" after it for All relations open - the
+        // Status verb needs them in reach
+        internal static string SheetFor(string arg)
+        {
+            string[] parts = (arg ?? string.Empty).Split('|');
+            NPCManager npcs = _mn != null ? _mn.npcMN : null;
+            for (int i = 0; npcs != null && npcs.friendList != null && i < npcs.friendList.Count; i++)
+            {
+                CommonStates who = npcs.friendList[i];
+                if (who == null || !string.Equals(who.charaName, parts[0], System.StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+                // as a roster pick does: from afar, indoors or not
+                if (!ReferenceEquals(Focus(), who))
+                {
+                    PressRosterRow(who);
+                }
+                if (!_sheetOpen)
+                {
+                    _sheetOpen = true;
+                    _forceRefresh = true;
+                    _nextRefresh = 0f;
+                }
+                int page = 0;
+                if (parts.Length > 1) { int.TryParse(parts[1], out page); }
+                _allRelationsWho = parts.Length > 2 && parts[2] == "all" ? who : null;
+                AspectAct(GroupCharacter, page);
+                return "open: " + who.charaName;
+            }
+            return "no one named '" + parts[0] + "'";
         }
 
         // UIManager.StatusView's toggle, landed on the column (StatusOpeners):
@@ -391,7 +430,7 @@ namespace IslandUI
             row.Set(icons, active);
             int c = frame.Column;
             float w = frame.Window.Rect.sizeDelta.x;
-            float frameLeft = _colPivotX[c] > 0.5f ? _colX[c] - w : _colX[c];
+            float frameLeft = (_colPivotX[c] > 0.5f ? _colX[c] - w : _colX[c]) + FloatShiftX(group);
             row.Rect.anchorMin = new Vector2(_colAnchorX[c], 0f);
             row.Rect.anchorMax = new Vector2(_colAnchorX[c], 0f);
             row.Rect.pivot = new Vector2(0f, top ? 0f : 1f);
@@ -592,7 +631,10 @@ namespace IslandUI
             }
             if ((kind == LineActions || kind == LineActs || kind == LinePlace
                  || kind == LinePose || kind == LineMore || kind == LineRosterBar
-                 || kind == LineBoxes || kind == LineChecks || kind == LineMoodCause)
+                 || kind == LineBoxes || kind == LineChecks || kind == LineMoodCause
+                 || kind == LineFormHead || kind == LineMetPerson || kind == LineMetWhy || kind == LineMetFold
+                 || kind == LineBond || RecordKind(kind) || kind == LineFormBand
+                 || kind == LineMetHead || OrdersKind(kind) || (kind == LineDropdown && line.Style == StyleDropFacing))
                 && row.Planks == null)
             {
                 // the actions row's planks: the kit's button, oak with cream type
@@ -621,7 +663,7 @@ namespace IslandUI
 
         // three for an Orders row; five since the roster's control bar shares
         // them - the three sorts and the two camp-wide verbs (D53)
-        private const int SheetPlankCount = 6;   // the roster bar: four sorts and two verbs
+        private const int SheetPlankCount = 10;  // a row's pressable spots at most (the roster bar: four sorts and two verbs)
         private const float SheetStripH = 27f;
         private const int StripMaxBoxes = 10;   // the tick images a row starts with; PlaceTicks grows them
         private static readonly Color StripRim = new Color(0.06f, 0.04f, 0.03f, 1f);
@@ -741,7 +783,10 @@ namespace IslandUI
                 if (line.Kind != LineActions && line.Kind != LineActs && line.Kind != LinePlace
                     && line.Kind != LinePose && line.Kind != LineMore
                     && line.Kind != LineRosterBar && line.Kind != LineBoxes && line.Kind != LineChecks
-                    && line.Kind != LineMoodCause && row.Planks != null)
+                    && line.Kind != LineMoodCause && line.Kind != LineMetPerson && line.Kind != LineMetWhy
+                    && line.Kind != LineMetFold && line.Kind != LineBond
+                    && !RecordKind(line.Kind) && line.Kind != LineFormBand
+                    && line.Kind != LineMetHead && row.Planks != null)
                 {
                     for (int i = 0; i < row.Planks.Length; i++)
                     {
@@ -959,7 +1004,7 @@ namespace IslandUI
                         && Input.GetMouseButton(0);
                     float k = down ? Theme.PressTint.r : 1f;
                     row.Chip.color = new Color(k, k, k, 1f);
-                    Sprite mark = line.Arg == 91 ? (line.On ? Theme.Kit("kit_check", 0) : null) : ToggleSprite(line.Arg, line.On);
+                    Sprite mark = ToggleSprite(line.Arg, line.On);
                     row.Glyph.sprite = mark;
                     row.Glyph.enabled = mark != null;
                     // vanilla's own rule for the favourite: white when set, a
@@ -1006,6 +1051,7 @@ namespace IslandUI
         // TakePlate on its way to the next job. Only what is ON it differs.
         private static void BindSheet(int group, int column, CommonStates who, Aspect aspect, int maxCols, bool header = false, ItemInfo prop = null)
         {
+            long spanAt = UI.FirstOpenTimer.Now();
             Plate plate = TakePlate();
             plate.Column = column;
             plate.Owner = who;
@@ -1037,6 +1083,7 @@ namespace IslandUI
             // itself against that and drew dots, turning the flat line separator
             // in the target window into a dotted one. A sheet is not a loadout, and now says so.
             _prevMemberLoadout = false;
+            _prevMemberShared = false;
             plate.Shown = 0;
             plate.Cols = 0;
             plate.LaidOutCols = -1;
@@ -1055,7 +1102,8 @@ namespace IslandUI
             plate.Back.enabled = false;
             plate.Edge.enabled = false;
 
-            float width = _inventoryW[group] > 0f
+            float width = group == GroupCharacter && who != null && prop == null && _targetSheetW > 0f ? _targetSheetW
+                : _inventoryW[group] > 0f
                 ? _inventoryW[group]
                 : SheetFallbackWidth(who, maxCols, column == OwnColumn, full: prop != null);
             if (plate.Rows == null)
@@ -1076,7 +1124,9 @@ namespace IslandUI
             }
             else
             {
+                long writeAt = UI.FirstOpenTimer.Now();
                 WriteSheet(SheetLines, who, aspect, column == OwnColumn, group);
+                if (writeAt != 0L) { UI.FirstOpenTimer.Span("sheet write " + aspect, writeAt); }
             }
             bool scrollable = who != null && !header;
             if (scrollable) { width -= SheetScrollGutter; }
@@ -1109,7 +1159,7 @@ namespace IslandUI
                 float h = line.Kind == LineHead ? (line.Gates ? SheetGatesHeadH : SheetHeadH)
                     : line.Kind == LineSpace ? SheetRowH * 0.5f
                     : formRow && line.Kind == LineDropdown ? FormDropRowH
-                    : formRow && line.Kind == LineSlider ? FormScaleRowH
+                    : formRow && line.Kind == LineSlider ? FormScaleRowH + (string.IsNullOrEmpty(line.Value2) ? 0f : FormScaleLineH)
                     : line.Kind == LineDropdown ? SheetDropdownRowH
                     : line.Kind == LinePlace ? SheetPlaceH + 3f
                     : line.Kind == LinePose ? SheetPlankH + 4f
@@ -1156,7 +1206,7 @@ namespace IslandUI
                     // - on the printed form it is a field under its caption instead
                     float dropX = formRow ? SheetPadX : width * 0.4f;
                     float dropY = formRow ? FormCaptionH : (h - KitDropdown.Height) * 0.5f;
-                    float dropW = right - dropX;
+                    float dropW = right - dropX - (formRow && line.Style == StyleDropFacing ? FacingRoomW : 0f);
                     string key = line.Arg + "|" + dropW.ToString("0") + "|" + (formRow ? "p|" : string.Empty)
                         + (line.Options != null ? string.Join("", line.Options) : string.Empty);
                     if (row.Drop != null && row.DropKey != key)
@@ -1307,6 +1357,7 @@ namespace IslandUI
                 plate.Window.Go.SetActive(true);
             }
             SheetPlates.Add(plate);
+            if (spanAt != 0L) { UI.FirstOpenTimer.Span("sheet bind " + aspect + " (" + SheetLines.Count + " lines)", spanAt); }
         }
 
         // Repaint the type on every live sheet. A sheet whose SHAPE changed - a

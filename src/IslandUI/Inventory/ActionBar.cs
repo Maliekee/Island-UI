@@ -58,22 +58,71 @@ namespace IslandUI
         }
 
         // Bound item keys, by bar index. Kept inside the save (SaveBlock).
-        private static readonly List<string> Bound = new List<string>();
+        //
+        // ONE BAR PER PROTAGONIST: Man and Yona each keep their own row,
+        // keyed by the played character's npcID (0 and 1), and the bar shows the
+        // row of whoever is being played. They carry different loadouts, so one
+        // shared row meant rebinding on every switch.
+        private static readonly Dictionary<int, List<string>> Rows = new Dictionary<int, List<string>>();
+        private static int _who;
 
-        internal static string[] SnapshotBindings()
+        private static List<string> Bound
         {
-            return Bound.ToArray();
+            get { return Row(_who); }
         }
 
-        // after a load: the save's bindings, padded to the bar's width
-        internal static void RestoreBindings(IList<string> keys)
+        private static List<string> Row(int who)
         {
-            Bound.Clear();
-            Bound.AddRange(keys);
-            while (Bound.Count < SlotCount)
+            if (!Rows.TryGetValue(who, out List<string> row))
             {
-                Bound.Add(null);
+                row = new List<string>();
+                Rows[who] = row;
             }
+            while (row.Count < SlotCount)
+            {
+                row.Add(null);
+            }
+            return row;
+        }
+
+        internal static Dictionary<int, string[]> SnapshotBindings()
+        {
+            var rows = new Dictionary<int, string[]>();
+            foreach (KeyValuePair<int, List<string>> row in Rows)
+            {
+                rows[row.Key] = row.Value.ToArray();
+            }
+            return rows;
+        }
+
+        // after a load: one character's bindings from the save
+        internal static void RestoreBindings(int who, IList<string> keys)
+        {
+            List<string> row = Row(who);
+            row.Clear();
+            row.AddRange(keys);
+            Row(who);   // padded to the bar's width
+        }
+
+        // The played character changed. A binding on the cursor goes home to the
+        // row it was lifted from, before the bar turns to the other one.
+        private static void FollowPlayer(ManagersScript mn)
+        {
+            CommonStates player = mn != null && mn.gameMN != null && mn.gameMN.pMove != null
+                ? mn.gameMN.pMove.common : null;
+            if (player == null || player.npcID == _who)
+            {
+                return;
+            }
+            if (_dragging)
+            {
+                EndDrag(_dragFrom);
+            }
+            _pressedIndex = -1;
+            _pressedButton = -1;
+            _dragging = false;
+            _flashIndex = -1;
+            _who = player.npcID;
         }
         private static readonly List<Cell> Cells = new List<Cell>();
 
@@ -94,11 +143,16 @@ namespace IslandUI
         private static int _dragFrom = -1;
         private const float DragThreshold = 6f;
 
-        // The drag ghost: our own icon on the cursor, NOT vanilla's hoverSlot.
+        // The drag ghost: our own cell on the cursor, NOT vanilla's hoverSlot.
         // hoverSlot carries a real item, and a binding is not one - routing a
         // binding through it would move the actual stack, which is the single
-        // thing this whole feature exists not to do.
-        private static Image _ghost;
+        // thing this whole feature exists not to do. It is painted as the held
+        // item is (InventoryWindow.PaintBarGhost), from the cell as it was lifted.
+        private static bool _ghostShown;
+        private static Sprite _ghostSprite;
+        private static Color _ghostTint;
+        private static string _ghostCount;
+        private static Color _ghostCountColor;
 
         private static int _flashIndex = -1;
         private static float _flashUntil;
@@ -134,9 +188,11 @@ namespace IslandUI
             if (!Settings.ActionBar.Value)
             {
                 if (_root != null) _root.SetActive(false);
+                HoverCard.HideBarHover();
                 return;
             }
             _mn = mn;
+            FollowPlayer(mn);
             if (!Build(mn))
             {
                 return;
@@ -292,9 +348,9 @@ namespace IslandUI
                 string key = Bound[i];
                 if (string.IsNullOrEmpty(key))
                 {
-                    // EMPTY READS AS EMPTY, as the backpack marks an occupied cell
-                    // by its background. The bags' rule and the bags' dial (EmptySlotAlpha): an
-                    // empty cell lets the world through, a bound one has its ground.
+                    // EMPTY READS AS EMPTY: an empty cell is the slot frame at
+                    // EmptySlotAlpha and lets the world through, a bound one has its
+                    // ground. (The bags' cells are look 07's leather sprites, not this.)
                     cell.Icon.enabled = false;
                     cell.Count.text = string.Empty;
                     cell.Box.color = new Color(1f, 1f, 1f, InventoryWindow.EmptySlotAlpha);
@@ -343,10 +399,10 @@ namespace IslandUI
                 // into the grass behind the bar
                 float fraction = durable && data != null && data.itemLife > 0f
                     ? Mathf.Clamp01(shown.Slot.itemLife / data.itemLife) : 1f;
-                cell.Count.color = durable ? Theme.WearInk(fraction) : Theme.TextCream;
+                cell.Count.color = durable ? Theme.CountInk(fraction) : Theme.CountCream;
                 if (!cell.Outlined)
                 {
-                    cell.Outlined = Theme.OutlineNumber(cell.Count);
+                    cell.Outlined = Theme.OutlineCount(cell.Count);
                 }
                 // A binding is a statement of intent, so running out GHOSTS the icon
                 // (above) rather than clearing it - you still mean to eat meat, there
@@ -405,9 +461,10 @@ namespace IslandUI
         {
             if (!_dragging || string.IsNullOrEmpty(_dragKey))
             {
-                if (_ghost != null && _ghost.enabled)
+                if (_ghostShown)
                 {
-                    _ghost.enabled = false;
+                    InventoryWindow.HideBarGhost();
+                    _ghostShown = false;
                 }
                 return;
             }
@@ -419,27 +476,14 @@ namespace IslandUI
             }
             Canvas rootCanvas = canvas.rootCanvas;
 
-            if (_ghost == null)
+            if (_ghostSprite == null)
             {
-                var go = Owned.New("IslandUI_ActionBarGhost");
-                go.transform.SetParent(rootCanvas.transform, false);
-                _ghost = go.AddComponent<Image>();
-                _ghost.raycastTarget = false;
-                _ghost.preserveAspect = true;
-                var gr = (RectTransform)go.transform;
-                gr.sizeDelta = new Vector2(CellBox, CellBox);
-                gr.anchorMin = gr.anchorMax = gr.pivot = new Vector2(0.5f, 0.5f);
-            }
-
-            ItemData data = _mn != null && _mn.itemMN != null ? _mn.itemMN.FindItem(_dragKey) : null;
-            if (data == null || data.itemSprite == null)
-            {
-                _ghost.enabled = false;
                 return;
             }
-            _ghost.sprite = data.itemSprite;
-            _ghost.enabled = true;
-            _ghost.transform.SetAsLastSibling();
+            RectTransform ghost = InventoryWindow.PaintBarGhost(rootCanvas.transform,
+                _ghostSprite, _ghostTint, _ghostCount, _ghostCountColor);
+            _ghostShown = true;
+            ghost.SetAsLastSibling();
 
             Camera cam = rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay
                 ? rootCanvas.worldCamera : null;
@@ -447,7 +491,7 @@ namespace IslandUI
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     (RectTransform)rootCanvas.transform, Input.mousePosition, cam, out local))
             {
-                ((RectTransform)_ghost.transform).anchoredPosition = local;
+                ghost.anchoredPosition = local;
             }
         }
 
@@ -461,7 +505,7 @@ namespace IslandUI
         //
         //   press either button          -> the cell darkens under the finger
         //   release over the same cell   -> activate (or assign, if holding an item)
-        //   SHIFT + hold left + move 6px -> the binding lifts onto the cursor
+        //   (SHIFT +) hold left + move 6px -> the binding lifts onto the cursor
         //   drop on another bar cell     -> the two bindings swap
         //   drop anywhere else           -> the binding is gone
         //   SHIFT + click, no movement   -> the binding is gone (ClickMap)
@@ -486,6 +530,7 @@ namespace IslandUI
             {
                 ClickMap.Offer(ClickMap.ForBarSlot(!string.IsNullOrEmpty(Bound[hover]), !HandFull()));
             }
+            ShowCard(hover);
 
             bool downL = Input.GetMouseButtonDown(0);
             bool downR = Input.GetMouseButtonDown(1);
@@ -509,6 +554,11 @@ namespace IslandUI
                 _dragFrom = _pressedIndex;
                 _dragKey = Bound[_dragFrom];
                 Bound[_dragFrom] = null;   // it is on the cursor now, not in the cell
+                Cell lifted = Cells[_dragFrom];
+                _ghostSprite = lifted.Icon.enabled ? lifted.Icon.sprite : null;
+                _ghostTint = lifted.Icon.color;
+                _ghostCount = lifted.Count.text;
+                _ghostCountColor = lifted.Count.color;
             }
 
             // A drag that STARTED in a bag and ends over the bar is an assignment,
@@ -549,18 +599,35 @@ namespace IslandUI
             UpdateGhost();
         }
 
+        // The item card on hover, as every other cell holding an item has. Not
+        // while something rides the cursor: the gesture is an assignment or a
+        // rearrange, and a card would cover the cells being aimed at.
+        private static void ShowCard(int hover)
+        {
+            string key = hover >= 0 && hover < Bound.Count && !_dragging && !HandFull()
+                ? Bound[hover] : null;
+            if (string.IsNullOrEmpty(key) || _mn == null)
+            {
+                HoverCard.HideBarHover();
+                return;
+            }
+            HoverCard.ShowForItem(_mn, _mn.uiMN, key, Cells[hover].Go.transform as RectTransform,
+                HoverCard.Owner.Bar);
+        }
+
         // A drag lifts a BINDING, so it needs one to lift and a free hand to lift
         // it with. Holding an item means the gesture in progress is an assignment,
         // and one press may not mean two things.
         //
-        // SHIFT gates it, as the reference does. Without a modifier the bar's two
-        // most common gestures - press to use, and the small mouse drift that comes
-        // free with pressing anything - are separated by six pixels, and losing a
-        // binding is not a six-pixel-sized mistake. Requiring shift makes rearrange
-        // and remove DELIBERATE while leaving a plain press to mean use, always.
+        // SHIFT gates it when ActionBarShiftToMove is on, as the reference does. Without
+        // a modifier the bar's two most common gestures - press to use, and the small
+        // mouse drift that comes free with pressing anything - are separated by six
+        // pixels, and losing a binding is not a six-pixel-sized mistake. OFF BY DEFAULT
+        // all the same: a new player expects to drag a slot off the
+        // bar, and a bar that ignores the drag reads as one that cannot be emptied.
         private static bool CanStartDrag()
         {
-            return ShiftHeld()
+            return (ShiftHeld() || !Settings.ActionBarShiftToMove.Value)
                 && _pressedIndex >= 0 && _pressedIndex < Bound.Count
                 && !string.IsNullOrEmpty(Bound[_pressedIndex])
                 && !HandFull();
@@ -907,12 +974,14 @@ namespace IslandUI
         {
             _root = null;
             Cells.Clear();
-            Bound.Clear();
+            Rows.Clear();
+            _who = 0;
             Firing = false;
             // The gesture does not survive the scene either: the cells it referred
             // to are gone, and a _dragging left true would hold the pointer hostage
             // (DragOwnsThePointer) with nothing on screen to release it over.
-            _ghost = null;
+            _ghostShown = false;
+            _ghostSprite = null;
             _pressedIndex = -1;
             _pressedButton = -1;
             _dragging = false;

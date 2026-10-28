@@ -1,0 +1,9 @@
+# Island Ex: Japanese strings, machine-translated from en/strings.txt.
+# Corrections are welcome: edit the right side of a line and keep the key and every {0}.
+
+badge.off=オフ  -  クリックでオン
+badge.on=オン  -  クリックでオフ
+badge.turns_off=次回の起動でオフ  -  クリックで取り消し
+badge.turns_on=次回の起動でオン  -  クリックで取り消し
+
+loc.separator=・

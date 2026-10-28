@@ -1,0 +1,9 @@
+# Island Ex: Spanish strings, machine-translated from en/strings.txt.
+# Corrections are welcome: edit the right side of a line and keep the key and every {0}.
+
+badge.off=desactivado  -  clic para activar
+badge.on=activado  -  clic para desactivar
+badge.turns_off=se desactiva al reiniciar  -  clic para cancelar
+badge.turns_on=se activa al reiniciar  -  clic para cancelar
+
+loc.separator= · 

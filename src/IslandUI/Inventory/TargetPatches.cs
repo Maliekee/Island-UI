@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
+using IslandUI.UI;
 using UnityEngine;
 
 namespace IslandUI
@@ -21,15 +22,28 @@ namespace IslandUI
             return !InventoryWindow.KeepPastVanillaEnd();
         }
 
+        // A change of character ends the target: the one you swapped to was it,
+        // and would be yourself. SetPlayer is the swap's one door (ChangePlayer,
+        // load, story); the prefix runs while pMove is still the old player's.
+        [HarmonyPatch(typeof(GameManager), nameof(GameManager.SetPlayer))]
+        [HarmonyPrefix]
+        private static void SetPlayer_Prefix()
+        {
+            InventoryWindow.Untarget("change");
+        }
+
         // Escape ends the target before it pauses (D150). Vanilla reads Escape in
         // one place, GameManager.Update, and PauseGame is all it does with it; an
-        // unpause (resume, or a second press while paused) is left alone.
+        // unpause (resume, or a second press while paused) is left alone. The
+        // split dialog is asked first: it is in front of everything, and with it
+        // open the target keeps the key, so Escape used to fall through to pause.
+        // Then a Set place pick (Forgejo #20): Escape cancels it, and only it.
         [HarmonyPatch(typeof(GameManager), nameof(GameManager.PauseGame))]
         [HarmonyPrefix]
         private static bool PauseGame_Prefix(bool resume)
         {
             return resume || Time.timeScale == 0f
-                || (!ItemCard.EscapeNavigates() && !InventoryWindow.EscapeUntargets());
+                || (!SplitDialog.EscapeCancels() && !InventoryWindow.EscapeCancelsPlacing() && !ItemCard.EscapeNavigates() && !InventoryWindow.EscapeUntargets());
         }
 
         // Tab is the target key (D157): it no longer opens the game's menu panel -

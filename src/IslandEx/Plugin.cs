@@ -7,8 +7,9 @@ using HarmonyLib;
 namespace IslandEx
 {
     // Island Extensions: the small things that are neither the UI nor how NPCs move.
-    // The FX filter, hold-to-struggle, keep-fullscreen and no rain indoors
-    // (DryIndoors). Each is its own section
+    // The FX filter, hold-to-struggle, keep-fullscreen, no rain indoors
+    // (DryIndoors), a further zoom (ZoomOut) and broken tools that stay
+    // (KeepBroken). Each is its own section
     // in the .cfg and its own page in the Island Ex menu (Island UI draws that menu,
     // reaching these settings through BepInEx, never through this assembly).
     [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
@@ -16,7 +17,7 @@ namespace IslandEx
     {
         public const string PluginGuid = "madisland.islandex";
         public const string PluginName = "Island Ex";
-        public const string PluginVersion = "0.1.0";
+        public const string PluginVersion = "0.2.0";
 
         internal static ManualLogSource Log;
         internal static ConfigEntry<bool> Enabled;
@@ -24,12 +25,16 @@ namespace IslandEx
         private void Awake()
         {
             Log = Logger;
+            // its words follow Island UI's language setting, or the game's (Forgejo #19)
+            Shared.Loc.Init("IslandEx", null);
             Enabled = Config.Bind("General", "Enabled", true,
                 "Turns Island Extensions on or off. Off = everything below is as in the unmodded game. Applies live; clicking the mod's icon on the title screen also switches it.");
             FXFilter.Bind(Config);
             GrappleHold.Bind(Config);
             KeepFullscreen.Bind(Config);
             DryIndoors.Bind(Config);
+            ZoomOut.Bind(Config);
+            KeepBroken.Bind(Config);
 
             var harmony = new Harmony(PluginGuid);
             Shared.PatchCensus.ApplyAndReport(harmony, Assembly.GetExecutingAssembly(), Log);
@@ -51,6 +56,7 @@ namespace IslandEx
         {
             KeepFullscreen.Tick();
             DryIndoors.Tick();
+            ZoomOut.Tick();
         }
 
         // What the Island Ex menu lists on its Effects page: every effect spawned this

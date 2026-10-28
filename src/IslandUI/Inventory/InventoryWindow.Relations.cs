@@ -148,13 +148,13 @@ namespace IslandUI
             NPCManager npcs = _mn != null ? _mn.npcMN : null;
             CommonStates player = _mn != null && _mn.gameMN != null && _mn.gameMN.pMove != null
                 ? _mn.gameMN.pMove.common : null;
-            string me = own ? "You" : (string.IsNullOrEmpty(who.charaName) ? "?" : who.charaName);
+            string me = own ? Shared.Loc.Get("sheet.you", "You") : (string.IsNullOrEmpty(who.charaName) ? "?" : who.charaName);
             // the heading wears the gates over the column; everything on the
             // scale sits under it (the You row sits at the top of the target's
             // relationships list, under the title)
             EnsureRelNames(npcs, who);
             int total = who.lovers != null ? who.lovers.Count : 0;
-            SheetLine head = Head("Relations", total > 0 ? total.ToString() : string.Empty, VanillaTabIcon(2));
+            SheetLine head = Head(Shared.Loc.Get("relations.head", "Relations"), total > 0 ? total.ToString() : string.Empty, VanillaTabIcon(2));
             head.Gates = true;
             lines.Add(head);
             if (!own && player != null)
@@ -165,7 +165,7 @@ namespace IslandUI
                 float theirs, yours;
                 bool theirsKnown = LoveBetween(npcs, who, player, out theirs);
                 bool yoursKnown = LoveBetween(npcs, player, who, out yours);
-                lines.Add(Relation(me, "You", NPCColor(player), theirsKnown ? theirs : 0f, yours, yoursKnown, Emotion(0)));
+                lines.Add(Relation(me, Shared.Loc.Get("sheet.you", "You"), NPCColor(player), theirsKnown ? theirs : 0f, yours, yoursKnown, Emotion(0)));
                 lines.Add(new SheetLine { Kind = LineSpace });
             }
             // then the graph: the strongest few and the hostile few, each on the
@@ -199,7 +199,7 @@ namespace IslandUI
             if (order.Count > shown)
             {
                 lines.Add(new SheetLine { Label = string.Empty, Kind = LineMore, Enabled = true,
-                    Options = new[] { "… " + (order.Count - shown) + " more" } });
+                    Options = new[] { Shared.Loc.Get("relations.more", "… {0} more", order.Count - shown) } });
             }
         }
 
@@ -207,15 +207,15 @@ namespace IslandUI
         // Profile block under §6.21's tempo axis rather than a Relations one.
         private static void WriteRelationHistory(List<SheetLine> lines, CommonStates who)
         {
-            TextManager tm = _mn != null ? _mn.textMN : null;
+            TextManager tm = GameWords.Text(_mn);
             NPCManager npcs = _mn != null ? _mn.npcMN : null;
-            lines.Add(Head("History", string.Empty, Emotion(7)));
+            lines.Add(Head(Shared.Loc.Get("relations.history", "History"), string.Empty, Emotion(7)));
             HistoryCounts(who, out int sex, out int pregnancies, out int deliveries);
-            lines.Add(Row("First partner", FirstSexText(tm, npcs, who)));
-            lines.Add(Row("Sex", sex.ToString()));
-            lines.Add(Row("Pregnancies", pregnancies.ToString()));
-            lines.Add(Row("Deliveries", deliveries.ToString()));
-            lines.Add(Row("Masturbation", who.sexInfo != null && who.sexInfo.Length > 2
+            lines.Add(Row(Shared.Loc.Get("relations.history.first_partner", "First partner"), FirstSexText(tm, npcs, who)));
+            lines.Add(Row(Shared.Loc.Get("relations.history.sex", "Sex"), sex.ToString()));
+            lines.Add(Row(Shared.Loc.Get("relations.history.pregnancies", "Pregnancies"), pregnancies.ToString()));
+            lines.Add(Row(Shared.Loc.Get("relations.history.deliveries", "Deliveries"), deliveries.ToString()));
+            lines.Add(Row(Shared.Loc.Get("relations.history.masturbation", "Masturbation"), who.sexInfo != null && who.sexInfo.Length > 2
                 ? who.sexInfo[2].ToString() : "0"));
         }
 
@@ -244,11 +244,22 @@ namespace IslandUI
             }
             if (_loveTip == null || !ReferenceEquals(_loveTipRoot, _root))
             {
-                _loveTip = KitTooltip.Create((RectTransform)_root.transform, true);
+                _loveTip = KitTooltip.Create((RectTransform)_root.transform);
                 _loveTipRoot = _root;
             }
             _loveTipFrame = Time.frameCount;
             _loveTip.Tick(text, cam);
+        }
+
+        // harness: a tip shown at the pointer while a sheet is open, as if
+        // hovered - "~" for a line break, "^" for a comma (the harness splits on
+        // commas); "-" clears it
+        private static string _tipPreview;
+
+        internal static string TipPreview(string text)
+        {
+            _tipPreview = string.IsNullOrEmpty(text) || text == "-" ? null : text.Replace('~', '\n').Replace('^', ',');
+            return _tipPreview == null ? "cleared" : "showing";
         }
 
         private static void LoveTipIdle()
@@ -379,11 +390,11 @@ namespace IslandUI
             if (!_matrix.activeSelf) { _matrix.SetActive(true); }
             if (printed)
             {
-                // the section's heading: the name in spaced capitals, a rule to the
-                // count's pill, the pill clear of the close chip
-                _matrixTitle.text = ((string.IsNullOrEmpty(who.charaName) ? "?" : who.charaName)
-                    + " · relations").ToUpperInvariant();
-                _matrixPillText.text = order.Count > shown ? shown + " of " + order.Count : order.Count.ToString();
+                // the section's heading: the name as it is written (a name is never
+                // capitals), the word in the heading's, a rule to the count's pill,
+                // the pill clear of the close chip
+                _matrixTitle.text = Shared.Loc.Get("relations.matrix.title", "{0} · RELATIONS", string.IsNullOrEmpty(who.charaName) ? "?" : who.charaName);
+                _matrixPillText.text = order.Count > shown ? Shared.Loc.Get("relations.matrix.shown_of", "{0} of {1}", shown, order.Count) : order.Count.ToString();
                 float cy = 4f + MatrixTitleH * 0.5f;
                 float right = w - CloseChipFromRight - CloseChipSize * 0.5f - 3f;
                 float pw = _matrixPillText.GetPreferredValues(_matrixPillText.text, 400f, 40f).x + 9f;
@@ -394,8 +405,11 @@ namespace IslandUI
             }
             else
             {
-                _matrixTitle.text = (string.IsNullOrEmpty(who.charaName) ? "Relations" : who.charaName)
-                    + " — " + order.Count + " relations" + (order.Count > shown ? " (" + shown + " shown)" : string.Empty);
+                string matrixWho = string.IsNullOrEmpty(who.charaName) ? Shared.Loc.Get("relations.head", "Relations") : who.charaName;
+                string matrixCount = Shared.Loc.Plural("relations.matrix.count", "{0} relation", "{0} relations", order.Count);
+                _matrixTitle.text = order.Count > shown
+                    ? Shared.Loc.Get("relations.matrix.plain_shown", "{0} — {1} ({2} shown)", matrixWho, matrixCount, shown)
+                    : Shared.Loc.Get("relations.matrix.plain", "{0} — {1}", matrixWho, matrixCount);
             }
             return true;
         }

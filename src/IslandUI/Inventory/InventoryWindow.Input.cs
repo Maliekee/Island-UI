@@ -39,18 +39,19 @@ namespace IslandUI
                 {
                     ItemData worn = _mn.itemMN.FindItem(hovered.itemKey);
                     string wornName = worn != null ? worn.GetItemName() : hovered.itemKey;
-                    string wearer = wornOn.Owner == null || _mn.gameMN.IsPlayer(wornOn.Owner)
-                        ? "you"
-                        : (string.IsNullOrEmpty(wornOn.Owner.charaName) ? "them" : wornOn.Owner.charaName);
+                    string wornBy = wornOn.Owner == null || _mn.gameMN.IsPlayer(wornOn.Owner)
+                        ? Shared.Loc.Get("inv.hint.worn_by_you", "worn by you")
+                        : string.IsNullOrEmpty(wornOn.Owner.charaName) ? Shared.Loc.Get("inv.hint.worn_by_them", "worn by them")
+                        : Shared.Loc.Get("inv.hint.worn_by", "worn by {0}", wornOn.Owner.charaName);
                     // the mark's line, as a bag cell gives it, on your own loadout
                     if (AltHeld() && HandEmpty() && WearsFavourites(wornOn))
                     {
                         return Favourites.IsFavourite(hovered)
-                            ? $"{wornName}   ·   worn by {wearer}   ·   favourite   ·   alt-click  →  unmark"
-                            : $"{wornName}   ·   worn by {wearer}   ·   alt-click  →  favourite";
+                            ? $"{wornName}   ·   {wornBy}   ·   {HintFavourite()}   ·   {HintUnmark()}"
+                            : $"{wornName}   ·   {wornBy}   ·   {HintMark()}";
                     }
-                    return $"{wornName}   ·   worn by {wearer}   ·   "
-                        + "left-click  →  into your hand    right-click  →  Shared Bag";
+                    return $"{wornName}   ·   {wornBy}   ·   "
+                        + Shared.Loc.Get("inv.hint.take_off", "left-click  →  into your hand    right-click  →  {0}", Shared.Loc.Get("inv.shared_bag", "Shared Bag"));
                 }
             }
             if (hovered == null || string.IsNullOrEmpty(hovered.itemKey))
@@ -68,8 +69,8 @@ namespace IslandUI
                 // no star GLYPH here: the game's font renders these as tofu boxes,
                 // which is why the mark on the cell is a generated sprite
                 return Favourites.IsFavourite(hovered)
-                    ? $"{label}   ·   favourite   ·   alt-click  →  unmark"
-                    : $"{label}   ·   alt-click  →  favourite (never quick-stacked)";
+                    ? $"{label}   ·   {HintFavourite()}   ·   {HintUnmark()}"
+                    : $"{label}   ·   " + Shared.Loc.Get("inv.hint.mark_never_stacked", "alt-click  →  favourite (never quick-stacked)");
             }
             if (item == null || _mn.randChar == null)
             {
@@ -79,10 +80,10 @@ namespace IslandUI
             {
                 // the butcher key announced where it works, as alt-click is above
                 string butcher = Butchers(hoveredCell)
-                    ? $"   ·   {KitKeyBind.Name(KeyRemap.Bound(KeyCode.T))}  →  butcher" : "";
+                    ? "   ·   " + Shared.Loc.Get("inv.hint.butcher", "{0}  →  butcher", KitKeyBind.Name(KeyRemap.Bound(KeyCode.T))) : "";
                 return hovered.itemLife >= 100f
-                    ? $"{label}   ·   happiness MAX — can join the tribe{butcher}"
-                    : $"{label}   ·   happiness {hovered.itemLife:0}/100{butcher}";
+                    ? $"{label}   ·   " + Shared.Loc.Get("inv.hint.happiness_max", "happiness MAX — can join the tribe") + butcher
+                    : $"{label}   ·   " + Shared.Loc.Get("inv.hint.happiness", "happiness {0}/100", hovered.itemLife.ToString("0")) + butcher;
             }
             // The right-click recipient USED to be predicted here, as vanilla's
             // `menuNPC ?? player`. D25 replaced that rule with the container's
@@ -126,11 +127,13 @@ namespace IslandUI
                     plate.Cells[i].Highlight.enabled = true;
                 }
             }
-            string who = string.IsNullOrEmpty(target.charaName) ? "you" : target.charaName;
-            string slotName = equipId < LoadoutNames.Length ? LoadoutNames[equipId] : "";
+            bool you = string.IsNullOrEmpty(target.charaName);
+            string slotName = LoadoutName(equipId);
             return wearable
-                ? $"{label}   →   {who} · {slotName}"
-                : $"{label}   →   {who} cannot wear this";
+                ? (you ? Shared.Loc.Get("inv.hint.wear_you", "{0}   →   you · {1}", label, slotName)
+                    : Shared.Loc.Get("inv.hint.wear", "{0}   →   {1} · {2}", label, target.charaName, slotName))
+                : (you ? Shared.Loc.Get("inv.hint.cannot_wear_you", "{0}   →   you cannot wear this", label)
+                    : Shared.Loc.Get("inv.hint.cannot_wear", "{0}   →   {1} cannot wear this", label, target.charaName));
         }
 
         // GRAB / PLACE, through vanilla's own held-item slot.
@@ -711,7 +714,7 @@ namespace IslandUI
         // Harness door: raise the badge once and say where it landed.
         internal static string BadgeProbe()
         {
-            CursorBadge.Show("alt-click  →  favourite", HudGlyphs.Get("star"));
+            CursorBadge.Show(HintMark(), HudGlyphs.Get("star"));
             CommitBadge();
             return CursorBadge.Where();
         }
@@ -723,7 +726,10 @@ namespace IslandUI
             {
                 CursorBadge.Show(FavouriteRules.KeptWords, HudGlyphs.Get("star"));
             }
-            Canvas canvas = _root != null ? _root.GetComponentInParent<Canvas>() : null;
+            // the window's canvas, or the dock's before the window is first built: a
+            // refusal said by the dock or its Manage list had nowhere to hang till then
+            Canvas canvas = _root != null ? _root.GetComponentInParent<Canvas>()
+                : _unit != null ? _unit.GetComponentInParent<Canvas>() : null;
             Transform root = canvas != null ? canvas.rootCanvas.transform : null;
             Camera cam = canvas != null
                 && canvas.rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay
@@ -774,13 +780,18 @@ namespace IslandUI
             if (!target.Expandable)
             {
                 return target.Container != null
-                    ? $"{target.Name} cannot be expanded"
-                    : "nothing to expand";
+                    ? Shared.Loc.Get("inv.pocket.cannot_expand", "{0} cannot be expanded", target.Name)
+                    : Shared.Loc.Get("inv.pocket.nothing", "nothing to expand");
             }
             return target.Capped
-                ? $"{target.Name} is at the 50-slot cap"
-                : $"right-click  →  {target.Name}  +1 slot";
+                ? Shared.Loc.Get("inv.pocket.capped", "{0} is at the 50-slot cap", target.Name)
+                : Shared.Loc.Get("inv.pocket.expand", "right-click  →  {0}  +1 slot", target.Name);
         }
+
+        // the favourite mark's hover words, shared by bag and loadout cells
+        private static string HintFavourite() => Shared.Loc.Get("inv.hint.favourite", "favourite");
+        private static string HintMark() => Shared.Loc.Get("inv.hint.mark", "alt-click  →  favourite");
+        private static string HintUnmark() => Shared.Loc.Get("inv.hint.unmark", "alt-click  →  unmark");
 
         private static readonly List<Plate> Highlighted = new List<Plate>();
 

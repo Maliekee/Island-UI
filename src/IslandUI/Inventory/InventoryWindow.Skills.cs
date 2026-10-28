@@ -18,21 +18,22 @@ namespace IslandUI
             SkillManager sk = _mn != null ? _mn.skillMN : null;
             if (sk == null)
             {
-                lines.Add(Row("Skills", "—"));
+                lines.Add(Row(Shared.Loc.Get("skills.head", "Skills"), "—"));
                 return;
             }
             double frac = sk.maxExp > 0.0 ? sk.exp / sk.maxExp : 0.0;
-            lines.Add(new SheetLine { Label = "Skill level " + sk.skillLevel, Kind = LineBar,
+            lines.Add(new SheetLine { Label = Shared.Loc.Get("skills.level", "Skill level {0}", sk.skillLevel), Kind = LineBar,
                 Value = sk.exp.ToString("F0") + " / " + sk.maxExp.ToString("F0"),
                 Frac = (float)frac, Enabled = true, Tinted = true, Tint = SkillExpTint() });
-            lines.Add(Head("Points", sk.skillPoint.ToString()));
+            lines.Add(Head(Shared.Loc.Get("sheet.points", "Points"), sk.skillPoint.ToString()));
             for (int i = 0; sk.skills != null && i < sk.skills.Length; i++)
             {
                 int max = SkillMax(i);
                 bool maxed = max > 0 && sk.skills[i] >= max;
                 int cost = SkillCost(sk, i);
                 lines.Add(new SheetLine { Label = SkillName(i), Kind = LineSkill, Arg = i, Icon = SkillIcon(i),
-                    Value = "Lv " + sk.skills[i] + "   " + (maxed ? "Max" : cost + " pt"),
+                    Value = Shared.Loc.Get("sheet.lv", "Lv {0}", sk.skills[i]) + "   "
+                        + (maxed ? Shared.Loc.Get("skills.max", "Max") : Shared.Loc.Get("sheet.cost", "{0} pt", cost)),
                     Enabled = !maxed && sk.skillPoint >= cost, Tip = SkillTip(i) });
             }
         }
@@ -54,10 +55,12 @@ namespace IslandUI
             // the sheet rewrites its lines as it repaints: one build per skill,
             // level and language
             int lang = SaveManager.SaveSettingStatic.lang;
-            if (lang != _skillTipLang)
+            int locGen = Shared.Loc.Generation;
+            if (lang != _skillTipLang || locGen != _skillTipLocGen)
             {
                 SkillTips.Clear();
                 _skillTipLang = lang;
+                _skillTipLocGen = locGen;
             }
             int key = id * 1000 + sk.skills[id];
             if (SkillTips.TryGetValue(key, out string cached))
@@ -74,6 +77,7 @@ namespace IslandUI
 
         private static readonly Dictionary<int, string> SkillTips = new Dictionary<int, string>();
         private static int _skillTipLang = -1;
+        private static int _skillTipLocGen = -1;
 
         private static string BuildSkillTip(SkillManager sk, int id)
         {
@@ -103,25 +107,28 @@ namespace IslandUI
             }
             if (lv >= 1)
             {
-                sb.Append("\n\nNow, Lv ").Append(lv).Append(": ").Append(TipLine(text.list[Mathf.Min(lv, top)].texts));
+                sb.Append("\n\n").Append(Shared.Loc.Get("skills.tip.now", "Now, Lv {0}: {1}", lv, TipLine(text.list[Mathf.Min(lv, top)].texts)));
             }
             if ((max == 0 || lv < max) && lv + 1 <= top)
             {
-                sb.Append(lv >= 1 ? "\n" : "\n\n").Append("Next, Lv ").Append(lv + 1).Append(": ")
-                    .Append(TipLine(text.list[lv + 1].texts));
+                sb.Append(lv >= 1 ? "\n" : "\n\n")
+                    .Append(Shared.Loc.Get("skills.tip.next", "Next, Lv {0}: {1}", lv + 1, TipLine(text.list[lv + 1].texts)));
             }
             string live = longSkill && text.list.Count > 7 ? SkillLive(id, lv, text.list[7].texts) : null;
             if (!string.IsNullOrEmpty(live))
             {
                 // vanilla's box prints it green, apart from the ladder
-                sb.Append("\n\n<color=#A8D8A0>").Append(live).Append("</color>");
+                sb.Append("\n\n<color=#4A8A3A>").Append(live).Append("</color>");
             }
             return sb.ToString();
         }
 
+        // the game's text, single-spaced: a double space in it would read to the
+        // tip as a label and its value
         private static string TipLine(string s)
         {
-            return string.IsNullOrEmpty(s) ? string.Empty : s.Replace("/n", "\n").Trim();
+            return string.IsNullOrEmpty(s) ? string.Empty
+                : System.Text.RegularExpressions.Regex.Replace(s.Replace("/n", "\n"), " {2,}", " ").Trim();
         }
 
         // UIManager.SkillDescription's last line for the four, figure for figure
@@ -160,33 +167,36 @@ namespace IslandUI
             return 5 + sk.skills[id] * 5;
         }
 
-        private static readonly string[] SkillFallbackNames =
-        {
-            "Self-healing", "Stomach", "Harvest", "Patience", "Observation", "Persuasive",
-            "Construction", "Carry", "Smash", "Grapple", "Leader", "Swim",
-        };
+        private const int SkillCount = 12;
         private static Sprite[] _skillIcons;
 
         private static string[] _skillNames;
+        private static int _skillNamesGeneration = -1;
 
         // The name vanilla's own row shows. Each SkillText_NN carries a
         // LocalizeStringEvent whose StringReference is the localised label; the
         // row's text only receives it once the event has run, which on a panel
         // never opened this session it has not (the rows still read their
         // prefab Japanese, and RefreshString on the inactive component changed
-        // nothing). So the string is asked for directly, by reflection, since
-        // the Localization package is not referenced. Failing that, the
+        // nothing). So the string is asked for directly (GameWords.Label). Failing that, the
         // tooltip's title (SkillDescription's) with its parenthetical stripped -
-        // it reads "Swim（未実装）" - and failing that, the English list.
+        // it reads "Swim（未実装）" - and failing that, our own name. In a language the
+        // game has no text for, ours first (Forgejo #110).
         private static string SkillName(int id)
         {
-            if (_skillNames == null)
+            // asked again in a new language: a name kept from the last one stayed (Forgejo #92)
+            if (_skillNames == null || _skillNamesGeneration != Shared.Loc.Generation)
             {
-                _skillNames = new string[SkillFallbackNames.Length];
+                _skillNames = new string[SkillCount];
+                _skillNamesGeneration = Shared.Loc.Generation;
             }
             if (id < 0 || id >= _skillNames.Length)
             {
-                return "Skill " + id;
+                return Shared.Loc.Get("skills.fallback_name", "Skill {0}", id);
+            }
+            if (GameWords.Lacking)
+            {
+                return ControlWords.Skill(id);
             }
             if (_skillNames[id] != null)
             {
@@ -216,7 +226,7 @@ namespace IslandUI
             }
             if (string.IsNullOrEmpty(name))
             {
-                return SkillFallbackNames[id];   // not cached: the game may still answer later
+                return ControlWords.Skill(id);   // not cached: the game may still answer later
             }
             _skillNames[id] = name.Trim();
             return _skillNames[id];
@@ -232,27 +242,12 @@ namespace IslandUI
             return cut > 0 ? s.Substring(0, cut).Trim() : s.Trim();
         }
 
-        // LocalizeStringEvent.StringReference.GetLocalizedString(), by name
+        // the label's LocalizeStringEvent string, in the mods' language where the game has it
         private static string LocalisedLabel(GameObject go)
         {
             try
             {
-                foreach (Component c in go.GetComponents<Component>())
-                {
-                    if (c == null || c.GetType().Name != "LocalizeStringEvent")
-                    {
-                        continue;
-                    }
-                    System.Reflection.PropertyInfo prop = c.GetType().GetProperty("StringReference");
-                    object reference = prop != null ? prop.GetValue(c, null) : null;
-                    System.Reflection.MethodInfo get = reference != null
-                        ? reference.GetType().GetMethod("GetLocalizedString", System.Type.EmptyTypes) : null;
-                    string s = get != null ? get.Invoke(reference, null) as string : null;
-                    if (!string.IsNullOrEmpty(s))
-                    {
-                        return s;
-                    }
-                }
+                return GameWords.Label(go);
             }
             catch (System.Exception e)
             {
