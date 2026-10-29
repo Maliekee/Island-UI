@@ -2,7 +2,7 @@
 
 # Island UI
 
-**Play the island, not the interface.**
+**Your island, in plain sight.**
 
 **English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [Português (Brasil)](README.pt-BR.md) · [Español](README.es.md) · [Deutsch](README.de.md)
 

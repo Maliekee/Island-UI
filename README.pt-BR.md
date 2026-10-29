@@ -2,7 +2,7 @@
 
 # Island UI
 
-**Jogue a ilha, não a interface.**
+**Sua ilha, bem à vista.**
 
 [English](README.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · **Português (Brasil)** · [Español](README.es.md) · [Deutsch](README.de.md)
 

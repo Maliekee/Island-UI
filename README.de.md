@@ -2,7 +2,7 @@
 
 # Island UI
 
-**Spiel die Insel, nicht die Oberfläche.**
+**Deine Insel, auf einen Blick.**
 
 [English](README.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [Português (Brasil)](README.pt-BR.md) · [Español](README.es.md) · **Deutsch**
 

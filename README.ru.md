@@ -2,7 +2,7 @@
 
 # Island UI
 
-**Играйте в остров, а не в интерфейс.**
+**Ваш остров — как на ладони.**
 
 [English](README.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · **Русский** · [Português (Brasil)](README.pt-BR.md) · [Español](README.es.md) · [Deutsch](README.de.md)
 

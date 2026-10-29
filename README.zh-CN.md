@@ -2,7 +2,7 @@
 
 # Island UI
 
-**玩的是岛，不是界面。**
+**你的岛，一览无余。**
 
 [English](README.md) · **简体中文** · [日本語](README.ja.md) · [Русский](README.ru.md) · [Português (Brasil)](README.pt-BR.md) · [Español](README.es.md) · [Deutsch](README.de.md)
 
