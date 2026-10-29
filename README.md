@@ -4,6 +4,8 @@
 
 **Play the island, not the interface.**
 
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [Português (Brasil)](README.pt-BR.md) · [Español](README.es.md) · [Deutsch](README.de.md)
+
 ![Island UI in play: the HUD, a character sheet, the roster, crafting and the settings](O1.webp)
 
 **Not a thousand band-aids.** Island UI steps back and rewrites Mad Island's interface from
