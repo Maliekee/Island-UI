@@ -4,7 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>IslandUI</AssemblyName>
     <RootNamespace>IslandUI</RootNamespace>
-    <Version>0.9.0</Version>
+    <Version>0.9.1</Version>
     <LangVersion>latest</LangVersion>
     <!-- Live Steam install: the game that actually runs. BepInEx and our plugin live here;
          binary/ is only a pristine reference copy for decompilation. -->
@@ -21,6 +21,13 @@
     <!-- Shared SOURCE compiled into this DLL: the mods share code, not an assembly -->
     <Compile Include="..\Shared\PatchCensus.cs" Link="Shared\PatchCensus.cs" />
     <Compile Include="..\Shared\TitleBadge.cs" Link="Shared\TitleBadge.cs" />
+    <Compile Include="..\Shared\Update\ModUpdate.cs" Link="Shared\Update\ModUpdate.cs" />
+    <Compile Include="..\Shared\Update\UpdateFlow.cs" Link="Shared\Update\UpdateFlow.cs" />
+    <Compile Include="..\Shared\Update\UpdateNet.cs" Link="Shared\Update\UpdateNet.cs" />
+    <Compile Include="..\Shared\Update\UpdatePanel.cs" Link="Shared\Update\UpdatePanel.cs" />
+    <Compile Include="..\Shared\UpdateSwap\UpdateDisk.cs" Link="Shared\Update\UpdateDisk.cs" />
+    <Compile Include="..\Shared\UpdateSwap\UpdateRules.cs" Link="Shared\Update\UpdateRules.cs" />
+    <Compile Include="..\Shared\UpdateSwap\UpdateZip.cs" Link="Shared\Update\UpdateZip.cs" />
     <Compile Include="..\Shared\Loc.cs" Link="Shared\Loc.cs" />
     <!-- the mod icon, shown on the title screen by Shared/TitleBadge.cs -->
     <EmbeddedResource Include="icon.png" LogicalName="IslandUI.icon.png" />
@@ -112,6 +119,17 @@
          list to draw from. That means naming SkeletonAnimation. -->
     <Reference Include="spine-unity">
       <HintPath>$(GameDir)\Mad Island_Data\Managed\spine-unity.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- the in-game update's preloader step travels inside the mod (Shared/Update/UpdateFlow.cs) -->
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\UpdateSwap\UpdateSwap.csproj" ReferenceOutputAssembly="false" />
+    <EmbeddedResource Include="..\Shared\UpdateSwap\bin\$(Configuration)\IslandUpdateSwap1.dll" LogicalName="IslandUpdateSwap1.dll" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\Newtonsoft.Json.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

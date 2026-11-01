@@ -1,11 +1,20 @@
 # Island UI: Russian strings, machine-translated from en/strings.txt.
 # Corrections are welcome: edit the right side of a line and keep the key and every {0}.
 
-badge.off=выкл.  -  нажмите, чтобы включить
-badge.on=вкл.  -  нажмите, чтобы выключить
-badge.turns_off=выключится при следующем запуске  -  нажмите для отмены
-badge.turns_on=включится при следующем запуске  -  нажмите для отмены
+auto.food.off=ПКМ: автоматически есть отсюда, когда вы голодны
+auto.food.on=Авто: вы едите отсюда, если голодны и находитесь в пределах {0} м. ПКМ, чтобы выключить
+auto.water.off=ПКМ: автоматически пить отсюда, когда хочется пить
+auto.water.on=Авто: вы пьёте отсюда, если хочется пить и вы в пределах {0} м. ПКМ, чтобы выключить
+badge.keep_off=Оставить выключенным
+badge.keep_on=Оставить включённым
+badge.state_off=выкл.
+badge.state_on=вкл.
+badge.state_turns_off=выключится при следующем запуске
+badge.state_turns_on=включится при следующем запуске
 
+badge.turn_off=Выключить
+badge.turn_on=Включить
+badge.visit_site=Перейти на официальный сайт
 board.assign.axe=назначить  →  петля для топора
 board.assign.knife=назначить  →  петля для ножа
 board.assign.pickaxe=назначить  →  петля для кирки
@@ -196,6 +205,7 @@ company.head.love=ЛЮБОВЬ
 company.head.love.help=любовь {0} к каждому
 
 company.key.mood_cost=-1 МОРАЛИ
+company.key.others=+5 остальные
 company.key.per_meeting=ЛЮБОВЬ ЗА ВСТРЕЧУ
 
 company.nights=Ночи
@@ -273,6 +283,20 @@ craft.section.type.tool=Инструменты
 craft.section.type.tool2=Инструменты 2
 
 
+dossier.always_run=ВСЕГДА БЕГОМ
+dossier.partners=ПАРТНЁРЫ
+dossier.partners.creampie=КРЕМПАЙ
+dossier.partners.creampie.help={0} кончает в {1}
+dossier.partners.delivery=РОДЫ
+dossier.partners.delivery.help=Дети {0} от {1}
+dossier.partners.pregnancy=БЕРЕМЕННОСТЬ
+dossier.partners.pregnancy.help={0} делает {1} беременной
+dossier.partners.rape=ИЗНАСИЛОВАНИЕ
+dossier.partners.rape.help={0} насилует {1}
+dossier.partners.sex=СЕКС
+dossier.partners.sex.help=Секс по согласию между {0} и {1}
+dossier.partners.toilet=ТУАЛЕТ
+dossier.partners.toilet.help={0} использует {1} как туалет
 dossier.personality=ХАРАКТЕР
 dossier.personality.a_tick={0} за тик
 dossier.personality.click=Нажмите, чтобы увидеть всех такого типа
@@ -312,6 +336,7 @@ dossier.points.few={0} очка
 dossier.points.many={0} очков
 dossier.pregnancies=БЕРЕМЕННОСТИ
 dossier.pregnant=БЕРЕМЕННОСТЬ
+dossier.record=ИСТОРИЯ
 dossier.sex=СЕКС
 dossier.shown_in_world=ВИДНО В МИРЕ
 dossier.skill_lv=УР. НАВЫКОВ
@@ -325,6 +350,7 @@ dossier.type.near_one={0} рядом с таким
 dossier.type.worth_near={0}, {1} рядом с таким
 
 dossier.vitals=ПОКАЗАТЕЛИ
+dossier.walk=ШАГОМ
 dossier.water=ВОДА
 
 drop.cant_take=не может это взять
@@ -356,6 +382,8 @@ hud.enemy.slain=Убит
 hud.enemy.fainted=Оглушён
 hud.enemy.boss=БОСС
 
+hud.enemy.target=Нажмите, чтобы выбрать целью
+hud.enemy.targeted=Ваша цель
 hud.roster.unhappy=Не в духе: {0}
 hud.roster.unhappy.help=Сортировка «Настроение» покажет почему
 hud.roster.unhappy_near=Не в духе: {0}, близко к бунту: {1}
@@ -415,6 +443,10 @@ inv.pocket.that_container=этот контейнер
 inv.pocket.their_bag=их Сумка
 inv.pocket.your_bag=ваша Сумка
 
+inv.section.backpack=Сумка
+inv.section.shared=Общая сумка
+inv.section.storage=Хранилище
+inv.section.worn=Надето
 inv.shared_bag=Общая сумка
 
 inv.slot.acce=Аксесс.
@@ -427,6 +459,7 @@ inv.slot.support=Поддержка
 inv.slot.tool=Инструмент
 inv.slot.under=Бельё
 
+inv.slots=Ячеек: {0}
 inv.tab.character=Персонаж
 inv.tab.fight=Бой
 inv.tab.inventory=Инвентарь
@@ -439,6 +472,7 @@ inv.thing.yours=Ваше
 inv.thing.yours_lower=ваше
 
 inv.tip.always_run=Бегать при любом движении, как будто клавиша бега зажата.
+inv.tip.always_run.key={0} тоже это переключает.
 inv.tip.and_so_on={0} и так далее
 inv.tip.at_0=На 0
 inv.tip.at_n=На {0}
@@ -554,6 +588,7 @@ inv.tip.water.neither=ни то, ни другое
 inv.tip.water.stun_work=восстановление оглушения и работу
 inv.tip.water.thirst=От жажды умирают, минуя сердца.
 
+inv.title=Инвентарь
 keybind.listening=Нажмите клавишу
 keybind.numpad=Num {0}
 keybind.unbound=Не назначено
@@ -609,6 +644,8 @@ links.where.with=у {0}
 
 loc.separator= · 
 
+log.always_run.off=Всегда бегом: выкл.
+log.always_run.on=Всегда бегом: вкл.
 marker.carried=Несут
 marker.corpse=Труп
 marker.dead=Мёртв(а)
@@ -872,6 +909,8 @@ observe.unknown.short=?
 orders.action.banish=Изгнать
 orders.action.call=Позвать
 
+orders.chase_range=Дальность погони
+orders.chase_range.line=как далеко за этот предел они преследуют врага, прежде чем отступить
 orders.combat=Бой
 
 orders.combat.aggressive=Агрессивный
@@ -981,11 +1020,14 @@ orders.section.permissions=РАЗРЕШЕНИЯ
 orders.section.standing=ГДЕ СТОЯТ
 
 orders.set_place=Задать место
+orders.set_place.line=нажмите на землю, чтобы переместить его
 orders.standing=Где стоят
 orders.territory=Территория
+orders.territory.line=как далеко они отходят от своего места
 orders.title=Приказы
 orders.waiting_pose=Поза ожидания
 
+orders.warp_to_place=Телепорт на место
 place.cancel=Отмена
 place.cancel.help=Оставляет их место, дом и территорию как были.
 place.cancel.note=или ПКМ, как в самой игре
@@ -1118,6 +1160,8 @@ reach.chip.shown_stack.help=Клавиша быстрого складывани
 
 reach.compact=Компактно
 reach.container=Контейнер
+reach.free=своб.
+reach.identity.select=Нажмите, чтобы выбрать.
 reach.only_filtered=Только то, что подходит под фильтр.
 reach.stack=Разложить
 reach.stack.help=То, что уже лежит в сундуке из списка, отправляется в него. Избранное остаётся.
@@ -1319,6 +1363,8 @@ settings.page.hotkeys.about=Нажмите на клавишу, затем на 
 settings.page.notices=Уведомления
 settings.page.notices.about=Как экран сообщает о происходящем: низкие показатели и что куда летит.
 settings.page.sheets=Досье
+settings.page.tools=Инструменты
+settings.page.tools.about=Что происходит с инструментом, когда он изнашивается.
 settings.page.vicinity=Окрестности
 settings.page.steering=Навигация
 settings.page.steering.about=Как ваши люди и враги обходят то, что мешает им пройти.
@@ -1345,6 +1391,15 @@ settings.target.always_neutral_markers=Всегда на нейтральных
 settings.target.always_neutral_markers.help=Все на экране, кто не ваш и не враждебен, носят боевой маркер, в бою или нет, с янтарной полосой здоровья. Заменяет для них число выше.
 settings.target.always_friend_markers=Всегда на ваших людях
 settings.target.always_friend_markers.help=Все ваши люди на экране носят боевой маркер, в бою или нет, с зелёной полосой здоровья. Заменяет для них число выше.
+settings.target.boss_first=Сначала босс
+settings.target.boss_first.help=В бою боевая табличка и маркеры сначала достаются боссу, с самого начала его боя, а те, кого он призвал, идут последними, так что удар по призванному никогда не снимает табличку с босса. Внутри каждой группы: сначала тот, кого вы ударили последним, затем ближайший из тех, кто напал на вас.\nВыкл.  тот, кого вы ударили последним, кто бы это ни был
+settings.target.kill_linger=Поверженные на табличке
+settings.target.kill_linger.help=Как долго боевая табличка остаётся на поверженном вами враге: на её вкладке написано «Убит», а если он только оглушён, лицо остаётся как было. Любой, кто ещё в бою, забирает табличку раньше.
+settings.target.npc_use_flight=Ваши люди едят и пьют
+settings.target.npc_use_flight.help=Когда кто-то из ваших людей ест из ящика для еды или пьёт из колодца, значок еды или воды летит оттуда к этому человеку, как и к вам.
+settings.tools.keep_broken=Хранить сломанные инструменты
+settings.tools.keep_broken.help=Инструмент, оружие или щит, износившиеся полностью, остаются в сумке сломанными: их нельзя надеть, пока их не починит Repair Kit. Без мода они исчезают.
+settings.unit.all=Все
 settings.vicinity.compact=Компактно
 settings.vicinity.compact.help=Каждое хранилище показывает свои занятые ячейки в их собственном порядке, а затем одно число свободных, вместо всех ячеек. Флажок «Компактно» внизу окна окрестностей тоже переключает это.
 settings.vicinity.hold_order=Держать порядок
@@ -1510,10 +1565,13 @@ unit.caption.inventory=ИНВЕНТАРЬ
 
 unit.closer_by=на {0} м ближе
 unit.details=Подробности
+unit.manage=Управлять
+unit.manage.tip=Переместить или убрать
 unit.more_actions=Ещё действия
 unit.opens_in_reach=откроется в досягаемости
 unit.opens_when_in_reach=откроется, когда вы будете рядом
 unit.out_of_reach=вне досягаемости
+unit.place.armed=Нажмите на землю, чтобы задать их место. Нажмите снова, ПКМ или Esc для отмены.
 unit.pockets=Карманы
 
 unit.portrait.sheet=Нажмите, чтобы открыть лист персонажа
@@ -1567,6 +1625,71 @@ unit.state.carried=несут
 unit.state.corpse=труп
 unit.state.knocked_out=без сознания
 
+update.back_body={0} вернётся при следующем запуске игры вместо установленной сейчас версии.
+update.back_cancel=Отмена
+update.back_do=Вернуться
+update.back_title=Вернуться к предыдущей версии?
+update.cancel=Отмена
+update.cancel_pending=Отменить обновление
+update.check=Проверить обновления
+update.check_found=Проверить обновления: есть {0}
+update.checking=Запрашиваем у GitHub последний релиз...
+update.checking_title=Проверка обновлений
+update.close=Закрыть
+update.current=Нет релизов Island UI или Island Ex новее установленных у вас.
+update.current_title=У вас последняя версия
+update.downloading=Загрузка: {0} из {1}
+update.fail_denied=Windows не разрешила запись в папку игры. Запустите игру один раз от имени администратора или установите мод со страницы релиза.
+update.fail_digest=Загруженный файл не совпадает с контрольной суммой, указанной в релизе, поэтому он удалён.
+update.fail_disk=Недостаточно свободного места на диске для обновления.
+update.fail_host=Релиз указывал на адрес, не принадлежащий GitHub ({0}), поэтому он отклонён.
+update.fail_http=GitHub ответил ошибкой ({0}).
+update.fail_interrupted=Загрузка оборвалась, не завершившись.
+update.fail_no_digest=В релизе нет контрольной суммы для {0}, поэтому файл нельзя проверить, и он не был загружен.
+update.fail_offline=Не удалось связаться с GitHub. Проверьте подключение и попробуйте снова.
+update.fail_rate=GitHub сейчас ограничивает запросы с вашего подключения. Попробуйте снова примерно через час.
+update.fail_redirects=GitHub перенаправил загрузку через слишком много адресов, поэтому она отклонена.
+update.fail_release=Ответ GitHub не удалось прочитать как релиз.
+update.fail_secure=Не удалось подтвердить безопасность соединения с GitHub, поэтому оно отклонено.
+update.fail_timeout=GitHub перестал отвечать. Попробуйте снова чуть позже.
+update.fail_too_big=Загрузка намного больше, чем должен быть релиз, поэтому она отклонена.
+update.fail_unknown=Что-то пошло не так: {0}
+update.fail_version=Мод внутри zip-архива не той версии, которая указана в релизе.
+update.fail_zip=В zip-архиве релиза есть запись вне папок мода, поэтому весь архив отклонён ({0}).
+update.fail_zip_bad=Не удалось прочитать zip-архив релиза.
+update.failed_title=Обновление остановлено
+update.go_back=Вернуться к {0}
+update.keep_version=Оставить эту версию
+update.keeps=Другие моды и настройки останутся без изменений. Текущая версия сохраняется, так что можно будет вернуться.
+update.not_now=Не сейчас
+update.note_back=вернётся к {0} при следующем запуске
+update.note_pending=обновится до {0} при следующем запуске
+update.nothing_changed=Ничего не изменено.
+update.notice_back_title=Возвращена предыдущая версия
+update.notice_changed=Файлы мода изменились после подготовки обновления, поэтому оно отменено, и ничего не заменено.
+update.notice_damaged=Подготовленные файлы повреждены, поэтому ничего не заменено. Проверьте обновления, чтобы попробовать снова.
+update.notice_failed=Не удалось установить обновление: {0}. Если мод ведёт себя неправильно, установите его заново со страницы релиза.
+update.notice_interrupted=Прошлый запуск прервался посреди установки, поэтому возвращена предыдущая версия.
+update.notice_no_previous=Предыдущей версии больше нет, поэтому ничего не изменено.
+update.notice_not_loaded=Новая версия не загрузилась до конца, поэтому возвращена предыдущая версия. Отменено: {0}.
+update.notice_swap_failed=Не удалось заменить файл, поэтому возвращена предыдущая версия.
+update.notice_title=Обновление не удалось
+update.notice_went_back=Отменено: {0}.
+update.offer_title=Доступна версия {0}
+update.option_failed=Windows не разрешила запись в папку игры, поэтому «Проверка при запуске» осталась без изменений.
+update.option_title=Настройка не сохранена
+update.ready=Версия {0} проверена и ждёт. Она вступит в силу при следующем запуске игры; до тех пор ничего не изменится, а значок мода показывает ожидающее изменение.
+update.ready_cancel=Вы ещё можете отменить это в меню значка.
+update.ready_title=Готово: перезапустите игру, чтобы завершить
+update.replaces=Обновление заменит:
+update.replaces_mod={0} {1} на {2}, в {3}
+update.replaces_stray=и уберёт лишнюю копию {0} из plugins
+update.sign=доступна версия {0}
+update.startup_off=Проверка при запуске: выкл.
+update.startup_on=Проверка при запуске: вкл.
+update.unpacking=Проверка и распаковка...
+update.update=Обновить ({0})
+update.working_title=Обновление до версии {0}
 use.not_on_you=Это нельзя использовать на себе. Перетащите на {0}, чтобы отдать.
 
 use.not_on_you.someone=Это нельзя использовать на себе. Перетащите на кого-нибудь, чтобы отдать.

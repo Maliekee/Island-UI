@@ -1,11 +1,20 @@
 # Island UI: Spanish strings, machine-translated from en/strings.txt.
 # Corrections are welcome: edit the right side of a line and keep the key and every {0}.
 
-badge.off=desactivado  -  clic para activar
-badge.on=activado  -  clic para desactivar
-badge.turns_off=se desactiva al reiniciar  -  clic para cancelar
-badge.turns_on=se activa al reiniciar  -  clic para cancelar
+auto.food.off=Clic derecho: come aquí por tu cuenta cuando tengas hambre
+auto.food.on=Auto: comes aquí si tienes hambre a menos de {0} m. Clic derecho para parar
+auto.water.off=Clic derecho: bebe aquí por tu cuenta cuando tengas sed
+auto.water.on=Auto: bebes aquí si tienes sed a menos de {0} m. Clic derecho para parar
+badge.keep_off=Mantener desactivado
+badge.keep_on=Mantener activado
+badge.state_off=desactivado
+badge.state_on=activado
+badge.state_turns_off=se desactiva al reiniciar
+badge.state_turns_on=se activa al reiniciar
 
+badge.turn_off=Desactivar
+badge.turn_on=Activar
+badge.visit_site=Visitar el sitio oficial
 board.assign.axe=asignar  →  presilla del hacha
 board.assign.knife=asignar  →  presilla del cuchillo
 board.assign.pickaxe=asignar  →  presilla del pico
@@ -195,6 +204,7 @@ company.head.love=AMOR
 company.head.love.help=el de {0} hacia cada uno
 
 company.key.mood_cost=-1 MORAL
+company.key.others=+5 otros
 company.key.per_meeting=AMOR POR ENCUENTRO
 
 company.nights=Noches
@@ -270,6 +280,20 @@ craft.section.type.tool=Herramienta
 craft.section.type.tool2=Herramienta 2
 
 
+dossier.always_run=CORRER SIEMPRE
+dossier.partners=PAREJAS
+dossier.partners.creampie=EYAC. INTERNA
+dossier.partners.creampie.help={0} eyaculó dentro de {1}
+dossier.partners.delivery=PARTO
+dossier.partners.delivery.help=Hijos que {0} ha dado a luz, de {1}
+dossier.partners.pregnancy=EMBARAZO
+dossier.partners.pregnancy.help={0} dejó embarazada a {1}
+dossier.partners.rape=VIOLACIÓN
+dossier.partners.rape.help={0} violó a {1}
+dossier.partners.sex=SEXO
+dossier.partners.sex.help=Sexo consentido entre {0} y {1}
+dossier.partners.toilet=RETRETE
+dossier.partners.toilet.help={0} usó a {1} como retrete
 dossier.personality=PERSONALIDAD
 dossier.personality.a_tick={0} por ciclo
 dossier.personality.click=Clic para ver a todos los que lo son
@@ -308,6 +332,7 @@ dossier.points.one={0} punto
 dossier.points.other={0} puntos
 dossier.pregnancies=EMBARAZOS
 dossier.pregnant=EMBARAZADA
+dossier.record=HISTORIAL
 dossier.sex=SEXO
 dossier.shown_in_world=VISIBLE EN EL MUNDO
 dossier.skill_lv=NV. HABILIDAD
@@ -321,6 +346,7 @@ dossier.type.near_one={0} con uno cerca
 dossier.type.worth_near={0}, {1} con uno cerca
 
 dossier.vitals=CONSTANTES
+dossier.walk=CAMINAR
 dossier.water=AGUA
 
 drop.cant_take=no puede tomar esto
@@ -352,6 +378,8 @@ hud.enemy.slain=Abatido
 hud.enemy.fainted=Desmayado
 hud.enemy.boss=JEFE
 
+hud.enemy.target=Clic para fijar como objetivo
+hud.enemy.targeted=Tu objetivo
 hud.roster.unhappy=Infelices: {0}
 hud.roster.unhappy.help=Ordena por Ánimo para ver por qué
 hud.roster.unhappy_near=Infelices: {0}, a punto de rebelarse: {1}
@@ -411,6 +439,10 @@ inv.pocket.that_container=ese contenedor
 inv.pocket.their_bag=su Bolsa
 inv.pocket.your_bag=tu Bolsa
 
+inv.section.backpack=Mochila
+inv.section.shared=Mochila compartida
+inv.section.storage=Almacén
+inv.section.worn=Equipado
 inv.shared_bag=Bolsa compartida
 
 inv.slot.acce=Accesorio
@@ -423,6 +455,7 @@ inv.slot.support=Apoyo
 inv.slot.tool=Herramienta
 inv.slot.under=Ropa interior
 
+inv.slots={0} casillas
 inv.tab.character=Personaje
 inv.tab.fight=Combate
 inv.tab.inventory=Inventario
@@ -435,6 +468,7 @@ inv.thing.yours=Tuyo
 inv.thing.yours_lower=tuyo
 
 inv.tip.always_run=Corre siempre que te muevas, como si mantuvieras pulsada la tecla de correr.
+inv.tip.always_run.key={0} también lo alterna.
 inv.tip.and_so_on={0}, etcétera
 inv.tip.at_0=En 0
 inv.tip.at_n=En {0}
@@ -550,6 +584,7 @@ inv.tip.water.neither=no hace ninguna de las dos cosas
 inv.tip.water.stun_work=recuperar aturdimiento, y trabajar
 inv.tip.water.thirst=Morir de sed ignora tus corazones.
 
+inv.title=Inventario
 keybind.listening=Pulsa una tecla
 keybind.numpad=Num {0}
 keybind.unbound=Sin asignar
@@ -605,6 +640,8 @@ links.where.with=con {0}
 
 loc.separator= · 
 
+log.always_run.off=Correr siempre: desactivado
+log.always_run.on=Correr siempre: activado
 marker.carried=En brazos
 marker.corpse=Cadáver
 marker.dead=Sin vida
@@ -863,6 +900,8 @@ observe.unknown.short=?
 orders.action.banish=Desterrar
 orders.action.call=Llamar
 
+orders.chase_range=Alcance de persecución
+orders.chase_range.line=hasta dónde persigue a un enemigo más allá de eso, antes de volver
 orders.combat=Combate
 
 orders.combat.aggressive=Agresivo
@@ -972,11 +1011,14 @@ orders.section.permissions=PERMISOS
 orders.section.standing=DÓNDE SE SITÚA
 
 orders.set_place=Fijar puesto
+orders.set_place.line=clic en el suelo para moverlo
 orders.standing=Dónde se sitúa
 orders.territory=Territorio
+orders.territory.line=cuánto deambula alrededor de su puesto
 orders.title=Órdenes
 orders.waiting_pose=Pose de espera
 
+orders.warp_to_place=Teletransportar al puesto
 place.cancel=Cancelar
 place.cancel.help=Deja su puesto, casa y zona como estaban.
 place.cancel.note=o clic derecho, como en el juego
@@ -1103,6 +1145,8 @@ reach.chip.shown_stack.help=La tecla de apilado rápido también puede depositar
 
 reach.compact=Compacto
 reach.container=Contenedor
+reach.free=libres
+reach.identity.select=Clic para seleccionar.
 reach.only_filtered=Solo lo que coincide con el filtro.
 reach.stack=Apilar
 reach.stack.help=Lo que un cofre de la lista ya contiene va a él. Los favoritos se quedan.
@@ -1302,6 +1346,8 @@ settings.page.hotkeys.about=Haz clic en una tecla y pulsa la nueva. Esc cancela,
 settings.page.notices=Avisos
 settings.page.notices.about=Cómo te cuenta la pantalla lo que pasa: constantes bajas y qué vuela adónde.
 settings.page.sheets=Fichas
+settings.page.tools=Herramientas
+settings.page.tools.about=Qué le pasa a una herramienta cuando se desgasta.
 settings.page.vicinity=Alrededores
 settings.page.steering=Navegación
 settings.page.steering.about=Cómo tu gente y tus enemigos sortean lo que se interpone en su camino.
@@ -1328,6 +1374,15 @@ settings.target.always_neutral_markers=Siempre en los neutrales
 settings.target.always_neutral_markers.help=Todos los que están en pantalla y no son ni tuyos ni hostiles llevan el marcador de combate, en una pelea o no, con la barra de vida ámbar. Sustituye para ellos el número de arriba.
 settings.target.always_friend_markers=Siempre en tu gente
 settings.target.always_friend_markers.help=Todos los tuyos en pantalla llevan el marcador de combate, en una pelea o no, con la barra de vida verde. Sustituye para ellos el número de arriba.
+settings.target.boss_first=Jefe primero
+settings.target.boss_first.help=En una pelea, la placa de combate y los marcadores van primero al jefe, desde que empieza su pelea, y lo que invoca va lo último, así que golpear a una invocación nunca le quita la placa al jefe. Dentro de cada grupo, el último al que golpeaste y luego el más cercano a ti.\nDesactivado  el último al que golpeaste, sea quien sea
+settings.target.kill_linger=Derribado en la placa
+settings.target.kill_linger.help=Cuánto tiempo sigue la placa de combate sobre un enemigo que has derribado: su pestaña dice Abatido, o la cara se queda como estaba si solo se desmayó. Quien siga en la pelea se lleva la placa antes.
+settings.target.npc_use_flight=Tu gente come y bebe
+settings.target.npc_use_flight.help=Cuando alguien de tu gente come de una caja de comida o bebe de un pozo, el icono de comida o agua vuela desde allí hasta esa persona, igual que hacia ti.
+settings.tools.keep_broken=Guardar herramientas rotas
+settings.tools.keep_broken.help=Una herramienta, arma o escudo desgastado del todo se queda en tu bolsa, roto: no se puede equipar hasta que un Repair Kit lo arregle. Sin el mod, desaparece.
+settings.unit.all=Todos
 settings.vicinity.compact=Compacto
 settings.vicinity.compact.help=Cada contenedor muestra sus casillas ocupadas en su propio orden y luego un recuento de las libres, en lugar de cada casilla. La casilla Compacto al pie de la ventana de alrededores también lo cambia.
 settings.vicinity.hold_order=Mantener el orden
@@ -1493,10 +1548,13 @@ unit.caption.inventory=INVENTARIO
 
 unit.closer_by={0} m más cerca
 unit.details=Detalles
+unit.manage=Gestionar
+unit.manage.tip=Moverlo o quitarlo
 unit.more_actions=Más acciones
 unit.opens_in_reach=se abre al alcance
 unit.opens_when_in_reach=se abre cuando estés al alcance
 unit.out_of_reach=fuera de alcance
+unit.place.armed=Clic en el suelo para fijar su puesto. Pulsa de nuevo, clic derecho o Esc para cancelar.
 unit.pockets=Bolsillos
 
 unit.portrait.sheet=Clic para ver su hoja de personaje
@@ -1550,6 +1608,71 @@ unit.state.carried=en brazos
 unit.state.corpse=cadáver
 unit.state.knocked_out=inconsciente
 
+update.back_body={0} vuelve la próxima vez que inicies el juego, en lugar de lo que está instalado ahora.
+update.back_cancel=Cancelar
+update.back_do=Volver
+update.back_title=¿Volver a la versión anterior?
+update.cancel=Cancelar
+update.cancel_pending=Cancelar la actualización
+update.check=Buscar actualizaciones
+update.check_found=Buscar actualizaciones: {0} disponible
+update.checking=Consultando en GitHub el último lanzamiento...
+update.checking_title=Buscando actualizaciones
+update.close=Cerrar
+update.current=No hay ningún lanzamiento de Island UI ni de Island Ex más reciente que el tuyo.
+update.current_title=Estás al día
+update.downloading=Descargando: {0} de {1}
+update.fail_denied=Windows no ha permitido escribir en la carpeta del juego. Inicia el juego una vez como administrador, o instala desde la página del lanzamiento.
+update.fail_digest=El archivo descargado no coincide con la suma de comprobación que indica el lanzamiento, así que se ha descartado.
+update.fail_disk=No hay suficiente espacio libre en el disco para la actualización.
+update.fail_host=El lanzamiento apuntaba a una dirección que no es de GitHub ({0}), así que se ha rechazado.
+update.fail_http=GitHub ha respondido con un error ({0}).
+update.fail_interrupted=La descarga se detuvo antes de terminar.
+update.fail_no_digest=El lanzamiento no indica ninguna suma de comprobación para {0}, así que no se puede verificar y no se ha descargado.
+update.fail_offline=No se ha podido contactar con GitHub. Comprueba tu conexión e inténtalo de nuevo.
+update.fail_rate=GitHub está limitando las peticiones de tu conexión en este momento. Inténtalo de nuevo dentro de una hora o así.
+update.fail_redirects=GitHub ha desviado la descarga por demasiadas direcciones, así que se ha rechazado.
+update.fail_release=La respuesta de GitHub no se ha podido leer como un lanzamiento.
+update.fail_secure=No se ha podido verificar que la conexión con GitHub sea segura, así que se ha rechazado.
+update.fail_timeout=GitHub ha dejado de responder. Inténtalo de nuevo dentro de un rato.
+update.fail_too_big=La descarga es mucho mayor de lo que debería ser un lanzamiento, así que se ha rechazado.
+update.fail_unknown=Algo ha salido mal: {0}
+update.fail_version=El mod dentro del zip no es la versión que indica el lanzamiento.
+update.fail_zip=El zip del lanzamiento tiene una entrada fuera de las carpetas del mod, así que se ha rechazado entero ({0}).
+update.fail_zip_bad=No se ha podido leer el zip del lanzamiento.
+update.failed_title=La actualización se ha detenido
+update.go_back=Volver a {0}
+update.keep_version=Conservar esta versión
+update.keeps=Tus otros mods y tus ajustes se quedan como están. La versión actual se conserva, así que puedes volver a ella.
+update.not_now=Ahora no
+update.note_back=vuelve a {0} en el próximo inicio
+update.note_pending=se actualiza a {0} en el próximo inicio
+update.nothing_changed=No se ha cambiado nada.
+update.notice_back_title=De vuelta en la versión anterior
+update.notice_changed=Los archivos del mod han cambiado desde que se preparó la actualización, así que se ha descartado y no se ha sustituido nada.
+update.notice_damaged=Los archivos preparados estaban dañados, así que no se ha sustituido nada. Busca actualizaciones para intentarlo de nuevo.
+update.notice_failed=No se ha podido instalar la actualización: {0}. Si el mod falla, instálalo de nuevo desde la página del lanzamiento.
+update.notice_interrupted=El último inicio se detuvo a mitad de la instalación, así que se ha restaurado la versión anterior.
+update.notice_no_previous=La versión anterior ya no está, así que no se ha cambiado nada.
+update.notice_not_loaded=La nueva versión no terminó de cargar, así que se ha restaurado la versión anterior. Deshecho: {0}.
+update.notice_swap_failed=No se ha podido sustituir un archivo, así que se ha restaurado la versión anterior.
+update.notice_title=La actualización no se ha completado
+update.notice_went_back=Deshecho: {0}.
+update.offer_title=La versión {0} está disponible
+update.option_failed=Windows no ha permitido escribir en la carpeta del juego, así que Buscar al iniciar sigue como estaba.
+update.option_title=No se ha guardado
+update.ready=La versión {0} está verificada y a la espera. Entra en vigor la próxima vez que inicies el juego; hasta entonces no cambia nada, y el icono del mod muestra el cambio pendiente.
+update.ready_cancel=Aún puedes cancelarla desde el menú del icono.
+update.ready_title=Listo: reinicia el juego para terminar
+update.replaces=La actualización sustituye:
+update.replaces_mod={0} {1} por {2}, en {3}
+update.replaces_stray=y saca la copia sobrante {0} de plugins
+update.sign=versión {0} disponible
+update.startup_off=Buscar al iniciar: desactivado
+update.startup_on=Buscar al iniciar: activado
+update.unpacking=Comprobando y desempaquetando...
+update.update=Actualizar ({0})
+update.working_title=Actualizando a la versión {0}
 use.not_on_you=No puedes usar esto en ti. Arrástralo sobre {0} para dárselo.
 
 use.not_on_you.someone=No puedes usar esto en ti. Arrástralo sobre alguien para dárselo.

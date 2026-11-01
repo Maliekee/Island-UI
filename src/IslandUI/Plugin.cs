@@ -30,7 +30,7 @@ namespace IslandUI
     {
         public const string PluginGuid = "madisland.islandui";
         public const string PluginName = "Island UI";
-        public const string PluginVersion = "0.9.0";
+        public const string PluginVersion = "0.9.1";
 
         internal static ManualLogSource Log;
 
@@ -68,8 +68,9 @@ namespace IslandUI
         {
             Log = Logger;
             Enabled = Config.Bind("General", "Enabled", true,
-                "Turns Island UI on or off. Takes effect the next time the game starts; clicking the mod's icon on the title screen also switches it.");
+                "Turns Island UI on or off. Takes effect the next time the game starts; the menu on the mod's icon on the title screen also switches it.");
             _running = Enabled.Value;
+            Shared.ModUpdate.Install(Assembly.GetExecutingAssembly(), PluginName, PluginVersion);
             Shared.TitleBadge.Install(Assembly.GetExecutingAssembly(), "IslandUI.icon.png", "Island UI", PluginVersion,
                 () => _running, () => Enabled.Value, on =>
                 {
@@ -82,6 +83,7 @@ namespace IslandUI
                 // nothing bound, nothing patched, no objects: Update, LateUpdate and OnDestroy all
                 // ask _running first. That includes QoL/DevLaunch, so -LoadSave does nothing either.
                 Log.LogInfo($"{PluginName} v{PluginVersion} is switched OFF ([General] Enabled) - only the title-screen icon is loaded.");
+                Shared.ModUpdate.Loaded();
                 return;
             }
             Settings.Bind(Config);
@@ -155,6 +157,7 @@ namespace IslandUI
                     mn.inventory.CraftableCheck();
                 }
             });
+            Shared.ModUpdate.Loaded();
         }
 
         private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)

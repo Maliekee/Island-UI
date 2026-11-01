@@ -48,7 +48,7 @@ The game folder is usually `C:\Program Files (x86)\Steam\steamapps\common\Mad Is
 Steam: right-click the game, *Manage*, *Browse local files*). Windows may warn about running
 a downloaded script; the installer is plain text and lives in [`installer/`](installer).
 
-To uninstall by hand, delete `BepInEx/plugins/IslandUI` and `BepInEx/plugins/islandui-art`
+To uninstall by hand, delete `BepInEx/plugins/IslandUI`, `BepInEx/plugins/islandui-art`, and, if you updated from inside the game or turned on Check at startup, `BepInEx/patchers/IslandUpdate` and `BepInEx/island-update`
 (and `BepInEx/plugins/IslandEx` for Island Ex).
 
 </details>

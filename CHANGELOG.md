@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.1
+
+Island UI can now update itself. 0.9.0 cannot, so this one is installed by hand; the fixes for your reports follow in the next release, which is the first update you can take from inside the game.
+
+- **Update from the title screen.** Click a mod's icon on the title screen and choose Check for updates. You see the version, its notes and what will be replaced, and nothing downloads until you press Update. The new version goes in at the next start, and the same menu takes you back to the old one.
+- **Check at startup**, in the same menu, off until you turn it on. Otherwise the mods contact nothing unless you press a button.
+- **Island Ex comes along** when the release has a newer one. An update never adds it to a game without it.
+- **The icon's menu** also holds the mod's on/off switch and a link to its official site.
+- The text 0.9.0 left in English is translated, in all six languages.
+
+### Island Ex 0.2.1
+
+- Updates from the title screen, with Island UI or on its own.
+
 ## 0.9.0
 
 Island UI rebuilt: a new design across nearly every page, in how it works and how it looks, a new combat system, and fundamental changes underneath. This is the design meant for 1.0; it needs playing before it gets that number.

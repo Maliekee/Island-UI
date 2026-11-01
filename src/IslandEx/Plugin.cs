@@ -17,7 +17,7 @@ namespace IslandEx
     {
         public const string PluginGuid = "madisland.islandex";
         public const string PluginName = "Island Ex";
-        public const string PluginVersion = "0.2.0";
+        public const string PluginVersion = "0.2.1";
 
         internal static ManualLogSource Log;
         internal static ConfigEntry<bool> Enabled;
@@ -28,7 +28,7 @@ namespace IslandEx
             // its words follow Island UI's language setting, or the game's (Forgejo #19)
             Shared.Loc.Init("IslandEx", null);
             Enabled = Config.Bind("General", "Enabled", true,
-                "Turns Island Extensions on or off. Off = everything below is as in the unmodded game. Applies live; clicking the mod's icon on the title screen also switches it.");
+                "Turns Island Extensions on or off. Off = everything below is as in the unmodded game. Applies live; the menu on the mod's icon on the title screen also switches it.");
             FXFilter.Bind(Config);
             GrappleHold.Bind(Config);
             KeepFullscreen.Bind(Config);
@@ -43,6 +43,7 @@ namespace IslandEx
             GrappleHold.Apply(harmony);
             // not a Harmony patch: redirects one native import in UnityPlayer.dll
             KeepFullscreen.Install();
+            Shared.ModUpdate.Install(Assembly.GetExecutingAssembly(), PluginName, PluginVersion);
             // live: every feature asks Enabled every time, so running and wanted are the same answer
             Shared.TitleBadge.Install(Assembly.GetExecutingAssembly(), "IslandEx.icon.png", PluginName, PluginVersion,
                 () => Enabled.Value, () => Enabled.Value, on =>
@@ -50,6 +51,7 @@ namespace IslandEx
                     Enabled.Value = on;
                     Log.LogInfo(PluginName + " switched " + (on ? "on" : "off") + " from the title screen.");
                 });
+            Shared.ModUpdate.Loaded();
         }
 
         private void Update()

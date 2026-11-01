@@ -1,11 +1,20 @@
 # Island UI: Simplified Chinese strings, machine-translated from en/strings.txt.
 # Corrections are welcome: edit the right side of a line and keep the key and every {0}.
 
-badge.off=关  -  点击开启
-badge.on=开  -  点击关闭
-badge.turns_off=下次启动时关闭  -  点击取消
-badge.turns_on=下次启动时开启  -  点击取消
+auto.food.off=右键：饿了时自行在此进食
+auto.food.on=自动：饿了且在{0}米内时，你会在此进食。右键停止
+auto.water.off=右键：渴了时自行在此饮水
+auto.water.on=自动：渴了且在{0}米内时，你会在此饮水。右键停止
+badge.keep_off=保持关闭
+badge.keep_on=保持开启
+badge.state_off=关
+badge.state_on=开
+badge.state_turns_off=下次启动时关闭
+badge.state_turns_on=下次启动时开启
 
+badge.turn_off=关闭
+badge.turn_on=开启
+badge.visit_site=访问官方网站
 board.assign.axe=分配  →  斧头挂环
 board.assign.knife=分配  →  小刀挂环
 board.assign.pickaxe=分配  →  镐挂环
@@ -194,6 +203,7 @@ company.head.love=爱意
 company.head.love.help={0}对各人的爱意
 
 company.key.mood_cost=士气 -1
+company.key.others=其他人 +5
 company.key.per_meeting=每次相遇的爱意
 
 company.nights=夜晚
@@ -267,6 +277,20 @@ craft.section.type.tool=工具
 craft.section.type.tool2=工具2
 
 
+dossier.always_run=始终奔跑
+dossier.partners=伴侣
+dossier.partners.creampie=中出
+dossier.partners.creampie.help={0}在{1}体内射精
+dossier.partners.delivery=分娩
+dossier.partners.delivery.help={0}为{1}生下的孩子
+dossier.partners.pregnancy=怀孕
+dossier.partners.pregnancy.help={0}使{1}怀孕
+dossier.partners.rape=强暴
+dossier.partners.rape.help={0}强暴了{1}
+dossier.partners.sex=性行为
+dossier.partners.sex.help={0}与{1}自愿发生的性行为
+dossier.partners.toilet=厕所
+dossier.partners.toilet.help={0}把{1}当作厕所使用
 dossier.personality=性格
 dossier.personality.a_tick=每次结算{0}
 dossier.personality.click=点击查看所有符合的人
@@ -304,6 +328,7 @@ dossier.next_cost=下一级 {0} 点
 dossier.points.other={0}点
 dossier.pregnancies=怀孕数
 dossier.pregnant=怀孕
+dossier.record=记录
 dossier.sex=性行为次数
 dossier.shown_in_world=世界中显示
 dossier.skill_lv=技能等级
@@ -317,6 +342,7 @@ dossier.type.near_one=每靠近一人{0}
 dossier.type.worth_near={0}，每靠近一人{1}
 
 dossier.vitals=状态
+dossier.walk=步行
 dossier.water=水分
 
 drop.cant_take=无法接收此物
@@ -348,6 +374,8 @@ hud.enemy.slain=已击杀
 hud.enemy.fainted=昏厥
 hud.enemy.boss=首领
 
+hud.enemy.target=点击选为目标
+hud.enemy.targeted=你的目标
 hud.roster.unhappy={0}人不满
 hud.roster.unhappy.help=按心情排序以查看原因
 hud.roster.unhappy_near={0}人不满，{1}人濒临反叛
@@ -407,6 +435,10 @@ inv.pocket.that_container=那个容器
 inv.pocket.their_bag=对方的背包
 inv.pocket.your_bag=你的背包
 
+inv.section.backpack=背包
+inv.section.shared=共享背包
+inv.section.storage=储物
+inv.section.worn=穿戴中
 inv.shared_bag=共享背包
 
 inv.slot.acce=配件
@@ -419,6 +451,7 @@ inv.slot.support=辅助
 inv.slot.tool=工具
 inv.slot.under=内衣
 
+inv.slots={0}格
 inv.tab.character=角色
 inv.tab.fight=战斗
 inv.tab.inventory=物品栏
@@ -431,6 +464,7 @@ inv.thing.yours=你的
 inv.thing.yours_lower=你的
 
 inv.tip.always_run=移动时始终奔跑，如同一直按住跑步键。
+inv.tip.always_run.key={0} 也可切换。
 inv.tip.and_so_on={0}等
 inv.tip.at_0=为0时
 inv.tip.at_n=为{0}时
@@ -546,6 +580,7 @@ inv.tip.water.neither=两者都不进行
 inv.tip.water.stun_work=恢复昏厥值和工作
 inv.tip.water.thirst=渴死时，心不起作用。
 
+inv.title=物品栏
 keybind.listening=请按键
 keybind.numpad=小键盘 {0}
 keybind.unbound=未绑定
@@ -601,6 +636,8 @@ links.where.with=和{0}在一起
 
 loc.separator=・
 
+log.always_run.off=始终奔跑：关
+log.always_run.on=始终奔跑：开
 marker.carried=被搬运
 marker.corpse=死尸
 marker.dead=死亡
@@ -854,6 +891,7 @@ observe.unknown.short=?
 orders.action.banish=流放
 orders.action.call=召唤
 
+orders.chase_range.line=超出该范围后追击敌人多远，然后折返
 orders.combat=战役
 
 orders.combat.aggressive=攻击型
@@ -879,6 +917,8 @@ orders.following=跟随
 orders.following.no=否
 orders.following.yes=是
 
+orders.set_place.line=点击地面移动待机位置
+orders.territory.line=在待机位置周围活动的范围
 orders.warp_to_place=回待机位置
 orders.job=工作
 
@@ -1090,6 +1130,8 @@ reach.chip.shown_stack.help=快速堆叠键也可向此存放。点击隐藏。
 
 reach.compact=紧凑
 reach.container=容器
+reach.free=空余
+reach.identity.select=点击选中。
 reach.only_filtered=仅限符合筛选条件的物品。
 reach.stack=堆叠
 reach.stack.help=列出的箱子中已有的物品会存入该箱子。收藏的物品保留。
@@ -1287,6 +1329,8 @@ settings.page.hotkeys.about=点击一个按键，然后按下新的按键。Esc 
 settings.page.notices=提示
 settings.page.notices.about=屏幕如何告诉你发生了什么：状态过低，以及什么飞向哪里。
 settings.page.sheets=档案
+settings.page.tools=工具
+settings.page.tools.about=工具耐久耗尽后会怎样。
 settings.page.vicinity=周边
 settings.page.steering=绕行
 settings.page.steering.about=你的人和敌人如何绕过挡路的东西。
@@ -1313,6 +1357,15 @@ settings.target.always_neutral_markers=始终显示中立者
 settings.target.always_neutral_markers.help=屏幕上既不属于你也不敌对的每个人都带有战斗标记，无论是否在战斗中，生命条为琥珀色。对他们而言取代上方的数量。
 settings.target.always_friend_markers=始终显示你的人
 settings.target.always_friend_markers.help=屏幕上你的每个人都带有战斗标记，无论是否在战斗中，生命条为绿色。对他们而言取代上方的数量。
+settings.target.boss_first=首领优先
+settings.target.boss_first.help=战斗中，从首领战开始的那一刻起，战斗铭牌和标记优先给首领，其召唤物排在最后，因此攻击召唤物不会让铭牌离开首领。各组之内，先是你最后攻击的，然后是正在攻击你的敌人中最近的。\n关闭  你最后攻击的，无论是谁
+settings.target.kill_linger=击倒后铭牌停留
+settings.target.kill_linger.help=战斗铭牌在被你击倒的敌人身上停留多久：其标签显示“已击杀”，若只是昏厥，则头像保持当时的样子。仍在战斗中的人会更早接过铭牌。
+settings.target.npc_use_flight=你的人吃喝
+settings.target.npc_use_flight.help=你的人从食物箱进食或从井里喝水时，食物或水的图标会从那里飞向他们，就像飞向你一样。
+settings.tools.keep_broken=保留损坏的工具
+settings.tools.keep_broken.help=耐久耗尽的工具、武器或盾牌会以损坏状态留在你的背包里：在用修理工具修好之前无法装备。未安装模组时，它会直接消失。
+settings.unit.all=全部
 settings.vicinity.compact=紧凑
 settings.vicinity.compact.help=每个容器按自身顺序显示已占用的格子，然后显示空余格子的数量，而不是显示每个格子。周边窗口底部的“紧凑”勾选框也可切换此设置。
 settings.vicinity.hold_order=保持顺序
@@ -1478,10 +1531,13 @@ unit.caption.inventory=物品栏
 
 unit.closer_by=再靠近{0}米
 unit.details=详细
+unit.manage=管理
+unit.manage.tip=移动或移除
 unit.more_actions=更多动作
 unit.opens_in_reach=在范围内打开
 unit.opens_when_in_reach=进入范围后打开
 unit.out_of_reach=不在范围内
+unit.place.armed=点击地面设置待机位置。再按一次、右键或 Esc 取消。
 unit.pockets=口袋
 
 unit.portrait.sheet=点击查看角色面板
@@ -1535,6 +1591,71 @@ unit.state.carried=被搬运
 unit.state.corpse=死尸
 unit.state.knocked_out=昏倒
 
+update.back_body=下次启动游戏时将恢复{0}，取代当前安装的版本。
+update.back_cancel=取消
+update.back_do=回退
+update.back_title=回退到上一版本？
+update.cancel=取消
+update.cancel_pending=取消更新
+update.check=检查更新
+update.check_found=检查更新：{0} 可用
+update.checking=正在向 GitHub 查询最新发布版本...
+update.checking_title=正在检查更新
+update.close=关闭
+update.current=没有比你当前版本更新的 Island UI 或 Island Ex 发布版本。
+update.current_title=已是最新版本
+update.downloading=正在下载：{0} / {1}
+update.fail_denied=Windows 拒绝写入游戏文件夹。请以管理员身份启动一次游戏，或从发布页面安装。
+update.fail_digest=下载的文件与发布版本列出的校验和不符，已被丢弃。
+update.fail_disk=磁盘可用空间不足，无法更新。
+update.fail_host=发布版本指向的地址不是 GitHub 的地址（{0}），已被拒绝。
+update.fail_http=GitHub 返回了错误（{0}）。
+update.fail_interrupted=下载在完成前中断了。
+update.fail_no_digest=发布版本没有列出{0}的校验和，无法验证，因此未下载。
+update.fail_offline=无法连接 GitHub。请检查网络连接后重试。
+update.fail_rate=GitHub 目前正在限制来自你的网络的请求。请过一小时左右再试。
+update.fail_redirects=GitHub 将下载重定向了太多次，已被拒绝。
+update.fail_release=无法将 GitHub 的回复读取为发布版本。
+update.fail_secure=无法确认与 GitHub 的连接安全，已被拒绝。
+update.fail_timeout=GitHub 停止了响应。请稍后再试。
+update.fail_too_big=下载内容远大于正常发布版本的大小，已被拒绝。
+update.fail_unknown=出了点问题：{0}
+update.fail_version=压缩包内的模组版本与发布版本标注的不符。
+update.fail_zip=发布版本的压缩包含有模组文件夹之外的条目，已全部拒绝（{0}）。
+update.fail_zip_bad=无法读取发布版本的压缩包。
+update.failed_title=更新已中止
+update.go_back=回退到{0}
+update.keep_version=保留此版本
+update.keeps=你的其他模组和设置保持不变。当前版本会被保留，因此你可以回退。
+update.not_now=暂不
+update.note_back=下次启动时回退到{0}
+update.note_pending=下次启动时更新到{0}
+update.nothing_changed=未做任何更改。
+update.notice_back_title=已回到上一版本
+update.notice_changed=准备好更新后模组文件发生了变化，因此已放弃更新，未替换任何文件。
+update.notice_damaged=准备好的文件已损坏，未替换任何文件。请检查更新后重试。
+update.notice_failed=无法安装更新：{0}。如果模组运行异常，请从发布页面重新安装。
+update.notice_interrupted=上次启动在安装途中中断，已恢复上一版本。
+update.notice_no_previous=上一版本已不存在，未做任何更改。
+update.notice_not_loaded=新版本未能完成加载，已恢复上一版本。已撤销：{0}。
+update.notice_swap_failed=有文件无法替换，已恢复上一版本。
+update.notice_title=更新未能完成
+update.notice_went_back=已撤销：{0}。
+update.offer_title=版本 {0} 可用
+update.option_failed=Windows 拒绝写入游戏文件夹，因此“启动时检查”保持原样。
+update.option_title=未能保存
+update.ready=版本 {0} 已验证，正在等待生效。它将在下次启动游戏时接管；在此之前一切不变，模组图标会显示待生效的更改。
+update.ready_cancel=你仍可从图标菜单中取消。
+update.ready_title=已就绪：重启游戏以完成
+update.replaces=更新将替换：
+update.replaces_mod={0} {1} 替换为 {2}，位于{3}
+update.replaces_stray=并将多余的副本{0}移出 plugins
+update.sign=版本 {0} 可用
+update.startup_off=启动时检查：关
+update.startup_on=启动时检查：开
+update.unpacking=正在校验并解压...
+update.update=更新（{0}）
+update.working_title=正在更新到版本 {0}
 use.not_on_you=无法对自己使用。将其拖到{0}身上即可交给对方。
 
 use.not_on_you.someone=无法对自己使用。将其拖到某人身上即可交给对方。
