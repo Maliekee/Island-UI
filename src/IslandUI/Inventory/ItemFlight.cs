@@ -33,7 +33,9 @@ namespace IslandUI
         //
         // `count` is signed and the format is vanilla's own: positive prints "+12",
         // negative "-12". Items leaving your bags are negative, which is the
-        // game's vocabulary rather than ours.
+        // game's vocabulary rather than ours. Zero prints nothing: a tile with no
+        // count. It is said here because an empty third section of that format
+        // does not mean empty, it falls back to the first.
         internal static GameObject Spawn(UIManager ui, ItemData item, int count)
         {
             if (ui == null || ui.getItemIcon == null || ui.getItemPanel == null || item == null)
@@ -54,7 +56,7 @@ namespace IslandUI
             Text text = toast.GetComponentInChildren<Text>(true);
             if (text != null)
             {
-                text.text = count.ToString("+#;-#;");
+                text.text = count == 0 ? string.Empty : count.ToString("+#;-#;");
             }
             toast.SetActive(true);
             return toast;

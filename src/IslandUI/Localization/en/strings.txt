@@ -363,11 +363,13 @@ dossier.walk=WALK
 dossier.water=WATER
 
 drop.cant_take=can't take this
+drop.give_many_to=give {1} to  →  {0}
 drop.give_to=give to  →  {0}
 drop.out_of_reach=out of reach
 drop.them=them
 drop.this_chest=this chest
 drop.use_on=use on  →  {0}
+drop.walk_give_many_to=walk over and give {1} to  →  {0}
 drop.walk_give_to=walk over and give to  →  {0}
 drop.walk_use_on=walk over and use on  →  {0}
 
@@ -1294,6 +1296,13 @@ settings.apply_note=Changes apply immediately.
 settings.camera.zoom_out=Zoom out
 settings.camera.zoom_out.help=How far the mouse wheel pulls the camera back, against the game's own farthest. The camera draws as far as it stands back, so a far zoom costs frames.\n100%  as in the unmodded game
 
+settings.crafting.benches=Other workbenches
+settings.crafting.benches.help=What lies in your other workbenches' strips.
+settings.crafting.chests=Chests and boxes
+settings.crafting.chests.help=Your wooden chests, boxes and the mine's output.
+settings.crafting.extend=Extend supported storages
+settings.crafting.extend.help=Crafting also uses the kinds below, nearby, on top of your material storages. At a bench, within 5 m of it; without one, within your reach. Unmodded, only material storages count, and only at a bench.
+
 settings.cursor.style.arrow=Arrow
 settings.cursor.style.arrow_bold=ArrowBold
 settings.cursor.style.carved=Carved
@@ -1362,6 +1371,8 @@ settings.page.camera=Camera
 settings.page.camera.about=How far back the camera can stand.
 settings.page.combat=Combat
 settings.page.combat.about=Who carries a marker in a fight, and whom the plaque follows.
+settings.page.crafting=Crafting
+settings.page.crafting.about=What crafting may take from beyond your material storages.
 settings.page.cursor=Cursor
 settings.page.effects=Effects
 settings.page.effects.about=Switch an effect on to hide it. An effect is listed once the game has shown it.

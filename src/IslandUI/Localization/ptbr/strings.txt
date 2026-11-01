@@ -350,11 +350,13 @@ dossier.walk=CAMINHAR
 dossier.water=ÁGUA
 
 drop.cant_take=não pode receber isto
+drop.give_many_to=dar {1} a  →  {0}
 drop.give_to=dar a  →  {0}
 drop.out_of_reach=fora de alcance
 drop.them=essa pessoa
 drop.this_chest=este baú
 drop.use_on=usar em  →  {0}
+drop.walk_give_many_to=ir até lá e dar {1} a  →  {0}
 drop.walk_give_to=ir até lá e dar a  →  {0}
 drop.walk_use_on=ir até lá e usar em  →  {0}
 
@@ -1269,6 +1271,12 @@ settings.apply_note=As mudanças valem na hora.
 
 settings.camera.zoom_out=Afastar
 settings.camera.zoom_out.help=Quanto a roda do mouse afasta a câmera, comparado ao máximo do próprio jogo. A câmera desenha tão longe quanto se afasta, então um zoom distante custa quadros.\n100%  como no jogo sem mods
+settings.crafting.benches=Outras bancadas
+settings.crafting.benches.help=O que está nas faixas das suas outras bancadas.
+settings.crafting.chests=Baús e caixas
+settings.crafting.chests.help=Seus baús de madeira, caixas e a produção da mina.
+settings.crafting.extend=Ampliar os depósitos aceitos
+settings.crafting.extend.help=A fabricação também usa os tipos abaixo que estiverem por perto, além dos seus depósitos de material. Em uma bancada, a até 5 m dela; sem bancada, ao seu alcance. Sem o mod, só os depósitos de material contam, e só em uma bancada.
 settings.cursor.style.arrow=Seta
 settings.cursor.style.arrow_bold=Seta grossa
 settings.cursor.style.carved=Entalhado
@@ -1336,6 +1344,8 @@ settings.page.camera=Câmera
 settings.page.camera.about=Até onde a câmera pode se afastar.
 settings.page.combat=Combate
 settings.page.combat.about=Quem leva um marcador numa luta e quem a placa acompanha.
+settings.page.crafting=Fabricação
+settings.page.crafting.about=O que a fabricação pode usar além dos seus depósitos de material.
 settings.page.cursor=Cursor
 settings.page.effects=Efeitos
 settings.page.effects.about=Ligue um efeito para ocultá-lo. Um efeito é listado depois que o jogo o mostrou.

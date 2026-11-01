@@ -350,11 +350,13 @@ dossier.walk=GEHEN
 dossier.water=WASSER
 
 drop.cant_take=kann das nicht nehmen
+drop.give_many_to={1} geben an  →  {0}
 drop.give_to=geben an  →  {0}
 drop.out_of_reach=außer Reichweite
 drop.them=sie
 drop.this_chest=diese Truhe
 drop.use_on=anwenden auf  →  {0}
+drop.walk_give_many_to=hingehen und {1} geben an  →  {0}
 drop.walk_give_to=hingehen und geben an  →  {0}
 drop.walk_use_on=hingehen und anwenden auf  →  {0}
 
@@ -1269,6 +1271,12 @@ settings.apply_note=Änderungen gelten sofort.
 
 settings.camera.zoom_out=Herauszoomen
 settings.camera.zoom_out.help=Wie weit das Mausrad die Kamera zurückzieht, gemessen an der weitesten Stufe des Spiels. Die Kamera zeichnet so weit, wie sie zurücksteht, ein weiter Zoom kostet also Bilder pro Sekunde.\n100%  wie im unveränderten Spiel
+settings.crafting.benches=Andere Werkbänke
+settings.crafting.benches.help=Was in den Leisten deiner anderen Werkbänke liegt.
+settings.crafting.chests=Truhen und Kisten
+settings.crafting.chests.help=Deine Holztruhen, Kisten und die Ausgabe der Mine.
+settings.crafting.extend=Unterstützte Lager erweitern
+settings.crafting.extend.help=Die Herstellung nutzt zusätzlich zu deinen Materiallagern auch die unten gewählten Arten in der Nähe. An einer Werkbank im Umkreis von 5 m um sie, ohne Werkbank in deiner Reichweite. Ohne Mod zählen nur Materiallager, und nur an einer Werkbank.
 settings.cursor.style.arrow=Pfeil
 settings.cursor.style.arrow_bold=Pfeil fett
 settings.cursor.style.carved=Geschnitzt
@@ -1336,6 +1344,8 @@ settings.page.camera=Kamera
 settings.page.camera.about=Wie weit die Kamera zurücktreten kann.
 settings.page.combat=Kampf
 settings.page.combat.about=Wer im Kampf eine Markierung trägt und wem die Plakette folgt.
+settings.page.crafting=Herstellung
+settings.page.crafting.about=Was die Herstellung über deine Materiallager hinaus nutzen darf.
 settings.page.cursor=Zeiger
 settings.page.effects=Effekte
 settings.page.effects.about=Schalte einen Effekt ein, um ihn auszublenden. Ein Effekt erscheint in der Liste, sobald das Spiel ihn gezeigt hat.

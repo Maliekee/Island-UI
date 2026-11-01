@@ -15,6 +15,8 @@ namespace IslandUI
     //                                                drop it (InventoryWindow.Move)
     //   Shift+click   an action bar slot             remove the action
     //   drag          an action bar slot             move the action (ActionBar; shift too with ActionBarShiftToMove)
+    //   Shift+right-click, or Shift on a drop on someone: food and consumables, up
+    //                 to ten at once (ItemUse.UsesAsked, the game's own shortcut)
     //
     // Ctrl+click on a favourite moves nothing: a favourite stays in your bags
     // (FavouriteRules), so Ctrl names why instead of where (Verb.Kept).

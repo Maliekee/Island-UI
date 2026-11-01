@@ -726,6 +726,11 @@ namespace IslandUI
                     Name = "Tools", Title = Shared.Loc.Get("settings.page.tools", "Tools"),
                     About = Shared.Loc.Get("settings.page.tools.about", "What happens to a tool when it wears out."),
                 });
+                Pages.Add(new Page
+                {
+                    Name = "Crafting", Title = Shared.Loc.Get("settings.page.crafting", "Crafting"),
+                    About = Shared.Loc.Get("settings.page.crafting.about", "What crafting may take from beyond your material storages."),
+                });
                 return;
             }
             // SEVEN PAGES, EACH IN GROUPS (Forgejo #155): nine slips crowded the
@@ -908,6 +913,7 @@ namespace IslandUI
                 case "Weather":
                 case "Camera":
                 case "Tools":
+                case "Crafting":
                     y = ExRows(r, y, w, p.Name);
                     break;
             }
@@ -990,7 +996,7 @@ namespace IslandUI
             return y;
         }
 
-        // Island Ex's Struggle, Window, Weather, Camera and Tools pages, from its settings file, the same way.
+        // Island Ex's Struggle, Window, Weather, Camera, Tools and Crafting pages, from its settings file, the same way.
         private static float ExRows(Transform r, float y, float w, string page)
         {
             BepInEx.Configuration.ConfigFile cfg = PluginConfig(ExGuid);
@@ -1046,6 +1052,29 @@ namespace IslandUI
                 {
                     y = ToggleRow(r, y, w, Shared.Loc.Get("settings.tools.keep_broken", "Keep broken tools"), broken, null,
                         Shared.Loc.Get("settings.tools.keep_broken.help", "A tool, weapon or shield worn to nothing stays in your bag, broken: it cannot be equipped until a repair kit mends it. Unmodded, it vanishes."));
+                }
+                return y;
+            }
+            if (page == "Crafting")
+            {
+                BepInEx.Configuration.ConfigEntry<bool> on, chests, benches;
+                cfg.TryGetEntry("Crafting", "Extend Supported Storages", out on);
+                cfg.TryGetEntry("Crafting", "Chests And Boxes", out chests);
+                cfg.TryGetEntry("Crafting", "Other Workbenches", out benches);
+                if (on != null)
+                {
+                    y = ToggleRow(r, y, w, Shared.Loc.Get("settings.crafting.extend", "Extend supported storages"), on, null,
+                        Shared.Loc.Get("settings.crafting.extend.help", "Crafting also uses the kinds below, nearby, on top of your material storages. At a bench, within 5 m of it; without one, within your reach. Unmodded, only material storages count, and only at a bench."));
+                }
+                if (chests != null)
+                {
+                    y = ToggleRow(r, y, w, Shared.Loc.Get("settings.crafting.chests", "Chests and boxes"), chests, on,
+                        Shared.Loc.Get("settings.crafting.chests.help", "Your wooden chests, boxes and the mine's output."));
+                }
+                if (benches != null)
+                {
+                    y = ToggleRow(r, y, w, Shared.Loc.Get("settings.crafting.benches", "Other workbenches"), benches, on,
+                        Shared.Loc.Get("settings.crafting.benches.help", "What lies in your other workbenches' strips."));
                 }
                 return y;
             }

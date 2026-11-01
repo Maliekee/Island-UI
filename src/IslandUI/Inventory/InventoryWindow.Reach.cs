@@ -475,7 +475,7 @@ namespace IslandUI
 
         private static CommonStates BagOwner(InventorySlot container)
         {
-            return ContainerPolicy.IsCharacterBag(container)
+            return Shared.ContainerKinds.IsCharacterBag(container)
                 ? container.transform.parent.GetComponent<CommonStates>() : null;
         }
 

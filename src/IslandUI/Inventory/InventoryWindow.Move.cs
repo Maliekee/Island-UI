@@ -203,7 +203,7 @@ namespace IslandUI
             {
                 // vanilla's gate on a person's bag: no oversized carry items
                 // (NPCToNPCCheck, caution 30)
-                if (ContainerPolicy.IsCharacterBag(route.Into) && npcs != null && npcs.CheckCarrySize(key))
+                if (Shared.ContainerKinds.IsCharacterBag(route.Into) && npcs != null && npcs.CheckCarrySize(key))
                 {
                     Refuse(30);
                     return;

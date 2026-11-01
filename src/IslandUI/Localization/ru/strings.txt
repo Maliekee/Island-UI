@@ -354,11 +354,13 @@ dossier.walk=ШАГОМ
 dossier.water=ВОДА
 
 drop.cant_take=не может это взять
+drop.give_many_to=отдать {1} шт.  →  {0}
 drop.give_to=отдать  →  {0}
 drop.out_of_reach=вне досягаемости
 drop.them=персонаж
 drop.this_chest=этот сундук
 drop.use_on=применить  →  {0}
+drop.walk_give_many_to=подойти и отдать {1} шт.  →  {0}
 drop.walk_give_to=подойти и отдать  →  {0}
 drop.walk_use_on=подойти и применить  →  {0}
 
@@ -1286,6 +1288,12 @@ settings.apply_note=Изменения применяются сразу.
 
 settings.camera.zoom_out=Отдаление
 settings.camera.zoom_out.help=Насколько колесо мыши отодвигает камеру по сравнению с пределом самой игры. Камера рисует так далеко, как отодвинута, поэтому дальний зум стоит кадров.\n100%  как в игре без модов
+settings.crafting.benches=Другие верстаки
+settings.crafting.benches.help=То, что лежит в полосах ваших других верстаков.
+settings.crafting.chests=Сундуки и ящики
+settings.crafting.chests.help=Ваши деревянные сундуки, ящики и выход шахты.
+settings.crafting.extend=Расширить список хранилищ
+settings.crafting.extend.help=Создание также использует типы ниже, если они рядом, в дополнение к вашим хранилищам материалов. У верстака: в пределах 5 м от него; без верстака: в пределах вашей досягаемости. Без мода считаются только хранилища материалов и только у верстака.
 settings.cursor.style.arrow=Стрелка
 settings.cursor.style.arrow_bold=Жирная стрелка
 settings.cursor.style.carved=Резной
@@ -1353,6 +1361,8 @@ settings.page.camera=Камера
 settings.page.camera.about=Как далеко может отодвинуться камера.
 settings.page.combat=Бой
 settings.page.combat.about=Кто носит маркер в бою и за кем следует табличка.
+settings.page.crafting=Создание
+settings.page.crafting.about=Что создание может брать помимо ваших хранилищ материалов.
 settings.page.cursor=Курсор
 settings.page.effects=Эффекты
 settings.page.effects.about=Включите эффект, чтобы скрыть его. Эффект появляется в списке, когда игра его покажет.

@@ -41,7 +41,7 @@ namespace IslandUI
             public InventorySlot.Type Type;
             public string Breed = "-";
             public string Trap = "-";
-            public ContainerPolicy.Engine Engine;
+            public Shared.ContainerKinds.Engine Engine;
             public int Slots;
             public int Count;
             public int Owned;
@@ -79,7 +79,7 @@ namespace IslandUI
                 var info = c.GetComponent<ItemInfo>();
                 var breed = c.GetComponent<BreedInfo>();
                 string key = info != null ? info.itemKey : "(no ItemInfo)";
-                ContainerPolicy.Engine engine = ContainerPolicy.EngineOf(c);
+                Shared.ContainerKinds.Engine engine = Shared.ContainerKinds.EngineOf(c);
                 string id = key + "|" + c.type + "|"
                     + (breed != null ? breed.breedType.ToString() : "-") + "|"
                     + c.slots.Length;
@@ -148,7 +148,7 @@ namespace IslandUI
                 // every cage in the base and would go on flagging them now that
                 // they are correct.
                 bool leak = r.InReach && !r.Intercepted
-                    && r.Engine != ContainerPolicy.Engine.Breed;
+                    && r.Engine != Shared.ContainerKinds.Engine.Breed;
                 if (leak && r.Owned > 0)
                 {
                     leaks++;

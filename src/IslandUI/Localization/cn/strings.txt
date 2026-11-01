@@ -346,11 +346,13 @@ dossier.walk=步行
 dossier.water=水分
 
 drop.cant_take=无法接收此物
+drop.give_many_to=交给{1}个  →  {0}
 drop.give_to=交给  →  {0}
 drop.out_of_reach=不在范围内
 drop.them=对方
 drop.this_chest=这个箱子
 drop.use_on=用于  →  {0}
+drop.walk_give_many_to=走过去交给{1}个  →  {0}
 drop.walk_give_to=走过去交给  →  {0}
 drop.walk_use_on=走过去用于  →  {0}
 
@@ -1252,6 +1254,12 @@ settings.apply_note=更改立即生效。
 
 settings.camera.zoom_out=拉远
 settings.camera.zoom_out.help=鼠标滚轮能把镜头拉多远，相对于游戏自身的最远距离。镜头拉多远就绘制多远，所以拉得很远会降低帧数。\n100%  与原版游戏相同
+settings.crafting.benches=其他工作台
+settings.crafting.benches.help=你其他工作台栏里的物品。
+settings.crafting.chests=箱子
+settings.crafting.chests.help=你的木箱、各种箱子，以及采矿场的产出。
+settings.crafting.extend=扩展可用储物
+settings.crafting.extend.help=除材料储物外，制作时也会使用附近下列种类的储物。在工作台旁时为其5米内，没有工作台时为你的可及范围内。未安装模组时，只有材料储物可用，且只能在工作台使用。
 settings.cursor.style.arrow=箭头
 settings.cursor.style.arrow_bold=粗箭头
 settings.cursor.style.carved=雕刻
@@ -1319,6 +1327,8 @@ settings.page.camera=镜头
 settings.page.camera.about=镜头能拉多远。
 settings.page.combat=战斗
 settings.page.combat.about=战斗中谁带有标记，以及铭牌跟随谁。
+settings.page.crafting=制作
+settings.page.crafting.about=制作时除材料储物外还能取用什么。
 settings.page.cursor=光标
 settings.page.effects=特效
 settings.page.effects.about=打开某个特效的开关即可隐藏它。特效在游戏中出现过一次后才会列出。

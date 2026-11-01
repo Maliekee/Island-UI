@@ -1,3 +1,4 @@
+using HarmonyLib;
 using UnityEngine;
 
 namespace IslandUI
@@ -100,6 +101,83 @@ namespace IslandUI
             }
             Plugin.Log.LogInfo("Use: " + slot.itemKey + " refused on you");
             return true;
+        }
+
+        // THE GAME'S SHIFT + RIGHT-CLICK (ItemSlot.OnPointerClick): food and
+        // consumables are used up to ten times at once, while you stand still - Shift
+        // is also the run key. It lives here so that it means the same on every path
+        // that asks: a right-click, and a drop on someone (D141), which is how a
+        // thing is given now that a plain use is yours.
+        private const int ManyUses = 10;
+
+        /// <summary>
+        /// How many uses a press on <paramref name="slot"/> asks for right now: one,
+        /// or with Shift down up to ten, never more than the stack.
+        /// </summary>
+        internal static int UsesAsked(ManagersScript mn, ItemSlot slot)
+        {
+            PlayerMove you = mn != null && mn.gameMN != null ? mn.gameMN.pMove : null;
+            ItemData data = slot != null && !string.IsNullOrEmpty(slot.itemKey) && mn.itemMN != null
+                ? mn.itemMN.FindItem(slot.itemKey) : null;
+            return ClickMap.Shift && data != null && you != null && !you.wasd
+                && mn.inventory != null && mn.inventory.IsContinuousUsable(data.itemType)
+                ? Mathf.Clamp(slot.stack, 1, ManyUses) : 1;
+        }
+
+        /// <summary>
+        /// <see cref="Use"/>, up to <paramref name="uses"/> times. It ends where the
+        /// stack does, and at the first use that did not spend one: a full food box,
+        /// or a refusal, which vanilla would repeat out loud for the rest of its ten.
+        /// </summary>
+        internal static bool UseMany(ManagersScript mn, ItemSlot slot, int vanillaSlotId,
+            System.Action<System.Action> aim, bool mayLeaveStaged, int uses)
+        {
+            string key = slot != null ? slot.itemKey : null;
+            int held = InventoryWindow.CountHeld(key, slot);
+            bool fired = Use(mn, slot, vanillaSlotId, aim, mayLeaveStaged);
+            try
+            {
+                _quiet = true;
+                for (int i = 1; fired && i < uses && slot.itemKey == key; i++)
+                {
+                    int now = InventoryWindow.CountHeld(key, slot);
+                    if (now >= held)
+                    {
+                        break;
+                    }
+                    held = now;
+                    Use(mn, slot, vanillaSlotId, aim, mayLeaveStaged);
+                }
+            }
+            finally
+            {
+                _quiet = false;
+            }
+            return fired;
+        }
+
+        // TEN USES, ONE SOUND. Vanilla's own ten each play theirs in the same frame,
+        // stacked into one loud hit: the first use is heard and the rest are silent.
+        // A use plays its sound before its first yield (UseFood, UseConsumables), so
+        // the flag around the calls covers them.
+        private static bool _quiet;
+
+        [HarmonyPatch(typeof(SoundManager))]
+        private static class QuietUses
+        {
+            [HarmonyPrefix]
+            [HarmonyPatch(nameof(SoundManager.GoSound))]
+            private static bool Flat()
+            {
+                return !_quiet;
+            }
+
+            [HarmonyPrefix]
+            [HarmonyPatch(nameof(SoundManager.Go3DSound))]
+            private static bool Spatial()
+            {
+                return !_quiet;
+            }
         }
 
         /// <summary>

@@ -559,6 +559,33 @@ namespace IslandUI
             return name == "status" || name == "position" || name == "order" || name == "talkedit";
         }
 
+        // A TRADER IS NO ONE'S, AND STILL HAS DOORS (Forgejo #208). Employ None, so
+        // the stranger's rule left the dock empty while vanilla's panel, which holds
+        // the three shops, stood veiled: the click opened the first shop and Token
+        // shop and Token shop 2 had no way in. Vanilla's menu is up for a stranger
+        // only there (NPCMenuOpen refuses anyone not Employed; CheckFriendlyNPC
+        // lights the shops for a ShopInfo), so what it lit is read, doors only -
+        // a trader's bag is its stock, and it stays shut (PocketsOpen).
+        private static void ReadShopDoors(CommonStates who)
+        {
+            UIManager ui = _mn.uiMN;
+            if (ui == null || ui.npcPanel == null || !ui.npcPanel.activeSelf || !ReferenceEquals(_mn.gameMN.menuNPC, who))
+            {
+                return;
+            }
+            TargetVerbs.Read(_mn, who);
+            IList<TargetVerbs.Verb> live = TargetVerbs.Current;
+            bool near = InReach(who);
+            int next = ActRow.ShapeSockets;
+            for (int i = 0; i < live.Count; i++)
+            {
+                if (System.Array.IndexOf(UnitDoors, live[i].Name) >= 0)
+                {
+                    _unitRow.Set(next++, UnitSlot(who, live[i], near));
+                }
+            }
+        }
+
         private static void ReadUnitActs(CommonStates who)
         {
             _unitRow.Clear();
@@ -576,6 +603,10 @@ namespace IslandUI
                 if (ReachRule.Body(who))
                 {
                     ReadBodyActs(who);
+                }
+                else
+                {
+                    ReadShopDoors(who);
                 }
                 LayoutUnit();
                 _unitRow.Show(_unitRow.Any);

@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.9.2
+
+The fixes for your reports. If you're on 0.9.1, this is the first update you can take from inside the game.
+
+- **The trader's token shops.** Token shop and Token shop 2 are on the dock, so the candy and chocolate shops can be reached again.
+- **Shift + right-click** uses food and consumables up to ten times at once again, and fills a food box the same way. It stops when the box is full.
+- **Giving several.** Hold Shift on a drop to give someone up to ten. The items fan out from your hand and fly to them together.
+- **One sound for ten uses,** where the game plays all ten on top of each other.
+- **Fish tanks** have the wooden window, with Move and Remove in reach.
+- A rare error on the target marker's door tag is gone.
+
+### Island Ex 0.2.2
+
+- **Crafting from nearby chests**, off by default, on the new Crafting page. Turn on Extend supported storages, and crafting also uses your chests and boxes nearby: within 5 m of a bench, or within your reach without one. Other workbenches have a switch of their own.
+
 ## 0.9.1
 
 Island UI can now update itself. 0.9.0 cannot, so this one is installed by hand; the fixes for your reports follow in the next release, which is the first update you can take from inside the game.

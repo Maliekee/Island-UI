@@ -85,7 +85,7 @@ namespace IslandUI
                 // a QUANTITY - the wrong-reason case the prop census found. They
                 // resolve to the PROP instead, and the sheet draws the level.
                 if (chest != null && chest.slots != null && chest.slots.Length > 0
-                    && !ContainerPolicy.IsWrecked(chest) && !IsLevelProp(chest))
+                    && !Shared.ContainerKinds.IsWrecked(chest) && !IsLevelProp(chest))
                 {
                     return chest;
                 }
@@ -98,7 +98,7 @@ namespace IslandUI
                 // have containers, so they were returned above or refused by
                 // IsReplaceable, and either way they never reach this line.
                 if (chest == null || chest.slots == null || chest.slots.Length == 0
-                    || ContainerPolicy.IsWrecked(chest) || IsLevelProp(chest))
+                    || Shared.ContainerKinds.IsWrecked(chest) || IsLevelProp(chest))
                 {
                     ItemInfo prop = tmpProp.GetComponent<ItemInfo>();
                     if (prop != null && !string.IsNullOrEmpty(prop.itemKey))

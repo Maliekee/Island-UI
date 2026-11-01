@@ -172,7 +172,11 @@ namespace IslandUI
                 return;
             }
             _doorTagShown = false;
-            _doorPlate.gameObject.SetActive(false);
+            // gone with the marker it was built on; EnsureDoorTag makes it again
+            if (_doorPlate != null)
+            {
+                _doorPlate.gameObject.SetActive(false);
+            }
         }
 
         // after PlaceWorldMarker, which kept DoorTagExtra free under the marker

@@ -232,7 +232,7 @@ namespace IslandUI
         private static int BenchPanel(ItemInfo prop)
         {
             InventorySlot slot = prop != null ? prop.GetComponent<InventorySlot>() : null;
-            return slot != null && slot.type == InventorySlot.Type.Bench && !ContainerPolicy.IsWrecked(slot)
+            return slot != null && slot.type == InventorySlot.Type.Bench && !Shared.ContainerKinds.IsWrecked(slot)
                 ? AggregatedCrafting.PanelOf(prop.itemKey) : 0;
         }
 
@@ -303,7 +303,7 @@ namespace IslandUI
                 {
                     sources.AddRange(yours);
                 }
-                bool intoBag = ContainerPolicy.IsCharacterBag(chest);
+                bool intoBag = Shared.ContainerKinds.IsCharacterBag(chest);
                 for (int i = 0; i < sources.Count; i++)
                 {
                     string key = sources[i] != null ? sources[i].itemKey : null;

@@ -661,7 +661,8 @@ namespace IslandUI
             {
                 return;   // it does nothing for you, and the hint says how to give it
             }
-            if (!ItemUse.Use(_mn, slot, cell.VanillaSlotId, use => ItemUse.OnYou(_mn, use), mine))
+            int uses = HandEmpty() ? ItemUse.UsesAsked(_mn, slot) : 1;
+            if (!ItemUse.UseMany(_mn, slot, cell.VanillaSlotId, use => ItemUse.OnYou(_mn, use), mine, uses))
             {
                 // Refused rather than done, and it must SAY so — a silent no-op is
                 // the bug this branch was. Caution 34 is the game's own "not like

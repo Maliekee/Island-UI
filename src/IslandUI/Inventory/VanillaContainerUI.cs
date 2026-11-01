@@ -129,7 +129,7 @@ namespace IslandUI
             // twenty slots are plain storage with a launcher standing in front.
             if (container.type == InventorySlot.Type.Edit)
             {
-                return ContainerPolicy.IsCloset(container);
+                return Shared.ContainerKinds.IsCloset(container);
             }
             // THE PIG FARM. Type.FactoryBreed, and it was
             // refused for no reason that survives reading the code: nothing polls

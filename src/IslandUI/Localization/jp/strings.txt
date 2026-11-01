@@ -346,11 +346,13 @@ dossier.walk=歩く
 dossier.water=水分
 
 drop.cant_take=これは受け取れない
+drop.give_many_to={1}個渡す  →  {0}
 drop.give_to=渡す  →  {0}
 drop.out_of_reach=範囲外
 drop.them=相手
 drop.this_chest=このチェスト
 drop.use_on=使う  →  {0}
+drop.walk_give_many_to=歩いて行って{1}個渡す  →  {0}
 drop.walk_give_to=歩いて行って渡す  →  {0}
 drop.walk_use_on=歩いて行って使う  →  {0}
 
@@ -1252,6 +1254,12 @@ settings.apply_note=変更はすぐに反映されます。
 
 settings.camera.zoom_out=ズームアウト
 settings.camera.zoom_out.help=マウスホイールでカメラをどこまで引けるか、ゲーム本来の最大距離に対する割合。カメラは引いた分だけ遠くまで描画するので、大きく引くとフレームレートが下がる。\n100%  未改造のゲームと同じ
+settings.crafting.benches=他の作業台
+settings.crafting.benches.help=他の作業台の枠に入っているもの。
+settings.crafting.chests=チェストと箱
+settings.crafting.chests.help=自分の木のチェスト、箱、採掘場の産出物。
+settings.crafting.extend=対応する収納を増やす
+settings.crafting.extend.help=素材の収納に加えて、近くにある下の種類もクラフトに使います。作業台では半径5m以内、作業台がなければ手の届く範囲です。MODなしでは素材の収納だけが、作業台でのみ使われます。
 settings.cursor.style.arrow=矢印
 settings.cursor.style.arrow_bold=太い矢印
 settings.cursor.style.carved=彫刻
@@ -1319,6 +1327,8 @@ settings.page.camera=カメラ
 settings.page.camera.about=カメラをどこまで引けるか。
 settings.page.combat=戦闘
 settings.page.combat.about=戦闘中に誰がマーカーを持ち、プレートが誰を追うか。
+settings.page.crafting=クラフト
+settings.page.crafting.about=素材の収納以外にクラフトで使えるもの。
 settings.page.cursor=カーソル
 settings.page.effects=エフェクト
 settings.page.effects.about=オンにしたエフェクトは非表示になります。エフェクトはゲームが一度表示すると一覧に載ります。

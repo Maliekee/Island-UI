@@ -350,11 +350,13 @@ dossier.walk=CAMINAR
 dossier.water=AGUA
 
 drop.cant_take=no puede tomar esto
+drop.give_many_to=dar {1} a  →  {0}
 drop.give_to=dar a  →  {0}
 drop.out_of_reach=fuera de alcance
 drop.them=él/ella
 drop.this_chest=este cofre
 drop.use_on=usar en  →  {0}
+drop.walk_give_many_to=ir y dar {1} a  →  {0}
 drop.walk_give_to=ir y dar a  →  {0}
 drop.walk_use_on=ir y usar en  →  {0}
 
@@ -1269,6 +1271,12 @@ settings.apply_note=Los cambios se aplican al instante.
 
 settings.camera.zoom_out=Alejar
 settings.camera.zoom_out.help=Cuánto aleja la rueda del ratón la cámara, frente al máximo del propio juego. La cámara dibuja tan lejos como se aleja, así que un zoom lejano cuesta fotogramas.\n100%  como en el juego sin mods
+settings.crafting.benches=Otros bancos de trabajo
+settings.crafting.benches.help=Lo que hay en las tiras de tus otros bancos de trabajo.
+settings.crafting.chests=Cofres y cajas
+settings.crafting.chests.help=Tus cofres de madera, cajas y la producción de la mina.
+settings.crafting.extend=Ampliar los almacenes admitidos
+settings.crafting.extend.help=La fabricación también usa los tipos de abajo que estén cerca, además de tus almacenes de materiales. En un banco de trabajo, a 5 m de él; sin banco, a tu alcance. Sin el mod solo cuentan los almacenes de materiales, y solo en un banco de trabajo.
 settings.cursor.style.arrow=Flecha
 settings.cursor.style.arrow_bold=Flecha gruesa
 settings.cursor.style.carved=Tallado
@@ -1336,6 +1344,8 @@ settings.page.camera=Cámara
 settings.page.camera.about=Hasta dónde puede alejarse la cámara.
 settings.page.combat=Combate
 settings.page.combat.about=Quién lleva un marcador en una pelea y a quién sigue la placa.
+settings.page.crafting=Fabricación
+settings.page.crafting.about=Lo que la fabricación puede tomar más allá de tus almacenes de materiales.
 settings.page.cursor=Cursor
 settings.page.effects=Efectos
 settings.page.effects.about=Activa un efecto para ocultarlo. Un efecto aparece en la lista cuando el juego ya lo ha mostrado.

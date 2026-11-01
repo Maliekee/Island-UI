@@ -4,7 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>IslandUI</AssemblyName>
     <RootNamespace>IslandUI</RootNamespace>
-    <Version>0.9.1</Version>
+    <Version>0.9.2</Version>
     <LangVersion>latest</LangVersion>
     <!-- Live Steam install: the game that actually runs. BepInEx and our plugin live here;
          binary/ is only a pristine reference copy for decompilation. -->
@@ -29,6 +29,7 @@
     <Compile Include="..\Shared\UpdateSwap\UpdateRules.cs" Link="Shared\Update\UpdateRules.cs" />
     <Compile Include="..\Shared\UpdateSwap\UpdateZip.cs" Link="Shared\Update\UpdateZip.cs" />
     <Compile Include="..\Shared\Loc.cs" Link="Shared\Loc.cs" />
+    <Compile Include="..\Shared\ContainerKinds.cs" Link="Shared\ContainerKinds.cs" />
     <!-- the mod icon, shown on the title screen by Shared/TitleBadge.cs -->
     <EmbeddedResource Include="icon.png" LogicalName="IslandUI.icon.png" />
     <EmbeddedResource Include="..\..\art\hud-anime-v1\runtime\icons.png" LogicalName="IslandUI.AnimeIcons.png" />
