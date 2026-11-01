@@ -112,7 +112,7 @@ namespace IslandUI
         // UNSCALED time: a pickup can land while something has paused the game, and
         // a frozen toast halfway across would look broken.
         internal static IEnumerator Travel(RectTransform rect, CanvasGroup group,
-            Vector2 from, Vector2 to, float seconds)
+            Vector2 from, Vector2 to, float seconds, float scale = 1f)
         {
             // a lift proportional to the trip, capped: a long flight across the
             // screen wants an arc, a short hop next to the bar does not
@@ -126,7 +126,7 @@ namespace IslandUI
                 Vector2 p = Vector2.Lerp(from, to, e);
                 p.y += Mathf.Sin(e * Mathf.PI) * arc;
                 rect.anchoredPosition = p;
-                rect.localScale = Vector3.one * Mathf.Lerp(1f, 0.6f, e);
+                rect.localScale = Vector3.one * (scale * Mathf.Lerp(1f, 0.6f, e));
                 if (group != null)
                 {
                     group.alpha = t < 0.75f ? 1f : Mathf.InverseLerp(1f, 0.75f, t);

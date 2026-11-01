@@ -12,14 +12,18 @@ namespace IslandUI
     //                 on your loadout
     //   Shift+click   an item cell you can reach     the split dialog (a stack of 2+)
     //   Ctrl+click    an item in a bag or chest      move it to the other side, or
-    //                                                drop it (InventoryWindow.Move)
+    //                                                drop it (InventoryWindow.Move);
+    //                                                with Shift too, up to ten of it
+    //   Ctrl+right-click  an item in your bags       use it on your target, up to
+    //                                                ten with Shift (TargetUse, D180)
     //   Shift+click   an action bar slot             remove the action
     //   drag          an action bar slot             move the action (ActionBar; shift too with ActionBarShiftToMove)
     //   Shift+right-click, or Shift on a drop on someone: food and consumables, up
     //                 to ten at once (ItemUse.UsesAsked, the game's own shortcut)
     //
     // Ctrl+click on a favourite moves nothing: a favourite stays in your bags
-    // (FavouriteRules), so Ctrl names why instead of where (Verb.Kept).
+    // (FavouriteRules), so Ctrl names why instead of where (Verb.Kept). It can only
+    // be consumed: Ctrl+right-click, or a drop on someone or on a food box.
     //
     // A verb is only offered with an empty hand: mid-gesture a click already means
     // "place this", and one click may not mean two things. docs/keymap.md carries
@@ -45,15 +49,17 @@ namespace IslandUI
             {
                 return !yourBags ? Verb.None : Favourites.IsFavourite(slot) ? Verb.Unmark : Verb.Favourite;
             }
-            if (Shift && !loadout && slot.stack > 1)
-            {
-                return Verb.Split;
-            }
-            if (Ctrl && !Shift && moveTo != 0)
+            // asked before Shift's split: with somewhere to send it, Ctrl+Shift sends
+            // up to ten
+            if (Ctrl && moveTo != 0)
             {
                 // a favourite is only ever in your bags, and from there every
                 // route leads out
                 return Favourites.IsFavourite(slot) ? Verb.Kept : moveTo == 2 ? Verb.Drop : Verb.Move;
+            }
+            if (Shift && !loadout && slot.stack > 1)
+            {
+                return Verb.Split;
             }
             return Verb.None;
         }
@@ -64,15 +70,20 @@ namespace IslandUI
             return Shift && !Alt && bound && handEmpty ? Verb.RemoveAction : Verb.None;
         }
 
-        internal static void Offer(Verb verb, string where = null)
+        // `many` is what Ctrl+Shift would send, 0 without Shift; `also` is the words
+        // for Ctrl's other button, said beside the left one's.
+        internal static void Offer(Verb verb, string where = null, int many = 0, string also = null)
         {
+            string tail = also != null ? "    ·    " + also : string.Empty;
             switch (verb)
             {
                 case Verb.Move:
-                    CursorBadge.Show(Shared.Loc.Get("inv.hint.move", "ctrl-click  →  {0}", where), HudGlyphs.Get("move"));
+                    CursorBadge.Show((many > 1 ? Shared.Loc.Get("inv.hint.move_many", "ctrl-shift-click  →  {1} to {0}", where, many)
+                        : Shared.Loc.Get("inv.hint.move", "ctrl-click  →  {0}", where)) + tail, HudGlyphs.Get("move"));
                     break;
                 case Verb.Drop:
-                    CursorBadge.Show(Shared.Loc.Get("inv.hint.drop", "ctrl-click  →  drop"), HudGlyphs.Get("drop"));
+                    CursorBadge.Show((many > 1 ? Shared.Loc.Get("inv.hint.drop_many", "ctrl-shift-click  →  drop {0}", many)
+                        : Shared.Loc.Get("inv.hint.drop", "ctrl-click  →  drop")) + tail, HudGlyphs.Get("drop"));
                     break;
                 case Verb.Kept:
                     CursorBadge.Show(FavouriteRules.KeptWords, HudGlyphs.Get("star"));

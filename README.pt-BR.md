@@ -10,20 +10,16 @@
 
 ![Island UI em jogo: o HUD, uma ficha de personagem, a lista de moradores, a criação e as configurações](O1.webp)
 
-**Não são mil curativos.** O Island UI dá um passo atrás e reescreve a interface de Mad Island do zero: a tela, a seleção de alvo e tudo o que vem delas. Ele se apoia em algumas ideias: um lugar na tela para você, para o que está ao seu redor e para aquilo com que você está lidando, e um alvo que liga tudo isso. [Todos os recursos (hoje são 202) →](FEATURES.md) nasceram daí.
+**Uma interface coerente e feita com cuidado para Mad Island.** Ela se apoia em alguns princípios, e cada um dos seus [200 recursos →](FEATURES.md) nasce deles:
 
-Feito para a ilha, ele sai do caminho e deixa você **jogar**: o que você precisa saber está onde você olha, o que você quer fazer está a um movimento, e as regras escondidas do jogo vêm à tona.
+- **[Construída do zero.](SHOWCASE.md#built-from-the-ground-up)** Não são mil curativos. O Island UI dá um passo atrás e refaz a interface por completo, do conceito ao código.
+- **[Natural.](SHOWCASE.md#second-nature)** Tudo é apresentado do jeito que as pessoas absorvem as coisas naturalmente, então nada precisa de explicação. Os itens voam até você quando você os pega, e os atributos mostram o que significam em vez de serem números soltos.
+- **[Jogar, não preencher papelada.](SHOWCASE.md#play-not-paperwork)** As tarefas chatas saem do caminho. Seu machado aparece quando você golpeia uma árvore, você bebe no poço sem clicar, e um só toque esvazia todos os baús ao redor nas suas bolsas.
+- **[Uma só função.](SHOWCASE.md#one-job)** O Island UI é um projeto grande com um objetivo estreito: a interface. Ele fica de propósito na sua própria raia, para não atrapalhar o conteúdo do jogo nem seus outros mods. Suas facilidades respeitam o espírito do jogo, e os ajustes que mudam as regras ficam no Island Ex.
 
-## O que ele faz
+Este é um trabalho feito com carinho, e quero que fique realmente bom. Adoraria saber o que você acha, então me mande uma mensagem no [Discord](https://discord.com/users/1523362502224777439) ou [abra uma issue aqui](../../issues).
 
-- **[O que é seu é sempre seu.](SHOWCASE.md#yours-is-always-yours)** Você à direita, aquilo com que você está lidando no meio, o que está ao seu redor à esquerda. Usar um item é sempre em você; para dar um item, solte-o sobre a pessoa.
-- **[Um alvo, que fica.](SHOWCASE.md#a-target)** `Tab` escolhe a pessoa ou coisa com que você está lidando sem precisar andar até ela, e mantém até você soltar, com uma barra de tudo o que você pode fazer.
-- **[Uma vila, não uma lista de números.](SHOWCASE.md#your-village)** A lista mostra quem está infeliz, a ficha diz por quê, e um botão leva você à solução.
-- **[Chega de ficar trocando itens de lugar.](SHOWCASE.md#no-more-item-juggling)** Todo armazenamento ao alcance em uma só janela, e a criação usa suas bolsas e tudo ao seu redor.
-- **[A luta inteira.](SHOWCASE.md#the-whole-fight)** Quem está nela, quem está em cima de você e quem está chegando de fora da tela.
-- **[Cada número diz por quê.](SHOWCASE.md#on-top)** Como conseguir cada item, aonde leva cada escolha da história, a regra por trás de cada número - em sete idiomas.
-
-**[Veja em jogo, com vídeos →](SHOWCASE.md)** · **[Todos os recursos, grandes e pequenos →](FEATURES.md)** (em inglês)
+**[Veja em jogo, com vídeos →](SHOWCASE.md)**
 
 ## Instalação
 
@@ -82,9 +78,7 @@ O Island UI joga pelas regras do jogo: muda como você vê o jogo e como chega �
 
 ## Limitações
 
-O Island UI é novo. A 0.9.0 refaz a maior parte da interface e foi jogada, não testada a fundo: espere arestas e um bug aqui e ali. Algumas telas do próprio jogo ainda não foram refeitas e continuam com a aparência e o funcionamento de sempre. Se algo quebrar, uma issue com o seu `BepInEx/LogOutput.log` anexado é o que mais ajuda.
-
-## Compatibilidade
+O Island UI é novo. A 0.9 refaz a maior parte da interface e foi jogada, não testada a fundo: espere arestas e um bug aqui e ali. Algumas telas do próprio jogo ainda não foram refeitas e continuam com a aparência e o funcionamento de sempre. Se algo quebrar, uma issue com o seu `BepInEx/LogOutput.log` anexado é o que mais ajuda.
 
 Testado no branch `beta_open` da Steam, build 25095856, com BepInEx 5.4.23.5. Depois de uma atualização do jogo, procure em `BepInEx/LogOutput.log` por `Patch census [IslandUI]: ... all bound.` Se aparecer outra coisa, a atualização mudou algo e o mod precisa de um novo lançamento.
 
@@ -92,19 +86,7 @@ Testado no branch `beta_open` da Steam, build 25095856, com BepInEx 5.4.23.5. De
 
 Cada commit aqui é um lançamento; as tags de versão batem com os zips dos lançamentos.
 
-<details><summary><b>A estrutura, e como compilar</b></summary>
-
-```
-src/IslandUI/    the mod: Inventory/ (the windows, action bar, tool belt, target), Crafting/ and
-                 Browser/ (the crafting window), Card/ (item and recipe cards), Model/ (favourites,
-                 moods, recipes), QoL/ (keys, quick save), UI/ (controls, cursor, console, map),
-                 Data/ (the item guide and story hints, as tables)
-src/IslandEx/    Island Ex: one file per feature
-src/Shared/      linked into both DLLs: PatchCensus.cs applies the Harmony patches one class at
-                 a time and logs any that no longer bind; TitleBadge.cs is the title-screen icon
-art/             the interface's art, shipped as islandui-art
-installer/       the install.bat / install.ps1 shipped in the installer downloads
-```
+<details><summary><b>Como compilar</b></summary>
 
 Para compilar, você precisa do .NET SDK e do jogo instalado (os projetos referenciam as DLLs dele):
 
@@ -120,3 +102,7 @@ A compilação copia a DLL para o `BepInEx/plugins` do jogo; adicione `-p:GameDi
 ## Contato
 
 Bugs, ideias, ou quer reaproveitar algo? [Abra uma issue](../../issues), escreva para [maliekee@pm.me](mailto:maliekee@pm.me) ou me encontre no [Discord](https://discord.com/users/1523362502224777439).
+
+## Obrigado pelo engajamento e pelo apoio
+
+h1sagi, NoobInDaHause, Ramiyak, Ex0du5_2169, Dimastrelok, Yuuto, Cosmo, Abyss, NotTeaBut, Kringe, Kestraz

@@ -71,6 +71,28 @@ namespace IslandUI
             }
         }
 
+        // INTO A FOOD BOX (InventoryWindow.DropFood.cs): UseFood fills the box instead
+        // of feeding anyone only while the box is its open container and you are held
+        // on it. Both are set for the call, which is synchronous, and put back.
+        internal static void IntoBox(ManagersScript mn, InventorySlot box, System.Action use)
+        {
+            InventoryManager inv = mn.inventory;
+            PlayerMove you = mn.gameMN.pMove;
+            InventorySlot open = inv.tmpSubInventory;
+            GameObject held = you.target;
+            try
+            {
+                inv.tmpSubInventory = box;
+                you.target = box.gameObject;
+                OnYou(mn, use);
+            }
+            finally
+            {
+                inv.tmpSubInventory = open;
+                you.target = held;
+            }
+        }
+
         // NOT ON YOU. Vanilla consumes a consumable only when it took (the flag in
         // UseConsumables), so most wrong recipients are refused by the game itself
         // and the item is kept. These two always take: on the player they set your
@@ -108,7 +130,7 @@ namespace IslandUI
         // is also the run key. It lives here so that it means the same on every path
         // that asks: a right-click, and a drop on someone (D141), which is how a
         // thing is given now that a plain use is yours.
-        private const int ManyUses = 10;
+        internal const int ManyUses = 10;
 
         /// <summary>
         /// How many uses a press on <paramref name="slot"/> asks for right now: one,

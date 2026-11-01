@@ -581,6 +581,8 @@ namespace IslandUI
                 HideGroundRing();
                 return;
             }
+            // food in hand and a box to take it: gold, as a person's (DropFood.cs)
+            bool offer = BoxOffered(prop);
             // a door between you: the marker on that door (WorldMarker.Door.cs)
             bool behind = DoorBetween(prop.gameObject, out Vector3 door, out bool inside);
             Vector3 screen;
@@ -592,7 +594,7 @@ namespace IslandUI
             else
             {
                 DoorTagOff();
-                PaintGroundRing(prop.transform, EmblemThing, ThingRadius(prop));
+                PaintGroundRing(prop.transform, offer ? OfferGold : EmblemThing, ThingRadius(prop));
                 screen = camera.WorldToScreenPoint(prop.transform.position + Vector3.up * (_thingTop + 0.25f));
             }
             bool off = OffScreen(camera, behind ? door : prop.transform.position, ref screen);
@@ -640,6 +642,7 @@ namespace IslandUI
                 ThingValue[i].gameObject.SetActive(n > 1);
                 Theme.Place(ThingValue[i], width - MarkerRightPad - 32f, 24.5f + i * 7f, 32f, 9f);
             }
+            PaintMarkerOffer(width, height, 0f, offer);
         }
 
         private static void ShowThingBars(int n)

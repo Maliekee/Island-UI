@@ -151,20 +151,9 @@ namespace IslandUI
         {
             TabCands.Clear();
             PlayerMove p = _mn.gameMN.pMove;
-            Ray ray = cam.ScreenPointToRay(cursor);
-            Vector3 point;
-            if (Physics.Raycast(ray, out RaycastHit hit, 200f, p.movableLayer))
+            if (!PointedGround(cam, p, cursor, out Vector3 point))
             {
-                point = hit.point;
-            }
-            else
-            {
-                var ground = new Plane(Vector3.up, p.transform.position);
-                if (!ground.Raycast(ray, out float along))
-                {
-                    return;
-                }
-                point = ray.GetPoint(along);
+                return;
             }
             // BG and BGNPC are the props, NPC the people's own colliders; loot
             // (PhysicBG) and floors (Platform) are not targets
@@ -203,6 +192,26 @@ namespace IslandUI
                     TabCands.Add(scored[i].Value);
                 }
             }
+        }
+
+        // Where the pointer meets the world: the ray a click casts, else the plane
+        // you stand on.
+        private static bool PointedGround(Camera cam, PlayerMove p, Vector2 cursor, out Vector3 point)
+        {
+            Ray ray = cam.ScreenPointToRay(cursor);
+            if (Physics.Raycast(ray, out RaycastHit hit, 200f, p.movableLayer))
+            {
+                point = hit.point;
+                return true;
+            }
+            var ground = new Plane(Vector3.up, p.transform.position);
+            if (ground.Raycast(ray, out float along))
+            {
+                point = ray.GetPoint(along);
+                return true;
+            }
+            point = Vector3.zero;
+            return false;
         }
 
         // The screen rectangle a candidate is drawn in: a person's body (the Spine

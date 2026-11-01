@@ -10,20 +10,16 @@
 
 ![Island UI im Spiel: das HUD, ein Charakterblatt, die Bewohnerliste, das Herstellen und die Einstellungen](O1.webp)
 
-**Nicht tausend Pflaster.** Island UI tritt einen Schritt zurück und schreibt die Oberfläche von Mad Island von Grund auf neu: den Bildschirm, das Anvisieren und alles, was daraus folgt. Es baut auf ein paar Ideen auf - ein Platz auf dem Bildschirm für dich, für das, was um dich herum ist, und für das, womit du gerade zu tun hast, und ein Ziel, das alles verbindet - und daraus sind [alle Funktionen (derzeit 202) →](FEATURES.md) gewachsen.
+**Eine sorgfältig gefertigte, stimmige Oberfläche für Mad Island.** Sie ruht auf ein paar Grundsätzen, und jede ihrer [200 Funktionen →](FEATURES.md) wächst daraus:
 
-Für die Insel gemacht, tritt es zur Seite und lässt dich **spielen**: Was du wissen musst, steht dort, wo du hinschaust, was du tun willst, ist einen Handgriff entfernt, und die sonst verborgenen Regeln des Spiels kommen ans Licht.
+- **[Von Grund auf neu gebaut.](SHOWCASE.md#built-from-the-ground-up)** Nicht tausend Pflaster. Island UI tritt einen Schritt zurück und arbeitet die Oberfläche komplett neu, vom Konzept bis zum Code.
+- **[In Fleisch und Blut.](SHOWCASE.md#second-nature)** Alles wird so gezeigt, wie Menschen Dinge von Natur aus erfassen, sodass nichts erklärt werden muss. Gegenstände fliegen dir zu, wenn du sie aufhebst, und Werte zeigen, was sie bedeuten, statt bloße Zahlen zu sein.
+- **[Spielen statt Papierkram.](SHOWCASE.md#play-not-paperwork)** Die lästigen Handgriffe gehen dir aus dem Weg. Deine Axt kommt heraus, wenn du nach einem Baum schlägst, du trinkst am Brunnen ohne einen Klick, und ein Tastendruck leert alle Truhen um dich herum in deine Taschen.
+- **[Eine Aufgabe.](SHOWCASE.md#one-job)** Island UI ist ein großes Projekt mit einem engen Ziel: die Oberfläche. Es bleibt bewusst auf seiner Spur, damit es weder den Inhalten des Spiels noch deinen anderen Mods in die Quere kommt. Seine Annehmlichkeiten bleiben im Sinne des Spiels, und die Änderungen an den Regeln liegen stattdessen in Island Ex.
 
-## Was es macht
+Das hier ist ein Herzensprojekt, und es soll wirklich gut werden. Ich freue mich über deine Meinung, also schreib mir auf [Discord](https://discord.com/users/1523362502224777439) oder [eröffne hier ein Issue](../../issues).
 
-- **[Deins bleibt deins.](SHOWCASE.md#yours-is-always-yours)** Du rechts, das, womit du zu tun hast, in der Mitte, deine Umgebung links. Ein Gegenstand wird immer an dir benutzt; um ihn jemandem zu geben, lässt du ihn auf die Person fallen.
-- **[Ein Ziel, das bleibt.](SHOWCASE.md#a-target)** `Tab` wählt die Person oder das Ding, mit dem du zu tun hast, ohne hinzulaufen, und hält es, bis du loslässt, mit einer Leiste aller Dinge, die du damit tun kannst.
-- **[Ein Dorf, keine Zahlenliste.](SHOWCASE.md#your-village)** Die Bewohnerliste zeigt, wer unglücklich ist, das Blatt sagt warum, und ein Knopf bringt dich zur Lösung.
-- **[Schluss mit dem Hin- und Herschieben.](SHOWCASE.md#no-more-item-juggling)** Jeder Speicher in Reichweite in einem Fenster, und das Herstellen nimmt aus deinen Taschen und allem um dich herum.
-- **[Der ganze Kampf.](SHOWCASE.md#the-whole-fight)** Wer dabei ist, wer dich angreift und wer von außerhalb des Bildschirms kommt.
-- **[Jede Zahl sagt, warum.](SHOWCASE.md#on-top)** Wie man jeden Gegenstand bekommt, wohin eine Entscheidung in der Geschichte führt, die Regel hinter jeder Zahl - in sieben Sprachen.
-
-**[Im Spiel ansehen, mit Videos →](SHOWCASE.md)** · **[Alle Funktionen, groß und klein →](FEATURES.md)** (auf Englisch)
+**[Im Spiel ansehen, mit Videos →](SHOWCASE.md)**
 
 ## Installation
 
@@ -82,9 +78,7 @@ Island UI hält sich an die Regeln des Spiels: Es ändert, wie du das Spiel sieh
 
 ## Einschränkungen
 
-Island UI ist jung. 0.9.0 baut den Großteil der Oberfläche neu und wurde gespielt, nicht ausgiebig getestet: Rechne mit Ecken und Kanten und dem einen oder anderen Fehler. Manche Bildschirme des Spiels selbst sind noch nicht neu gebaut und sehen aus und funktionieren wie immer. Wenn etwas kaputtgeht, hilft ein Issue mit angehängter `BepInEx/LogOutput.log` am meisten.
-
-## Kompatibilität
+Island UI ist jung. 0.9 baut den Großteil der Oberfläche neu und wurde gespielt, nicht ausgiebig getestet: Rechne mit Ecken und Kanten und dem einen oder anderen Fehler. Manche Bildschirme des Spiels selbst sind noch nicht neu gebaut und sehen aus und funktionieren wie immer. Wenn etwas kaputtgeht, hilft ein Issue mit angehängter `BepInEx/LogOutput.log` am meisten.
 
 Getestet auf dem Steam-Zweig `beta_open`, Build 25095856, mit BepInEx 5.4.23.5. Nach einem Spielupdate such in `BepInEx/LogOutput.log` nach `Patch census [IslandUI]: ... all bound.` Steht dort etwas anderes, hat das Update etwas verschoben, und die Mod braucht ein neues Release.
 
@@ -92,19 +86,7 @@ Getestet auf dem Steam-Zweig `beta_open`, Build 25095856, mit BepInEx 5.4.23.5. 
 
 Jeder Commit hier ist ein Release; die Versions-Tags passen zu den Release-Zips.
 
-<details><summary><b>Der Aufbau, und wie man baut</b></summary>
-
-```
-src/IslandUI/    the mod: Inventory/ (the windows, action bar, tool belt, target), Crafting/ and
-                 Browser/ (the crafting window), Card/ (item and recipe cards), Model/ (favourites,
-                 moods, recipes), QoL/ (keys, quick save), UI/ (controls, cursor, console, map),
-                 Data/ (the item guide and story hints, as tables)
-src/IslandEx/    Island Ex: one file per feature
-src/Shared/      linked into both DLLs: PatchCensus.cs applies the Harmony patches one class at
-                 a time and logs any that no longer bind; TitleBadge.cs is the title-screen icon
-art/             the interface's art, shipped as islandui-art
-installer/       the install.bat / install.ps1 shipped in the installer downloads
-```
+<details><summary><b>Wie man baut</b></summary>
 
 Zum Bauen brauchst du das .NET SDK und das installierte Spiel (die Projekte verweisen auf seine DLLs):
 
@@ -120,3 +102,7 @@ Ein Build kopiert die DLL in das `BepInEx/plugins` des Spiels; füg `-p:GameDir=
 ## Kontakt
 
 Fehler, Ideen, oder möchtest du etwas wiederverwenden? [Öffne ein Issue](../../issues), schreib an [maliekee@pm.me](mailto:maliekee@pm.me) oder finde mich auf [Discord](https://discord.com/users/1523362502224777439).
+
+## Danke für euer Engagement und eure Unterstützung
+
+h1sagi, NoobInDaHause, Ramiyak, Ex0du5_2169, Dimastrelok, Yuuto, Cosmo, Abyss, NotTeaBut, Kringe, Kestraz

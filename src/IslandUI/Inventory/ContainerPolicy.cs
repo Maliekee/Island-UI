@@ -51,7 +51,7 @@ namespace IslandUI
             return c != null && PolledRack(c.type) && RackList.Contains(c.type);
         }
 
-        // A planter's cell takes one seed, placed only by hand (InventoryWindow.PlantOne)
+        // A planter's cell takes one seed, placed only by a click (InventoryWindow.PlantOne)
         internal static bool IsPlanter(InventorySlot c)
         {
             var breed = c != null ? c.GetComponent<BreedInfo>() : null;

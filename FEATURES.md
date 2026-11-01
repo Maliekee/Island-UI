@@ -2,7 +2,7 @@
 
 Island UI rebuilds Mad Island's interface from the ground up, as one interface rather than a
 set of tweaks. Getting the whole right brought every feature below with it, big and small; this
-is the list, for searching. The [README](README.md) has the highlights and pictures.
+is the list, for searching. The [showcase](SHOWCASE.md) has the highlights, with clips.
 
 ## Your bags
 - Your bags are a column of real slot windows on the right: your bag, your loadout, the Shared Bag. **B** opens it, and so do the game's own **I** key and backpack button.
@@ -14,7 +14,9 @@ is the list, for searching. The [README](README.md) has the highlights and pictu
 - Dragging an item over the world doesn't make your character walk after the cursor, and letting go over the world drops it.
 - Your character stops walking in place when you stop while dragging.
 - **Shift+click** a stack to split it in a small dialog: the wheel steps by 1, Shift+wheel by 10, digits type the count, Enter takes it, Escape or a click outside cancels (Escape no longer pauses the game).
-- **Ctrl+click** moves a stack without picking it up: to the open target's bag or chest, else to a nearby chest that already holds it, else to the nearest with room, else to your feet. The other way, like goes to like first.
+- **Ctrl+click** transfers an item and never uses it up: a stack to the open target's bag or chest, a seed to their planter, else to a nearby chest that already holds it, else to the nearest with room, else to your feet. The other way, like goes to like first, and a planter gives back what it holds.
+- **Ctrl+right-click** uses an item on your target: they eat it or wear it, a food box fills, a planter plants. With no target, a right-click is yours as ever.
+- **Shift** with either sends up to ten of the stack.
 - Dropping an item on any loadout cell puts it in the right slot (a hat dropped on the boots still goes on the head).
 - Hovering something wearable outlines the loadout slot it would fill, on whoever would wear it, in red if they can't.
 - Right-click equips, uses or eats from any bag, not only the Shared Bag. Right-click a worn item to take it off.
@@ -31,7 +33,7 @@ is the list, for searching. The [README](README.md) has the highlights and pictu
 - **Alt+click** marks a favourite with a gold star; a hint shows while Alt is held.
 - A favourite is one item, not a whole kind: mark one axe and its twins can still be stored.
 - The mark follows the item through drags, swaps, merges and equips; a split-off part starts unmarked.
-- Favourites never leave your bags by accident: no dropping, storing, equipping on someone else, and the game's own shift-transfer is blocked too. A refusal says why and the item goes back.
+- Favourites never leave your bags by accident: no dropping, storing, equipping on someone else, and the game's own shift-transfer is blocked too. They can still be eaten, or fed to someone. A refusal says why and the item goes back.
 - Quick stack, All in and Stack leave favourites where they are. You can still rearrange them or bind them to the bar.
 - Favourites are kept in your save game.
 
@@ -144,8 +146,11 @@ is the list, for searching. The [README](README.md) has the highlights and pictu
 ## Giving
 - Drag an item onto a person, or onto the badge over your target's head, which lights up gold while you hold something to give.
 - Out of reach, you walk over and hand it over.
-- One of the stack goes and flies to them; the rest stays in your hand, so you can hand items round one by one.
 - You can also drop it on the target dock's portrait or on their roster row.
+- One of the stack goes and flies to them; the rest stays in your hand, so you can hand items round one by one.
+- Hold Shift to give up to ten; they flow to them one after the other.
+- What someone can't eat or wear goes in their bag.
+- Drop food on a food box, its marker or its card and it fills, the same way.
 - Someone who can't take it says so, and the item stays in your hand.
 - Love and hate potions are no longer used up on yourself by a right-click.
 

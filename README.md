@@ -8,25 +8,16 @@
 
 ![Island UI in play: the HUD, a character sheet, the roster, crafting and the settings](O1.webp)
 
-**Not a thousand band-aids.** Island UI steps back and rewrites Mad Island's interface from
-the ground up: the screen, the targeting, and everything that follows from them. It is built
-on a few ideas - a place on the screen for you, for what is around you and for what you are
-dealing with, and one target that ties them together - and [every feature (currently counting 202) →](FEATURES.md) grew from those.
+**A carefully crafted, coherent interface for Mad Island.** It rests on a few principles, and every one of its [200 features →](FEATURES.md) grows from them:
 
-Made for the island, it steps back and lets you **play**: what you need to know is where you
-look, what you want to do is one move away, and the game's otherwise hidden rules come
-to light.
+- **[Built from the ground up.](SHOWCASE.md#built-from-the-ground-up)** Not a thousand band-aids. Island UI steps back and reworks the interface completely, from concept to code.
+- **[Second nature.](SHOWCASE.md#second-nature)** Everything is presented the way people naturally take things in, so nothing needs explaining. Items fly to you as you pick them up, and stats show what they mean instead of being raw numbers.
+- **[Play, not paperwork.](SHOWCASE.md#play-not-paperwork)** The chores get out of your way. Your axe comes out when you swing at a tree, you drink at the well without a click, and one press empties every chest around you into your bags.
+- **[One job.](SHOWCASE.md#one-job)** Island UI is a big project with a narrow aim: the interface. It deliberately stays in its lane, so it doesn't get in the way of the game's content or your other mods. Its conveniences stay in the spirit of the game, and the rule-changing tweaks live in Island Ex instead.
 
-## What it does
+This is a labour of love, and I want it to be really good. I'd love to hear what you think, so drop me a line on [Discord](https://discord.com/users/1523362502224777439) or [open an issue here](../../issues).
 
-- **[Yours is always yours.](SHOWCASE.md#yours-is-always-yours)** You on the right, what you are dealing with in the middle, what is around you on the left. Using an item is always on you; to give it, you drop it on them.
-- **[One target, held.](SHOWCASE.md#a-target)** `Tab` picks the person or thing you are dealing with without walking, and keeps them until you let go, with a dock of everything you can do.
-- **[A village, not a list of numbers.](SHOWCASE.md#your-village)** The roster shows who is unhappy, the sheet says why, and a button takes you to the fix.
-- **[No more item juggling.](SHOWCASE.md#no-more-item-juggling)** Every storage within reach in one window, and crafting from your bags and everything around you.
-- **[The whole fight.](SHOWCASE.md#the-whole-fight)** Who is in it, who is on you, and who is coming from off screen.
-- **[Every number says why.](SHOWCASE.md#on-top)** How to get every item, where a story choice leads, the rule behind every number - in seven languages.
-
-**[See it in play, with clips →](SHOWCASE.md)** · **[Every feature, big and small →](FEATURES.md)**
+**[See it in play, with clips →](SHOWCASE.md)**
 
 ## Install
 
@@ -99,12 +90,10 @@ in the same release. Island UI does not need it.
 
 ## Limitations
 
-Island UI is young. 0.9.0 reworks most of the interface, and it has been played, not tested at
+Island UI is young. 0.9 reworks most of the interface, and it has been played, not tested at
 length: expect rough edges and the odd bug. Some of the game's own screens are not rebuilt yet
 and still look and work as they always did. If something breaks, an issue with your
 `BepInEx/LogOutput.log` attached helps the most.
-
-## Compatibility
 
 Tested on the Steam `beta_open` branch, build 25095856, with BepInEx 5.4.23.5. After a
 game update, look in `BepInEx/LogOutput.log` for `Patch census [IslandUI]: ... all bound.`
@@ -114,19 +103,7 @@ If it says anything else, the update moved something and the mod needs a new rel
 
 Each commit here is one release; the version tags match the release zips.
 
-<details><summary><b>The layout, and how to build</b></summary>
-
-```
-src/IslandUI/    the mod: Inventory/ (the windows, action bar, tool belt, target), Crafting/ and
-                 Browser/ (the crafting window), Card/ (item and recipe cards), Model/ (favourites,
-                 moods, recipes), QoL/ (keys, quick save), UI/ (controls, cursor, console, map),
-                 Data/ (the item guide and story hints, as tables)
-src/IslandEx/    Island Ex: one file per feature
-src/Shared/      linked into both DLLs: PatchCensus.cs applies the Harmony patches one class at
-                 a time and logs any that no longer bind; TitleBadge.cs is the title-screen icon
-art/             the interface's art, shipped as islandui-art
-installer/       the install.bat / install.ps1 shipped in the installer downloads
-```
+<details><summary><b>How to build</b></summary>
 
 To build, you need the .NET SDK and the game installed (the projects reference its DLLs):
 
@@ -145,3 +122,7 @@ for a game elsewhere, or `-p:NoDeploy=true` to build without copying. Island UI 
 
 Bugs, ideas, or want to reuse something? [Open an issue](../../issues), write to
 [maliekee@pm.me](mailto:maliekee@pm.me), or find me on [Discord](https://discord.com/users/1523362502224777439).
+
+## Thanks for the engagement and support
+
+h1sagi, NoobInDaHause, Ramiyak, Ex0du5_2169, Dimastrelok, Yuuto, Cosmo, Abyss, NotTeaBut, Kringe, Kestraz

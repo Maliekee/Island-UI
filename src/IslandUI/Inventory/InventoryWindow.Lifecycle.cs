@@ -934,6 +934,22 @@ namespace IslandUI
             _nextRefresh = 0f;
         }
 
+        // The game's menu is coming up where your bag and sheet stand (Forgejo #202).
+        // Yours alone: a chest or a target's window is left as it is.
+        internal static void ClearForGameMenu()
+        {
+            if (_ownSheetOpen)
+            {
+                _ownSheetOpen = false;
+                _forceRefresh = true;
+                _nextRefresh = 0f;
+            }
+            if (_ownOpen)
+            {
+                Close();
+            }
+        }
+
         internal static bool TryEscapeClose()
         {
             if (SplitDialog.IsOpen)

@@ -190,7 +190,7 @@ namespace IslandUI
                 }
                 if (plate != null && ContainerPolicy.IsPlanter(plate.Container))
                 {
-                    if (!PlantOne(inv, slot))
+                    if (!PlantOne(inv, inv.hoverSlot, slot))
                     {
                         return;
                     }
@@ -482,21 +482,23 @@ namespace IslandUI
         // cell, only a Plant, and one of it - the rest stays in hand. A stack in a
         // cell never grows: the growth tick (PlanterCheck, breed) counts a cell up
         // only while its stack is 1. Anything else is refused as vanilla refuses it,
-        // silently.
-        private static bool PlantOne(InventoryManager inv, ItemSlot slot)
+        // silently. `from` is the hand, or a bag cell for Ctrl+click (InventoryWindow.Move).
+        private static bool PlantOne(InventoryManager inv, ItemSlot from, ItemSlot slot)
         {
-            ItemSlot hover = inv.hoverSlot;
-            if (!string.IsNullOrEmpty(slot.itemKey) || hover.toolType != ItemData.ToolType.Plant)
+            if (!string.IsNullOrEmpty(slot.itemKey) || from.toolType != ItemData.ToolType.Plant)
             {
                 return false;
             }
-            inv.SlotLoadSlot(hover, slot);
+            inv.SlotLoadSlot(from, slot);
             slot.stack = 1;
-            hover.stack--;
-            if (hover.stack <= 0)
+            from.stack--;
+            if (from.stack <= 0)
             {
-                inv.SlotClear(hover);
-                hover.gameObject.SetActive(false);
+                inv.SlotClear(from);
+                if (ReferenceEquals(from, inv.hoverSlot))
+                {
+                    from.gameObject.SetActive(false);
+                }
             }
             return true;
         }
@@ -638,6 +640,10 @@ namespace IslandUI
                 UnequipToBag(plate, cell);
                 return;
             }
+            if (TargetUse(plate, cell))
+            {
+                return;   // Ctrl: on your target (InventoryWindow.TargetUse.cs)
+            }
             // ONE dispatcher, shared with the action bar (ItemUse).
             //
             // This branch used to be "mirrored cells get vanilla's whole use path,
@@ -693,11 +699,28 @@ namespace IslandUI
             // promise what the click will not do
             Plate plate = PlateOf(cell);
             ClickMap.Verb verb = ClickMap.ForCell(slot, HandEmpty(), WearsFavourites(plate),
-                plate != null && plate.IsLoadout, MoveKind(plate));
-            if (verb != ClickMap.Verb.None)
+                plate != null && plate.IsLoadout, MoveKind(plate, slot));
+            string use = ClickMap.Ctrl ? TargetUseWords(plate, slot) : null;
+            if (verb == ClickMap.Verb.Move || verb == ClickMap.Verb.Drop)
             {
-                MoveRoute route = verb == ClickMap.Verb.Move ? RouteFrom(plate) : null;
-                ClickMap.Offer(verb, route != null ? route.Name : null);
+                MoveRoute route = RouteFrom(plate, slot);
+                int many = route != null && ClickMap.Shift ? MoveCount(route, slot) : 0;
+                ClickMap.Offer(verb, route != null ? route.Name : null, many, use);
+            }
+            else if (use != null && (verb == ClickMap.Verb.None || verb == ClickMap.Verb.Split || verb == ClickMap.Verb.Kept))
+            {
+                // Ctrl is held for the target: its give comes first, and left's split
+                // beside it. A favourite's refusal is left's alone, and goes unsaid.
+                CursorBadge.Show(verb == ClickMap.Verb.Split
+                    ? use + "    ·    " + Shared.Loc.Get("inv.hint.split", "shift-click  →  split") : use, HudGlyphs.Get("move"));
+            }
+            else if (verb != ClickMap.Verb.None)
+            {
+                ClickMap.Offer(verb);
+                return;
+            }
+            if (verb != ClickMap.Verb.None || use != null)
+            {
                 return;
             }
             if (ClickMap.Alt || ClickMap.Shift || ClickMap.Ctrl)
@@ -722,6 +745,7 @@ namespace IslandUI
 
         internal static void CommitBadge()
         {
+            GivePile.Commit(_mn);
             // a favourite's refusal lingers a moment, wherever the pointer went
             if (Time.unscaledTime < FavouriteRules.KeptUntil)
             {

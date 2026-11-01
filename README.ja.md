@@ -10,20 +10,16 @@
 
 ![プレイ中の Island UI：HUD、キャラクターシート、名簿、クラフト、設定](O1.webp)
 
-**ばんそうこうを千枚貼るのではなく。** Island UI は一歩引いて、Mad Island のインターフェースを根本から書き直します。画面、ターゲット、そしてそこから生まれるすべてを。土台にあるのはいくつかのシンプルな考えです。画面の上に、あなた自身の場所、周りにあるものの場所、いま相手にしているものの場所を用意し、それらを一つのターゲットでつなぐ。[すべての機能（現在 202 個）→](FEATURES.md)はそこから生まれました。
+**丁寧に作り込んだ、一貫性のある Mad Island のインターフェース。** いくつかの原則を土台にしていて、[200 個の機能 →](FEATURES.md)はすべてそこから生まれています。
 
-島のために作られ、一歩引いてあなたを**遊び**に集中させます。知りたいことは目を向けた場所にあり、やりたいことはワンアクションで届き、ゲームの隠れたルールが見えるようになります。
+- **[土台から作り直す。](SHOWCASE.md#built-from-the-ground-up)** ばんそうこうを千枚貼るのではありません。Island UI は一歩引いて、構想からコードまでインターフェースを丸ごと作り直します。
+- **[自然に手になじむ。](SHOWCASE.md#second-nature)** すべてが人の自然な受け取り方に沿って示されるので、説明はいりません。拾ったアイテムはあなたのもとへ飛んできて、ステータスはただの数字ではなく意味を示します。
+- **[遊びに集中、雑務はなし。](SHOWCASE.md#play-not-paperwork)** 面倒な作業は邪魔をしません。木を叩けば斧が出て、井戸ではクリックなしで水が飲め、ワンタッチで周りのチェストの中身がすべてバッグに入ります。
+- **[やることは一つ。](SHOWCASE.md#one-job)** Island UI は、インターフェースだけに狙いを絞った大きなプロジェクトです。ゲームの内容やほかの Mod の邪魔にならないよう、あえて自分の領分から出ません。便利な機能はゲームの精神に沿ったものにとどめ、ルールを変える調整は Island Ex に分けています。
 
-## できること
+これは愛情を込めて作っているもので、本当に良いものにしたいと思っています。ぜひ感想を聞かせてください。[Discord](https://discord.com/users/1523362502224777439) で連絡するか、[ここで issue を開いて](../../issues)ください。
 
-- **[自分のものは、いつも自分のもの。](SHOWCASE.md#yours-is-always-yours)** 右にあなた、真ん中にいま相手にしているもの、左に周りにあるもの。アイテムの使用は常に自分自身に。誰かに渡すときは、その相手にドロップします。
-- **[ターゲットは一つ、離さない。](SHOWCASE.md#a-target)** `Tab` で、歩いて近づかなくても相手にする人や物を選び、手放すまで保持します。できることはすべてドックに並びます。
-- **[数字の羅列ではなく、村として。](SHOWCASE.md#your-village)** 名簿で誰が不満かが分かり、シートでその理由が分かり、ボタン一つで解決策へ移動できます。
-- **[アイテムのやりくりはもう不要。](SHOWCASE.md#no-more-item-juggling)** 手の届く範囲の収納をすべて一つのウィンドウに。クラフトはバッグと周りのすべてから素材を使います。
-- **[戦闘のすべてを把握。](SHOWCASE.md#the-whole-fight)** 誰が戦っているか、誰があなたを狙っているか、誰が画面外から近づいているか。
-- **[すべての数字に理由を。](SHOWCASE.md#on-top)** 各アイテムの入手方法、ストーリーの選択肢の行き先、すべての数字の裏にあるルール。7 言語に対応。
-
-**[プレイ映像を見る →](SHOWCASE.md)** · **[大小すべての機能 →](FEATURES.md)**（英語のページ）
+**[プレイ映像を見る →](SHOWCASE.md)**
 
 ## インストール
 
@@ -82,9 +78,7 @@ Island UI はゲームのルールに従います。変えるのはゲームの�
 
 ## 制限事項
 
-Island UI はまだ若い MOD です。0.9.0 ではインターフェースの大部分を作り直しました。プレイはしていますが、長期間のテストはしていません。粗い部分やときどきのバグはあるはずです。ゲーム本来の画面の一部はまだ作り直しておらず、以前と同じ見た目と動作です。何かが壊れたら、`BepInEx/LogOutput.log` を添付した issue がいちばん助かります。
-
-## 互換性
+Island UI はまだ若い MOD です。0.9 ではインターフェースの大部分を作り直しました。プレイはしていますが、長期間のテストはしていません。粗い部分やときどきのバグはあるはずです。ゲーム本来の画面の一部はまだ作り直しておらず、以前と同じ見た目と動作です。何かが壊れたら、`BepInEx/LogOutput.log` を添付した issue がいちばん助かります。
 
 Steam の `beta_open` ブランチ、ビルド 25095856、BepInEx 5.4.23.5 で確認しています。ゲームのアップデート後は、`BepInEx/LogOutput.log` で `Patch census [IslandUI]: ... all bound.` を探してください。違う内容が出ていれば、アップデートで何かが変わっていて、MOD の新しいリリースが必要です。
 
@@ -92,19 +86,7 @@ Steam の `beta_open` ブランチ、ビルド 25095856、BepInEx 5.4.23.5 で�
 
 ここのコミットはそれぞれ一つのリリースです。バージョンタグはリリースの zip と対応しています。
 
-<details><summary><b>構成とビルド方法</b></summary>
-
-```
-src/IslandUI/    the mod: Inventory/ (the windows, action bar, tool belt, target), Crafting/ and
-                 Browser/ (the crafting window), Card/ (item and recipe cards), Model/ (favourites,
-                 moods, recipes), QoL/ (keys, quick save), UI/ (controls, cursor, console, map),
-                 Data/ (the item guide and story hints, as tables)
-src/IslandEx/    Island Ex: one file per feature
-src/Shared/      linked into both DLLs: PatchCensus.cs applies the Harmony patches one class at
-                 a time and logs any that no longer bind; TitleBadge.cs is the title-screen icon
-art/             the interface's art, shipped as islandui-art
-installer/       the install.bat / install.ps1 shipped in the installer downloads
-```
+<details><summary><b>ビルド方法</b></summary>
 
 ビルドには .NET SDK と、インストール済みのゲームが必要です（プロジェクトがゲームの DLL を参照します）：
 
@@ -120,3 +102,7 @@ dotnet build src/IslandEx/IslandEx.csproj -c Release
 ## 連絡先
 
 バグ報告、アイデア、何かを再利用したい場合は、[issue を開く](../../issues)か、[maliekee@pm.me](mailto:maliekee@pm.me) にメールするか、[Discord](https://discord.com/users/1523362502224777439) で声をかけてください。
+
+## 関わってくれて、支えてくれてありがとう
+
+h1sagi、NoobInDaHause、Ramiyak、Ex0du5_2169、Dimastrelok、Yuuto、Cosmo、Abyss、NotTeaBut、Kringe、Kestraz

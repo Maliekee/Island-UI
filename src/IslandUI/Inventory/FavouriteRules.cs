@@ -69,6 +69,10 @@ namespace IslandUI
         //   an equip      onto anyone but you                 RandomCharacter.EquipItem
         //   a quick move  vanilla's shift-click across        InventoryManager.QuickMove
         //
+        // CONSUMING IS NOT LEAVING (D180): the mark keeps an item in your inventory, as
+        // an item. Eating it is what it is for, on you or on someone you give it to,
+        // and so is a food box. Worn by them, in their bag or in a planter, it left.
+        //
         // Our gestures ask first and never start - the place, the drag's drop and
         // Ctrl+click (InventoryWindow) - and send the item home; All in, Stack and
         // quick-stack already leave it. A refusal says why at the cursor for a

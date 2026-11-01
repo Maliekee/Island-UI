@@ -2,9 +2,13 @@
 
 # Island UI in play
 
-A tour of what Island UI changes, with clips. [← Back to the README](README.md)
+A tour of Island UI, principle by principle, with clips. [← Back to the README](README.md)
 
-## Yours is always yours
+## Built from the ground up
+
+Not a thousand band-aids. The interface is reworked completely, from concept to code: a place on the screen for everything, one target that ties it together, and every part leading to the next.
+
+### Everything has its place
 
 <img src="O2.jpg" width="420" align="right" alt="The three places: the storage around you on the left, the bag of the one you are dealing with in the middle, your own bags on the right">
 
@@ -13,31 +17,9 @@ serves you both, and an item you use while someone is selected goes to them.
 
 Island UI gives everything its own place: **you** on the right, **what you are dealing with**
 in the middle, **what is around you** on the left. Using an item is always on you; to give
-it, you drop it on them.
+it, you drop it on them, or `Ctrl`+right-click with them targeted.
 
 <br clear="right">
-
-## One piece
-
-<table><tr>
-<td width="42%">
-
-The parts lead to each other. A name on a sheet opens that person; a mood problem names its
-cause and takes you to where you fix it; a row in the roster, a pin on the map or the plaque
-of a fight makes its person your target.
-
-*One take: the roster shows who is unhappy, the sheet says why, Orders and Set place fix it.*
-
-</td>
-<td>
-
-<!-- clip U1: one unbroken take - the roster shows who is unhappy, the sheet says why, Orders and Set place fix it -->
-https://github.com/user-attachments/assets/307e04cd-e04f-4d95-890f-60e2188e6c3a
-
-</td>
-</tr></table>
-
-## The screen
 
 <table><tr>
 <td width="42%">
@@ -73,7 +55,7 @@ https://github.com/user-attachments/assets/0a580a09-d2c8-425d-bb87-ce7eea47735f
 
 </details>
 
-## A target
+### One target, held
 
 The base game has no target: a click walks you there and opens a menu that closes when you
 move. Island UI holds the person or thing you are dealing with until you let go.
@@ -113,18 +95,42 @@ https://github.com/user-attachments/assets/5a6f3a01-6f20-4f78-bd89-7a45d467d4b2
 <details><summary><b>More about the target</b></summary>
 
 - A click is still the game's.
-- Giving is a drop: drag an item onto the person, and out of reach you walk over first.
+- Giving is a drop, or `Ctrl`+right-click: out of reach you walk over first.
 - Switch a well or a food store to auto-use, and you drink or eat there by yourself when you need it.
 - Follow and Leave work from anywhere.
 - A ring on the ground in the colour of what they are to you; the game's pulsing outline is off.
 - A far well or food box shows Drink and Eat, greyed until you are in reach.
 - Props can be targeted too: a sign, a bed, a wreck - with their readings, like a well's water or a building's wear, and Repair while it is a wreck.
 - Move, Scale, Edit and Remove rise from one Manage key; entries other mods add to the game's menu appear on the dock, in their own words.
-- A gift goes one at a time, so you can hand items round; someone who can't take it says so, and the item stays in your hand.
+- A gift goes one at a time, or up to ten with `Shift`, so you can hand items round; someone who can't take it says so, and the item stays in your hand.
 
 </details>
 
-## Your village
+### Every part leads to the next
+
+<table><tr>
+<td width="42%">
+
+The parts lead to each other. A name on a sheet opens that person; a mood problem names its
+cause and takes you to where you fix it; a row in the roster, a pin on the map or the plaque
+of a fight makes its person your target.
+
+*One take: the roster shows who is unhappy, the sheet says why, Orders and Set place fix it.*
+
+</td>
+<td>
+
+<!-- clip U1: one unbroken take - the roster shows who is unhappy, the sheet says why, Orders and Set place fix it -->
+https://github.com/user-attachments/assets/307e04cd-e04f-4d95-890f-60e2188e6c3a
+
+</td>
+</tr></table>
+
+## Second nature
+
+Everything is presented the way people naturally take things in, so nothing needs explaining.
+
+### A village, not a list of numbers
 
 <img src="T3a.jpg" width="420" align="right" alt="The roster sorted by personality: Subonu can't stand Kiel, while Kiel is pining for Subonu">
 
@@ -173,7 +179,76 @@ https://github.com/user-attachments/assets/f23b0259-c55c-47f8-acae-0ac47f73403d
 
 </details>
 
-## No more item juggling
+### The whole fight
+
+<table>
+<tr>
+<td width="42%">
+
+You see the whole fight: who is in it, who is on you, and who is coming from off screen.
+Friend or foe by colour, from what each has shown you; your own people's health over their
+heads. What you see of a stranger follows your Observation skill.
+
+</td>
+<td>
+
+<!-- clip T5: a fight - the plaque, markers over the enemies, one off screen on the edge, one on you glowing red, a follower's green bar -->
+https://github.com/user-attachments/assets/78249f6a-6879-49ef-94a4-d87f5836d124
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+<!-- clip T5-raid: a raid on the base - every attacker marked, red rings, the plaque -->
+https://github.com/user-attachments/assets/9c8cb36c-f95a-47fa-83f0-4e6eb3f136aa
+
+</td>
+<td width="50%">
+
+<!-- clip T5-boss: a boss fight - the plaque marks the boss and stays on it -->
+https://github.com/user-attachments/assets/a33bcd9a-4edc-4d40-b2c0-c94b078f0f38
+
+</td>
+</tr>
+</table>
+
+<details><summary><b>More about fights</b></summary>
+
+- Hover anyone to see their health.
+- All out loots every body in reach.
+- The plaque names the fight's first enemy, bosses first, with "+N in combat" for everyone else; click it to target them.
+- A downed enemy stays a few seconds on the plaque, marked Slain or Fainted.
+- Settings keep markers on your people, on enemies or on the neutral outside a fight too.
+
+</details>
+
+### Every number says why
+
+<img src="T6-story.webp" width="420" align="right" alt="A story choice: what Yes and No lead to, the spoiler hidden, then revealed">
+
+Island UI also tells you what the game keeps to itself:
+
+- Every item card says how to get it: where it is found, what drops it, who trades it.
+- Story choices say what they lead to; spoilers stay hidden until you click.
+- Every number on the sheets explains the rule behind it.
+- In seven languages.
+
+And the extras: a readable cursor, every key rebindable, quick save on `F6`, a drop-down console.
+
+<br clear="right">
+
+<p>
+<img src="T6-card.jpg" height="200" alt="An item card: the Iron Ingot, crafted from 10 iron at the furnace, dropped by Big Natives">
+<img src="T6-tip.jpg" height="200" alt="A tip on the Social page: can't stand Kiel, -1 mood six times a day, and the fix">
+<img src="T6-lang.jpg" height="200" alt="The roster and your sheet in Japanese">
+</p>
+
+## Play, not paperwork
+
+The chores get out of your way, so the time goes to the island.
+
+### No more item juggling
 
 <table>
 <tr>
@@ -230,7 +305,7 @@ https://github.com/user-attachments/assets/4f025cca-c9a9-40f9-9470-c2780350f1ce
 - A missing material is one click from its own recipe, and back.
 - Each recipe says how many you can make, and why not when you can't.
 - Your bags stay open while you walk.
-- `Ctrl`+click moves a stack to where it belongs; `Shift`+click splits it in a small dialog.
+- `Ctrl`+click moves a stack to where it belongs, and never uses it up; `Shift` with it moves up to ten; `Shift`+click alone splits it in a small dialog.
 - Hover something wearable and the loadout slot it would fill lights up - in red if they can't wear it.
 - Compact lists only the filled slots; chips per kind of container choose hidden, shown or stack.
 - The crafting window is a blueprint sheet: what you can make in colour, the rest as line drawings.
@@ -238,51 +313,7 @@ https://github.com/user-attachments/assets/4f025cca-c9a9-40f9-9470-c2780350f1ce
 
 </details>
 
-## The whole fight
-
-<table>
-<tr>
-<td width="42%">
-
-You see the whole fight: who is in it, who is on you, and who is coming from off screen.
-Friend or foe by colour, from what each has shown you; your own people's health over their
-heads. What you see of a stranger follows your Observation skill.
-
-</td>
-<td>
-
-<!-- clip T5: a fight - the plaque, markers over the enemies, one off screen on the edge, one on you glowing red, a follower's green bar -->
-https://github.com/user-attachments/assets/78249f6a-6879-49ef-94a4-d87f5836d124
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-<!-- clip T5-raid: a raid on the base - every attacker marked, red rings, the plaque -->
-https://github.com/user-attachments/assets/9c8cb36c-f95a-47fa-83f0-4e6eb3f136aa
-
-</td>
-<td width="50%">
-
-<!-- clip T5-boss: a boss fight - the plaque marks the boss and stays on it -->
-https://github.com/user-attachments/assets/a33bcd9a-4edc-4d40-b2c0-c94b078f0f38
-
-</td>
-</tr>
-</table>
-
-<details><summary><b>More about fights</b></summary>
-
-- Hover anyone to see their health.
-- All out loots every body in reach.
-- The plaque names the fight's first enemy, bosses first, with "+N in combat" for everyone else; click it to target them.
-- A downed enemy stays a few seconds on the plaque, marked Slain or Fainted.
-- Settings keep markers on your people, on enemies or on the neutral outside a fight too.
-
-</details>
-
-## The small touches
+### The small touches
 
 <table><tr>
 <td width="42%">
@@ -306,26 +337,9 @@ https://github.com/user-attachments/assets/f48a462b-4206-4932-88ef-41df04d5d3d9
 </td>
 </tr></table>
 
-## On top
+## One job
 
-<img src="T6-story.webp" width="420" align="right" alt="A story choice: what Yes and No lead to, the spoiler hidden, then revealed">
-
-Island UI also tells you what the game keeps to itself:
-
-- Every item card says how to get it: where it is found, what drops it, who trades it.
-- Story choices say what they lead to; spoilers stay hidden until you click.
-- Every number on the sheets explains the rule behind it.
-- In seven languages.
-
-And the extras: a readable cursor, every key rebindable, quick save on `F6`, a drop-down console.
-
-<br clear="right">
-
-<p>
-<img src="T6-card.jpg" height="200" alt="An item card: the Iron Ingot, crafted from 10 iron at the furnace, dropped by Big Natives">
-<img src="T6-tip.jpg" height="200" alt="A tip on the Social page: can't stand Kiel, -1 mood six times a day, and the fix">
-<img src="T6-lang.jpg" height="200" alt="The roster and your sheet in Japanese">
-</p>
+Island UI is a big project with a narrow aim: the interface. It deliberately stays in its lane, so it doesn't get in the way of the game's content or your other mods. It changes how you see the game and how you get things done, never what you can do, and the tweaks that change the rules live in a separate small mod, [Island Ex](README.md#island-ex).
 
 **[Every feature, big and small →](FEATURES.md)**
 

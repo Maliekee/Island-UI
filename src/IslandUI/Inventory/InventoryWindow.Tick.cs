@@ -404,7 +404,7 @@ namespace IslandUI
             }
             // an item released on someone is used on them (D141) - above the sheets,
             // which would otherwise swallow a release over a roster strip
-            if (TickDropOnPerson(cam))
+            if (TickDropOnPerson(cam) || TickDropOnFoodBox(cam))
             {
                 return;
             }
@@ -587,7 +587,7 @@ namespace IslandUI
                 {
                     Plate pressedOn = PlateOf(hoveredCell);
                     ClickMap.Verb verb = ClickMap.ForCell(hoveredSlot, HandEmpty(), WearsFavourites(pressedOn),
-                        pressedOn != null && pressedOn.IsLoadout, MoveKind(pressedOn));
+                        pressedOn != null && pressedOn.IsLoadout, MoveKind(pressedOn, hoveredSlot));
                     if (verb == ClickMap.Verb.Split)
                     {
                         OpenSplit(hoveredCell, hoveredSlot);

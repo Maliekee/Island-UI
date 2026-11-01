@@ -459,8 +459,10 @@ namespace IslandUI
                         // the gold caption still says it is the purpose
                         glyph != null ? BoardGlyphBox : AnimeCell.GlyphBox, s.Held != null && s.Held(), !door && !craft && s.Kind == ActKind.Purpose,
                         s.Auto != null, s.Auto != null && s.Auto.On);
-                    // the button has no resting tile of its own: dimmed, as the panel's
-                    if (panelCut != null && !live && !(hot && enabled)) _anime[i].Face.color = new Color(.65f, .65f, .65f, 1f);
+                    // the button has no resting tile of its own: dimmed, as the panel's.
+                    // A hover does not lift it: a far door answers the pointer with its
+                    // rim alone, as a person's far bag does on its _off tile
+                    if (panelCut != null && !live && !(down && enabled)) _anime[i].Face.color = new Color(.65f, .65f, .65f, 1f);
                     _art[i].enabled = false;
                     PaintAutoLook(i, null);
                     // an act with neither a board tile nor a glyph: its caption names

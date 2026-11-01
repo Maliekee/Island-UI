@@ -13,6 +13,8 @@ namespace IslandUI
         private static RectTransform _collectionsDock;
         private static RectTransform _generalDock;
         private static RectTransform _playerDock;
+        private static RectTransform _gameMenu;
+        private static Vector2 _gameMenuHome;
         private static Canvas _generalDockCanvas, _playerVitalsCanvas;
         private static GraphicRaycaster _playerVitalsRaycaster;
         private sealed class HudEntry
@@ -41,6 +43,9 @@ namespace IslandUI
                 }
             }
             HiddenButtons.Clear();
+            if (_gameMenu != null)
+                _gameMenu.anchoredPosition = _gameMenuHome;
+            _gameMenu = null;
             HudEntries.Clear();
             if (_hud != null)
                 Object.Destroy(_hud.gameObject);
@@ -91,6 +96,16 @@ namespace IslandUI
                 AddHud(right, "bag", "Your bag", 2);
                 AddHud(right, "settings", "Settings", 3);
                 MakeBoard(right);
+                // The game's menu stands on the button row this dock replaced, and the
+                // dock is the taller: it lay over the foot of Exit and took the clicks
+                // there (Forgejo #202). The menu stands on the dock instead.
+                var menu = mn.uiMN.settingMenu != null ? mn.uiMN.settingMenu.transform as RectTransform : null;
+                if (menu != null)
+                {
+                    _gameMenu = menu;
+                    _gameMenuHome = menu.anchoredPosition;
+                    menu.anchoredPosition = new Vector2(_gameMenuHome.x, right.anchoredPosition.y + right.sizeDelta.y + 2);
+                }
                 // Collections remains a secondary entry of the crafting window.
                 _collectionsDock = MakeDock("Collections", false, 1);
                 _collectionsDock.pivot = new Vector2(1, 1);

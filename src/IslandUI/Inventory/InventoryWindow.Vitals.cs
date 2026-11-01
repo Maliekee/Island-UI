@@ -428,7 +428,7 @@ namespace IslandUI
                 bool water = slot.type == InventorySlot.Type.Water;
                 float max = water
                     ? (prop.itemKey == "well_01" ? 1000f : prop.itemKey == "well_02" ? 2000f : 300f)
-                    : (prop.itemKey == "foodstorage_02" ? 2000f : 1000f);
+                    : InventoryWindow.FoodBoxMax(prop.itemKey);
                 float now = slot.slots != null && slot.slots.Length > 0 ? slot.slots[0].itemLife : 0f;
                 lines.Add(new SheetLine
                 {

@@ -6,10 +6,11 @@ using IslandUI.UI;
 
 namespace IslandUI
 {
-    // AN ITEM DROPPED ON SOMEONE IS USED ON THEM (window-system.md 6.31, D141).
+    // AN ITEM DROPPED ON SOMEONE IS USED ON THEM (window-system.md 6.31, D141, D180).
     // A plain use is yours; to feed, dress or treat someone you drop the item on
     // them - on their roster strip, the portrait on the target dock, the indicator
-    // over the target's head, or the person in the world. A cell under the
+    // over the target's head, or the person in the world. What they can neither
+    // eat nor wear goes in their bag, if they are yours. A cell under the
     // pointer is always asked first: a cell of their bag is a TRANSFER into it, as it
     // has always been.
     //
@@ -32,8 +33,9 @@ namespace IslandUI
 
         // For DragOwnsThePointer: a press over someone with an item in hand is a
         // drop on them, and vanilla must not read it as "drop it on the ground"
-        // (InventoryManager.Hover drops on a mouse-down over the world).
-        internal static bool OfferUnderPointer { get { return _dropOver != null; } }
+        // (InventoryManager.Hover drops on a mouse-down over the world). Over a food
+        // box too (InventoryWindow.DropFood.cs).
+        internal static bool OfferUnderPointer { get { return _dropOver != null || _dropBox != null; } }
 
         // True when this frame's release was a drop on someone (the chain stops).
         private static bool TickDropOnPerson(Camera cam)
@@ -56,10 +58,19 @@ namespace IslandUI
             // clutter of a camp - then a person, picked as Tab picks
             if (who == null && chest == null && !OverUI())
             {
-                who = MarkerUnderPointer() ?? PersonInWorld();
+                // a food box's marker is UI too: food on it is for the box, not for
+                // whoever stands behind it (InventoryWindow.DropFood.cs)
+                who = MarkerUnderPointer() ?? (OverBoxMarker() && HeldFills() ? null : PersonInWorld());
             }
-            bool takes = who == null || CanReceive(who);
-            PaintOfferRing(takes && who != null && !ReferenceEquals(who, _unitFor) ? who : null);
+            ItemSlot hand = _mn.inventory.hoverSlot;
+            // THE ORDER OF A DROP (D180): they eat it, else they wear it, else it
+            // goes in their bag, else nothing
+            bool store = who != null && !Usable(hand);
+            bool takes = who == null || (CanReceive(who) && (!store || BagOf(who) != null));
+            // a favourite may be consumed, not transferred: into their bag or onto
+            // their loadout it would be an item that left yours
+            bool kept = who != null && !IsGift(hand) && Favourites.IsFavourite(hand);
+            PaintOfferRing(takes && !kept && who != null && !ReferenceEquals(who, _unitFor) ? who : null);
             if (who == null && chest == null)
             {
                 return false;
@@ -75,8 +86,17 @@ namespace IslandUI
             bool walk = !near && CanWalkTo(who);
             bool gift = who != null && HeldIsGift();
             // Shift gives several, the game's Shift + right-click (ItemUse.UsesAsked)
-            int uses = gift ? ItemUse.UsesAsked(_mn, _mn.inventory.hoverSlot) : 1;
-            CursorBadge.Show(!takes ? name + "  ·  " + Shared.Loc.Get("drop.cant_take", "can't take this")
+            int uses = gift ? ItemUse.UsesAsked(_mn, hand)
+                : !store ? 1
+                : ClickMap.Shift ? Mathf.Min(ItemUse.ManyUses, hand.stack) : hand.stack;
+            // only what is consumed flies, so only that opens the preview
+            if (takes && (near || walk) && gift)
+            {
+                GivePile.Want(_mn.itemMN.FindItem(hand.itemKey), uses);
+            }
+            CursorBadge.Show(kept ? FavouriteRules.KeptWords
+                : !takes ? name + "  ·  " + Shared.Loc.Get("drop.cant_take", "can't take this")
+                : near && store && !ClickMap.Shift ? Shared.Loc.Get("drop.put_in", "put in  →  {0}", StoreName(who.bag))
                 : near ? (uses > 1 ? Shared.Loc.Get("drop.give_many_to", "give {1} to  →  {0}", name, uses)
                     : gift ? Shared.Loc.Get("drop.give_to", "give to  →  {0}", name) : Shared.Loc.Get("drop.use_on", "use on  →  {0}", name))
                 : walk ? (uses > 1 ? Shared.Loc.Get("drop.walk_give_many_to", "walk over and give {1} to  →  {0}", name, uses)
@@ -89,7 +109,12 @@ namespace IslandUI
             // A FAILED ATTEMPT KEEPS THE ITEM IN HAND - someone who cannot take it,
             // or one too far to walk to - so the next try is one move, not a lift
             // from the bag again. Never onto the ground: the release is consumed.
-            if (takes && near)
+            if (kept)
+            {
+                FavouriteRules.Refuse();   // a favourite stays in your bags
+                HomeHeld();
+            }
+            else if (takes && near)
             {
                 UseHeldOn(who, chest, uses);
             }
@@ -270,12 +295,25 @@ namespace IslandUI
         // Equipment dropped on someone dresses them, which their loadout says.
         private static bool HeldIsGift()
         {
-            ItemSlot hand = _mn.inventory != null ? _mn.inventory.hoverSlot : null;
-            ItemData data = hand != null && !string.IsNullOrEmpty(hand.itemKey) && _mn.itemMN != null
-                ? _mn.itemMN.FindItem(hand.itemKey) : null;
+            return IsGift(_mn.inventory != null ? _mn.inventory.hoverSlot : null);
+        }
+
+        private static bool IsGift(ItemSlot slot)
+        {
+            ItemData data = slot != null && !string.IsNullOrEmpty(slot.itemKey) && _mn.itemMN != null
+                ? _mn.itemMN.FindItem(slot.itemKey) : null;
             return data != null && (data.itemType == ItemData.ItemType.Food
                 || data.itemType == ItemData.ItemType.Bottle
                 || data.itemType == ItemData.ItemType.Consumables);
+        }
+
+        // What a person can do something with: eat it, drink it, use it up or wear
+        // it. The rest goes in their bag.
+        private static bool Usable(ItemSlot slot)
+        {
+            ItemData data = slot != null && !string.IsNullOrEmpty(slot.itemKey) && _mn.itemMN != null
+                ? _mn.itemMN.FindItem(slot.itemKey) : null;
+            return data != null && (IsGift(slot) || ItemUse.IsEquipType(data));
         }
 
         // Whose roster strip is under the pointer; null over anything else. The
@@ -342,6 +380,11 @@ namespace IslandUI
         // and vanilla's own refusals behave exactly as a right-click does on you.
         private static void UseHeldOn(CommonStates who, InventorySlot chest, int uses)
         {
+            if (who != null && !Usable(_mn.inventory.hoverSlot))
+            {
+                PutHeldInBag(who, uses);
+                return;
+            }
             CellView source = _grabSource;
             if (!PutBack(source, out bool mine))
             {
@@ -352,17 +395,21 @@ namespace IslandUI
                 GiveFrom(who, source, mine, uses);
                 return;
             }
-            bool done;
+            Done(UsePocket(chest, source.Slot, source.VanillaSlotId, mine));
+        }
+
+        // The one item that acts on a chest: the game's use, aimed at it.
+        private static bool UsePocket(InventorySlot chest, ItemSlot slot, int vanillaSlotId, bool mine)
+        {
             VanillaContainerUI.PocketDrop = chest;
             try
             {
-                done = ItemUse.Use(_mn, source.Slot, source.VanillaSlotId, use => ItemUse.OnYou(_mn, use), mine);
+                return ItemUse.Use(_mn, slot, vanillaSlotId, use => ItemUse.OnYou(_mn, use), mine);
             }
             finally
             {
                 VanillaContainerUI.PocketDrop = null;
             }
-            Done(done);
         }
 
         // the stack back in its cell, and whether the cell is one of yours
@@ -384,13 +431,15 @@ namespace IslandUI
         // the rest comes back to the cursor - at once on a refusal, and once the one
         // has left on a give (Relift) - so a stack of ten can be handed round a camp
         // one by one, and the flight always starts where the hand is. `cell` is the
-        // cell the stack was put back into for the use.
-        private static void GiveFrom(CommonStates who, CellView cell, bool mine, int uses)
+        // cell the stack was put back into for the use. Without `relift` it stays
+        // there: a Ctrl+right-click (TargetUse) never had it in hand.
+        private static void GiveFrom(CommonStates who, CellView cell, bool mine, int uses, bool relift = true)
         {
             ItemSlot slot = cell.Slot;
             int vanillaSlotId = cell.VanillaSlotId;
             string key = slot.itemKey;
             ItemData item = _mn.itemMN != null ? _mn.itemMN.FindItem(key) : null;   // before the stack goes
+            bool consumed = IsGift(slot);   // worn, it is a transfer, and does not fly
             int before = CountHeld(key, slot);
             // A REFUSAL IS SAID INSIDE THE CALL: vanilla raises its caution before
             // the first yield of the use (the collapsed, a perfume that does
@@ -407,7 +456,10 @@ namespace IslandUI
                     _mn.eventMN.StartCoroutine(_mn.eventMN.GoCaution(34));
                 }
                 // back in the hand, for another try - as a failed drop leaves it
-                Relift(cell, key);
+                if (relift)
+                {
+                    Relift(cell, key);
+                }
                 _nextRefresh = 0f;
                 Refresh();
                 return;
@@ -417,7 +469,7 @@ namespace IslandUI
             // act on what is not your target all the time - and handing a stack
             // round a camp moved the target with every one. The flight says who
             // got it.
-            FlyTo(who, item, cell, before);
+            FlyTo(who, item, cell, before, relift, consumed);
             Done(true);
         }
 
@@ -437,45 +489,71 @@ namespace IslandUI
         // later, so the count is watched for a moment before the flight is let go -
         // and before the rest is lifted back: lifted sooner, the coroutine would
         // spend from an emptied slot.
-        private static void FlyTo(CommonStates who, ItemData item, CellView cell, int before)
+        private static void FlyTo(CommonStates who, ItemData item, CellView cell, int before, bool relift, bool fly)
         {
             UIManager ui = _mn.uiMN;
             // StartCoroutine throws on an inactive behaviour
             if (ui == null || !ui.isActiveAndEnabled || item == null || who == null)
             {
-                Relift(cell, item != null ? item.name : null);
+                if (relift)
+                {
+                    Relift(cell, item != null ? item.name : null);
+                }
                 return;
             }
-            ui.StartCoroutine(FlyWhenSpent(ui, who, item, cell, cell.Slot, before));
+            ui.StartCoroutine(FlyWhenSpent(ui, who, item, cell, cell.Slot, before, relift, fly));
         }
 
         private static IEnumerator FlyWhenSpent(UIManager ui, CommonStates who, ItemData item, CellView cell,
-            ItemSlot source, int before)
+            ItemSlot source, int before, bool relift, bool fly)
         {
             float until = Time.unscaledTime + SpentWithin;
             while (CountHeld(item.name, source) >= before)
             {
                 if (Time.unscaledTime > until)
                 {
-                    Relift(cell, item.name);
+                    if (relift)
+                    {
+                        Relift(cell, item.name);
+                    }
                     yield break;   // it never left: back in the hand, no flight
                 }
                 yield return null;
             }
             int spent = before - CountHeld(item.name, source);   // before the hand takes the rest
-            Relift(cell, item.name);
-            Camera world = Camera.main;
-            RectTransform canvasRect = ItemFlight.RootCanvas(ui, out Camera uiCam);
-            if (world == null || who == null || canvasRect == null || !ScreenShape(world, who, out Rect body))
+            if (relift)
             {
-                yield break;
+                Relift(cell, item.name);
             }
-            // SEVERAL LEFT, SEVERAL FLY: one tile each, all at once, fanned out from the
-            // hand before they go, and no count: each tile is one item, not a stack
-            Vector2 fromScreen = Input.mousePosition;
-            for (int i = 0; i < spent; i++)
+            if (fly && who != null)
             {
-                ui.StartCoroutine(Fly(ui, canvasRect, uiCam, item, spent > 1 ? 0 : spent, fromScreen, body.center, i, spent));
+                FlyTo(ui, item, spent, who);
+            }
+        }
+
+        // SEVERAL LEFT, SEVERAL FLY: one tile each, no count, each tile is one item
+        // and not a stack (GivePile). `to` is what ScreenShape takes: a person, or a
+        // thing's GameObject.
+        private static void FlyTo(UIManager ui, ItemData item, int spent, object to)
+        {
+            Camera world = Camera.main;
+            if (world != null && ScreenShape(world, to, out Rect body))
+            {
+                FlyToScreen(ui, item, spent, body.center);
+            }
+        }
+
+        private static void FlyToScreen(UIManager ui, ItemData item, int spent, Vector2 toScreen)
+        {
+            // StartCoroutine throws on an inactive behaviour
+            if (ui == null || !ui.isActiveAndEnabled)
+            {
+                return;
+            }
+            RectTransform canvasRect = ItemFlight.RootCanvas(ui, out Camera uiCam);
+            if (canvasRect != null)
+            {
+                GivePile.Launch(ui, canvasRect, uiCam, item, spent, toScreen);
             }
         }
 
@@ -545,71 +623,6 @@ namespace IslandUI
             return slot != null && slot.itemKey == key ? slot.stack : 0;
         }
 
-        private static IEnumerator Fly(UIManager ui, RectTransform canvasRect, Camera uiCam, ItemData item, int spent,
-            Vector2 fromScreen, Vector2 toScreen, int index, int of)
-        {
-            GameObject toast = ItemFlight.Spawn(ui, item, -spent);
-            if (toast == null)
-            {
-                yield break;
-            }
-            // try/finally: the toast is ours, nothing in vanilla will destroy it
-            try
-            {
-                ItemFlight.Style(toast);
-                var rect = (RectTransform)toast.transform;
-                CanvasGroup group = ItemFlight.Detach(toast, canvasRect, out Vector2 size);
-                if (!ItemFlight.ToLocal(canvasRect, uiCam, fromScreen, out Vector2 from)
-                    || !ItemFlight.ToLocal(canvasRect, uiCam, toScreen, out Vector2 to))
-                {
-                    yield break;
-                }
-                rect.anchoredPosition = from;   // before the first frame is drawn
-                if (of > 1)
-                {
-                    Vector2 hand = from;
-                    from += FanOffset(to - from, size.x, index, of);
-                    float elapsed = 0f;
-                    while (elapsed < FanSeconds + FanHoldSeconds)
-                    {
-                        elapsed += Time.unscaledDeltaTime;
-                        float t = Mathf.Clamp01(elapsed / FanSeconds);
-                        rect.anchoredPosition = Vector2.Lerp(hand, from, 1f - (1f - t) * (1f - t));
-                        yield return null;
-                        if (rect == null)
-                        {
-                            yield break;
-                        }
-                    }
-                }
-                IEnumerator leg = ItemFlight.Travel(rect, group, from, to, GiveFlightSeconds);
-                while (leg.MoveNext())
-                {
-                    yield return leg.Current;
-                }
-            }
-            finally
-            {
-                if (toast != null)
-                {
-                    Object.Destroy(toast);
-                }
-            }
-        }
-
-        // Where a tile of a fan rests: a straight line through the hand, square to
-        // the way they will fly, centred and evenly spaced.
-        private static Vector2 FanOffset(Vector2 toward, float tile, int index, int of)
-        {
-            Vector2 along = toward.sqrMagnitude > 1f ? toward.normalized : Vector2.up;
-            return new Vector2(-along.y, along.x) * (index - (of - 1) * 0.5f) * tile * FanSpacing;
-        }
-
-        private const float GiveFlightSeconds = 0.45f;
-        private const float FanSeconds = 0.16f;
-        private const float FanHoldSeconds = 0.1f;
-        private const float FanSpacing = 0.8f;   // of a tile's width
-
         private static void Done(bool done)
         {
             if (!done && _mn.eventMN != null)
@@ -633,6 +646,8 @@ namespace IslandUI
         private sealed class WalkGive
         {
             public CommonStates Who;
+            public bool ToBox;         // to a food box, Box, not to Who (DropFood.cs)
+            public InventorySlot Box;
             public string Key;
             public GameObject Aim;
             public float Until;
@@ -687,7 +702,8 @@ namespace IslandUI
             PlayerMove p = mn != null && mn.gameMN != null ? mn.gameMN.pMove : null;
             string why = p == null ? "no player"
                 : !ReferenceEquals(p.target, w.Aim) ? "the walk was taken over"
-                : w.Who == null || !w.Who.gameObject.activeInHierarchy || !CanReceive(w.Who) ? "they can no longer take it"
+                : (w.ToBox ? w.Box == null || !w.Box.gameObject.activeInHierarchy
+                    : w.Who == null || !w.Who.gameObject.activeInHierarchy || !CanReceive(w.Who)) ? "they can no longer take it"
                 : !StillHeld(w.Key) ? "the item left the hand"
                 : Time.unscaledTime > w.Until ? "too long on the way"
                 : null;
@@ -697,7 +713,7 @@ namespace IslandUI
                 Plugin.Log.LogInfo("Drop: the walk to give " + w.Key + " ended - " + why);
                 return;
             }
-            if (!ReachRule.Live(mn, w.Who))
+            if (!(w.ToBox ? ReachRule.Live(mn, w.Box) : ReachRule.Live(mn, w.Who)))
             {
                 return;
             }
@@ -717,7 +733,14 @@ namespace IslandUI
             p.target = null;
             if (StillHeld(w.Key))
             {
-                UseHeldOn(w.Who, null, w.Uses);
+                if (w.ToBox)
+                {
+                    FillBoxFromHand(w.Box, w.Uses);
+                }
+                else
+                {
+                    UseHeldOn(w.Who, null, w.Uses);
+                }
             }
         }
 

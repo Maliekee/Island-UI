@@ -1,16 +1,24 @@
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace IslandUI
 {
     // InventoryWindow — Ctrl+click: the item skips the hand.
     internal static partial class InventoryWindow
     {
-        // CTRL+CLICK MOVES: as shift+click is the convention for splitting and
-        // alt+click for favouriting, ctrl+click is the convention for moving
-        // stuff. The item goes to the
+        // CTRL+CLICK MOVES, AND ONLY MOVES (D180): as shift+click is the convention
+        // for splitting and alt+click for favouriting, ctrl+click is the convention
+        // for moving stuff. THE GUARANTEE: a left click never destroys an item. What
+        // moved can be moved back, so nothing here is eaten, worn or used up: a food
+        // box turns food into a number, and that is Ctrl+right-click's alone.
+        // How much is the receiver's: a stack, or one where a cell takes one at a
+        // time. With Shift too, up to ten. The item goes to the
         // one other place on screen that could take it:
         //
-        //   from your two bags   into the target's bag or chest while its window
+        //   from your two bags   a seed into the target's planter while its window
+        //                        is up, one to a free cell, as vanilla's shift-click;
+        //                        into the target's bag or chest while its window
         //                        is up; else into the vicinity's storage while that
         //                        window is up (a chest already holding it first,
         //                        then the nearest with room - All in's rule, for one
@@ -22,8 +30,9 @@ namespace IslandUI
         //                        bag's)
         //
         // Chests, material storage and people's bags only (ContainerPolicy's
-        // Materials, Chests and Bags). A cage, a planter, a hive or a bench strip
-        // keeps its own rules - vanilla's planter takes one seed a cell - and a
+        // Materials, Chests and Bags), and a planter: seeds in, whatever it holds out,
+        // as vanilla's shift-click does both. A cage, a hive or a bench strip keeps
+        // its own rules, and a
         // loadout is worn, not stored, so Ctrl does nothing there. A target up with
         // no bag on screen (a person on their Profile) takes nothing and drops
         // nothing: the ground is only for when nothing else is there. The exact
@@ -45,6 +54,7 @@ namespace IslandUI
             }
             private string _name;
             internal InventorySlot Into;   // the target's bag or chest
+            internal Plate Planter;        // the target's planter, drawn by this plate
             internal bool ToYours;
             internal bool ToReach;
             internal bool Drop;
@@ -53,8 +63,9 @@ namespace IslandUI
         private static readonly MoveRoute ToYoursRoute = new MoveRoute { ToYours = true };
         private static readonly MoveRoute ToReachRoute = new MoveRoute { ToReach = true };
         private static readonly MoveRoute DropRoute = new MoveRoute { Drop = true };
-        // asked every hovered frame while Ctrl is down, so one instance is reused
+        // asked every hovered frame while Ctrl is down, so these are reused
         private static readonly MoveRoute IntoRoute = new MoveRoute();
+        private static readonly MoveRoute PlantRoute = new MoveRoute();
 
         private static bool CtrlMoves(InventorySlot c)
         {
@@ -67,7 +78,8 @@ namespace IslandUI
                 || f == ContainerPolicy.Family.Bags || f == ContainerPolicy.Family.Bodies;
         }
 
-        private static MoveRoute RouteFrom(Plate plate)
+        // `slot` is the item the route is for: only a seed goes to a planter.
+        private static MoveRoute RouteFrom(Plate plate, ItemSlot slot)
         {
             if (plate == null || plate.IsLoadout || _mn == null || _mn.inventory == null)
             {
@@ -76,7 +88,14 @@ namespace IslandUI
             if (!WearsFavourites(plate))
             {
                 return (plate.Column == CharacterColumn || plate.Column == ReachColumn)
-                    && CtrlMoves(plate.Container) ? ToYoursRoute : null;
+                    && (CtrlMoves(plate.Container) || ContainerPolicy.IsPlanter(plate.Container)) ? ToYoursRoute : null;
+            }
+            Plate planter = slot != null && slot.toolType == ItemData.ToolType.Plant ? TargetPlanter() : null;
+            if (planter != null)
+            {
+                PlantRoute.Planter = planter;
+                PlantRoute.Name = StoreName(planter.Container);
+                return PlantRoute;
             }
             Plate target = TargetStore();
             if (target != null)
@@ -91,7 +110,8 @@ namespace IslandUI
                 // the badge may not promise what the click will not do
                 return HasReachStore() ? ToReachRoute : null;
             }
-            return Focus() == null ? DropRoute : null;
+            // a target food box is a target: food does not land at your feet instead
+            return Focus() == null && TargetBox() == null ? DropRoute : null;
         }
 
         private static readonly List<InventorySlot> ReachStores = new List<InventorySlot>();
@@ -111,14 +131,43 @@ namespace IslandUI
         }
 
         // ClickMap's word for the route: 0 nowhere, 1 somewhere, 2 the ground.
-        private static int MoveKind(Plate plate)
+        private static int MoveKind(Plate plate, ItemSlot slot)
         {
             if (!ClickMap.Ctrl)
             {
                 return 0;   // the route is only worth asking while Ctrl is down
             }
-            MoveRoute route = RouteFrom(plate);
+            MoveRoute route = RouteFrom(plate, slot);
             return route == null ? 0 : route.Drop ? 2 : 1;
+        }
+
+        // How many a Ctrl+click sends: what the receiver takes at a time, or with
+        // Shift up to ten.
+        private static int MoveCount(MoveRoute route, ItemSlot slot)
+        {
+            return ClickMap.Shift ? Mathf.Min(ItemUse.ManyUses, slot.stack)
+                : route.Planter != null ? 1 : slot.stack;
+        }
+
+        // `move` run on only `count` of a stack: the rest of it stays behind, and
+        // what would not fit comes back. The game's scratch cell carries the part.
+        private static int MoveSome(InventoryManager inv, ItemSlot from, int count, Func<ItemSlot, int> move)
+        {
+            if (count >= from.stack)
+            {
+                return move(from);
+            }
+            ItemSlot part = inv.stockSlot;
+            inv.SlotLoadSlot(from, part);
+            part.stack = count;
+            from.stack -= count;
+            int moved = move(part);
+            if (!string.IsNullOrEmpty(part.itemKey))
+            {
+                from.stack += part.stack;
+                inv.SlotClear(part);
+            }
+            return moved;
         }
 
         // The target's bag or chest, while its window shows one Ctrl may fill.
@@ -134,6 +183,43 @@ namespace IslandUI
                 }
             }
             return null;
+        }
+
+        // The target's planter, while its window is up.
+        private static Plate TargetPlanter()
+        {
+            for (int p = 0; p < _platesUsed; p++)
+            {
+                Plate plate = Plates[p];
+                if (plate.Column == CharacterColumn && !plate.IsLoadout && ContainerPolicy.IsPlanter(plate.Container)
+                    && plate.Window.Go.activeInHierarchy)
+                {
+                    return plate;
+                }
+            }
+            return null;
+        }
+
+        // Into the planter's free cells in order, one seed to a cell, `count` of
+        // them or as many as the stack reaches. Through the plate's cells, as a click
+        // on one plants: they are the mirror while vanilla has the planter open.
+        private static int Plant(InventoryManager inv, ItemSlot from, Plate planter, int count)
+        {
+            int planted = 0;
+            for (int c = 0; c < planter.Shown && c < planter.Cells.Count; c++)
+            {
+                ItemSlot cell = planter.Cells[c].Slot;
+                if (cell != null && PlantOne(inv, from, cell))
+                {
+                    ReportWrite(planter, cell);
+                    planted++;
+                    if (planted >= count || string.IsNullOrEmpty(from.itemKey))
+                    {
+                        break;
+                    }
+                }
+            }
+            return planted;
         }
 
         private static string StoreName(InventorySlot c)
@@ -153,13 +239,15 @@ namespace IslandUI
         }
 
         // The click, on release. The route is asked again rather than carried from
-        // the badge: what is on screen can change while the button is down.
-        private static void CtrlMove(CellView cell)
+        // the badge: what is on screen can change while the button is down. `asked`
+        // is how many, for a caller who knows (0: MoveCount). A transfer has no flight:
+        // you pressed that item, and you know where it ends up.
+        private static void CtrlMove(CellView cell, int asked = 0)
         {
             ItemSlot slot = cell != null ? cell.Slot : null;
             InventoryManager inv = _mn != null ? _mn.inventory : null;
             Plate plate = PlateOf(cell);
-            MoveRoute route = RouteFrom(plate);
+            MoveRoute route = RouteFrom(plate, slot);
             if (inv == null || route == null || slot == null || string.IsNullOrEmpty(slot.itemKey)
                 || !HandEmpty() || _mn.gameMN == null || _mn.gameMN.pMove == null)
             {
@@ -172,11 +260,20 @@ namespace IslandUI
                 return;
             }
             string key = slot.itemKey;
-            int count = slot.stack;
+            int count = asked > 0 ? Mathf.Min(asked, slot.stack) : MoveCount(route, slot);
             if (route.Drop)
             {
                 // exactly a drag let go over the world: into the hand, then out
-                inv.SlotToSlot(slot, inv.hoverSlot);
+                if (count < slot.stack)
+                {
+                    inv.SlotLoadSlot(slot, inv.hoverSlot);
+                    inv.hoverSlot.stack = count;
+                    slot.stack -= count;
+                }
+                else
+                {
+                    inv.SlotToSlot(slot, inv.hoverSlot);
+                }
                 ReportWrite(plate, slot);
                 inv.ItemDrop(inv.hoverSlot);
                 NormalizeHover();
@@ -197,7 +294,11 @@ namespace IslandUI
                 }
                 CommonStates you = _mn.gameMN.pMove.common;
                 ItemSlot[] yours = you != null && you.bag != null ? you.bag.slots : null;
-                moved = MoveStackOut(inv, slot, yours, out _);
+                moved = MoveSome(inv, slot, count, part => MoveStackOut(inv, part, yours, out _));
+            }
+            else if (route.Planter != null)
+            {
+                moved = Plant(inv, slot, route.Planter, count);
             }
             else if (route.Into != null)
             {
@@ -208,19 +309,25 @@ namespace IslandUI
                     Refuse(30);
                     return;
                 }
-                moved = MoveStack(inv, slot, route.Into.slots, route.Into.slots.Length, false, out _);
+                InventorySlot into = route.Into;
+                moved = MoveSome(inv, slot, count, part => MoveStack(inv, part, into.slots, into.slots.Length, false, out _));
             }
             else if (route.ToReach)
             {
-                List<InventorySlot> targets = ReachStoresNow();
-                for (int c = 0; c < targets.Count && !string.IsNullOrEmpty(slot.itemKey); c++)
+                moved = MoveSome(inv, slot, count, part =>
                 {
-                    moved += MoveStack(inv, slot, targets[c].slots, targets[c].slots.Length, true, out _);
-                }
-                for (int c = 0; c < targets.Count && !string.IsNullOrEmpty(slot.itemKey); c++)
-                {
-                    moved += MoveStack(inv, slot, targets[c].slots, targets[c].slots.Length, false, out _);
-                }
+                    int sent = 0;
+                    List<InventorySlot> targets = ReachStoresNow();
+                    for (int c = 0; c < targets.Count && !string.IsNullOrEmpty(part.itemKey); c++)
+                    {
+                        sent += MoveStack(inv, part, targets[c].slots, targets[c].slots.Length, true, out _);
+                    }
+                    for (int c = 0; c < targets.Count && !string.IsNullOrEmpty(part.itemKey); c++)
+                    {
+                        sent += MoveStack(inv, part, targets[c].slots, targets[c].slots.Length, false, out _);
+                    }
+                    return sent;
+                });
             }
             if (moved == 0)
             {
@@ -246,7 +353,8 @@ namespace IslandUI
         // Harness doors, since /ui/click cannot hold Ctrl. CtrlRoutes: where the
         // first item of every plate on screen would go. CtrlMoveProbe: the click
         // itself, on the first item in a plate of `column` (0 yours, 1 the target,
-        // 2 the vicinity) whose key contains `key`.
+        // 2 the vicinity) whose key contains `key`. CtrlShiftMoveProbe: the same
+        // click with Shift held too: up to ten.
         internal static string CtrlRoutes()
         {
             var sb = new System.Text.StringBuilder();
@@ -257,7 +365,7 @@ namespace IslandUI
                     ItemSlot slot = plate.Cells[c].Slot;
                     if (slot != null && !string.IsNullOrEmpty(slot.itemKey))
                     {
-                        MoveRoute route = RouteFrom(plate);
+                        MoveRoute route = RouteFrom(plate, slot);
                         sb.Append(plate.Column).Append(':').Append(slot.itemKey).Append(" -> ")
                             .Append(route != null ? route.Name : "nothing").Append("; ");
                         break;
@@ -268,6 +376,16 @@ namespace IslandUI
         }
 
         internal static string CtrlMoveProbe(int column, string key)
+        {
+            return MoveProbe(column, key, 0);
+        }
+
+        internal static string CtrlShiftMoveProbe(int column, string key)
+        {
+            return MoveProbe(column, key, ItemUse.ManyUses);
+        }
+
+        private static string MoveProbe(int column, string key, int asked)
         {
             foreach (Plate plate in ShownPlates())
             {
@@ -281,8 +399,8 @@ namespace IslandUI
                     if (slot != null && !string.IsNullOrEmpty(slot.itemKey) && slot.itemKey.Contains(key))
                     {
                         string was = slot.itemKey + " x" + slot.stack;
-                        MoveRoute route = RouteFrom(plate);
-                        CtrlMove(plate.Cells[c]);
+                        MoveRoute route = RouteFrom(plate, slot);
+                        CtrlMove(plate.Cells[c], asked);
                         return was + " -> " + (route != null ? route.Name : "nothing")
                             + "; left in the cell: " + (string.IsNullOrEmpty(slot.itemKey) ? "empty" : slot.itemKey + " x" + slot.stack);
                     }

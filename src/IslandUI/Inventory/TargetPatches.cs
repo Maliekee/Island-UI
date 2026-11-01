@@ -56,6 +56,19 @@ namespace IslandUI
             return !(opening && InventoryWindow.TabTakesTheKey());
         }
 
+        // Your bag and sheet draw after the game's menu and hide it (Forgejo #202), so
+        // they make way on every way in. Up after the call means it opened: a close
+        // leaves it down, and so does the Tab press refused above.
+        [HarmonyPatch(typeof(UIManager), nameof(UIManager.SettingPanelOpen))]
+        [HarmonyPostfix]
+        private static void SettingPanelOpen_Postfix(UIManager __instance)
+        {
+            if (__instance.settingMenu != null && __instance.settingMenu.activeSelf)
+            {
+                InventoryWindow.ClearForGameMenu();
+            }
+        }
+
         // NO CTRL+CLICK IN THE WORLD (D158): the Tab click does the job better.
         // Vanilla's
         // InteractAction reads Left Ctrl twice - a prop of yours used from build

@@ -10,20 +10,16 @@
 
 ![Island UI 游戏画面：HUD、角色面板、名册、制作和设置](O1.webp)
 
-**不是一千块创可贴。** Island UI 退后一步，从头重写了 Mad Island 的界面：屏幕、目标选定，以及由此而来的一切。它建立在几个简单的想法上——屏幕上给你自己、你周围的东西、你正在打交道的对象各留一个位置，再用一个目标把它们连在一起——[所有功能（目前共 202 项）→](FEATURES.md)都由此而来。
+**一套精心打造、浑然一体的 Mad Island 界面。** 它建立在几条原则之上，[全部 200 项功能 →](FEATURES.md)都由此而来：
 
-为这座岛而做，它退到一旁，让你专心**游玩**：你需要知道的就在你看的地方，你想做的事只差一步，游戏里原本隐藏的规则也一一显露出来。
+- **[从零开始构建。](SHOWCASE.md#built-from-the-ground-up)** 不是一千块创可贴。Island UI 退后一步，从构想到代码彻底重做界面。
+- **[自然而然。](SHOWCASE.md#second-nature)** 一切都按人们自然接收信息的方式呈现，无需解释。物品在你拾取时飞向你，属性显示的是它们的含义，而不只是一串数字。
+- **[玩游戏，不是做文书。](SHOWCASE.md#play-not-paperwork)** 琐事不再挡路。朝树挥砍时斧头自动拿出，在井边不用点击就能喝水，按一下就能把周围箱子里的东西全部收进背包。
+- **[只做一件事。](SHOWCASE.md#one-job)** Island UI 是个大项目，但目标很窄：界面。它有意守在自己的范围内，以免妨碍游戏内容或你的其他模组。它的便利始终符合游戏的精神，改变规则的调整都放在 Island Ex 里。
 
-## 它做了什么
+这是用心做出来的作品，我希望它真的很好。很想听听你的想法，欢迎在 [Discord](https://discord.com/users/1523362502224777439) 上联系我，或[在这里提交 issue](../../issues)。
 
-- **[你的永远是你的。](SHOWCASE.md#yours-is-always-yours)** 你自己在右边，你正在打交道的对象在中间，周围的东西在左边。使用物品永远作用在你自己身上；想给别人，就把物品拖到对方身上。
-- **[一个目标，一直锁定。](SHOWCASE.md#a-target)** 按 `Tab` 无需走过去就能选中你要打交道的人或物，并一直保持到你放开为止；旁边的操作栏列出你能对它做的一切。
-- **[一座村庄，而不是一堆数字。](SHOWCASE.md#your-village)** 名册显示谁不开心，角色面板说明原因，一个按钮直接带你去解决。
-- **[告别来回倒腾物品。](SHOWCASE.md#no-more-item-juggling)** 触手可及的所有储物都在一个窗口里，制作时直接取用你的背包和周围的一切。
-- **[整场战斗一目了然。](SHOWCASE.md#the-whole-fight)** 谁在战斗中，谁在攻击你，谁正从屏幕外赶来。
-- **[每个数字都说明原因。](SHOWCASE.md#on-top)** 每件物品怎么获得，每个剧情选项通向哪里，每个数字背后的规则——支持七种语言。
-
-**[看实际游玩片段 →](SHOWCASE.md)** · **[全部功能，大大小小 →](FEATURES.md)**（英文页面）
+**[看实际游玩片段 →](SHOWCASE.md)**
 
 ## 安装
 
@@ -82,9 +78,7 @@ Island UI 遵守游戏规则：它改变的是你看游戏的方式和做事的�
 
 ## 局限
 
-Island UI 还很年轻。0.9.0 重做了大部分界面，经过实际游玩，但没有长时间测试：可能会有粗糙之处和零星的 bug。游戏自带的一些界面还没有重建，外观和操作与以前一样。如果出了问题，提交 issue 时附上你的 `BepInEx/LogOutput.log` 最有帮助。
-
-## 兼容性
+Island UI 还很年轻。0.9 重做了大部分界面，经过实际游玩，但没有长时间测试：可能会有粗糙之处和零星的 bug。游戏自带的一些界面还没有重建，外观和操作与以前一样。如果出了问题，提交 issue 时附上你的 `BepInEx/LogOutput.log` 最有帮助。
 
 在 Steam `beta_open` 分支、build 25095856、BepInEx 5.4.23.5 上测试。游戏更新后，在 `BepInEx/LogOutput.log` 中查找 `Patch census [IslandUI]: ... all bound.`。如果显示的是别的内容，说明更新改动了某些东西，模组需要发布新版本。
 
@@ -92,19 +86,7 @@ Island UI 还很年轻。0.9.0 重做了大部分界面，经过实际游玩，�
 
 这里的每个提交都是一个发布版本；版本标签与发布的压缩包对应。
 
-<details><summary><b>目录结构，以及如何构建</b></summary>
-
-```
-src/IslandUI/    the mod: Inventory/ (the windows, action bar, tool belt, target), Crafting/ and
-                 Browser/ (the crafting window), Card/ (item and recipe cards), Model/ (favourites,
-                 moods, recipes), QoL/ (keys, quick save), UI/ (controls, cursor, console, map),
-                 Data/ (the item guide and story hints, as tables)
-src/IslandEx/    Island Ex: one file per feature
-src/Shared/      linked into both DLLs: PatchCensus.cs applies the Harmony patches one class at
-                 a time and logs any that no longer bind; TitleBadge.cs is the title-screen icon
-art/             the interface's art, shipped as islandui-art
-installer/       the install.bat / install.ps1 shipped in the installer downloads
-```
+<details><summary><b>如何构建</b></summary>
 
 构建需要 .NET SDK，并且已安装游戏（项目会引用游戏的 DLL）：
 
@@ -120,3 +102,7 @@ dotnet build src/IslandEx/IslandEx.csproj -c Release
 ## 联系
 
 bug、想法，或者想复用某些内容？[提交 issue](../../issues)，写信到 [maliekee@pm.me](mailto:maliekee@pm.me)，或者在 [Discord](https://discord.com/users/1523362502224777439) 上找我。
+
+## 感谢大家的参与和支持
+
+h1sagi、NoobInDaHause、Ramiyak、Ex0du5_2169、Dimastrelok、Yuuto、Cosmo、Abyss、NotTeaBut、Kringe、Kestraz

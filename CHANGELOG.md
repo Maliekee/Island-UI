@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.9.3
+
+- **Left moves, right uses, and Ctrl sends it to your target.** This works the same everywhere.
+  - **Ctrl + click** moves an item to your target without using it up: a stack into a bag or chest, a seed into a planter. It also takes items back out of a planter.
+  - **Ctrl + right-click** uses an item on your target: they eat it, they wear it, a food box fills, a planter plants.
+  - **Shift** with either does up to ten.
+  - **Favourites** can be eaten or fed to someone, but not moved, worn by someone else or planted.
+- **Dropping food on a food box** fills it.
+- **Dropping something on a person** that they can't eat or wear puts it in their bag.
+- **Holding Shift while giving** shows how many you're giving.
+- **The game menu** no longer sits under the dock, and opening it closes your bag and sheet.
+- **Regression fixed:** a far thing's Inventory button stays dimmed when you hover it.
+
 ## 0.9.2
 
 The fixes for your reports. If you're on 0.9.1, this is the first update you can take from inside the game.
