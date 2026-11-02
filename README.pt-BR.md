@@ -105,4 +105,4 @@ Bugs, ideias, ou quer reaproveitar algo? [Abra uma issue](../../issues), escreva
 
 ## Obrigado pelo engajamento e pelo apoio
 
-h1sagi, NoobInDaHause, Ramiyak, Ex0du5_2169, Dimastrelok, Yuuto, Cosmo, Abyss, NotTeaBut, Kringe, Kestraz
+h1sagi, NoobInDaHause, Ramiyak, Ex0du5_2169, Dimastrelok, Yuuto, Cosmo, Abyss, NotTeaBut, Kringe, Kestraz, VoMor

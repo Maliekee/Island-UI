@@ -125,4 +125,4 @@ Bugs, ideas, or want to reuse something? [Open an issue](../../issues), write to
 
 ## Thanks for the engagement and support
 
-h1sagi, NoobInDaHause, Ramiyak, Ex0du5_2169, Dimastrelok, Yuuto, Cosmo, Abyss, NotTeaBut, Kringe, Kestraz
+h1sagi, NoobInDaHause, Ramiyak, Ex0du5_2169, Dimastrelok, Yuuto, Cosmo, Abyss, NotTeaBut, Kringe, Kestraz, VoMor

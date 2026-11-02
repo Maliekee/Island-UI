@@ -105,4 +105,4 @@ bug、想法，或者想复用某些内容？[提交 issue](../../issues)，写�
 
 ## 感谢大家的参与和支持
 
-h1sagi、NoobInDaHause、Ramiyak、Ex0du5_2169、Dimastrelok、Yuuto、Cosmo、Abyss、NotTeaBut、Kringe、Kestraz
+h1sagi、NoobInDaHause、Ramiyak、Ex0du5_2169、Dimastrelok、Yuuto、Cosmo、Abyss、NotTeaBut、Kringe、Kestraz、VoMor

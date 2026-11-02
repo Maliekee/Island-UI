@@ -104,6 +104,56 @@ namespace IslandUI
             return false;
         }
 
+        // A PIECE OF WHAT YOU BUILT ANSWERS AS THE WHOLE. A table's top is its own
+        // collider, a Platform trigger for standing things on, with no ItemInfo. The
+        // ray from the camera meets it first, so a click on the part of a table you
+        // see most of set a target the game could do nothing with, and remove mode
+        // saw nothing there. The game reads one such piece as its parent already
+        // (BrokenColl, in InteractAction); this is that reading for the rest: the
+        // eleven tables' tops, and the parts of the fake tree and the wreath.
+        //
+        // A solid Platform stays itself: that is a stair or a raft, and a click on
+        // it means walk there. So does anything of the map's own, whose pieces are
+        // the game's business, as a house's door is.
+        private const int LayerBG = 12;
+        private const int LayerPlatform = 25;
+
+        internal static GameObject PieceOwner(ManagersScript mn, GameObject piece)
+        {
+            if (piece == null || mn == null || mn.buildMN == null
+                || (piece.layer != LayerBG && piece.layer != LayerPlatform)
+                || piece.GetComponent<ItemInfo>() != null)
+            {
+                return piece;
+            }
+            Collider part = piece.GetComponent<Collider>();
+            if (piece.layer == LayerPlatform && (part == null || !part.isTrigger))
+            {
+                return piece;
+            }
+            ItemInfo owner = piece.GetComponentInParent<ItemInfo>();
+            return owner != null && mn.buildMN.OwnCheck(owner) ? owner.gameObject : piece;
+        }
+
+        private static readonly AccessTools.FieldRef<PlayerMove, ManagersScript> PlayerMn =
+            AccessTools.FieldRefAccess<PlayerMove, ManagersScript>("_mn");
+
+        // before the walk reads it, where the game reads BrokenColl
+        [HarmonyPatch(typeof(PlayerMove), nameof(PlayerMove.InteractAction))]
+        [HarmonyPrefix]
+        private static void InteractAction_Piece(PlayerMove __instance)
+        {
+            __instance.target = PieceOwner(PlayerMn(__instance), __instance.target);
+        }
+
+        // remove mode reads this one, from a coroutine that runs after Update
+        [HarmonyPatch(typeof(PlayerMove), "Update")]
+        [HarmonyPostfix]
+        private static void Update_Piece(PlayerMove __instance)
+        {
+            __instance.cursoring = PieceOwner(PlayerMn(__instance), __instance.cursoring);
+        }
+
         // A caution raised, counted: a give that raises one was refused (Drop.cs).
         // Both run their first segment inside StartCoroutine, so the count moves
         // inside the call that caused it.

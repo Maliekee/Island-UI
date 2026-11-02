@@ -105,4 +105,4 @@ Fehler, Ideen, oder möchtest du etwas wiederverwenden? [Öffne ein Issue](../..
 
 ## Danke für euer Engagement und eure Unterstützung
 
-h1sagi, NoobInDaHause, Ramiyak, Ex0du5_2169, Dimastrelok, Yuuto, Cosmo, Abyss, NotTeaBut, Kringe, Kestraz
+h1sagi, NoobInDaHause, Ramiyak, Ex0du5_2169, Dimastrelok, Yuuto, Cosmo, Abyss, NotTeaBut, Kringe, Kestraz, VoMor

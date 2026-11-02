@@ -35,6 +35,7 @@ namespace IslandUI
             {
                 target = target.transform.parent.gameObject;
             }
+            target = TargetPatches.PieceOwner(mn, target);   // a table's top names the table
         }
     }
 

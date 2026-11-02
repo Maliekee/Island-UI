@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.9.4
+
+The fixes for your reports.
+
+- **Workshop items.** Crafting one no longer fills your bags with inactive copies. They stack now, and copies you already have are replaced by the next item you pick up.
+- **Tables** can be targeted, moved and removed. Click anywhere on one, tabletop included, or press Tab.
+- **Other furniture** had the same problem and is fixed too: orb stands, picture frames, body stands, the snow dome, the pole, restraints, the capsule, the dyeing workbench and the core machine.
+- **Tab** now also reaches griddles, mats, showers and the festival stall.
+- **Setting a meal on a table** from your backpack no longer gets stuck in build mode or leaves you the meal.
+
 ## 0.9.3
 
 - **Left moves, right uses, and Ctrl sends it to your target.** This works the same everywhere.

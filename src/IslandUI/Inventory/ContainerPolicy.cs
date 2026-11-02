@@ -44,6 +44,15 @@ namespace IslandUI
             InventorySlot.Type.BodyRack,
             InventorySlot.Type.Milk,
             InventorySlot.Type.GlassTank,
+            InventorySlot.Type.Table,
+            InventorySlot.Type.ItemStand,
+            InventorySlot.Type.Picture,
+            InventorySlot.Type.Rack,
+            InventorySlot.Type.Pole,
+            InventorySlot.Type.Restrain,
+            InventorySlot.Type.Capsule,
+            InventorySlot.Type.Dye,
+            InventorySlot.Type.Core,
         };
 
         internal static bool IsViewedRack(InventorySlot c)

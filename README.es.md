@@ -105,4 +105,4 @@ Al compilar se copia la DLL en el `BepInEx/plugins` del juego; añade `-p:GameDi
 
 ## Gracias por vuestra participación y apoyo
 
-h1sagi, NoobInDaHause, Ramiyak, Ex0du5_2169, Dimastrelok, Yuuto, Cosmo, Abyss, NotTeaBut, Kringe, Kestraz
+h1sagi, NoobInDaHause, Ramiyak, Ex0du5_2169, Dimastrelok, Yuuto, Cosmo, Abyss, NotTeaBut, Kringe, Kestraz, VoMor

@@ -30,7 +30,7 @@ namespace IslandUI
     {
         public const string PluginGuid = "madisland.islandui";
         public const string PluginName = "Island UI";
-        public const string PluginVersion = "0.9.3";
+        public const string PluginVersion = "0.9.4";
 
         internal static ManualLogSource Log;
 

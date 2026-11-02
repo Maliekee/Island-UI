@@ -246,6 +246,52 @@ namespace IslandUI
                 + ": " + (onStack && !split ? "stacked in your bag ok" : split ? "FAIL split into the Shared Bag" : "FAIL went elsewhere");
         }
 
+        // Harness door: an item with no stack limit, as every Workshop item has, made
+        // twice through the real GetItem. One cell must hold both, with no ghosts.
+        internal static string NoLimitSelfTest()
+        {
+            ManagersScript mn = GameObject.Find("Managers")?.GetComponent<ManagersScript>();
+            InventoryManager inv = mn != null ? mn.inventory : null;
+            ItemSlot[] bag = inv != null ? CharacterBag(mn, inv) : null;
+            ItemData data = mn != null && mn.itemMN != null ? mn.itemMN.FindItem("iron_01") : null;
+            if (bag == null || data == null || InShared(inv, data.name) || System.Array.Exists(bag, s => s != null && s.itemKey == data.name))
+            {
+                return "skipped: no bag, or iron_01 is already carried";
+            }
+            int limit = data.maxStack;
+            data.maxStack = 0;
+            try
+            {
+                mn.itemMN.GetItem(data, 1);
+                mn.itemMN.GetItem(data, 1);
+            }
+            finally
+            {
+                data.maxStack = limit;
+            }
+            int cells = 0, ghosts = 0, total = 0;
+            for (int pass = 0; pass < 2; pass++)
+            {
+                ItemSlot[] slots = pass == 0 ? inv.itemSlot : bag;
+                int n = pass == 0 ? inv.baseCount : bag.Length;
+                for (int i = 0; i < n; i++)
+                {
+                    if (slots[i] == null || slots[i].itemKey != data.name)
+                    {
+                        continue;
+                    }
+                    cells++;
+                    total += slots[i].stack;
+                    if (slots[i].stack == 0) { ghosts++; }
+                    inv.SlotClear(slots[i]);
+                    if (pass == 0) { inv.StackTextChange(i); }
+                }
+            }
+            InventoryWindow.Invalidate();
+            return "cells " + cells + ", ghosts " + ghosts + ", total " + total
+                + (cells == 1 && ghosts == 0 && total == 2 ? ": ok" : ": FAIL");
+        }
+
         private static bool InShared(InventoryManager inv, string key)
         {
             for (int i = 0; i < inv.baseCount && i < inv.itemSlot.Length; i++)
@@ -269,6 +315,15 @@ namespace IslandUI
             return player != null && player.bag != null ? player.bag.slots : null;
         }
 
+        // How many of an item one cell holds. A Workshop item has no limit: the game
+        // builds its ItemData by hand and never sets maxStack, so it reads 0, and the
+        // game's own placement stacks them without end. Taken at its word here, 0
+        // placed nothing and filled every empty cell with a ghost of the item.
+        internal static int StackLimit(ItemData item)
+        {
+            return item.maxStack > 0 ? item.maxStack : int.MaxValue;
+        }
+
         // Returns what is left over. `ui` non-null means these are vanilla UI slots
         // whose on-screen number has to be refreshed.
         private static int TopUp(ItemSlot[] slots, int limit, ItemData tmpItem, int count,
@@ -281,11 +336,12 @@ namespace IslandUI
             for (int i = 0; i < limit && i < slots.Length && count > 0; i++)
             {
                 ItemSlot slot = slots[i];
-                if (slot == null || slot.itemKey != tmpItem.name || slot.stack >= tmpItem.maxStack)
+                int most = StackLimit(tmpItem);
+                if (slot == null || slot.itemKey != tmpItem.name || slot.stack >= most)
                 {
                     continue;
                 }
-                int room = tmpItem.maxStack - slot.stack;
+                int room = most - slot.stack;
                 int moved = count < room ? count : room;
                 slot.stack += moved;
                 count -= moved;
@@ -308,8 +364,10 @@ namespace IslandUI
         {
             for (int i = 0; i < limit && i < slots.Length && count > 0; i++)
             {
+                // stack 0 is empty in a bag too: a key with nothing under it is a
+                // ghost left by an earlier version, and the next item takes its place
                 bool empty = slots[i] != null
-                    && (ui != null ? slots[i].stack == 0 : string.IsNullOrEmpty(slots[i].itemKey));
+                    && (slots[i].stack == 0 || (ui == null && string.IsNullOrEmpty(slots[i].itemKey)));
                 if (!empty)
                 {
                     continue;
@@ -317,7 +375,7 @@ namespace IslandUI
                 // one stack at a time. Vanilla's own free-slot placement writes the
                 // whole count into a single slot and will happily exceed maxStack;
                 // there is no reason to reproduce that where we are already looping.
-                int moved = count < tmpItem.maxStack ? count : tmpItem.maxStack;
+                int moved = count < StackLimit(tmpItem) ? count : StackLimit(tmpItem);
                 itemMN.ItemToSlot(tmpItem, slots[i], moved);
                 if (source != null)
                 {

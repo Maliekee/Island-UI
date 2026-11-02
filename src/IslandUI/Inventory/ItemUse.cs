@@ -269,9 +269,10 @@ namespace IslandUI
             //
             // The Shared Bag is the player's (D25). Leaving someone else's goods in
             // it is a transfer, so it is allowed only when the holder is you.
-            bool synchronous = data.itemType == ItemData.ItemType.Food
-                || data.itemType == ItemData.ItemType.Bottle
-                || data.itemType == ItemData.ItemType.Consumables;
+            bool synchronous = (data.itemType == ItemData.ItemType.Food
+                    || data.itemType == ItemData.ItemType.Bottle
+                    || data.itemType == ItemData.ItemType.Consumables)
+                && !SetsTheTable(mn, data);
             if (!synchronous && !mayLeaveStaged)
             {
                 return false;
@@ -348,6 +349,18 @@ namespace IslandUI
                 }
             }
             return true;
+        }
+
+        // A MEAL GOES ON AN OPEN TABLE AS A PROP DOES: UseFood hands the index to
+        // BuildStart (ItemManager.IsCooking), which reads it long afterwards. Put back
+        // at once, the cell was empty under it: the meal was placed and not spent, and
+        // the next round found nothing to place and left build mode on for good.
+        private static bool SetsTheTable(ManagersScript mn, ItemData data)
+        {
+            InventorySlot open = mn.buildMN != null && mn.buildMN.tmpProp != null
+                ? mn.buildMN.tmpProp.GetComponent<InventorySlot>() : null;
+            return data.subType == ItemData.SubType.Cook && open != null
+                && open.type == InventorySlot.Type.Table && mn.itemMN.IsBuildableStage();
         }
 
         // The refusal, through the harness (it cannot right-click): the first

@@ -105,4 +105,4 @@ dotnet build src/IslandEx/IslandEx.csproj -c Release
 
 ## 関わってくれて、支えてくれてありがとう
 
-h1sagi、NoobInDaHause、Ramiyak、Ex0du5_2169、Dimastrelok、Yuuto、Cosmo、Abyss、NotTeaBut、Kringe、Kestraz
+h1sagi、NoobInDaHause、Ramiyak、Ex0du5_2169、Dimastrelok、Yuuto、Cosmo、Abyss、NotTeaBut、Kringe、Kestraz、VoMor

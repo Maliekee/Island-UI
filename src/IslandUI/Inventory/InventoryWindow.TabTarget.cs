@@ -88,6 +88,7 @@ namespace IslandUI
                 return (Yours(who, p) && who.life > 0.0) || who.dead == 0 || ReachRule.Body(who) ? who : null;
             }
             GameObject go = g.name == "BrokenColl" && g.transform.parent != null ? g.transform.parent.gameObject : g;
+            go = TargetPatches.PieceOwner(_mn, go);
             if (go.GetComponent<ItemInfo>() == null)
             {
                 return null;
@@ -156,8 +157,11 @@ namespace IslandUI
                 return;
             }
             // BG and BGNPC are the props, NPC the people's own colliders; loot
-            // (PhysicBG) and floors (Platform) are not targets
-            Collider[] hits = Physics.OverlapSphere(point, TabRadius, LayerMask.GetMask("BG", "NPC", "BGNPC"));
+            // (PhysicBG) is no target, and of Platform only what is not walked on:
+            // a floor is solid, while a griddle, a mat or a stall is a trigger. A
+            // stall is reached no other way: it has nothing solid of its own for a
+            // walk to arrive at, and the game's own answer was Ctrl (D158)
+            Collider[] hits = Physics.OverlapSphere(point, TabRadius, LayerMask.GetMask("BG", "NPC", "BGNPC", "Platform"));
             var seen = new HashSet<Object>();
             var scored = new List<KeyValuePair<float, object>>();
             // WHAT YOU POINT AT, NOT WHOSE MIDDLE IS NEAREST: a house's middle can
@@ -165,8 +169,13 @@ namespace IslandUI
             // candidate is its drawn shape on screen - the distance from the cursor
             // to that shape (none when the cursor is on it), then, among the shapes
             // the cursor is on, the smallest first
+            int platform = LayerMask.NameToLayer("Platform");
             for (int i = 0; i < hits.Length; i++)
             {
+                if (hits[i].gameObject.layer == platform && !hits[i].isTrigger)
+                {
+                    continue;
+                }
                 object pick = TargetableAt(hits[i].gameObject, p);
                 if (pick == null || !seen.Add((Object)pick))
                 {

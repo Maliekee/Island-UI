@@ -400,11 +400,12 @@ namespace IslandUI
                     continue;
                 }
                 present = true;
-                if (to.stack >= data.maxStack)
+                int most = PickupCascade.StackLimit(data);
+                if (to.stack >= most)
                 {
                     continue;
                 }
-                int amount = Mathf.Min(data.maxStack - to.stack, from.stack);
+                int amount = Mathf.Min(most - to.stack, from.stack);
                 to.stack += amount;
                 from.stack -= amount;
                 moved += amount;
