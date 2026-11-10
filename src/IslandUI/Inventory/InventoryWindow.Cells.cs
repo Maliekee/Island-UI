@@ -516,6 +516,9 @@ namespace IslandUI
                 bool starred = filled && WearsFavourites(plate) && Favourites.IsFavourite(slot);
                 bool assigned = filled && (plate.IsSharedBag || plate.Column == OwnColumn)
                     && ToolBelt.IsHung(slot);
+                // NEW SINCE YOU LAST LOOKED: your two bags only - the loadout is
+                // what you put on, never what arrived (NewItems)
+                bool fresh = filled && !loadout && WearsFavourites(plate) && NewItems.IsNew(slot);
                 // The whole point: is this the same picture as last time. The key
                 // by REFERENCE first - item keys come from a shared table, so a
                 // reference match settles it without walking the string.
@@ -538,6 +541,7 @@ namespace IslandUI
                 if (ReferenceEquals(cell.DrewKey, key) && cell.DrewStack == stack
                     && cell.DrewLife == life && cell.DrewStar == starred
                     && cell.DrewToolMark == assigned
+                    && cell.DrewNew == fresh
                     && cell.DrewMark == mark
                     && cell.DrewSkin == skinNow
                     && cell.Go.activeSelf)
@@ -549,6 +553,7 @@ namespace IslandUI
                 cell.DrewLife = life;
                 cell.DrewStar = starred;
                 cell.DrewToolMark = assigned;
+                cell.DrewNew = fresh;
                 cell.DrewMark = mark;
                 cell.DrewSkin = skinNow;
                 _cellsBound++;
@@ -607,6 +612,7 @@ namespace IslandUI
                 {
                     VicinityCell(cell, true, filled, mark == 2);
                 }
+                PaintNewRim(cell, fresh);
                 if (!cell.Go.activeSelf)
                 {
                     cell.Go.SetActive(true);
@@ -625,6 +631,40 @@ namespace IslandUI
             if (!plate.Window.Go.activeSelf)
             {
                 plate.Window.Go.SetActive(true);
+            }
+        }
+
+        // THE NEW-ITEM MARK (Forgejo #192, inventory-window-ux §9.5): the kit's rim in the one cool
+        // colour on a cell (kit_inv_rim_new, make_new_item_mark.py), made on the
+        // first cell that needs it. It is the FIRST child, so it draws over the
+        // bed and under everything else: the icon over its glow, and the rims of
+        // hover, press and the previews - made earlier, now after it - over its
+        // line. The star and the tool badge sit on top, so a new favourite still
+        // shows both. A look and nothing else: no click reads it.
+        private static void PaintNewRim(CellView cell, bool on)
+        {
+            if (on && cell.NewRim == null)
+            {
+                cell.NewRim = Theme.KitImage(cell.Go.transform, "NewRim", "kit_inv_rim_new", 10,
+                    Color.white, stretch: true);
+                cell.NewRim.raycastTarget = false;
+                cell.NewRim.transform.SetAsFirstSibling();
+                Theme.Place(cell.NewRim, 0f, 0f, CellBox, CellBox);
+            }
+            if (cell.NewRim != null && cell.NewRim.gameObject.activeSelf != on)
+            {
+                cell.NewRim.gameObject.SetActive(on);
+            }
+        }
+
+        // The pointer reached a new item's cell: it has been seen, and it says so
+        // at once rather than at the next refresh.
+        private static void SeeNewItem(CellView cell)
+        {
+            if (cell != null && NewItems.See(cell.Slot))
+            {
+                cell.DrewNew = false;
+                PaintNewRim(cell, false);
             }
         }
 

@@ -6,13 +6,12 @@ namespace IslandUI
 {
     internal static partial class InventoryWindow
     {
-        private static Image _markerStatusFooter, _markerStatusHeader;
         private static SheetRow _markerStatus;
         // attribute points to spend: the cerulean tag with its number, at the row's
         // right end, where the tracks end (the target indicator shows the level-up icon with
         // the number in it, not the bare arrow); the roster row keeps the bare arrow
         private static PointsTag _markerPoints;
-        private const float MarkerTagH = PointsTag.DockPill;
+        private static float MarkerTagH => PointsTag.OnScreen(_markerPoints != null ? _markerPoints.Rect.parent : null);
 
         private static void EnsureMarkerStatus()
         {

@@ -488,6 +488,7 @@ namespace IslandUI
             _reachScroll = 0f;
             _reachAnchor = null;
             ReachOrder.Clear();
+            ForgetVicHold();
             _forceRefresh = true;
             _nextRefresh = 0f;
             if (IsOpen)
@@ -515,6 +516,7 @@ namespace IslandUI
             }
             _reachScroll = 0f;
             _reachAnchor = null;
+            ForgetVicHold();
             _nextRefresh = 0f;
             if (IsOpen)
             {
@@ -582,12 +584,15 @@ namespace IslandUI
             {
                 ScanReach(found);
             }
+            // THE LIST FREEZES WHOLE while the pointer is on it (Forgejo #237): rows
+            // gone out of range or gone altogether hold their places (VicFreeze.cs)
+            HoldVicinityRows(found);
             // THE TARGET DOES NOT THIN THE VICINITY (user): the chest
             // you have open, or a person whose bag window is up, stays in the list
             // where it stands. Taking it out made the vicinity's contents depend on
             // what the target window showed, and the chest you had just opened
             // vanished from the list you found it in.
-            _nearbyTotal = found.Count;
+            _nearbyTotal = found.Count - VicFrozen.Count;   // what is in reach, not what is held
             // A query narrows the POOL to containers holding a match, and the
             // marking below narrows it again to the cells inside them. Neither
             // alone is the answer: filtering still leaves you scanning forty slots,
@@ -599,13 +604,18 @@ namespace IslandUI
             {
                 for (int i = found.Count - 1; i >= 0; i--)
                 {
-                    if (!HoldsMatch(found[i]))
+                    // a row that is gone cannot be asked, and holds as it is
+                    if (FrozenOf(found[i]) != FrozenGone && !HoldsMatch(found[i]))
                     {
                         found.RemoveAt(i);
                     }
                 }
             }
-            _nearbyMatched = found.Count;
+            _nearbyMatched = 0;
+            for (int i = 0; i < found.Count; i++)
+            {
+                if (FrozenOf(found[i]) == 0) { _nearbyMatched++; }
+            }
             // An empty pool still draws. Returning early was
             // right while this was a SECTION of your bag - an empty frame there
             // said nothing and cost a band - and is wrong now that it is a window
@@ -686,6 +696,14 @@ namespace IslandUI
             for (int i = 0; i < found.Count; i++)
             {
                 InventorySlot chest = found[i];
+                int frozen = FrozenOf(chest);
+                if (frozen == FrozenGone)
+                {
+                    BindGoneRow(chest, lean[i], cols);
+                    ReachHeights[chest.GetInstanceID()] = ReachPlates[_reachPlatesUsed - 1].Height;
+                    ReachOrder.Add(chest);
+                    continue;
+                }
                 if (chest.slots == null || chest.slots.Length == 0)
                 {
                     continue;
@@ -695,16 +713,26 @@ namespace IslandUI
                 // no caption under it (Vicinity.cs)
                 CommonStates holder = VicHolder(chest);
                 ItemData thing = holder == null ? ChestItem(chest) : null;
+                // a pile on the ground wears the ground's own mark, the one on the
+                // "On the ground" chip, so row and chip say the same thing; what it
+                // holds most of is the fallback when the art is missing
+                Sprite picture = GroundPiles.Is(chest) ? (Theme.Kit("kit_vic_ground", 0) ?? GroundPiles.Picture(chest))
+                    : thing != null ? thing.itemSprite : null;
                 Bind(string.Empty, chest.slots, chest.slots.Length, null, chest,
                     false, ReachColumn, cols, null, -1, false,
                     forceLabel: true,
                     group: GroupReach,
-                    icon: thing != null ? thing.itemSprite : null, lean: thin,
+                    icon: picture, lean: thin,
                     compact: compact, person: holder);
-                ReachHeights[chest.GetInstanceID()] =
-                    ReachPlates[_reachPlatesUsed - 1].Height;
+                Plate bound = ReachPlates[_reachPlatesUsed - 1];
+                ReachHeights[chest.GetInstanceID()] = bound.Height;
+                bound.VicRow = chest;
+                PaintFreeze(bound, frozen);
                 ReachOrder.Add(chest);
-                _nearbyShown++;
+                if (frozen == 0)
+                {
+                    _nearbyShown++;
+                }
             }
             _bindingReach = false;
             _reachMs = (Time.realtimeSinceStartup - reachBegan) * 1000f;

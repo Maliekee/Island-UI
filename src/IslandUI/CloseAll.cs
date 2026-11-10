@@ -29,16 +29,16 @@ namespace IslandUI
         {
             _mn = mn;
             KeyCode focus = Settings.WorldFocusKey.Value;
-            if (focus != KeyCode.None && Input.GetKeyDown(focus))
+            if (focus != KeyCode.None && RawInput.GetKeyDown(focus))
             {
                 WorldFocus(mn);
             }
             KeyCode key = Settings.CloseAllKey.Value;
-            // Plain Input read, like the window's other hotkeys: a field's focus
-            // suppression (FilterField) applies, which is what makes a press while
-            // typing release the field instead — the NEXT press closes. If the key is
-            // also a vanilla key the keymap has remapped, the remap applies.
-            if (key != KeyCode.None && Input.GetKeyDown(key))
+            // The physical key, like the window's other hotkeys: the keymap moves
+            // the game's keys, never ours (GitHub #21). A field's focus suppression
+            // (FilterField) still applies, since RawInput goes through Input: a
+            // press while typing releases the field instead, the NEXT press closes.
+            if (key != KeyCode.None && RawInput.GetKeyDown(key))
             {
                 Run(mn);
             }
@@ -96,7 +96,7 @@ namespace IslandUI
                 return true;
             }
             KeyCode focus = Settings.WorldFocusKey.Value;
-            return focus != KeyCode.None && Input.GetKeyDown(focus) && HasWork(_mn);
+            return focus != KeyCode.None && RawInput.GetKeyDown(focus) && HasWork(_mn);
         }
 
         [HarmonyPatch(typeof(PlayerMove), nameof(PlayerMove.AttackButton))]

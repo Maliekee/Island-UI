@@ -512,7 +512,7 @@ namespace IslandUI
                 TextAlignmentOptions.MidlineLeft, bold: true);
             _matrixTitle.enableWordWrapping = false;
             _matrixTitleRule = PlainImage(_matrix.transform, "TitleRule", Theme.DossierInk);
-            _matrixPill = Theme.KitImage(_matrix.transform, "Pill", "kit_dossier_pill", 15, Theme.DossierInk, stretch: true);
+            _matrixPill = Theme.KitImage(_matrix.transform, "Pill", CountChip, 12, Theme.DossierInk, stretch: true);
             _matrixPillText = Theme.MakeKitText(_matrix.transform, "PillText", 6f, Theme.DossierInk,
                 TextAlignmentOptions.Center);
             _matrixPillText.enableWordWrapping = false;

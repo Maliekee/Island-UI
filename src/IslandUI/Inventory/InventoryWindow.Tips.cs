@@ -127,6 +127,28 @@ namespace IslandUI
             + TipRow(Shared.Loc.Get("inv.tip.skill_points.next", "Next level costs"), Shared.Loc.Get("inv.tip.skill_points.cost", "5, plus 5 for each level the skill has"));
 
         private static string TipFollowing => Shared.Loc.Get("inv.tip.following", "They follow you and earn a quarter of your EXP. Each follower takes room in your party.");
+        // NPCToPlayer: the one you switch away from becomes an NPC that waits, and
+        // the only way to make anyone follow is the follow button vanilla hides for them
+        private static string TipFollowingPartner => Shared.Loc.Get("inv.tip.following_partner", "Your partner can't be told to follow: the game doesn't allow it. When you switch characters, the one you leave stays at their place. Move it with Set place, or switch to them with Change.");
+        // the orders vanilla never gives the players (IsPlayerCharacter), on their
+        // greyed rows - named as the game names them, so no language guesses a name;
+        // the second line names the way in, Island Ex's switches (PartnerSwitches)
+        private static string TipRefusedPlayer
+        {
+            get
+            {
+                CommonStates[] players = _mn != null && _mn.gameMN != null ? _mn.gameMN.playerCommons : null;
+                return Shared.Loc.Get("inv.tip.refused_player", "The game doesn't let you give this order to {0} or {1}.",
+                    PlayerCharaName(players, 1, "Man"), PlayerCharaName(players, 0, "Yona"))   // GameManager: [1] is PlayerMan
+                    + "\n" + Shared.Loc.Get("inv.tip.refused_player.island_ex", "Island Ex can allow it.");
+            }
+        }
+
+        private static string PlayerCharaName(CommonStates[] players, int i, string fallback)
+        {
+            CommonStates p = players != null && i < players.Length ? players[i] : null;
+            return p != null && !string.IsNullOrEmpty(p.charaName) ? p.charaName : fallback;
+        }
         private static string TipSendToPlace => Shared.Loc.Get("inv.tip.send_to_place", "Sends them to their place at once. Not for followers or prisoners.");
         private static string[] TipStanding => new[]
         {

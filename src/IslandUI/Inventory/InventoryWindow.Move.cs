@@ -75,7 +75,8 @@ namespace IslandUI
             }
             ContainerPolicy.Family f = ContainerPolicy.FamilyOf(c);
             return f == ContainerPolicy.Family.Materials || f == ContainerPolicy.Family.Chests
-                || f == ContainerPolicy.Family.Bags || f == ContainerPolicy.Family.Bodies;
+                || f == ContainerPolicy.Family.Bags || f == ContainerPolicy.Family.Bodies
+                || f == ContainerPolicy.Family.Ground;
         }
 
         // `slot` is the item the route is for: only a seed goes to a planter.
@@ -260,6 +261,17 @@ namespace IslandUI
                 return;
             }
             string key = slot.itemKey;
+            // AN ITEM ON THE GROUND IS PICKED UP, as E on it picks it up: the game's
+            // own pickup, all of it, a full bag refusing as the game refuses
+            // (GroundPiles.PickUp, Forgejo #172)
+            if (plate != null && GroundPiles.Is(plate.Container))
+            {
+                int took = GroundPiles.PickUp(_mn, slot);
+                Plugin.Log.LogInfo($"Ctrl+click: picked up {key} x{took} off the ground");
+                InvalidateReachScan();
+                AfterCtrlMove();
+                return;
+            }
             int count = asked > 0 ? Mathf.Min(asked, slot.stack) : MoveCount(route, slot);
             if (route.Drop)
             {
@@ -417,7 +429,7 @@ namespace IslandUI
             }
             for (int p = 0; p < _reachPlatesUsed; p++)
             {
-                if (ReachPlates[p].Window.Go.activeInHierarchy) { yield return ReachPlates[p]; }
+                if (ReachPlates[p].Window.Go.activeInHierarchy && ReachPlates[p].Frozen == 0) { yield return ReachPlates[p]; }
             }
         }
 

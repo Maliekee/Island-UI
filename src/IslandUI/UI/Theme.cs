@@ -459,6 +459,40 @@ namespace IslandUI.UI
 
         // Kit text: MakeText in the kit's face, flat, bold on request (a faux bold
         // when only the regular face could be built).
+        // ONE BASELINE RULE FOR WORDS. TMP's Midline centres a text on its own ink,
+        // so a word with a descender (Self-healing, Grapple, "at a party") rides
+        // higher than its neighbours in the same row. Words take the line's middle
+        // instead, which is the same for every word in a face and size; figures
+        // and capitals keep the ink's middle, which centres them in a coin or a
+        // box. `Words` is for a label that only ever holds words; `WordsOrInk`
+        // decides by what the text holds, for a label that holds either.
+        public static TextAlignmentOptions Words(TextAlignmentOptions align)
+        {
+            switch (align)
+            {
+                case TextAlignmentOptions.MidlineLeft: return TextAlignmentOptions.Left;
+                case TextAlignmentOptions.Midline: return TextAlignmentOptions.Center;
+                case TextAlignmentOptions.MidlineRight: return TextAlignmentOptions.Right;
+                case TextAlignmentOptions.MidlineJustified: return TextAlignmentOptions.Justified;
+                default: return align;
+            }
+        }
+
+        public static TextAlignmentOptions WordsOrInk(string text, TextAlignmentOptions align)
+        {
+            if (!string.IsNullOrEmpty(text))
+            {
+                for (int i = 0; i < text.Length; i++)
+                {
+                    if (char.IsLower(text[i]))
+                    {
+                        return Words(align);
+                    }
+                }
+            }
+            return align;
+        }
+
         public static TextMeshProUGUI MakeKitText(Transform parent, string name, float size,
             Color color, TextAlignmentOptions align, bool bold = false)
         {

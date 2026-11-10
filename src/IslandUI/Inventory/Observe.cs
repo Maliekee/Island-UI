@@ -135,5 +135,33 @@ namespace IslandUI
             }
             return sb.Length > 0 ? sb.ToString() : "nobody";
         }
+
+        // ...the game's own teleport, to a place on the ground (the dock's trader is
+        // spawned only once its area is near)
+        internal static string HarnessTeleport(float x, float z)
+        {
+            ManagersScript mn = MoodLedger.Managers();
+            if (mn == null || mn.gameMN == null) { return "no game"; }
+            mn.gameMN.PlayerTeleport(new Vector3(x, 0f, z));
+            return "at " + x + ", " + z;
+        }
+
+        // ...and every trader on the island, however far: name, shop, distance
+        internal static string HarnessTraders()
+        {
+            ManagersScript mn = MoodLedger.Managers();
+            PlayerMove p = mn != null && mn.gameMN != null ? mn.gameMN.pMove : null;
+            if (p == null) { return "no game"; }
+            var sb = new StringBuilder();
+            foreach (ShopInfo s in Object.FindObjectsOfType<ShopInfo>())
+            {
+                CommonStates c = s.GetComponent<CommonStates>();
+                sb.Append(c != null ? c.charaName : s.name).Append(" shop=").Append(s.shopID)
+                    .Append(" type=").Append(c != null ? c.charaType : -1)
+                    .Append(" d=").Append(Vector3.Distance(s.transform.position, p.transform.position).ToString("0"))
+                    .Append(" at=").Append(s.transform.position).Append(" | ");
+            }
+            return sb.Length > 0 ? sb.ToString() : "no trader";
+        }
     }
 }

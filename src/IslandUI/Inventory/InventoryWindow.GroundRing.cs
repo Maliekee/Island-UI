@@ -110,5 +110,96 @@ namespace IslandUI
                 SpriteMeshType.FullRect);
             return _ringArt;
         }
+
+        // ---------- a level prop's reach (Forgejo #182) ----------
+
+        // A WELL'S OR A FOOD BOX'S CIRCLE IS VANILLA'S, drawn only while the game has
+        // the prop open: UseProp -> PropPanelTypeChange -> WaterBucketUse /
+        // FoodStorageUse light circle 0 at the prop with its reach, and clear it
+        // when the panel closes. The target outlives that - Tabbed from beyond
+        // reach or while walking, or clicked and walked away from - and then the
+        // circle was missing while the well was plainly the target. So while a
+        // level prop is the target we draw that circle ourselves, with vanilla's
+        // radius.
+        //
+        // Circle 0 is SHARED: build mode, an NPC's area and a scene draw it too.
+        // While the prop is the target we hold it there the way vanilla's own
+        // open does (it simply overwrites the circle, and so do we: a stale one is
+        // often left up, an NPC's area far below in a house), except in build
+        // mode, a scene or an event, which keep theirs. We clear only a circle
+        // that is still ours - at our prop with our radius - so whoever took it
+        // over keeps it.
+        private static ItemInfo _propCircleFor;
+        private static Vector3 _propCircleAt;
+        private static float _propCircleRad;
+
+        // vanilla's reach, copied as the Vitals maximums are (no field holds it):
+        // WaterBucketUse 10 m for well_01, 20 for well_02, 1 for any other key;
+        // FoodStorageUse 20 m for foodstorage_02, 10 for any other
+        private static float PropCircleRadius(InventorySlot slot, string key)
+        {
+            if (slot.type == InventorySlot.Type.Water)
+            {
+                return key == "well_01" ? 10f : key == "well_02" ? 20f : 1f;
+            }
+            return key == "foodstorage_02" ? 20f : 10f;
+        }
+
+        // LateSync: after the coroutines, so vanilla's draw or clear of this
+        // frame has happened and we answer it in the same frame
+        private static void TickPropCircle(ManagersScript mn)
+        {
+            UIManager ui = mn != null ? mn.uiMN : null;
+            if (ui == null || ui.circleBlue == null)
+            {
+                return;
+            }
+            GameObject circle = ui.circleBlue.transform.parent.gameObject;
+            ItemInfo prop = ResolveTarget(mn) as ItemInfo;
+            InventorySlot slot = prop != null ? prop.GetComponent<InventorySlot>() : null;
+            bool want = IsLevelProp(slot) && mn.allSet && !GameManager.nowEvent && !InScene(mn)
+                && (mn.buildMN == null || !mn.buildMN.nowBuild);
+            // another target, or none: ours goes first, so the next draws this frame
+            if (_propCircleFor != null && !(want && ReferenceEquals(prop, _propCircleFor)))
+            {
+                ClearPropCircle(mn);
+            }
+            if (want)
+            {
+                Vector3 at = prop.transform.position;
+                float rad = PropCircleRadius(slot, prop.itemKey);
+                // drawn only when it is not already there - vanilla's own open
+                // draws the same circle, and CreatePoints is not free
+                if (!circle.activeSelf || !CircleIs(ui, at, rad))
+                {
+                    ui.SetCircleRad(0, rad);
+                    ui.SetCircle(0, true, at);
+                }
+                _propCircleFor = prop;
+                _propCircleAt = at;
+                _propCircleRad = rad;
+            }
+        }
+
+        private static bool CircleIs(UIManager ui, Vector3 at, float rad)
+        {
+            return (ui.circleBlue.transform.parent.position - at).sqrMagnitude < 0.0001f
+                && Mathf.Approximately(ui.circleBlue.xradius, rad);
+        }
+
+        // Clears circle 0 only while it is the one we drew; forgets it either way.
+        internal static void ClearPropCircle(ManagersScript mn)
+        {
+            UIManager ui = mn != null ? mn.uiMN : null;
+            if (_propCircleFor != null && ui != null && ui.circleBlue != null)
+            {
+                GameObject circle = ui.circleBlue.transform.parent.gameObject;
+                if (circle.activeSelf && CircleIs(ui, _propCircleAt, _propCircleRad))
+                {
+                    ui.SetCircle(0, false);
+                }
+            }
+            _propCircleFor = null;
+        }
     }
 }

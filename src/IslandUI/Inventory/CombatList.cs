@@ -217,7 +217,7 @@ namespace IslandUI
                 e.Distance = d.magnitude;
                 bool live = e.Alive && e.Who.gameObject.activeInHierarchy && (e.OnYou || e.Hit(_now) || e.Sided(_now));
                 if (live) { e.LiveAt = _now; }
-                else if (_now - e.LiveAt >= (e.Alive ? Linger : KillLinger))
+                else if (_now - e.LiveAt >= (e.Alive ? Linger : KillLinger) && !Fainted(e))
                 {
                     Drop(i);
                     continue;
@@ -249,6 +249,15 @@ namespace IslandUI
             OnYouCount = 0;
             ClearFriends();
         }
+
+        // ONE YOU KNOCKED OUT STAYS AS THE GAME'S BAR STAYS (GitHub #25): 10 s
+        // after your last blow, the one that put them down (EnemyLifeChange sets
+        // enemyLifeTime to 10 on each; a blow on a body already down never
+        // reaches it, NPCDamage stops at dead 1), so the plaque can be read -
+        // the personality at Observation 5 - while you decide whether to take
+        // them. Alive in life, down in state; a kill keeps the short KillLinger.
+        private static bool Fainted(Entry e) =>
+            !e.Alive && e.Who.life > 0.0 && e.Who.gameObject.activeInHierarchy && e.Hit(_now);
 
         // a kill past the short linger, kept only for a fight that has no one else
         private static bool Waning(Entry e) => !e.Alive && _now - e.LiveAt >= Linger;

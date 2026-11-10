@@ -366,6 +366,7 @@ drop.box_full=full
 drop.cant_take=can't take this
 drop.give_many_to=give {1} to  →  {0}
 drop.give_to=give to  →  {0}
+drop.no_room=no room
 drop.out_of_reach=out of reach
 drop.put_in=put in  →  {0}
 drop.them=them
@@ -375,6 +376,16 @@ drop.walk_give_many_to=walk over and give {1} to  →  {0}
 drop.walk_give_to=walk over and give to  →  {0}
 drop.walk_use_on=walk over and use on  →  {0}
 
+gamever.build=Game build: {0}
+gamever.build_unknown=unknown
+gamever.dismiss=Hide until the game updates
+gamever.failed_body={0}. Those parts are not working; everything else is. A newer version of the mod may fit this game.
+gamever.failed_part.one={1}: {0} part
+gamever.failed_part.other={1}: {0} parts
+gamever.failed_title=Some parts did not load on this version of the game
+gamever.untested_body=It may work fine. If something looks wrong, a newer version of the mod may help.
+gamever.untested_title={0} {1} has not been tested on this version of the game
+
 hud.caption.menu=MENU
 hud.caption.toolbelt=TOOLBELT
 
@@ -382,6 +393,7 @@ hud.chip.bag=Your bag
 hud.chip.character=Your character
 hud.chip.crafting=Crafting
 hud.chip.map=Map
+hud.chip.map.fight=Not during a boss fight: the game keeps the map shut until it ends.
 hud.chip.quests=Quests
 hud.chip.settings=Settings
 hud.chip.tools=Tool belt
@@ -526,6 +538,7 @@ inv.tip.first_partner=The first person they had sex with, consenting or not.
 inv.tip.following=They follow you and earn a quarter of your EXP. Each follower takes room in your party.
 inv.tip.following_off=Not following: they keep to their place
 inv.tip.following_on=Following you
+inv.tip.following_partner=Your partner can't be told to follow: the game doesn't allow it. When you switch characters, the one you leave stays at their place. Move it with Set place, or switch to them with Change.
 inv.tip.food=Food
 inv.tip.food.hunger=Dying of hunger skips your hearts.
 inv.tip.food.spend_to_heal=they spend it to heal
@@ -574,6 +587,8 @@ inv.tip.place_while_following=While they follow you their place waits: it takes 
 inv.tip.pregnant=How far along the pregnancy is.
 inv.tip.raised_by=Raised by
 inv.tip.refilled_by=Refilled by
+inv.tip.refused_player=The game doesn't let you give this order to {0} or {1}.
+inv.tip.refused_player.island_ex=Island Ex can allow it.
 inv.tip.rename=Click to rename. Return keeps it, Escape keeps the old name.
 inv.tip.resting=Resting
 inv.tip.send_to_place=Sends them to their place at once. Not for followers or prisoners.
@@ -1135,11 +1150,14 @@ player.xp=XP
 quicksave.no_slot=No save slot to save to: save from the menu once and load that slot
 quicksave.saved=Saved to slot {0}
 quicksave.saved_backup=Saved to the backup slot
-quicksave.saving=Saving...
+quicksave.saving=Saving…
 
 reach.all_in=All in
 reach.all_in.help=Everything in your bags goes to the chests listed here: to one already holding it first, then the nearest with room. Favourites stay.
 reach.all_out=All out
+
+reach.all_out.ground=Then what lies on the ground, picked up as by hand.
+
 reach.all_out.help=Everything in the listed chests comes into your bags, nearest chest first, until they are full. Then the harvest: fish from the traps, eggs, honey, herbs and mushrooms.
 reach.body=Body
 
@@ -1153,8 +1171,8 @@ reach.chip.bags=Your people's bags
 reach.chip.bags.help=The bags of the people you employ, within reach.
 reach.chip.benches=Workbench strips
 reach.chip.benches.help=Each workbench's own ten-slot strip.
-reach.chip.bodies=Bodies
-reach.chip.bodies.help=The pockets of the downed and the dead, within reach.
+reach.chip.bodies=On the ground
+reach.chip.bodies.help=Loose items lying on the ground, and the pockets of the downed and the dead, within reach.
 reach.chip.breeding=Cages, traps, planters
 reach.chip.breeding.help=Cages, traps, planters, hives, poultry boxes, mushroom logs, herb boxes.
 reach.chip.bulk={0} · {1} · {2} reach it.
@@ -1175,6 +1193,11 @@ reach.chip.shown_stack.help=The quick-stack key may deposit here too. Click to h
 reach.compact=Compact
 reach.container=Container
 reach.free=free
+
+reach.frozen.far=out of reach
+reach.frozen.gone=gone
+
+reach.ground=On the ground
 
 reach.identity.select=Click to select.
 
@@ -1331,9 +1354,13 @@ settings.effects.group.shown=Shown, newest first
 settings.effects.none=None yet. Play on and open this again.
 settings.effects.none.help=Effects are listed the first time the game shows them this session.
 
+settings.fixes.repair_ends=Repair ends cleanly
+settings.fixes.repair_ends.help=When a repair is over, you stand at rest again. Unmodded, you keep swinging the hammer until you move.
+
 settings.group.action_bar=Action bar
 settings.group.chests=Chests
 settings.group.flights=Flights
+settings.group.inventory=Inventory
 settings.group.item_card=Item card
 settings.group.markers=Markers
 settings.group.marking=Marking
@@ -1365,6 +1392,9 @@ settings.hotkeys.vicinity.help=Opens and closes the vicinity window: the storage
 settings.hotkeys.world_focus=Back to the world
 settings.hotkeys.world_focus.help=Closes the windows Island UI owns, and the map and quest overlays.
 
+settings.inventory.new_items=Mark new items
+settings.inventory.new_items.help=What came into your bags while the inventory was closed wears a pale blue border the next time you open it, and so does a stack that grew. Pointing at an item clears its mark; closing the inventory clears them all.
+
 settings.items.guide=How to get it
 settings.items.guide.help=The card says how to get the item: where it is found, what drops it, who trades it. Written from what players have collected, so it covers the dungeon, chests and trades too.
 
@@ -1382,12 +1412,16 @@ settings.page.crafting.about=What crafting may take from beyond your material st
 settings.page.cursor=Cursor
 settings.page.effects=Effects
 settings.page.effects.about=Switch an effect on to hide it. An effect is listed once the game has shown it.
+settings.page.fixes=Fixes
+settings.page.fixes.about=Small slips in the game, put right.
 settings.page.general=General
 settings.page.general.about=Your pointer, and the language the mods speak.
 settings.page.hotkeys=Hotkeys
 settings.page.hotkeys.about=Click a key, then press the new one. Esc cancels, Backspace clears.
 settings.page.notices=Notices
 settings.page.notices.about=How the screen tells you what happens: low vitals, and what flies where.
+settings.page.partner_orders=Orders
+settings.page.partner_orders.about=Orders the game does not give. Once allowed here, the Orders sheet offers them.
 settings.page.sheets=Sheets
 settings.page.steering=Steering
 settings.page.steering.about=How your people and your enemies get around what is in their way.
@@ -1408,6 +1442,18 @@ settings.page.window=Window
 settings.page.window.about=What the game window does when you look away from it.
 settings.page.windows=Windows
 settings.page.windows.about=Where Island UI's windows stand and what they show.
+
+settings.partner.call=Call
+settings.partner.call.help=Call brings them to you.
+settings.partner.group={0} and {1}
+settings.partner.job=Job
+settings.partner.job.help=They work at a work place within 10 m, mostly in their idle pose, and keep the job after a load. Off: no job.
+settings.partner.permissions=Permissions
+settings.partner.permissions.help=What they may do: houses, love, sex and force. Off: the game's defaults, put back after every load too.
+settings.partner.stance=Combat stance
+settings.partner.stance.help=Their combat stance, kept after a load. Off: the game's default stance.
+settings.partner.take_orders=Take orders
+settings.partner.take_orders.help=The one of {0} and {1} you are not playing takes the orders switched on below from the Orders sheet, as anyone you employ does. Unmodded, the game gives them none of these. Switching an order off puts back the game's default for it.
 
 settings.sheets.left=Sheet to the left
 settings.sheets.left.help=A character's sheet moves to the left side while crafting, the vicinity and the roster are closed, and back when one opens. The tab on the sheet's edge switches this too.
@@ -1487,7 +1533,7 @@ settings.unit.seconds={0} s
 settings.vicinity.compact=Compact
 settings.vicinity.compact.help=Each holder shows its taken slots in their own order, then one count of how many are free, instead of every slot. The Compact box at the foot of the vicinity window sets this too.
 settings.vicinity.hold_order=Hold the order
-settings.vicinity.hold_order.help=While the pointer is on the list, the rows keep their places, so none moves under the pointer. A row that has come nearer than one above it wears an arrow, and the list re-sorts once the pointer leaves.\nOff  always nearest first
+settings.vicinity.hold_order.help=While the pointer is on the list, nothing in it moves under the pointer. Rows keep their places. A row whose thing goes out of reach or is gone stays where it was, frozen and unusable, and new rows join at the bottom. A row that has come nearer than one above it wears an arrow, and the list re-sorts once the pointer leaves.\nOff  always nearest first
 
 settings.vitals.health_at=Health low at
 settings.vitals.health_at.help=Of your maximum health. Critical comes at half of it.
@@ -1533,7 +1579,7 @@ skills.name.swim=Swim
 skills.tip.next=Next, Lv {0}: {1}
 skills.tip.now=Now, Lv {0}: {1}
 
-slot.filter=Filter...
+slot.filter=Filter…
 
 social.before_record=Before the record
 social.cant_stand=can't stand
@@ -1552,7 +1598,10 @@ social.note.loves_not_back=loves {0}, not back
 social.show_less=Show less
 social.show_more=Show {0} more
 
+split.prompt=Type amount
 split.take=Take {0}
+
+split.take.bare=Take
 
 story.show_hints=Hints - click to show
 
@@ -1598,6 +1647,7 @@ unit.closer_by={0} m closer
 unit.details=Details
 unit.manage=Manage
 
+unit.manage.remove_mode=Left Ctrl-click Remove: Remove Mode - remove anything you click, at any distance. Right-click ends it.
 unit.manage.tip=Move or remove it
 
 unit.more_actions=More actions
@@ -1668,7 +1718,7 @@ update.cancel=Cancel
 update.cancel_pending=Cancel the update
 update.check=Check for updates
 update.check_found=Check for updates: {0} available
-update.checking=Asking GitHub for the latest release...
+update.checking=Asking GitHub for the latest release…
 update.checking_title=Checking for updates
 update.close=Close
 update.current=No newer release of Island UI or Island Ex than what you have.
@@ -1722,7 +1772,7 @@ update.replaces_stray=and moves the extra copy {0} out of plugins
 update.sign=version {0} is available
 update.startup_off=Check at startup: off
 update.startup_on=Check at startup: on
-update.unpacking=Checking and unpacking...
+update.unpacking=Checking and unpacking…
 update.update=Update ({0})
 update.working_title=Updating to version {0}
 

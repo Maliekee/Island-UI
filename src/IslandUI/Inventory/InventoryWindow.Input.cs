@@ -177,10 +177,23 @@ namespace IslandUI
                     return;
                 }
                 inv.SlotToSlot(slot, inv.hoverSlot);
-                _grabSource = cell;
+                // lifted off the ground, the item's object is destroyed (ReportWrite)
+                // and this pooled cell goes to another item: nothing to return to but
+                // the ground itself (ReturnHeldToSource)
+                bool ground = plate != null && GroundPiles.Is(plate.Container);
+                _grabSource = ground ? null : cell;
+                _heldOffGround = ground;
             }
             else
             {
+                // a cell of a pile on the ground is the ground: what is put there is
+                // put down, as when it is let go over the world, and never written
+                // into the item lying there (GroundPiles)
+                if (plate != null && GroundPiles.Is(plate.Container))
+                {
+                    PutDownHeld();
+                    return;
+                }
                 // a held favourite goes only where it stays yours (FavouriteRules)
                 if (FavouriteRules.Leaves(inv, inv.hoverSlot, slot))
                 {
@@ -302,14 +315,16 @@ namespace IslandUI
             }
             InventoryManager inv = _mn.inventory;
             int free = inv.EmptySlotCheck();
-            if (free == -1)
+            // vanilla knows only the Shared Bag; with that full your own bag takes it
+            ItemSlot into = free != -1 ? inv.itemSlot[free] : ItemUse.FreeBagSlot(_mn);
+            if (into == null)
             {
                 // caution 6 is vanilla's own "no room for it" on this exact path
                 _mn.eventMN.StartCoroutine(_mn.eventMN.GoCaution(6));
                 return;
             }
             _mn.randChar.UnEquip(owner, worn);
-            inv.SlotToSlot(worn, inv.itemSlot[free]);
+            inv.SlotToSlot(worn, into);
             _mn.randChar.EquipEffectCheck(owner, LoadoutOrder[index]);
             inv.EquipSlotLoad();
             _mn.uiMN.StatusChange(owner);
@@ -362,7 +377,11 @@ namespace IslandUI
                     return;
                 }
                 inv.SlotToSlotSplit(slot, inv.hoverSlot, Mathf.Clamp(n, 1, slot.stack - 1));
-                _grabSource = cell;
+                // a part of an item on the ground goes back to the ground, not to a
+                // cell a rescan may have handed to another item (GroundPiles)
+                bool ground = plate != null && GroundPiles.Is(plate.Container);
+                _grabSource = ground ? null : cell;
+                _heldOffGround = ground;
                 ReportWrite(plate, slot);
                 NormalizeHover();
                 _nextRefresh = 0f;
@@ -390,6 +409,12 @@ namespace IslandUI
                 || string.IsNullOrEmpty(inv.hoverSlot.itemKey))
             {
                 return false;
+            }
+            if (_grabSource == null && _heldOffGround)
+            {
+                _heldOffGround = false;
+                PutDownHeld();   // back on the ground it was lifted from (GroundPiles)
+                return true;
             }
             if (_grabSource == null || _grabSource.Slot == null)
             {
@@ -550,7 +575,14 @@ namespace IslandUI
             {
                 hover.gameObject.SetActive(false);
             }
+            if (hover == null || !hover.gameObject.activeSelf)
+            {
+                _heldOffGround = false;   // the hand is empty: what it held is placed
+            }
         }
+
+        // The item in hand was lifted off the ground (LeftClick): its cell is gone.
+        private static bool _heldOffGround;
 
         // BOTH pools. The reach members live in ReachPlates so the viewport can
         // clip them, and this searched only the main pool - so every cell in the
@@ -610,6 +642,12 @@ namespace IslandUI
         {
             if (plate == null || plate.Container == null)
             {
+                return;
+            }
+            if (GroundPiles.Is(plate.Container))
+            {
+                GroundPiles.AfterWrite(slot);   // an emptied item is gone from the ground
+                InvalidateReachScan();
                 return;
             }
             int index = SlotIndexIn(plate.Container, slot);

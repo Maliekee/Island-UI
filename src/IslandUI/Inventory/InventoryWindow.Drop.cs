@@ -34,8 +34,8 @@ namespace IslandUI
         // For DragOwnsThePointer: a press over someone with an item in hand is a
         // drop on them, and vanilla must not read it as "drop it on the ground"
         // (InventoryManager.Hover drops on a mouse-down over the world). Over a food
-        // box too (InventoryWindow.DropFood.cs).
-        internal static bool OfferUnderPointer { get { return _dropOver != null || _dropBox != null; } }
+        // box too (InventoryWindow.DropFood.cs), and over a chest (InventoryWindow.DropStore.cs).
+        internal static bool OfferUnderPointer { get { return _dropOver != null || _dropBox != null || _dropStore != null; } }
 
         // True when this frame's release was a drop on someone (the chain stops).
         private static bool TickDropOnPerson(Camera cam)
@@ -249,20 +249,9 @@ namespace IslandUI
                 return null;
             }
             Vector2 cursor = Input.mousePosition;
-            Ray ray = world.ScreenPointToRay(cursor);
-            Vector3 point;
-            if (Physics.Raycast(ray, out RaycastHit hit, 200f, p.movableLayer))
+            if (!PointerGround(world, p, cursor, out Vector3 point))
             {
-                point = hit.point;
-            }
-            else
-            {
-                var ground = new Plane(Vector3.up, p.transform.position);
-                if (!ground.Raycast(ray, out float along))
-                {
-                    return null;
-                }
-                point = ray.GetPoint(along);
+                return null;
             }
             Collider[] hits = Physics.OverlapSphere(point, TabRadius, LayerMask.GetMask("NPC"));
             CommonStates best = null;

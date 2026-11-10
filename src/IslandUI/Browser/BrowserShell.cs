@@ -150,14 +150,6 @@ namespace IslandUI
         internal static bool PanelLifted { get; private set; }
         private static bool _panelBaseCaptured;
         private static RectTransform _titlePill; // vanilla "Craft" bubble above the panel
-        // THE WORD IS BACK IN THE ROW: the earlier layout read well there.
-        // Giving the filter the whole row left the naming to the vanilla
-        // bubble; the old bar read better with "Crafting" at the row's left and a
-        // compact field beside it, count and x inside. So: word, field, pill.
-        private static TMPro.TextMeshProUGUI _titleWord;
-        // 44, and the field starts a full gap after: at 38 the field began two units
-        // after the word's last letter ("too close to the text to the left of it").
-        private const float TitleWordW = 44f;
         // THE CRAFTING WINDOW WEARS THE KIT'S FRAME TOO (its borders use our own
         // style, like every other window): vanilla's
         // ui_frame on the panel is switched off, PanelFill becomes the kit's
@@ -201,12 +193,12 @@ namespace IslandUI
         private static Vector2 _titleBaseAnchorMin, _titleBaseAnchorMax, _titleBasePivot;
         private static GameObject _maskGo;      // the vanilla grid we displace
         private static Scrollbar _scrollbar;
-        private static UnityEngine.UI.Image _cover;           // the strip that hides scrolled rows
         private static GameObject _collapseAllGo;             // expand/collapse-all pill
         private static UnityEngine.UI.Image _collapseAllPlate;
         private static UnityEngine.UI.Image _collapseAllArrow;
         private static TMPro.TextMeshProUGUI _noMatches;      // empty-state message
         private static int _matchCount;
+        private static int _recipeTotal;   // every recipe in reach, before the words in the field
         private static CellView[] _cells;
         private static HeaderView[] _headers;
         private static int _poolColumns, _poolRows;
@@ -342,7 +334,8 @@ namespace IslandUI
         // described the FIELD, and the field does not live here any more.
         private static void UpdateSearchFeedback()
         {
-            _filter.SetCount(_filter.Active ? _matchCount.ToString() : "");
+            // matches out of everything, as the vicinity and the roster count
+            _filter.SetCount(_filter.Active ? _matchCount + "/" + _recipeTotal : "");
             if (_noMatches != null)
             {
                 _noMatches.gameObject.SetActive(_filter.Active && _matchCount == 0);
@@ -791,10 +784,6 @@ namespace IslandUI
             _panelFill.color = _panelFill.sprite != null
                 ? new Color(s.Field.r / KitParch.r, s.Field.g / KitParch.g, s.Field.b / KitParch.b, 1f)
                 : s.Field;
-            if (_cover != null)
-            {
-                _cover.color = s.Field; // must equal the fill — see its build note
-            }
             if (_collapseAllPlate != null)
             {
                 _collapseAllPlate.color = s.Well;
@@ -809,7 +798,6 @@ namespace IslandUI
                 _scrollbar.GetComponent<Image>().color = new Color(0.30f, 0.22f, 0.16f, 1f);
             }
             if (Active) EnsureFilter(_mn);
-            PaintText(_titleWord, s.Text);
             if (_filter.Alive)
             {
                 _filter.Paint(s);
@@ -928,8 +916,6 @@ namespace IslandUI
             }
         }
 
-        private static bool _geometryDumped;
-
         // ---------- row model ----------
 
         private static void RebuildRows(InventoryManager inv, ManagersScript mn)
@@ -981,7 +967,29 @@ namespace IslandUI
                 }
             }
             FlushRow(buffer, columns);
+            _recipeTotal = _filter.Active ? CountInReach(inv, mn) : _matchCount;
             UpdateCollapseAllArrow();
+        }
+
+        // The innate menu's recipes before the search projected them, counted by
+        // the same rule as the rows above
+        private static int CountInReach(InventoryManager inv, ManagersScript mn)
+        {
+            CraftInfo[] all = BrowserSearch.UnfilteredInnate;
+            if (all == null)
+            {
+                return _matchCount;
+            }
+            int total = 0;
+            for (int i = 0; i < all.Length; i++)
+            {
+                ItemData item = all[i] != null ? mn.itemMN.FindItem(all[i].name) : null;
+                if (item != null && inv.CraftListCheck(item))
+                {
+                    total++;
+                }
+            }
+            return total;
         }
 
         private static void FlushRow(List<int> buffer, int columns)

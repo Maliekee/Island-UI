@@ -147,8 +147,12 @@ namespace IslandUI
             // During an event vanilla only blocks its menu, backpack
             // and map keys (GameManager.Update), so only the doors to those go:
             // the two chip docks. Your vitals and the tool belt stay.
+            // Not in the fight itself (GameManager.eventBattle, set by
+            // BossBattleCheck): there you have your hands back, the clock runs
+            // again (GameManager.FixedUpdate), and vanilla's own buttons stand on
+            // screen and open their panels, so ours do too.
             _hud.gameObject.SetActive(mn.uiMN.mainCanvasGrp.alpha > 0);
-            bool doors = !GameManager.nowEvent;
+            bool doors = !GameManager.nowEvent || GameManager.eventBattle;
             if (_generalDock.gameObject.activeSelf != doors)
                 _generalDock.gameObject.SetActive(doors);
             if (_playerDock.gameObject.activeSelf != doors)
@@ -167,14 +171,17 @@ namespace IslandUI
                 bool open = HudOpen(e.Name);
                 bool hot = e.Face.gameObject.activeInHierarchy && RectTransformUtility.RectangleContainsScreenPoint(e.Face.rectTransform, Input.mousePosition, null);
                 bool window = e.Name == "craft" || e.Name == "vicinity" || e.Name == "roster" || e.Name == "bag" || e.Name == "details";
+                bool shut = e.Name == "map" && MapShut();
                 if(e.Face.transform.parent==_generalDock)
-                    e.Cell.PaintPanel(PlayerPanelArt.Button(HudEntries.IndexOf(e)),open,hot,hot && Input.GetMouseButton(0));
+                    e.Cell.PaintPanel(PlayerPanelArt.Button(HudEntries.IndexOf(e)),open,hot,hot && Input.GetMouseButton(0), !shut);
                 else if (e.Face.transform.parent == _playerDock)
                     e.Cell.PaintPanel(AnimePieces.Get("tile_" + e.Name), open, hot, hot && Input.GetMouseButton(0));
                 else
                     e.Cell.Paint(e.Name, null, open && window, false, false, true, hot, hot && Input.GetMouseButton(0), false, open && !window);
                 if (hot)
-                    tip = e.Name == "roster" ? RosterChipTip(HudLabel(e.Name)) : HudLabel(e.Name);
+                    tip = e.Name == "roster" ? RosterChipTip(HudLabel(e.Name))
+                        : shut ? TipHead(HudLabel(e.Name)) + "\n" + Shared.Loc.Get("hud.chip.map.fight", "Not during a boss fight: the game keeps the map shut until it ends.")
+                        : HudLabel(e.Name);
             }
             // the chevron points the way the tool belt's board slides: out, then back
             if (_dockChevron != null) _dockChevron.rectTransform.localScale = new Vector3(BoardOpen ? -1 : 1, 1, 1);
@@ -418,7 +425,16 @@ namespace IslandUI
             e.Button = e.Face.gameObject.AddComponent<Button>();
             e.Button.targetGraphic = e.Face;
             e.Button.transition = Selectable.Transition.None;
-            e.Button.onClick.AddListener(() => HudPress(name));
+            // a mouse click or a hotkey, never the keys walking along the dock: no
+            // navigation (the game's A/D drove Unity's Horizontal through it), and a
+            // click leaves nothing selected for Enter to press again
+            e.Button.navigation = new Navigation { mode = Navigation.Mode.None };
+            e.Button.onClick.AddListener(() =>
+            {
+                var es = UnityEngine.EventSystems.EventSystem.current;
+                if (es != null && es.currentSelectedGameObject == e.Button.gameObject) { es.SetSelectedGameObject(null); }
+                HudPress(name);
+            });
             HudEntries.Add(e);
         }
         // UI-only harness probe: hover, press, focus and a refused press drawn on
@@ -460,6 +476,14 @@ namespace IslandUI
                     return false;
             }
         }
+        // The map's chip is shut when pressing it would not open the map: the game
+        // refuses during an event (UIManager.MapView, unforced). An open map is never
+        // shut - the press closes it.
+        private static bool MapShut()
+        {
+            return _mn != null && _mn.uiMN != null && GameManager.nowEvent && !_mn.uiMN.mapCanvas.activeSelf;
+        }
+
         internal static void HudPress(string name)
         {
             if (_mn == null || _mn.uiMN == null)
@@ -494,7 +518,11 @@ namespace IslandUI
                     ui.LeftPanelState(2);
                     break;
                 case "map":
-                    ui.MapView();
+                    // THE GAME DECIDES, AS FOR ITS OWN BUTTON: MapView(false) refuses
+                    // to open during an event (a boss fight runs inside one), where
+                    // the forced call opened it anyway. Closing stays forced, so a map
+                    // already up when the fight starts can always be put away.
+                    ui.MapView(ui.mapCanvas.activeSelf);
                     break;
                 case "quests":
                     ui.QuestDiaryVisible();

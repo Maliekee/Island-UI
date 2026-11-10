@@ -225,13 +225,16 @@ namespace IslandUI
         private static void ScanReach(List<InventorySlot> into)
         {
             Vector3 here = _mn.gameMN.pMove.transform.position;
-            if (_reachScanDirty
+            // a loose item taken or emptied since the scan is not drawn a second longer
+            if (_reachScanDirty || GroundPiles.Stale()
                 || (here - _reachScanAt).sqrMagnitude > 0.25f
                 || Time.unscaledTime - _reachScanAge > 1f)
             {
                 ReachOrderWas.Clear();
                 ReachOrderWas.AddRange(ReachScan);
                 ReachScan.Clear();
+                // a pile drawn while the list holds keeps its holder and items
+                GroundPiles.Hold(VicHeldPiles());
                 Rescan(here, ReachScan);
                 OrderReach(here, ReachScan);
                 _reachScanAt = here;
@@ -306,6 +309,11 @@ namespace IslandUI
             if (ContainerPolicy.FamilyShown(ContainerPolicy.Family.Bodies))
             {
                 AddBodies(center, into);
+            }
+            // ...and what lies loose on the ground, a pile to a row (Forgejo #172)
+            if (ContainerPolicy.FamilyShown(ContainerPolicy.Family.Ground))
+            {
+                GroundPiles.Scan(_mn, center, into);
             }
         }
 
@@ -558,6 +566,10 @@ namespace IslandUI
         // "The one you are dealing with" is what the panel already says.
         private static string ChestTitle(InventorySlot chest)
         {
+            if (GroundPiles.Is(chest))
+            {
+                return Shared.Loc.Get("reach.ground", "On the ground");
+            }
             CommonStates owner = BagOwner(chest);
             if (owner != null)
             {

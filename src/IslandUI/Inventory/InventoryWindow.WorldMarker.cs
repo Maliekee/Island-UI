@@ -331,7 +331,7 @@ namespace IslandUI
         // hostile still withholds its name and condition (D89); its face it
         // cannot hide.
         private const float LivePortraitEvery = 0.1f;   // the live portrait's render, at most this often
-        private static Image _markerPortrait, _bandPlate, _bandHeader, _bandFooter;
+        private static Image _markerPortrait, _bandPlate;
         private static RawImage _markerPortraitRaw;
         private static Image _markerSkyFade;
         private static float _livePortraitAt = -1f;
@@ -379,8 +379,6 @@ namespace IslandUI
             fr.anchorMax = Vector2.one;
             fr.offsetMin = fr.offsetMax = Vector2.zero;
             _bandPlate = FrameBand(_worldMarker, "kit_emblem_plate_band");
-            if (_markerStatusHeader != null) { _bandHeader = FrameBand(_markerStatusHeader, "kit_emblem_status_header_band"); }
-            if (_markerStatusFooter != null) { _bandFooter = FrameBand(_markerStatusFooter, "kit_emblem_status_footer_band"); }
         }
 
         // a band laid over a panel, as its first child: it fills the panel, sliced
@@ -414,8 +412,6 @@ namespace IslandUI
         {
             if (_markerPortrait != null) { _markerPortrait.gameObject.SetActive(false); }
             ShowFrameBand(_bandPlate, false, Color.white);
-            ShowFrameBand(_bandHeader, false, Color.white);
-            ShowFrameBand(_bandFooter, false, Color.white);
             if (_emblemGlyph != null) { _emblemGlyph.gameObject.SetActive(true); }
         }
 

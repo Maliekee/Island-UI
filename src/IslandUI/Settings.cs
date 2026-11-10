@@ -55,6 +55,7 @@ namespace IslandUI
         internal static ConfigEntry<ContainerPolicy.FamilyMode> ReachBenches;
         internal static ConfigEntry<ContainerPolicy.FamilyMode> ReachBags;
         internal static ConfigEntry<ContainerPolicy.FamilyMode> ReachBodies;
+        internal static ConfigEntry<ContainerPolicy.FamilyMode> ReachGround;
         internal static ConfigEntry<bool> ShowNearby;
         internal static ConfigEntry<bool> VicinityCompact;
         internal static ConfigEntry<bool> VicinityHoldOrder;
@@ -71,6 +72,7 @@ namespace IslandUI
         internal static ConfigEntry<bool> CascadeToCharacterBag;
         internal static ConfigEntry<KeyCode> QuickStackKey;
         internal static ConfigEntry<bool> QuickStackFlight;
+        internal static ConfigEntry<bool> NewItemMark;
         internal static ConfigEntry<bool> ActionBar;
         internal static ConfigEntry<int> ActionBarSlots;
         internal static ConfigEntry<bool> ActionBarShiftToMove;
@@ -164,6 +166,8 @@ namespace IslandUI
                 "Your people's bags within reach, in the vicinity window: Hidden or Show. Quick stack never fills them. Applies live; the vicinity window's chips also set it.");
             ReachBodies = cfg.Bind("Inventory", "ReachBodies", ContainerPolicy.FamilyMode.Show,
                 "Pockets of downed or dead strangers within 3 m that still hold something, in the vicinity window: Hidden or Show. Quick stack never fills them; All out loots them. Applies live; the vicinity window's chips also set it.");
+            ReachGround = cfg.Bind("Inventory", "ReachGround", ContainerPolicy.FamilyMode.Show,
+                "Loose items lying on the ground within 3 m, in the vicinity window, a pile to a row: Hidden or Show. Taken through the game's own pickup; Quick stack never fills them; All out picks them up. Applies live.");
             PickupFlight = cfg.Bind("Inventory", "PickupFlight", true,
                 "A picked-up item's notice flies from you to the slot it landed in, instead of waiting at the screen edge. Off = the game's notice. Applies to the next pickup.");
             PickupFlightSeconds = cfg.Bind("Inventory", "PickupFlightSeconds", 0.55f,
@@ -173,7 +177,7 @@ namespace IslandUI
             VicinityCompact = cfg.Bind("Inventory", "VicinityCompact", false,
                 "The vicinity window's Compact view: each holder's taken slots in their own order, then one summary of how many are free, instead of every slot. The window's Compact box sets it too. Applies live.");
             VicinityHoldOrder = cfg.Bind("Inventory", "VicinityHoldOrder", true,
-                "While the pointer is on the vicinity window's list, its rows keep their places; a row that has come nearer than one above it wears an arrow, and the list re-sorts once the pointer leaves. Off = always nearest first. Applies live.");
+                "While the pointer is on the vicinity window's list, nothing in it moves: rows keep their places, a row whose thing goes out of reach or is gone stays where it was, frozen and unusable, and new rows join at the bottom. A row that has come nearer than one above it wears an arrow. The list re-sorts once the pointer leaves. Off = always nearest first. Applies live.");
             ShowNearby = cfg.Bind("Inventory", "ShowNearby", true,
                 "Enables the vicinity window, which lists your storage within reach. Off also removes its button. Applies live.");
             ReachKey = cfg.Bind("Inventory", "ReachKey", KeyCode.V,
@@ -194,6 +198,9 @@ namespace IslandUI
                 "Puts stackable items from your bags into nearby storage set to Stack. None = no key; the vicinity window's Stack button does the same.");
             QuickStackFlight = cfg.Bind("Inventory", "QuickStackFlight", true,
                 "When quick stack moves items, a notice flies from your bags to each chest it filled. Off = no notice.");
+            NewItemMark = cfg.Bind("Inventory", "NewItemMark", true,
+                "Items that came into your bags while the inventory was closed wear a pale blue border the next time you open it, a grown stack too. Pointing at one clears its mark; closing the inventory clears them all. Off = no mark. Applies live.");
+            NewItemMark.SettingChanged += (_, __) => InventoryWindow.Invalidate();
             ActionBar = cfg.Bind("Inventory", "ActionBar", true,
                 "A bar of item actions on keys 1-9 and 0: drag a stack onto a slot and it eats, equips or uses that item, while the stack stays in your bag. Items with no action are refused. The bar is kept in the save. Off = no action bar.");
             ActionBarSlots = cfg.Bind("Inventory", "ActionBarSlots", 10,

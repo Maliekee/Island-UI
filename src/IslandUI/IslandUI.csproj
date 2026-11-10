@@ -4,7 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>IslandUI</AssemblyName>
     <RootNamespace>IslandUI</RootNamespace>
-    <Version>0.9.4</Version>
+    <Version>0.9.5</Version>
     <LangVersion>latest</LangVersion>
     <!-- Live Steam install: the game that actually runs. BepInEx and our plugin live here;
          binary/ is only a pristine reference copy for decompilation. -->
@@ -39,6 +39,7 @@
     <EmbeddedResource Include="..\..\art\fonts\*.ttf" LogicalName="IslandUI.Fonts.%(Filename).ttf" />
     <EmbeddedResource Include="Data\item-guide.tsv" LogicalName="IslandUI.item-guide.tsv" />
     <EmbeddedResource Include="Data\story-choices.tsv" LogicalName="IslandUI.story-choices.tsv" />
+    <EmbeddedResource Include="Data\tested-game-builds.txt" LogicalName="IslandUI.tested-game-builds.txt" />
     <EmbeddedResource Include="..\..\art\options-visual-kit-v1\03-blank-frame.png" LogicalName="IslandUI.SettingsFrame.png" />
     <EmbeddedResource Include="..\..\art\options-visual-kit-v1\04-control-parts.png" LogicalName="IslandUI.SettingsParts.png" />
   </ItemGroup>

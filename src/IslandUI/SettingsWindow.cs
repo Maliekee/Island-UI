@@ -731,6 +731,21 @@ namespace IslandUI
                     Name = "Crafting", Title = Shared.Loc.Get("settings.page.crafting", "Crafting"),
                     About = Shared.Loc.Get("settings.page.crafting.about", "What crafting may take from beyond your material storages."),
                 });
+                Pages.Add(new Page
+                {
+                    Name = "Fixes", Title = Shared.Loc.Get("settings.page.fixes", "Fixes"),
+                    About = Shared.Loc.Get("settings.page.fixes.about", "Small slips in the game, put right."),
+                });
+                // only an Island Ex that has the switches (Forgejo #246)
+                BepInEx.Configuration.ConfigFile exCfg = PluginConfig(ExGuid);
+                if (exCfg != null && exCfg.ContainsKey(new BepInEx.Configuration.ConfigDefinition(PartnerSection, "Take Orders")))
+                {
+                    Pages.Add(new Page
+                    {
+                        Name = "Orders", Title = Shared.Loc.Get("settings.page.partner_orders", "Orders"),
+                        About = Shared.Loc.Get("settings.page.partner_orders.about", "Orders the game does not give. Once allowed here, the Orders sheet offers them."),
+                    });
+                }
                 return;
             }
             // SEVEN PAGES, EACH IN GROUPS (Forgejo #155): nine slips crowded the
@@ -794,7 +809,10 @@ namespace IslandUI
                 case "General":
                     y = DropLine(r, p.Content, y, w, Shared.Loc.Get("settings.page.cursor", "Cursor"), CursorStyleOptions(), (int)Settings.CursorStyle.Value,
                         index => { Settings.CursorStyle.Value = (GameCursor.Style)index; },
-                        Shared.Loc.Get("settings.cursor.style.help", "Select Off to use the system pointer."));
+                        Shared.Loc.Get("settings.cursor.style.help", "Select Off to use the system pointer."),
+                        // the page's two dropdowns share both edges: at its own width
+                        // the cursor's stood ragged over the language's
+                        LanguageDropW);
                     _cursorStyle = Drops[Drops.Count - 1];
                     string[] codes = LanguageCodes();
                     y = DropLine(r, p.Content, y, w, Shared.Loc.Get("settings.language", "Language"), LanguageOptions(codes),
@@ -857,6 +875,9 @@ namespace IslandUI
                         Shared.Loc.Get("settings.target.npc_use_flight.help", "When one of your people eats from a food box or drinks from a well, the food or water icon flies from it to them, as it does to you."));
                     break;
                 case "Windows":
+                    y = Group(r, y, w, Shared.Loc.Get("settings.group.inventory", "Inventory"));
+                    y = ToggleRow(r, y, w, Shared.Loc.Get("settings.inventory.new_items", "Mark new items"), Settings.NewItemMark, null,
+                        Shared.Loc.Get("settings.inventory.new_items.help", "What came into your bags while the inventory was closed wears a pale blue border the next time you open it, and so does a stack that grew. Pointing at an item clears its mark; closing the inventory clears them all."));
                     y = Group(r, y, w, Shared.Loc.Get("settings.page.sheets", "Sheets"));
                     y = ToggleRow(r, y, w, Shared.Loc.Get("settings.sheets.left", "Sheet to the left"), Settings.SheetFloatLeft, null,
                         Shared.Loc.Get("settings.sheets.left.help", "A character's sheet moves to the left side while crafting, the vicinity and the roster are closed, and back when one opens. The tab on the sheet's edge switches this too."));
@@ -864,7 +885,7 @@ namespace IslandUI
                     y = ToggleRow(r, y, w, Shared.Loc.Get("settings.vicinity.compact", "Compact"), Settings.VicinityCompact, null,
                         Shared.Loc.Get("settings.vicinity.compact.help", "Each holder shows its taken slots in their own order, then one count of how many are free, instead of every slot. The Compact box at the foot of the vicinity window sets this too."));
                     y = ToggleRow(r, y, w, Shared.Loc.Get("settings.vicinity.hold_order", "Hold the order"), Settings.VicinityHoldOrder, null,
-                        Shared.Loc.Get("settings.vicinity.hold_order.help", "While the pointer is on the list, the rows keep their places, so none moves under the pointer. A row that has come nearer than one above it wears an arrow, and the list re-sorts once the pointer leaves.\nOff  always nearest first"));
+                        Shared.Loc.Get("settings.vicinity.hold_order.help", "While the pointer is on the list, nothing in it moves under the pointer. Rows keep their places. A row whose thing goes out of reach or is gone stays where it was, frozen and unusable, and new rows join at the bottom. A row that has come nearer than one above it wears an arrow, and the list re-sorts once the pointer leaves.\nOff  always nearest first"));
                     y = Group(r, y, w, Shared.Loc.Get("settings.group.item_card", "Item card"));
                     y = ToggleRow(r, y, w, Shared.Loc.Get("settings.items.guide", "How to get it"), Settings.ItemGuide, null,
                         Shared.Loc.Get("settings.items.guide.help", "The card says how to get the item: where it is found, what drops it, who trades it. Written from what players have collected, so it covers the dungeon, chests and trades too."));
@@ -914,6 +935,8 @@ namespace IslandUI
                 case "Camera":
                 case "Tools":
                 case "Crafting":
+                case "Fixes":
+                case "Orders":
                     y = ExRows(r, y, w, p.Name);
                     break;
             }
@@ -1078,6 +1101,21 @@ namespace IslandUI
                 }
                 return y;
             }
+            if (page == "Fixes")
+            {
+                BepInEx.Configuration.ConfigEntry<bool> repair;
+                cfg.TryGetEntry("Fixes", "Repair Ends Cleanly", out repair);
+                if (repair != null)
+                {
+                    y = ToggleRow(r, y, w, Shared.Loc.Get("settings.fixes.repair_ends", "Repair ends cleanly"), repair, null,
+                        Shared.Loc.Get("settings.fixes.repair_ends.help", "When a repair is over, you stand at rest again. Unmodded, you keep swinging the hammer until you move."));
+                }
+                return y;
+            }
+            if (page == "Orders")
+            {
+                return PartnerOrderRows(r, y, w, cfg);
+            }
             cfg.TryGetEntry("Window", "KeepFullscreenOnFocusLoss", out keep);
             cfg.TryGetEntry("Window", "MinimiseShortcuts", out shortcuts);
             if (keep != null)
@@ -1091,6 +1129,58 @@ namespace IslandUI
                     Shared.Loc.Get("settings.window.minimise_shortcuts.help", "Win+M and Win+Down minimise the game, as they do other windows. A taskbar click and Win+D work either way."));
             }
             return y;
+        }
+
+        // MAN AND YONA TAKE ORDERS (Forgejo #246): Island Ex's master switch, and
+        // under it the four kinds of order, each a detail of the master - greyed
+        // and keeping its value while the master is off. The names are the game's
+        // own once a save is loaded, so no language guesses them.
+        private const string PartnerSection = "Man and Yona";
+
+        private static float PartnerOrderRows(Transform r, float y, float w, BepInEx.Configuration.ConfigFile cfg)
+        {
+            BepInEx.Configuration.ConfigEntry<bool> master, job, stance, flags, call;
+            cfg.TryGetEntry(PartnerSection, "Take Orders", out master);
+            cfg.TryGetEntry(PartnerSection, "Job", out job);
+            cfg.TryGetEntry(PartnerSection, "Combat Stance", out stance);
+            cfg.TryGetEntry(PartnerSection, "Permissions", out flags);
+            cfg.TryGetEntry(PartnerSection, "Call", out call);
+            if (master == null)
+            {
+                return y;
+            }
+            CommonStates[] players = _mn != null && _mn.gameMN != null ? _mn.gameMN.playerCommons : null;
+            string man = PlayerName(players, 1, "Man"), yona = PlayerName(players, 0, "Yona");   // GameManager: [1] is PlayerMan
+            y = Group(r, y, w, Shared.Loc.Get("settings.partner.group", "{0} and {1}", man, yona));
+            y = ToggleRow(r, y, w, Shared.Loc.Get("settings.partner.take_orders", "Take orders"), master, null,
+                Shared.Loc.Get("settings.partner.take_orders.help", "The one of {0} and {1} you are not playing takes the orders switched on below from the Orders sheet, as anyone you employ does. Unmodded, the game gives them none of these. Switching an order off puts back the game's default for it.", man, yona));
+            if (job != null)
+            {
+                y = ToggleRow(r, y, w, Shared.Loc.Get("settings.partner.job", "Job"), job, master,
+                    Shared.Loc.Get("settings.partner.job.help", "They work at a work place within 10 m, mostly in their idle pose, and keep the job after a load. Off: no job."));
+            }
+            if (stance != null)
+            {
+                y = ToggleRow(r, y, w, Shared.Loc.Get("settings.partner.stance", "Combat stance"), stance, master,
+                    Shared.Loc.Get("settings.partner.stance.help", "Their combat stance, kept after a load. Off: the game's default stance."));
+            }
+            if (flags != null)
+            {
+                y = ToggleRow(r, y, w, Shared.Loc.Get("settings.partner.permissions", "Permissions"), flags, master,
+                    Shared.Loc.Get("settings.partner.permissions.help", "What they may do: houses, love, sex and force. Off: the game's defaults, put back after every load too."));
+            }
+            if (call != null)
+            {
+                y = ToggleRow(r, y, w, Shared.Loc.Get("settings.partner.call", "Call"), call, master,
+                    Shared.Loc.Get("settings.partner.call.help", "Call brings them to you."));
+            }
+            return y;
+        }
+
+        private static string PlayerName(CommonStates[] players, int i, string fallback)
+        {
+            CommonStates p = players != null && i < players.Length ? players[i] : null;
+            return p != null && !string.IsNullOrEmpty(p.charaName) ? p.charaName : fallback;
         }
 
         // Island Ex's effect filter as rows: one switch per effect, on = hidden.

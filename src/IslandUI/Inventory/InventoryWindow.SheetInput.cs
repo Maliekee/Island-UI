@@ -379,7 +379,7 @@ namespace IslandUI
             {
                 case LineOption:
                     // UIManager.NPCOptionChange, on this carrier: 0 is ALLOWED
-                    if (who.sexInfo != null && row.Arg >= 0 && row.Arg < who.sexInfo.Length)
+                    if (who.sexInfo != null && row.Arg >= 0 && row.Arg < who.sexInfo.Length && PartnerSwitches.Allows(who, PartnerSwitches.Permissions))
                     {
                         who.sexInfo[row.Arg] = who.sexInfo[row.Arg] == 0 ? 1 : 0;
                     }

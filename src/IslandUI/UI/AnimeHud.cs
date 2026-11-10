@@ -228,7 +228,6 @@ namespace IslandUI.UI
     {
         public readonly Image Hit, Face, Icon;
         private readonly Image _line, _focus, _arrow, _rim, _lead;
-        private static bool _keyboard;
         private readonly Image _state, _distance;
         private AutoLook _auto;
         private float _w = 25, _h = 25;
@@ -257,9 +256,8 @@ namespace IslandUI.UI
         // THE STATES, in the board's own marks (section 5): open is the "On" rim -
         // amber, cream, amber - with the underline, and the button lifted over the
         // frame as the panel's are; the pointer over a button is the same rim,
-        // faint; pressed sinks it and lowers its light; keyboard focus is a cream
-        // ring standing off the tile; a press refused out of reach flashes the rim
-        // red. A colour above white did nothing for hover: UI vertex colours clamp.
+        // faint; pressed sinks it and lowers its light; a press refused out of
+        // reach flashes the rim red. A colour above white did nothing for hover: UI vertex colours clamp.
         private const float Lift = 2.2f;
         private static readonly Color RimOpen = Color.white, RimHot = new Color(1f, 1f, 1f, .5f),
             RimRefused = new Color(1f, .32f, .28f, 1f), Pressed = new Color(.84f, .82f, .8f, 1f);
@@ -269,24 +267,19 @@ namespace IslandUI.UI
         internal static float PreviewUntil;
         internal int Role;
 
-        // the keyboard's ring shown on whatever is selected: focus handed back by a
-        // surface that took the keys while it was up (TalkBubble's Escape)
-        internal static void KeyboardFocus()
-        {
-            _keyboard = true;
-        }
-
         // ...and HELD is an act whose panel is up from it (Talk while its bubble is):
         // sunk as pressed, in the open rim's amber
+        // how far the face sits from rest this frame (down is +): what rides on the
+        // tile from outside it, a points tag, moves by the same
+        public float FaceDy { get; private set; }
+
         private void PaintStates(bool open, bool hot, bool down, bool refused, bool held = false)
         {
-            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) _keyboard = false;
-            if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)
-                || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow)) _keyboard = true;
             bool preview = Role != 0 && Time.unscaledTime < PreviewUntil;
             if (preview) { hot = Role == 1; down = Role == 2; refused = Role == 3; }
             Face.color = down || held ? Pressed : Color.white;
-            Theme.Place(Face, 0, open && !down ? -Lift : down || held ? .25f : 0, _w, _h);
+            FaceDy = open && !down ? -Lift : down || held ? .25f : 0;
+            Theme.Place(Face, 0, FaceDy, _w, _h);
             _line.enabled = open && !down; _line.color = AnimeHud.Cream;
             Theme.Place(_line, 2.5f, _h - Lift + .55f, _w - 5, .8f);
             _rim.enabled = refused || open || held || hot && !down;
@@ -296,8 +289,11 @@ namespace IslandUI.UI
                 _rim.color = refused ? RimRefused : open || held ? RimOpen : RimHot;
                 Theme.Place(_rim, -.2f, open && !down ? -Lift - .2f : -.2f, _w + .4f, _h + .4f);
             }
-            var es = UnityEngine.EventSystems.EventSystem.current;
-            _focus.enabled = preview ? Role == 4 : _keyboard && es != null && es.currentSelectedGameObject == Hit.gameObject;
+            // NO KEYBOARD RING: the docks are pressed with the mouse or a hotkey, never
+            // walked with the keys - the game's A/D (Unity's Horizontal) used to walk
+            // the selection along a dock while the player walked. Only the harness
+            // preview still draws the ring.
+            _focus.enabled = preview && Role == 4;
             if (_focus.enabled)
             {
                 AnimePieces.Sliced(_focus, "ring_focus", new Vector4(24, 24, 24, 24));
@@ -306,13 +302,17 @@ namespace IslandUI.UI
             }
         }
 
-        public void PaintPanel(Sprite art, bool on, bool hot, bool down)
+        // `enabled` false: a door the game shuts for now - greyed, and neither hover
+        // nor press is drawn on it (the map in a boss fight)
+        public void PaintPanel(Sprite art, bool on, bool hot, bool down, bool enabled = true)
         {
             Hit.color=Color.clear;
             Face.sprite=art;Face.type=Image.Type.Simple;Face.fillCenter=true;
             Icon.enabled=_state.enabled=_distance.enabled=_arrow.enabled=false; _auto?.Hide();
-            PaintStates(on, hot, down, false);
+            PaintStates(on, hot && enabled, down && enabled, false);
+            if (!enabled) Face.color = Shut;
         }
+        private static readonly Color Shut = new Color(.5f, .48f, .46f, .75f);
         // A painted board tile (AnimePieces): the act's own tile, or the blank one
         // with the game's glyph on it. Marks sit where the board paints them: the
         // follow check and the birth sparkle over the top-right corner, the
@@ -384,10 +384,7 @@ namespace IslandUI.UI
                 Theme.Place(_arrow, name == "tools" ? -2 : (_w - 6) * .5f, name == "tools" ? (_h - 6) * .5f : -2, 6, 6);
                 _arrow.rectTransform.localScale = new Vector3(expanded ? -1 : 1, expanded ? -1 : 1, 1);
             }
-            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) _keyboard = false;
-            if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow)) _keyboard = true;
-            var es = UnityEngine.EventSystems.EventSystem.current;
-            _focus.enabled = _keyboard && es != null && es.currentSelectedGameObject == Hit.gameObject;
+            _focus.enabled = false;   // no keyboard ring on the docks (see PaintStates)
             Theme.Place(_focus, -1, -1, _w + 2, _h + 2); _focus.color = AnimeHud.Cream;
         }
     }

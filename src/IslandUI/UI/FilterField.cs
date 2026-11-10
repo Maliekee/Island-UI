@@ -640,6 +640,7 @@ namespace IslandUI.UI
             }
         }
 
+
         public void Clear()
         {
             if (_field != null)

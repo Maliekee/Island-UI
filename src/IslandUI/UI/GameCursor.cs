@@ -58,7 +58,7 @@ namespace IslandUI.UI
         internal static void Tick()
         {
             KeyCode key = Settings.CursorCycleKey.Value;
-            if (key == KeyCode.None || !Input.GetKeyDown(key))
+            if (key == KeyCode.None || !RawInput.GetKeyDown(key))
             {
                 return;
             }

@@ -38,12 +38,14 @@ namespace IslandUI
         // split dialog is asked first: it is in front of everything, and with it
         // open the target keeps the key, so Escape used to fall through to pause.
         // Then a Set place pick (Forgejo #20): Escape cancels it, and only it.
+        // Vanilla's dialogue editor before all of them (Forgejo #230): it is what
+        // the key is pressed at, and the untarget would leave it writing to you.
         [HarmonyPatch(typeof(GameManager), nameof(GameManager.PauseGame))]
         [HarmonyPrefix]
         private static bool PauseGame_Prefix(bool resume)
         {
             return resume || Time.timeScale == 0f
-                || (!SplitDialog.EscapeCancels() && !InventoryWindow.EscapeCancelsPlacing() && !ItemCard.EscapeNavigates() && !InventoryWindow.EscapeUntargets());
+                || (!InventoryWindow.EscapeClosesTalkEdit() && !SplitDialog.EscapeCancels() &&!InventoryWindow.EscapeCancelsPlacing() && !ItemCard.EscapeNavigates() && !InventoryWindow.EscapeUntargets());
         }
 
         // Tab is the target key (D157): it no longer opens the game's menu panel -

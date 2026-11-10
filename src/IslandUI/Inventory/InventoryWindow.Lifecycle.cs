@@ -37,6 +37,7 @@ namespace IslandUI
             // this is the one that only shows up on a scene change.
             ReachPlates.Clear();
             ReachOrder.Clear();
+            ForgetVicHold();
             _reachPlatesUsed = 0;
             _reachContent = null;
             _slotTabs = null;
@@ -267,6 +268,12 @@ namespace IslandUI
             plate.Owner = null;
             plate.SheetMasked = false;   // the mask goes at the refresh's end, unless a sheet claims it (ReleaseUnclaimed)
             plate.WasVicinity = false;   // ...and so do a holder's portrait and summary
+            plate.VicRow = null;         // ...and a frozen row's overlay (VicFreeze.cs)
+            if (plate.Frozen != 0)
+            {
+                plate.Frozen = 0;
+                HideFreeze(plate);
+            }
             if (plate.SheetTrack != null) { plate.SheetTrack.gameObject.SetActive(false); }
             plate.SheetContentH = 0f;
             plate.Window.Content.anchoredPosition = Vector2.zero;
@@ -662,8 +669,20 @@ namespace IslandUI
 
         // The bag icon and the I key arrive here now (WI-4): vanilla's two
         // container icons are one icon, and it opens this.
+        //
+        // Once a frame: the game's Backpack key and our Inventory key both land
+        // here, and a player who gives them the same physical key (GitHub #21:
+        // Inventory set to I with Backpack still on I) would open and shut the
+        // window in one press.
+        private static int _toggledFrame = -1;
+
         internal static void Toggle()
         {
+            if (_toggledFrame == Time.frameCount)
+            {
+                return;
+            }
+            _toggledFrame = Time.frameCount;
             _ownOpen = !_ownOpen;
         }
 

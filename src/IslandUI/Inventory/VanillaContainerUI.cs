@@ -107,9 +107,16 @@ namespace IslandUI
             // always 0 and vanilla's bench branch never runs. That holds only while
             // the custom grid is on, which is exactly this condition — with it off
             // the vanilla panels are back and the mirror is load-bearing again.
+            //
+            // A bench ANOTHER MOD adds is not ours to open (GitHub #22): the game's
+            // switch has no case for it, the mod reaches its recipes through the
+            // game's own SubInventoryLoad, and intercepting that left it a storage
+            // box with no crafting. It keeps the game's path, like a rack: vanilla's
+            // panel, and the mod's own wiring runs. AggregatedCrafting learns its
+            // recipe panel from that wiring.
             if (container.type == InventorySlot.Type.Bench)
             {
-                return Settings.CustomGrid.Value;
+                return Settings.CustomGrid.Value && !ForeignBench(container);
             }
             if (container.type == InventorySlot.Type.Treasure)
             {
@@ -150,6 +157,16 @@ namespace IslandUI
                 || container.type == InventorySlot.Type.Material
                 || container.type == InventorySlot.Type.FactoryBreed
                 || container.type == InventorySlot.Type.FleshCollector;
+        }
+
+        // A Type.Bench whose item key neither the game's bench switch nor a
+        // registration knows. A bench with no ItemInfo, and the last boss's
+        // scene bench, stay as they were.
+        private static bool ForeignBench(InventorySlot bench)
+        {
+            ItemInfo info = bench.GetComponent<ItemInfo>();
+            return info != null && !string.IsNullOrEmpty(info.itemKey)
+                && !AggregatedCrafting.IsKnownBench(info.itemKey) && !BossBench.Is(bench);
         }
 
         // ---------- the entry points (recon §7.2) ----------
@@ -229,8 +246,8 @@ namespace IslandUI
         // AggregatedCrafting.BenchPanels already mirrors it entry for entry — the
         // bench redirect then turns whatever we ask for into the whole menu, so the
         // browser comes up at that bench's section. A key the switch does not list
-        // opens NOTHING, which is vanilla falling out of its own switch rather
-        // than an oversight worth correcting.
+        // never gets here: that is another mod's bench, left on the game's path
+        // (IsPlainStorage).
         private static void OpenLeftPanel(InventoryManager inv, InventorySlot chest, ItemData tmpData)
         {
             if (chest.type != InventorySlot.Type.Bench || tmpData == null)

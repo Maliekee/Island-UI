@@ -30,7 +30,7 @@ namespace IslandUI
     {
         public const string PluginGuid = "madisland.islandui";
         public const string PluginName = "Island UI";
-        public const string PluginVersion = "0.9.4";
+        public const string PluginVersion = "0.9.5";
 
         internal static ManualLogSource Log;
 
@@ -89,6 +89,7 @@ namespace IslandUI
             Settings.Bind(Config);
             Shared.Loc.Init("IslandUI", () => Settings.Language.Value);
             QoL.Bind(Config);   // the keymap, hotkeys and tweaks that were QoLTweaks
+            GameVersionNotice.Bind(Config);
             Log.LogInfo($"{PluginName} v{PluginVersion} loaded.");
 
             GameCursor.Init();   // nothing in the game competes for the cursor
@@ -98,7 +99,10 @@ namespace IslandUI
             // class with it, and it skips a class with no type-level attribute in silence.
             // The census isolates each class and says which ones no longer bind — which is
             // the first thing to look at after a game update. See src/Shared/PatchCensus.cs.
-            Shared.PatchCensus.ApplyAndReport(_harmony, Assembly.GetExecutingAssembly(), Log);
+            Shared.PatchCensus.Result census = Shared.PatchCensus.ApplyAndReport(_harmony, Assembly.GetExecutingAssembly(), Log);
+            // the title screen says when this game build is not one the release was tested on,
+            // or when a patch class above (or Island Ex's, Island AI's) did not bind
+            GameVersionNotice.Install(census, Log);
             UIProbes.Install(_harmony);
             StoryChoices.Install(_harmony);   // marks each story choice's call site
             StoryChoices.TakeOver();
@@ -176,6 +180,7 @@ namespace IslandUI
             // a slot mark is only true of this scene's slots; a load puts
             // the save's marks back afterwards (SaveBlock)
             Favourites.ResetForSceneLoad();
+            NewItems.ResetForSceneLoad();   // ...and the new-item marks, by slot too
             ToolBelt.ResetForSceneLoad();   // the same, for the tool belt's hooks
             AutoUse.ResetForSceneLoad();    // ...and for the buildings' auto-use switches
             SplitDialog.ResetForSceneLoad();
@@ -336,18 +341,18 @@ namespace IslandUI
                     }
                 }
             }
-            // plain Input read is fine: the default (G) is not among the game's keys, so
-            // the keymap (QoL/KeyRemap.cs) never remaps it (and it must stay physical anyway)
+            // Our own hotkeys read the PHYSICAL key (RawInput): the keymap moves the
+            // game's keys, and a plain Input read would move ours along with them
+            // (GitHub #21: Backpack moved off I took the Inventory key with it).
             KeyCode stackKey = Settings.QuickStackKey.Value;
-            if (stackKey != KeyCode.None && Input.GetKeyDown(stackKey))
+            if (stackKey != KeyCode.None && RawInput.GetKeyDown(stackKey))
             {
                 QuickStack.TryExecute(Mn);
             }
             // V by default. The game reads V in exactly one place - the drone
-            // flight loop, where it hides the drone model - so a plain Input read
-            // is right: nothing to remap around outside that loop.
+            // flight loop, where it hides the drone model.
             KeyCode reachKey = Settings.ReachKey.Value;
-            if (reachKey != KeyCode.None && Input.GetKeyDown(reachKey)
+            if (reachKey != KeyCode.None && RawInput.GetKeyDown(reachKey)
                 && Settings.ShowNearby.Value)
             {
                 InventoryWindow.ToggleVicinity();
@@ -508,6 +513,9 @@ namespace IslandUI
             // ...and the vanilla panels the unit veils show again
             try { InventoryWindow.UnveilVanilla(Mn); }
             catch (System.Exception e) { Log.LogWarning("Teardown: unveil threw: " + e); }
+            // ...and a level prop's circle we drew (the next generation draws its own)
+            try { InventoryWindow.ClearPropCircle(Mn); }
+            catch (System.Exception e) { Log.LogWarning("Teardown: prop circle threw: " + e); }
             // ...and the map's favourite dots, which the pins hide
             try { InventoryWindow.MapPinsOff(); }
             catch (System.Exception e) { Log.LogWarning("Teardown: map pins threw: " + e); }
@@ -518,6 +526,7 @@ namespace IslandUI
             UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
             UI.DevConsole.Teardown();
             Shared.TitleBadge.Remove();
+            GameVersionNotice.Remove();
             _reachMoveSub?.Dispose();
             _craftMoveSub?.Dispose();
             // 3. patches off: vanilla runs vanilla until the next instance patches

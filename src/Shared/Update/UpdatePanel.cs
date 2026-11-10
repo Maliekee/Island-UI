@@ -158,7 +158,7 @@ namespace Shared
             switch (step)
             {
                 case UpdateFlow.Step.Checking:
-                    Say(Loc.Get("update.checking_title", "Checking for updates"), Loc.Get("update.checking", "Asking GitHub for the latest release..."), false);
+                    Say(Loc.Get("update.checking_title", "Checking for updates"), Loc.Get("update.checking", "Asking GitHub for the latest release…"), false);
                     Button(Loc.Get("update.cancel", "Cancel"), false, Abort);
                     break;
                 case UpdateFlow.Step.UpToDate:
@@ -241,7 +241,7 @@ namespace Shared
             }
             long total = Math.Max(1L, _flow.Total), done = Math.Min(_flow.Done, total);
             _progress.text = _flow.Current == UpdateFlow.Step.Unpacking
-                ? Loc.Get("update.unpacking", "Checking and unpacking...")
+                ? Loc.Get("update.unpacking", "Checking and unpacking…")
                 : Loc.Get("update.downloading", "Downloading: {0} of {1}", UpdateRules.Size(done), UpdateRules.Size(total));
             _bar.anchorMax = new Vector2((float)done / total, 1f);
         }

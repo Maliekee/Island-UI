@@ -215,15 +215,39 @@ namespace IslandUI
                 + does;
         }
 
+        // MAN AND YONA GET ONLY WHAT THE GAME GIVES THEM (GitHub #24). Vanilla
+        // hides its Orders tab for the two player characters (UIManager.StatusChange,
+        // npcID 0 and 1) and offers them, through the NPC menu's Move button, only
+        // where they stand and their waiting pose. Combat stance, job, the
+        // permission flags and Call took effect on them, so offering those was a
+        // cheat, not a convenience. The setters refuse a player character, so no
+        // door reaches them, unless Island Ex allows it. Saves that kept flags from before: PlayerPermissions.
+        // The sheet still WRITES those rows for them, marked Refused, so the page
+        // is the same height and shape as anyone's (Forgejo #239): the form draws
+        // them ghosted, no hover, no press, a tip that says why.
+        // Island Ex can allow each of the four kinds (Forgejo #246): every row
+        // and setter asks PartnerSwitches, and a kind it allows is live for them
+        // like anyone's.
+        internal static bool IsPlayerCharacter(CommonStates who)
+        {
+            return who != null && (who.npcID == 0 || who.npcID == 1);
+        }
+
         private static void WriteOrders(List<SheetLine> lines, CommonStates who)
         {
             HarvestOrderLabels();
             NPCMove move = who != null ? who.GetComponent<NPCMove>() : null;
+            bool player = IsPlayerCharacter(who);
+            bool noStance = PartnerSwitches.Refuses(who, PartnerSwitches.Stance);
+            bool noJob = PartnerSwitches.Refuses(who, PartnerSwitches.Job);
+            bool noFlags = PartnerSwitches.Refuses(who, PartnerSwitches.Permissions);
+            bool noCall = PartnerSwitches.Refuses(who, PartnerSwitches.Call);
             lines.Add(Head(Shared.Loc.Get("orders.title", "Orders"), string.Empty, VanillaTabIcon(3)));
             int combat = move != null ? (int)move.orderType : 0;
+            string refused = player ? TipRefusedPlayer : null;
             lines.Add(new SheetLine { Label = Shared.Loc.Get("orders.combat", "Combat"), Kind = LineDropdown, Arg = 0,
-                Options = _combatLabels, Index = Mathf.Clamp(combat, 0, _combatLabels.Length - 1), Enabled = true,
-                Tip = combat >= 0 && combat < CombatTips.Length ? CombatTips[combat] : null });
+                Options = _combatLabels, Index = Mathf.Clamp(combat, 0, _combatLabels.Length - 1), Enabled = !noStance, Refused = noStance,
+                Tip = noStance ? refused : combat >= 0 && combat < CombatTips.Length ? CombatTips[combat] : null });
             int work = move != null ? System.Array.IndexOf(_workValues, (int)move.workType) : 0;
             // the job's glyph, as the roster row wears it (FriendWorkCheck)
             if (_workIcons == null || _workIcons.Length != _workValues.Length)
@@ -238,8 +262,8 @@ namespace IslandUI
             }
             int job = move != null ? (int)move.workType : 0;
             lines.Add(new SheetLine { Label = Shared.Loc.Get("orders.job", "Job"), Kind = LineDropdown, Arg = 1,
-                Options = _workLabels, Icons = _workIcons, Index = Mathf.Max(0, work), Enabled = true,
-                Tip = job >= 0 && job < WorkTips.Length ? WorkTips[job] : null });
+                Options = _workLabels, Icons = _workIcons, Index = Mathf.Max(0, work), Enabled = !noJob, Refused = noJob,
+                Tip = noJob ? refused : job >= 0 && job < WorkTips.Length ? WorkTips[job] : null });
             // THE SPEED LIMIT IS GONE from target NPCs. It was moved here from
             // Status as a standing order, which it is - but it cannot do anything. Vanilla's
             // slider bottoms out at 1.0 and a follower's base speed IS about 1.0,
@@ -264,12 +288,11 @@ namespace IslandUI
                 }
                 bool allowed = who.sexInfo != null && id < who.sexInfo.Length && who.sexInfo[id] == 0;
                 lines.Add(new SheetLine { Label = _optionLabels[i], Kind = LineOption, Arg = id,
-                    On = allowed, Enabled = true, Tip = TipPermission(id) });
+                    On = allowed, Enabled = !noFlags, Refused = noFlags, Tip = noFlags ? refused : TipPermission(id) });
             }
             // EDIT DIALOGUE, under the flags that decide what they may do -
-            // what someone may SAY is the same kind of standing fact. Drawn only
-            // when vanilla lights it (it needs a TalkEdit component), read rather
-            // than predicted, and wearing vanilla's own words (D65/D82).
+            // what someone may SAY is the same kind of standing fact. Only for
+            // someone who already has lines (TalkEditLabel).
             string editLabel = TalkEditLabel(who);
             if (editLabel != null)
             {
@@ -278,9 +301,10 @@ namespace IslandUI
             }
             lines.Add(new SheetLine { Kind = LineSpace });
             string[] actions = ActionLabels;
-            bool canFire = _mn != null && _mn.npcMN != null && _mn.npcMN.FireNPCCheck(who.npcID);
-            lines.Add(new SheetLine { Kind = LineActions, Enabled = true,
-                Options = canFire ? actions : new[] { actions[0] }, Tips = TipOrderActions });
+            // Banish is FireNPCCheck's, which never lets the players go: Call alone for them
+            bool canFire = !player && _mn != null && _mn.npcMN != null && _mn.npcMN.FireNPCCheck(who.npcID);
+            lines.Add(new SheetLine { Kind = LineActions, Enabled = !noCall, Refused = noCall,
+                Options = canFire ? actions : new[] { actions[0] }, Tips = noCall ? new[] { refused } : TipOrderActions });
         }
 
         // UIManager.OrderChange / WorkChange, on the sheet's carrier
@@ -288,7 +312,8 @@ namespace IslandUI
         {
             CommonStates who = plate != null ? plate.Owner : null;
             NPCMove move = who != null ? who.GetComponent<NPCMove>() : null;
-            if (move == null)
+            if (move == null || (which == 0 && PartnerSwitches.Refuses(who, PartnerSwitches.Stance))
+                || (which != 0 && which != DropPose && PartnerSwitches.Refuses(who, PartnerSwitches.Job)))
             {
                 return;
             }
@@ -324,6 +349,12 @@ namespace IslandUI
         private static void OrderAction(CommonStates who, int which)
         {
             if (who == null || _mn == null || _mn.npcMN == null || _mn.gameMN == null)
+            {
+                return;
+            }
+            // Call for Man or Yona only while Island Ex allows it; Banish never
+            // (FireNPCCheck refuses the players, and the sheet never offers it)
+            if (IsPlayerCharacter(who) && (which != 0 || PartnerSwitches.Refuses(who, PartnerSwitches.Call)))
             {
                 return;
             }
@@ -389,10 +420,14 @@ namespace IslandUI
             lines.Add(Head(Shared.Loc.Get("orders.standing", "Where they stand"), string.Empty));
             NPCMove nm = move;
             bool following = nm != null && nm.npcType == NPCMove.NPCType.Follow;
+            // Man and Yona: vanilla hides follow and goodbye for them, so the
+            // toggle is drawn but cannot be pressed, and says why (GitHub #24)
+            bool canFollow = !IsPlayerCharacter(who);
             lines.Add(new SheetLine
             {
                 Label = Shared.Loc.Get("orders.following", "Following"), Kind = LineToggle, Arg = ToggleFollow,
-                Value = following ? Shared.Loc.Get("orders.following.yes", "yes") : Shared.Loc.Get("orders.following.no", "no"), On = following, Enabled = true, Tip = TipFollowing,
+                Value = following ? Shared.Loc.Get("orders.following.yes", "yes") : Shared.Loc.Get("orders.following.no", "no"), On = following,
+                Enabled = canFollow, Tip = canFollow ? TipFollowing : TipFollowingPartner,
             });
             // a click that arms a world pointer: vanilla's own coroutine, which
             // takes the controls for the length of the pick and gives them back
@@ -737,27 +772,14 @@ namespace IslandUI
         // handler runs and the follower list is kept by the game rather than by us.
         private const int ToggleFollow = 90;
 
-        // vanilla's own label for the talk-edit verb, or null when it does
-        // not offer one for this target. The same read the follow toggle uses -
-        // ask vanilla, take the answer, copy no condition of its own (D65).
-        //
-        // TWO THINGS THE READ TURNED UP, both about WHEN this can
-        // appear at all:
-        //
-        // 1. `talkedit` is lit in NPCMenuOpen (UIManager:1627), not in
-        //    NPCPanelStateChange - so it is in the npcID group with craft, vacuum
-        //    and the shops, which TargetVerbs already records as readable only
-        //    when vanilla's own panel is up. A WORLD CLICK sees it; a roster pick
-        //    does not. That is the existing gap rather than a new one, and it
-        //    fails the safe way: an absent line, never a wrong one.
-        // 2. The component is added lazily (UIManager:4704, and SaveManager:2370
-        //    restores it on load), so vanilla only lights the button for someone
-        //    whose dialogue has ALREADY been authored. It is a re-edit door, and
-        //    the first-edit door is somewhere else - not chased here.
-        //
-        // Verified negatively in game: a follower with no TalkEdit draws no line
-        // and throws nothing. The positive case needs an NPC with authored
-        // dialogue, which this save has none of.
+        // EDIT DIALOGUE ONLY WHERE VANILLA'S NPC MENU OFFERS IT, as before Forgejo
+        // #230: its `talkedit` button is lit once a TalkEdit component exists, i.e.
+        // for someone whose lines have already been written (UIManager:1629). #230
+        // drew the line for everyone, the way vanilla's status tab reaches the
+        // editor, but the row pushed the sheet past its height into scrolling, so it
+        // came back off while it is decided whether custom dialogue
+        // belongs in Island UI at all. Read rather than predicted (D65): a roster
+        // pick may not see the button, and fails the safe way, with no line.
         private static string TalkEditLabel(CommonStates who)
         {
             if (who == null || _mn == null)
@@ -770,39 +792,55 @@ namespace IslandUI
             {
                 if (live[i].Name == "talkedit")
                 {
-                    return string.IsNullOrEmpty(live[i].Label) ? Shared.Loc.Get("orders.edit_dialogue", "Edit dialogue") : live[i].Label;
+                    return Shared.Loc.Get("orders.edit_dialogue", "Edit dialogue");
                 }
             }
             return null;
         }
 
-        // Pressed through vanilla's own button, so its panel opens and its state
-        // is the game's rather than ours.
+        // What the status panel's tab does, for this character: vanilla's own editor,
+        // its state the game's. StatusChange returns early unless the panel is up OR
+        // its state is 4, and StatusPanelChange sets 4 before it asks (and puts the
+        // tab back after), so the panel need not be open. It reads menuNPC, and falls
+        // back to the player without one - so the focus is set first.
         private static void TalkEditPress(CommonStates who)
         {
-            if (who == null || _mn == null)
+            if (who == null || _mn == null || _mn.gameMN == null || _mn.uiMN == null
+                || _mn.uiMN.talkEditPanel == null || _mn.uiMN.talkEditPanel.activeSelf)
             {
                 return;
             }
-            if (_mn.gameMN != null && !ReferenceEquals(_mn.gameMN.menuNPC, who))
+            _mn.gameMN.menuNPC = who;
+            _mn.uiMN.StatusPanelChange(4);
+        }
+
+        // ESCAPE OVER THE EDITOR IS THE EDITOR'S. Asked before the untarget (D150):
+        // that one ended the target under the open editor, and with it menuNPC, so
+        // the editor went on writing to whoever GetMenuNPC falls back to - you. A
+        // line being typed keeps the key (the field's own Escape); otherwise the
+        // editor closes as its X does, and its coroutine gives control back.
+        internal static bool EscapeClosesTalkEdit()
+        {
+            GameObject panel = _mn != null && _mn.uiMN != null ? _mn.uiMN.talkEditPanel : null;
+            if (panel == null || !panel.activeSelf || !Input.GetKeyDown(KeyCode.Escape))
             {
-                _mn.gameMN.menuNPC = who;   // vanilla's panel reads the focus as it opens
+                return false;
             }
-            TargetVerbs.ReadIncludingElsewhere(_mn, who);
-            var live = TargetVerbs.Current;
-            for (int i = 0; i < live.Count; i++)
+            TMP_InputField[] fields = _mn.uiMN.serifInput;
+            for (int i = 0; fields != null && i < fields.Length; i++)
             {
-                if (live[i].Name == "talkedit")
+                if (fields[i] != null && fields[i].isFocused)
                 {
-                    TargetVerbs.Press(live[i]);
-                    break;
+                    return true;
                 }
             }
+            panel.SetActive(false);
+            return true;
         }
 
         private static void ToggleFollowing(CommonStates who)
         {
-            if (who == null || _mn == null)
+            if (who == null || _mn == null || IsPlayerCharacter(who))
             {
                 return;
             }

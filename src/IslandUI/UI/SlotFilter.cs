@@ -81,7 +81,7 @@ namespace IslandUI.UI
             // the wells are named apart, so a harness path names one of them
             string well = occupant == 0 ? "FilterWell" : occupant == 2 ? "RosterFilterWell" : "VicinityFilterWell";
             if (!field.Alive && !field.Build(_header, mn, "", Theme.FontBody, wellName: well)) return false;
-            field.SetPlaceholder(Shared.Loc.Get("slot.filter", "Filter..."));
+            field.SetPlaceholder(Shared.Loc.Get("slot.filter", "Filter…"));
             if (field.Go.transform.parent != _header) field.Go.transform.SetParent(_header, false);
             // to the row's end, short of the collapse-all pill: a fixed 120 was sized
             // when the well still started at the row's left, and once the name stood

@@ -772,7 +772,7 @@ namespace IslandUI
                     : Shared.Loc.Get("met.why.grudge_dropped", "Apart for a single tick, the grudge is dropped; it starts again from 0 when they meet."));
                 line.Values = say.ToArray();
                 line.Label = Shared.Loc.Get("met.end.ends_it", "Ends it: {0}", string.Join(Shared.Loc.Get("met.end.or", ", or "), ways.ToArray()));
-                if (holder.sexInfo != null && holder.sexInfo.Length > 8 && holder.sexInfo[8] == 0)
+                if (PartnerSwitches.Allows(holder, PartnerSwitches.Permissions) && holder.sexInfo != null && holder.sexInfo.Length > 8 && holder.sexInfo[8] == 0)
                 {
                     line.Arg = MetActs.Count;
                     MetActs.Add(() => { holder.sexInfo[8] = 1; MoodChanged(); });

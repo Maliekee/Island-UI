@@ -25,6 +25,17 @@ namespace IslandUI.UI
         // the anime HUD's pills at the board's sizes: 31 of its pixels on the docks,
         // 36 on the player panel (its "35")
         public const float DockPill = 6.4f, PanelPill = 7.2f;
+
+        // The sheet tab's tag height in `parent`'s units, so a tag there comes out
+        // the same size ON SCREEN as the sheet's: a canvas drawn at a smaller scale
+        // (the world marker's) gets a taller tag in its own units
+        public static float OnScreen(Transform parent)
+        {
+            Canvas canvas = parent != null ? parent.GetComponentInParent<Canvas>() : null;
+            float root = canvas != null ? canvas.rootCanvas.transform.lossyScale.y : 0f;
+            float own = parent != null ? parent.lossyScale.y : 0f;
+            return root > 0f && own > 0f ? Height * root / own : Height;
+        }
         private static readonly Color Ink = new Color32(32, 21, 14, 255);
         private static readonly Color Cream = new Color32(248, 235, 205, 255);
 
@@ -39,9 +50,11 @@ namespace IslandUI.UI
         private string _drew;
         private float _measured;
         private bool _outlined;
-        // the anime HUD's docks: the board's enamel count pill, a "+" for points
-        // and the bare count for the unhappy, no glyph (art/hud-anime-v1)
+        // the anime HUD's docks: the board's enamel count pill with the bare count,
+        // no glyph, for the unhappy (art/hud-anime-v1). Points wear the sheet's tag
+        // there too, glyph and all, so a kind of point looks one way everywhere
         private readonly bool _anime;
+        private bool _pill;
 
         private PointsTag(Transform parent, string name, bool anime)
         {
@@ -49,7 +62,9 @@ namespace IslandUI.UI
             _body = Theme.KitImage(parent, name, "kit_tag_cerulean", 11, Color.white);
             Rect = _body.rectTransform;
             _glyph = Theme.KitImage(Rect, "Glyph", "kit_glyph_up", 0, Color.white);
-            _text = Theme.MakeKitText(Rect, "Points", 5f, Cream, TextAlignmentOptions.MidlineLeft, bold: true);
+            // centred on the figures' cap height, not on the ink: "7 points" has a
+            // descender, and centring its ink lifted the number off the enamel's middle
+            _text = Theme.MakeKitText(Rect, "Points", 5f, Cream, TextAlignmentOptions.CaplineLeft, bold: true);
             _text.fontStyle = FontStyles.Bold;   // the game's face has no bold of its own
             _text.enableWordWrapping = false;
             _text.overflowMode = TextOverflowModes.Overflow;
@@ -68,11 +83,8 @@ namespace IslandUI.UI
         // from Width and H.
         public void Show(Kind kind, string text, float h = Height)
         {
-            if (_anime && kind != Kind.Mood && !text.StartsWith("+"))
-            {
-                text = "+" + text;
-            }
-            if ((int)kind != _kind && _anime)
+            _pill = _anime && kind == Kind.Mood;
+            if ((int)kind != _kind && _pill)
             {
                 _kind = (int)kind;
                 AnimePieces.Sliced(_body, kind == Kind.Skill ? "badge_jade" : kind == Kind.Mood ? "badge_ruby" : "badge_cerulean",
@@ -114,7 +126,7 @@ namespace IslandUI.UI
                 H = h;
                 // the board's pill: figures half its height (Noto's are .714 em), the
                 // pill 1.87 heights long for "+80"
-                float size = _anime ? h * 0.72f : h * 0.74f;
+                float size = _pill ? h * 0.72f : h * 0.74f;
                 if (_text.text != text) { _text.text = text; }
                 _text.fontSize = size;
                 float tw = live ? _text.GetPreferredValues(text, 200f, h).x : 0f;
@@ -124,10 +136,10 @@ namespace IslandUI.UI
                     tw = size * 0.6f * text.Length;   // a guess, until it can measure
                 }
                 _measured = tw;
-                float g = _anime ? 0f : h * 0.6f;
-                float pad = _anime ? h * 0.34f : h * 0.26f;
-                float gap = _anime ? 0f : h * 0.06f;
-                if (_anime) { _body.pixelsPerUnitMultiplier = 88f / h; }
+                float g = _pill ? 0f : h * 0.6f;
+                float pad = _pill ? h * 0.34f : h * 0.26f;
+                float gap = _pill ? 0f : h * 0.06f;
+                if (_pill) { _body.pixelsPerUnitMultiplier = 88f / h; }
                 Width = Mathf.Round((pad * 2f + g + gap + tw) * 2f) * 0.5f;
                 Rect.sizeDelta = new Vector2(Width, h);
                 // the enamel's middle sits a little above the rect's: the shadow is below
@@ -161,8 +173,8 @@ namespace IslandUI.UI
             _outlined = true;
             m.EnableKeyword(ShaderUtilities.Keyword_Outline);
             // the serif carries its own weight: a thinner edge, no dilation
-            m.SetFloat(ShaderUtilities.ID_FaceDilate, _anime ? 0.05f : 0.22f);
-            m.SetFloat(ShaderUtilities.ID_OutlineWidth, _anime ? 0.22f : 0.34f);
+            m.SetFloat(ShaderUtilities.ID_FaceDilate, _pill ? 0.05f : 0.22f);
+            m.SetFloat(ShaderUtilities.ID_OutlineWidth, _pill ? 0.22f : 0.34f);
             m.SetColor(ShaderUtilities.ID_OutlineColor, Ink);
             _text.UpdateMeshPadding();
         }

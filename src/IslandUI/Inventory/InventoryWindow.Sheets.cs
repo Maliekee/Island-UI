@@ -105,6 +105,22 @@ namespace IslandUI
             return !who.Employed() && who.employ != CommonStates.Employ.Dead;
         }
 
+        // A STRANGER YOU MAY SEARCH IS READ AS THE GAME READS THEM (GitHub #25).
+        // Pressing on a knocked-out enemy or animal runs PlayerMove.SearchNPC,
+        // which makes them the game's menuNPC; with the status panel open, its
+        // tabs then show that body (UIManager.StatusPanelChange -> StatusChange
+        // (null) reads menuNPC) - the whole sheet, personality, like and dislike
+        // included, with no Observation or employment test. The same bodies
+        // open their pockets here (PocketsOpen, which follows the game's search
+        // by charaType), so the same bodies get the Character page, read in full.
+        // An enemy (10) or animal (100) only: a stranger of kind 1 is never
+        // searched, and a crop (11) has no sheet.
+        internal static bool SearchedStranger(CommonStates who)
+        {
+            return who != null && !who.Employed() && (who.charaType == 10 || who.charaType == 100)
+                && who.life > 0.0 && PocketsOpen(who);
+        }
+
         // A BODY THAT IS NOT A FRIEND'S HAS NO SHEET: a dead enemy pulls up no
         // sheet, but a friendly being who is downed still does. Down in any of vanilla's states - 1 on the
         // ground, 5 carried, 100 the end state a killed follower's and a dissected
@@ -179,8 +195,9 @@ namespace IslandUI
                     return own;      // one global book, and it is the survivor's (§6.21)
                 case Aspect.Profile:
                     // everything has fixed facts, even a corpse - but a hostile's
-                    // name, kind and personality are exactly what D89 withholds
-                    return !Hostile(who);
+                    // name, kind and personality are exactly what D89 withholds -
+                    // until they are down and yours to search, as in the game
+                    return !Hostile(who) || SearchedStranger(who);
                 default:
                     return false;
             }
@@ -242,9 +259,11 @@ namespace IslandUI
         {
             string[] parts = (arg ?? string.Empty).Split('|');
             NPCManager npcs = _mn != null ? _mn.npcMN : null;
-            for (int i = 0; npcs != null && npcs.friendList != null && i < npcs.friendList.Count; i++)
+            // the partner too, as the roster lists them (People)
+            List<CommonStates> people = npcs != null && npcs.friendList != null ? People(npcs) : null;
+            for (int i = 0; people != null && i < people.Count; i++)
             {
-                CommonStates who = npcs.friendList[i];
+                CommonStates who = people[i];
                 if (who == null || !string.Equals(who.charaName, parts[0], System.StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
@@ -496,7 +515,7 @@ namespace IslandUI
             row.Go = Owned.New("Row");
             row.Go.transform.SetParent(plate.Window.Content, false);
             row.Label = Theme.MakeKitText(row.Go.transform, "Label", SheetTextSize, Theme.Ink,
-                TextAlignmentOptions.MidlineLeft);
+                Theme.Words(TextAlignmentOptions.MidlineLeft));
             row.Label.enableWordWrapping = false;
             // Overflow, not the ellipsis MakeText defaults to: a line taller than
             // its 11-unit row is dropped whole under Ellipsis, which drew the sheet
@@ -747,7 +766,7 @@ namespace IslandUI
                             row.Value2.text = line.Value2 ?? string.Empty;
                         }
                         row.Label2.color = Theme.InkDim;
-                        row.Value2.color = line.Value2Tinted ? line.Value2Tint : Theme.Ink;
+                        row.Value2.color = Theme.Ink;
                     }
                 }
                 if (line.Kind != LineStrip && line.Kind != LineRoster && row.Ticks != null)

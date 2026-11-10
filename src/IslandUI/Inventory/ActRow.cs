@@ -417,7 +417,8 @@ namespace IslandUI
             {
                 Slot s = _slots[i];
                 bool filled = s != null;
-                PaintTag(i, s);
+                // an enamel tile's tag is painted after its tile, to ride its face
+                if (!(Enamel && IconMode && filled)) { PaintTag(i, s); }
                 if (Compact || i >= ShapeSockets)
                 {
                     bool shown = filled;
@@ -463,6 +464,8 @@ namespace IslandUI
                     // A hover does not lift it: a far door answers the pointer with its
                     // rim alone, as a person's far bag does on its _off tile
                     if (panelCut != null && !live && !(down && enabled)) _anime[i].Face.color = new Color(.65f, .65f, .65f, 1f);
+                    // the tag after the tile: it rides the face's lift or sink this frame
+                    PaintTag(i, s, _anime[i].FaceDy);
                     _art[i].enabled = false;
                     PaintAutoLook(i, null);
                     // an act with neither a board tile nor a glyph: its caption names
@@ -805,7 +808,7 @@ namespace IslandUI
 
         // A slot's points tag: centred on the socket's top-right corner, over the
         // sockets beside it (made last, so it draws after them)
-        private void PaintTag(int i, Slot s)
+        private void PaintTag(int i, Slot s, float dy = 0f)
         {
             if (s == null || string.IsNullOrEmpty(s.Tag))
             {
@@ -817,11 +820,11 @@ namespace IslandUI
                 _tags[i] = PointsTag.Create(Go.transform, "Points" + i, Enamel);
             }
             PointsTag tag = _tags[i];
-            tag.Show(s.TagKind, s.Tag, Enamel ? PointsTag.DockPill : PointsTag.Height);
+            tag.Show(s.TagKind, s.Tag, Enamel ? PointsTag.OnScreen(Go.transform) : PointsTag.Height);
             var r = _sockets[i].rectTransform;
             float right = r.anchoredPosition.x + r.sizeDelta.x;
             float top = -r.anchoredPosition.y;
-            Theme.Place(tag.Rect, right - tag.Width * 0.5f - 1f, top - tag.H * 0.5f + 1f, tag.Width, tag.H);
+            Theme.Place(tag.Rect, right - tag.Width * 0.5f - 1f, top - tag.H * 0.5f + 1f + dy, tag.Width, tag.H);
             if (tag.Rect.GetSiblingIndex() != Go.transform.childCount - 1)
             {
                 tag.Rect.SetAsLastSibling();

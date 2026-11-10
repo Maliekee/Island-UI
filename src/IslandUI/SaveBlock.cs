@@ -136,6 +136,7 @@ namespace IslandUI
         [HarmonyPrefix]
         private static void LoadStart_Prefix(int loadID)
         {
+            NewItems.LoadStarted();   // what the load puts in your bags is not new
             ReadPending(SlotPath(loadID));
         }
 
@@ -144,6 +145,7 @@ namespace IslandUI
         [HarmonyPrefix]
         private static void LoadDirectoryStart_Prefix(string dataName)
         {
+            NewItems.LoadStarted();
             string path = dataName != null && (dataName.Contains("2739590") || dataName.Contains("steamapps"))
                 ? dataName
                 : Path.Combine(Application.dataPath + "/StreamingAssets/DLSave", dataName ?? "");
@@ -179,6 +181,7 @@ namespace IslandUI
             {
                 yield return inner.Current;
             }
+            NewItems.Rebase();   // the bags as loaded are the baseline (Forgejo #192)
             string block = _pendingLoad;
             string from = _pendingLoadFrom;
             _pendingLoad = null;

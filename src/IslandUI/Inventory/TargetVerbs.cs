@@ -128,6 +128,41 @@ namespace IslandUI
             }
         }
 
+        // A TRADER ASKED AS THE CLICK WOULD LIGHT THEM (Forgejo #215). The shops are
+        // lit in one place, CheckFriendlyNPC, which only runs once a click has
+        // walked you there: NPCPanelStateChange, then npcPanelState 14, 15 and 17,
+        // for every ShopInfo alike. So a trader held from afar (Tab, a map pin) is
+        // asked that way - the same two steps, the answer read, the panel put back -
+        // and nothing about which shops there are is re-derived here.
+        private static readonly int[] ShopStates = { 14, 15, 17 };
+
+        internal static void ReadShop(ManagersScript mn, CommonStates who)
+        {
+            Live.Clear();
+            _read = who;
+            if (mn == null || mn.uiMN == null || who == null
+                || mn.uiMN.npcPanel == null || mn.uiMN.npcPanelState == null)
+            {
+                return;
+            }
+            GameObject[] set = mn.uiMN.npcPanelState;
+            Keep(set);
+            try
+            {
+                mn.uiMN.NPCPanelStateChange(who, statusChange: false);
+                for (int i = 0; i < ShopStates.Length; i++)
+                {
+                    if (ShopStates[i] < set.Length && set[ShopStates[i]] != null)
+                    {
+                        set[ShopStates[i]].SetActive(true);
+                    }
+                }
+                ReadLit(mn, who, set);
+            }
+            catch (System.Exception e) { Live.Clear(); Plugin.Log.LogWarning("shop read: " + e.Message); }
+            finally { PutBack(set, null); }
+        }
+
         // ASKING SWITCHES THE ONE SHARED PANEL, SO THE ANSWER IS PUT BACK (Forgejo
         // #127). NPCPanelStateChange answers by SetActive on npcPanelState, and that
         // is one set of buttons for the whole game, not one per person: asking about
@@ -375,6 +410,17 @@ namespace IslandUI
             {
                 try
                 {
+                    // a button never shown still wears the prefab's Japanese: asked
+                    // of its string table instead (a trader's shops read from afar,
+                    // Forgejo #215)
+                    if (!text.gameObject.activeInHierarchy && GameWords.ShowsEntry(text.gameObject, text.text))
+                    {
+                        string asked = GameWords.Label(text.gameObject);
+                        if (!string.IsNullOrEmpty(asked))
+                        {
+                            return asked;
+                        }
+                    }
                     string ours = GameWords.Lacking && GameWords.ShowsEntry(text.gameObject, text.text)
                         ? ControlWords.Verb(go.name) : null;
                     return ours ?? GameWords.Translate(text.gameObject, text.text);

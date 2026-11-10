@@ -142,7 +142,58 @@ namespace IslandUI
         // opens no panel at all.
         internal static int PanelOf(string benchKey)
         {
-            return benchKey != null && BenchPanels.TryGetValue(benchKey, out int panel) ? panel : 0;
+            if (benchKey == null)
+            {
+                return 0;
+            }
+            return BenchPanels.TryGetValue(benchKey, out int panel)
+                || LearnedBenches.TryGetValue(benchKey, out panel) ? panel : 0;
+        }
+
+        // A bench the game's switch lists (or a mod registered in that table).
+        // Only these are opened by Island UI itself; any other Type.Bench is
+        // another mod's and stays on the game's path (VanillaContainerUI).
+        internal static bool IsKnownBench(string benchKey)
+        {
+            return benchKey != null && BenchPanels.ContainsKey(benchKey);
+        }
+
+        // ---------- benches other mods add (GitHub #22) ----------
+        //
+        // A mod's bench (Craftable Seeds' Seed Bench) is not in the game's switch,
+        // so it reaches its recipes its own way: the game's SubInventoryLoad runs
+        // for it, and the mod asks for its recipe panel with CraftOpen(N). That ask
+        // is the only place the pairing is visible, so it is LEARNED there: while a
+        // bench we do not know is the open container, a CraftOpen for a panel no
+        // known bench or crafter owns is that bench's. From then on it counts like
+        // a game bench for the nearby-bench recipes and the bench's action button.
+        // Kept for the session; the first use of the bench teaches it again.
+        private static readonly Dictionary<string, int> LearnedBenches = new Dictionary<string, int>();
+
+        [HarmonyPatch(nameof(InventoryManager.CraftOpen))]
+        [HarmonyPrefix]
+        [HarmonyPriority(Priority.First + 1)] // before the redirect turns id into 0
+        private static void CraftOpen_LearnBenchPrefix(InventoryManager __instance, int id)
+        {
+            if (id == 0 || __instance == null || __instance.subInventory == null
+                || !__instance.subInventory.activeSelf)
+            {
+                return;
+            }
+            InventorySlot bench = __instance.tmpSubInventory;
+            if (bench == null || bench.type != InventorySlot.Type.Bench)
+            {
+                return;
+            }
+            ItemInfo info = bench.GetComponent<ItemInfo>();
+            if (info == null || string.IsNullOrEmpty(info.itemKey) || IsKnownBench(info.itemKey)
+                || id == BossBench.Panel || NpcOfPanel.ContainsKey(id) || BenchKeyOf(id) != null)
+            {
+                return;
+            }
+            LearnedBenches[info.itemKey] = id;
+            _panelToBenchKey = null;
+            Plugin.Log.LogInfo($"Crafting: '{info.itemKey}' is another mod's bench, recipe panel {id}");
         }
 
         // bench item key for a panel id (reverse of BenchPanels), for header labels
@@ -152,6 +203,13 @@ namespace IslandUI
             {
                 _panelToBenchKey = new Dictionary<int, string>();
                 foreach (KeyValuePair<string, int> pair in BenchPanels)
+                {
+                    if (!_panelToBenchKey.ContainsKey(pair.Value))
+                    {
+                        _panelToBenchKey[pair.Value] = pair.Key;
+                    }
+                }
+                foreach (KeyValuePair<string, int> pair in LearnedBenches)
                 {
                     if (!_panelToBenchKey.ContainsKey(pair.Value))
                     {
@@ -313,7 +371,7 @@ namespace IslandUI
                 ItemInfo info = bench.GetComponent<ItemInfo>();
                 if (info != null && mn.buildMN.OwnCheck(info)
                     && ReachRule.Live(bench, center, ReachRule.Workshop)
-                    && BenchPanels.TryGetValue(info.itemKey, out int panelID))
+                    && PanelOf(info.itemKey) is int panelID && panelID != 0)
                 {
                     result.Add(panelID);
                 }

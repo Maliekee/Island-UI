@@ -398,6 +398,10 @@ namespace IslandUI
             public int DrewLife;
             public Image ToolMark;
             public bool DrewStar, DrewToolMark;
+            // new since the inventory was last open (NewItems, Forgejo #192): the
+            // pale blue rim, under the rims of hover, press and preview
+            public Image NewRim;
+            public bool DrewNew;
             // LOOK 07 (Leather.cs): the cell is on the leather, its lit rim, the
             // faint glyph in an empty worn socket, and the plate under its count
             public bool Leather;
@@ -405,11 +409,9 @@ namespace IslandUI
             public Image Rim;
             public Image Ghost;
             public bool CountOutlined;   // the action bar's dark edge on the count (BarCount)
-            // the vicinity's facelift (Vicinity.cs): its socket or bed by state, and
-            // the small dark badge under its count
+            // the vicinity's facelift (Vicinity.cs): its socket or bed by state
             public bool Vicinity;
             public bool Filled;
-            public Image CountBack;
         }
 
         // One line of a sheet: a label at the left, a value at the right. Kind 0
@@ -564,6 +566,10 @@ namespace IslandUI
             public int Arg;
             public bool On;
             public bool Enabled;
+            // an order the game does not give this person (Man and Yona, Forgejo
+            // #239): the form draws it ghosted, with no hover and no press - only
+            // its tip, which says why. Drawing only: the setters refuse on their own.
+            public bool Refused;
             public float Frac;
             public float Baby;         // a head's pregnancy, how far along (0 = none)
             public bool[] Warns;       // a box in alarm: red rim, red wash, red value
@@ -616,7 +622,6 @@ namespace IslandUI
             public string Away;        // a person not in the world: the tip that says where they are (Links.cs)
             public string Value2;
             public Color Value2Tint;
-            public bool Value2Tinted;
             public string Where;       // in reach / home / away
             public string Cause;       // the discontent cause, when moral is red
             public bool CauseWarn;     // ...or the drain coming, while it is not (amber)
@@ -762,6 +767,11 @@ namespace IslandUI
             public Image VicGlyph;      // a body's skull
             public Image VicHigher;     // the held order's arrow: this row belongs higher
             public Image VicNameBar;    // a person's name, on a bar over the card's top
+            public InventorySlot VicRow; // the holder this plate last drew in the vicinity (VicFreeze.cs)
+            public int Frozen;          // 0 live; FrozenFar or FrozenGone while the list is held (VicFreeze.cs)
+            public Image FreezeWash;    // ...its overlay: the wash over the row
+            public Image FreezeTag;     // ...and the word on its dark bar
+            public TMPro.TextMeshProUGUI FreezeWord;
             public TextMeshProUGUI VicName;
             public Place VicPlace;
             public bool WasVicinity;

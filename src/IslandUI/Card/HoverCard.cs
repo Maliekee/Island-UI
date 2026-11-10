@@ -487,6 +487,44 @@ namespace IslandUI
                 _window.Go.SetActive(true);
             }
             _window.Rect.SetAsLastSibling(); // above the panels, like the vanilla tooltip
+            Raise();
+        }
+
+        // OVER EVERY WINDOW, NOT ONLY OVER THE ONES BEFORE IT (Forgejo #189): the
+        // card drew under the window beside its cell - the vicinity's cells, the
+        // bag window, the Inventory window's title. Being MainCanvas's last child
+        // is not enough: our windows lift themselves with SetAsLastSibling as they
+        // open and refresh, and the HUD's pieces can sort above MainCanvas. So the
+        // card is a canvas of its own at the tips' order, as KitTooltip is since
+        // Forgejo #183 (3: over the HUD, the dock and its fan (2), level with the
+        // reason tip and the cursor badge, under the split dialog (4)). Asserted
+        // while shown: Unity drops overrideSorting set on an inactive object.
+        private const int CardOrder = 3;
+        private static Canvas _sort;
+
+        private static void Raise()
+        {
+            if (_sort == null)
+            {
+                _sort = _window.Go.GetComponent<Canvas>();
+                if (_sort == null)
+                {
+                    _sort = _window.Go.AddComponent<Canvas>();
+                }
+            }
+            Transform parent = _window.Rect.parent;
+            Canvas under = parent != null ? parent.GetComponentInParent<Canvas>() : null;
+            int order = under != null ? Mathf.Max(CardOrder, under.sortingOrder + 1) : CardOrder;
+            if (!_sort.overrideSorting || _sort.sortingOrder != order
+                || (under != null && _sort.sortingLayerID != under.sortingLayerID))
+            {
+                _sort.overrideSorting = true;
+                _sort.sortingOrder = order;
+                if (under != null)
+                {
+                    _sort.sortingLayerID = under.sortingLayerID;
+                }
+            }
         }
 
         // vanilla convention: panel at the pointer; we copy its pivot so the card

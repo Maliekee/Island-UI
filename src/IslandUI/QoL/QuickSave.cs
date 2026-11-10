@@ -70,7 +70,7 @@ namespace IslandUI
             Plugin.Log.LogInfo($"Quick save to slot {slot}");
             HideBanner();
             _slot = slot;
-            Show(Shared.Loc.Get("quicksave.saving", "Saving..."), Theme.KitCream);
+            Show(Shared.Loc.Get("quicksave.saving", "Saving…"), Theme.KitCream);
             _fadeAt = -1f;
             mn.save.Save(slot);
         }

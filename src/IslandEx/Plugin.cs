@@ -9,15 +9,16 @@ namespace IslandEx
     // Island Extensions: the small things that are neither the UI nor how NPCs move.
     // The FX filter, hold-to-struggle, keep-fullscreen, no rain indoors
     // (DryIndoors), a further zoom (ZoomOut), broken tools that stay (KeepBroken)
-    // and crafting from chests (ChestCrafting). Each is its own section
-    // in the .cfg and its own page in the Island Ex menu (Island UI draws that menu,
+    // crafting from chests (ChestCrafting), a repair that lets go of the
+    // hammer pose (RepairEnds) and orders for Man and Yona (PartnerOrders).
+    // Each is its own section in the .cfg and its own page in the Island Ex menu (Island UI draws that menu,
     // reaching these settings through BepInEx, never through this assembly).
     [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
     public class Plugin : BaseUnityPlugin
     {
         public const string PluginGuid = "madisland.islandex";
         public const string PluginName = "Island Ex";
-        public const string PluginVersion = "0.2.2";
+        public const string PluginVersion = "0.2.3";
 
         internal static ManualLogSource Log;
         internal static ConfigEntry<bool> Enabled;
@@ -36,6 +37,8 @@ namespace IslandEx
             ZoomOut.Bind(Config);
             KeepBroken.Bind(Config);
             ChestCrafting.Bind(Config);
+            RepairEnds.Bind(Config);
+            PartnerOrders.Bind(Config);
 
             var harmony = new Harmony(PluginGuid);
             Shared.PatchCensus.ApplyAndReport(harmony, Assembly.GetExecutingAssembly(), Log);
@@ -68,6 +71,15 @@ namespace IslandEx
         public static string[] SeenEffects()
         {
             return FXFilter.SeenNewestFirst();
+        }
+
+        // Whether the player character you are not playing takes one kind of order:
+        // "job", "stance", "permissions" or "call" (PartnerOrders). Island UI finds
+        // it by name through the plugin instance; a build without it, or no Island
+        // Ex at all, reads as no.
+        public static bool PartnerTakes(string order)
+        {
+            return PartnerOrders.Allows(order);
         }
     }
 }

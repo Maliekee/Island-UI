@@ -260,6 +260,7 @@ namespace IslandUI
             SetShown(plate.VicHigher, false);
             SetShown(plate.VicNameBar, false);
             SetShown(plate.FreeBack, false);
+            HideFreeze(plate);
         }
 
         // ---------- the held order, shown ----------
@@ -396,7 +397,6 @@ namespace IslandUI
             cell.Vicinity = on;
             if (!on)
             {
-                SetShown(cell.CountBack, false);
                 return;
             }
             cell.Filled = filled;
@@ -405,7 +405,6 @@ namespace IslandUI
             {
                 cell.Box.color = new Color(1f, 1f, 1f, Facelift.SearchDim);
             }
-            SetShown(cell.CountBack, false);
         }
 
         // a pooled cell that wore the leather, its count put back as SizeCellParts
@@ -417,7 +416,6 @@ namespace IslandUI
                 return;
             }
             cell.Vicinity = false;
-            SetShown(cell.CountBack, false);
             if (cell.Rim != null && cell.Rim.gameObject.activeSelf)
             {
                 cell.Rim.gameObject.SetActive(false);
@@ -478,7 +476,8 @@ namespace IslandUI
             for (int i = 0; i < _reachPlatesUsed && i < ReachPlates.Count; i++)
             {
                 Plate p = ReachPlates[i];
-                if (!p.WasVicinity || p.Container == null || !p.Window.Go.activeInHierarchy)
+                // a frozen row's picture selects nothing (VicFreeze.cs)
+                if (!p.WasVicinity || p.Container == null || p.Frozen != 0 || !p.Window.Go.activeInHierarchy)
                 {
                     continue;
                 }
@@ -509,7 +508,9 @@ namespace IslandUI
             {
                 Plate pressed = _vicIdentityPressed;
                 _vicIdentityPressed = null;
-                if (pressed != null && ReferenceEquals(pressed, over) && over.Container != null)
+                // a pile on the ground is no one thing to select (GroundPiles)
+                if (pressed != null && ReferenceEquals(pressed, over) && over.Container != null
+                    && !GroundPiles.Is(over.Container))
                 {
                     CommonStates person = BagOwner(over.Container);
                     if (person != null)
@@ -528,8 +529,10 @@ namespace IslandUI
             {
                 return false;
             }
-            tip = "<b>" + ChestTitle(over.Container) + "</b>\n"
-                + Shared.Loc.Get("reach.identity.select", "Click to select.");
+            tip = GroundPiles.Is(over.Container)
+                ? "<b>" + ChestTitle(over.Container) + "</b>"
+                : "<b>" + ChestTitle(over.Container) + "</b>\n"
+                    + Shared.Loc.Get("reach.identity.select", "Click to select.");
             // the picture lifts under the pointer, a little
             Image picture = over.VicMount != null && over.VicMount.gameObject.activeSelf ? over.VicMount : over.Badge;
             _vicIdentityHot = picture;

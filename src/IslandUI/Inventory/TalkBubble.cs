@@ -355,12 +355,6 @@ namespace IslandUI
             {
                 _root.SetActive(false);
             }
-            // DISMISSED, FOCUS GOES BACK TO TALK, the way it came - shown as the dock's
-            // keyboard ring only when Escape closed it
-            if (talk && deliberate && _who != null && InventoryWindow.TalkHeld(_who))
-            {
-                InventoryWindow.FocusTalk(why == "escape");
-            }
             Plugin.Log.LogInfo((talk ? "Talk" : "List") + " bubble closed: " + why);
         }
 

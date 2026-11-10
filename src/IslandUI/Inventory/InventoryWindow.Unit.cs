@@ -120,7 +120,7 @@ namespace IslandUI
             _unitThing = null;
             // the sheet key: the same door as a click on the head (D107)
             KeyCode sheetKey = Settings.SheetKey.Value;
-            if (sheetKey != KeyCode.None && Input.GetKeyDown(sheetKey))
+            if (sheetKey != KeyCode.None && RawInput.GetKeyDown(sheetKey))
             {
                 ToggleSheet();
             }
@@ -566,14 +566,29 @@ namespace IslandUI
         // only there (NPCMenuOpen refuses anyone not Employed; CheckFriendlyNPC
         // lights the shops for a ShopInfo), so what it lit is read, doors only -
         // a trader's bag is its stock, and it stays shut (PocketsOpen).
+        // HELD FROM AFAR, TOO (Forgejo #215): Tab or a map pin holds a trader as
+        // ours and the click never ran, so the panel is asked the way the click
+        // would light it (TargetVerbs.ReadShop), the doors drawn out of reach until
+        // you walk up, and a press runs the click's own CheckFriendlyNPC first.
         private static void ReadShopDoors(CommonStates who)
         {
             UIManager ui = _mn.uiMN;
-            if (ui == null || ui.npcPanel == null || !ui.npcPanel.activeSelf || !ReferenceEquals(_mn.gameMN.menuNPC, who))
+            if (ui == null || ui.npcPanel == null)
             {
                 return;
             }
-            TargetVerbs.Read(_mn, who);
+            if (ui.npcPanel.activeSelf && ReferenceEquals(_mn.gameMN.menuNPC, who))
+            {
+                TargetVerbs.Read(_mn, who);
+            }
+            else if (Trader(who))
+            {
+                TargetVerbs.ReadShop(_mn, who);
+            }
+            else
+            {
+                return;
+            }
             IList<TargetVerbs.Verb> live = TargetVerbs.Current;
             bool near = InReach(who);
             int next = ActRow.ShapeSockets;
@@ -584,6 +599,91 @@ namespace IslandUI
                     _unitRow.Set(next++, UnitSlot(who, live[i], near));
                 }
             }
+        }
+
+        // Whom a click sends to CheckFriendlyNPC with a shop: InteractNPC's
+        // charaType 2, standing, and a ShopInfo on the mover
+        private static bool Trader(CommonStates who)
+        {
+            return who != null && who.charaType == 2 && who.life > 0.0 && who.nMove != null
+                && who.nMove.GetComponent<ShopInfo>() != null;
+        }
+
+        // A SHOP DOOR PRESSED IN REACH: the click's CheckFriendlyNPC first, unless
+        // its panel is already up for them, then the shop's own button pressed
+        // through. CheckFriendlyNPC opens the first shop by itself, before its first
+        // yield, so the button pressed after it is the shop that stays. While
+        // another interaction of the game's is unwinding, the press waits for it
+        // (LandShopDoor), as a body's does: its loop would close the new panel.
+        private static CommonStates _shopDoorFor;
+        private static string _shopDoorName;
+        private static float _shopDoorUntil;
+
+        private static void PressShopDoor(CommonStates who, string name)
+        {
+            GameManager game = _mn != null ? _mn.gameMN : null;
+            UIManager ui = _mn != null ? _mn.uiMN : null;
+            PlayerMove p = game != null ? game.pMove : null;
+            if (p == null || ui == null || ui.npcPanel == null || ui.npcPanelState == null || !InReach(who))
+            {
+                return;
+            }
+            if (!(ui.npcPanel.activeSelf && ReferenceEquals(game.menuNPC, who)))
+            {
+                if (game.nowAction)
+                {
+                    p.target = null;   // let the game's own loop go first
+                    _shopDoorFor = who;
+                    _shopDoorName = name;
+                    _shopDoorUntil = Time.unscaledTime + 1.5f;
+                    return;
+                }
+                GameObject hit = who.gameObject;
+                foreach (Collider c in who.GetComponentsInChildren<Collider>())
+                {
+                    if (c.gameObject.layer == 14 && c.transform.parent == who.transform)
+                    {
+                        hit = c.gameObject;
+                        break;
+                    }
+                }
+                p.target = hit;
+                p.StartCoroutine(p.CheckFriendlyNPC(who.nMove));
+            }
+            foreach (GameObject go in ui.npcPanelState)
+            {
+                if (go != null && go.activeSelf && go.name == name)
+                {
+                    Button button = go.GetComponent<Button>();
+                    if (button != null && button.interactable)
+                    {
+                        button.onClick.Invoke();
+                    }
+                    break;
+                }
+            }
+            _unitBoundAt = 0f;
+        }
+
+        // Tick: a shop door pressed while the game was busy, pressed once it is not
+        private static void LandShopDoor()
+        {
+            CommonStates who = _shopDoorFor;
+            if (who == null)
+            {
+                return;
+            }
+            if (Time.unscaledTime > _shopDoorUntil || _mn == null || _mn.gameMN == null)
+            {
+                _shopDoorFor = null;
+                return;
+            }
+            if (_mn.gameMN.nowAction)
+            {
+                return;
+            }
+            _shopDoorFor = null;
+            PressShopDoor(who, _shopDoorName);
         }
 
         private static void ReadUnitActs(CommonStates who)
@@ -1076,18 +1176,6 @@ namespace IslandUI
             return _unitRow != null && _unit != null && _unit.activeInHierarchy ? _unitRow.SocketRect("talk") : null;
         }
 
-        internal static void FocusTalk(bool keyboard)
-        {
-            RectTransform socket = TalkSocket();
-            var es = UnityEngine.EventSystems.EventSystem.current;
-            if (socket == null || es == null)
-            {
-                return;
-            }
-            es.SetSelectedGameObject(socket.gameObject);
-            if (keyboard) { AnimeCell.KeyboardFocus(); }
-        }
-
         private static int UnitShapeSlot(string name)
         {
             // a body's carry is the search panel's; leave (goodbye) is follow's other
@@ -1140,6 +1228,11 @@ namespace IslandUI
         {
             if (who == null || _mn == null || (!InReach(who) && !ReachFree(name)))
             {
+                return;
+            }
+            if (Trader(who) && System.Array.IndexOf(UnitDoors, name) >= 0)
+            {
+                PressShopDoor(who, name);
                 return;
             }
             TargetVerbs.ReadIncludingElsewhere(_mn, who);
@@ -1403,6 +1496,17 @@ namespace IslandUI
             {
                 tip = "<b>" + Shared.Loc.Get("unit.manage", "Manage") + "</b>\n"
                     + Shared.Loc.Get("unit.manage.tip", "Move or remove it");
+                // the game's Remove Mode (BuildManager.RemoveBuildButton: mode && Left
+                // Ctrl) told where Remove is offered: nothing else says it exists (GitHub #17)
+                for (int i = 0; i < ManageActs.Count; i++)
+                {
+                    if (ManageActs[i].Name == "RemoveButton")
+                    {
+                        tip += "\n" + Shared.Loc.Get("unit.manage.remove_mode",
+                            "Left Ctrl-click Remove: Remove Mode - remove anything you click, at any distance. Right-click ends it.");
+                        break;
+                    }
+                }
             }
             if (tip == null && onCard)
             {

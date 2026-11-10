@@ -64,18 +64,13 @@ namespace IslandUI
             {
                 return;
             }
-            // On the roster, the count slot says how many are FOLLOWING out
-            // of capacity, which is the number you act on - it decides whether you
-            // can take one more. The bare total it used to show is what the
-            // sections already add up to in front of you, and it cost the control
-            // row a whole line to say "Following n / m" as well. A live filter
-            // still wins the slot: while you are searching, what matched is the
-            // only thing the number can usefully be.
-            _filter.SetCount(_filter.Active
-                ? _nearbyMatched + "/" + _nearbyTotal
-                : (RosterView
-                    ? _rosterFollowers + "/" + _rosterCapacity
-                    : _nearbyTotal.ToString()));
+            // THE COUNT SPEAKS ONLY FOR THE FILTER, and the same way in every
+            // window that holds the field (crafting, the vicinity, the roster):
+            // empty while nothing is typed, "matches/all" while something is.
+            // The roster used to put the party's room here when the field was
+            // empty - a second meaning for a filter's number, and one the HUD's
+            // flag already shows (Forgejo #190).
+            _filter.SetCount(_filter.Active ? _nearbyMatched + "/" + _nearbyTotal : "");
         }
 
         private const float ReachWordW = 36f;   // "In reach" at the heading's size, plus a gap

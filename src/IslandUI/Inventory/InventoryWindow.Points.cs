@@ -34,7 +34,8 @@ namespace IslandUI
 
         private static bool AttributesToSpend(CommonStates who)
         {
-            if (who == null || who.statusPoint <= 0 || who.status == null || who.status.Length < StatNames.Length)
+            // a searched stranger's sheet reads their points but never spends them (GitHub #25)
+            if (who == null || SearchedStranger(who) || who.statusPoint <= 0 || who.status == null || who.status.Length < StatNames.Length)
             {
                 return false;
             }
@@ -64,8 +65,8 @@ namespace IslandUI
 
         // Every HUD tick, beside the chips, each only while its points buy something: on
         // the chip's top-right corner, the skill book's rightmost and attributes' to its
-        // left (the blue skill icon on the right, the yellow attribute icon on the left;
-        // one alone sits on the right).
+        // left (the jade skill tag with its spark on the right, the cerulean attribute
+        // tag with its arrow on the left, as on the sheet's tabs; one alone sits on the right).
         private static void TickDockPoints(HudEntry details)
         {
             if (details == null || details.Face == null)
@@ -82,8 +83,9 @@ namespace IslandUI
             CommonStates you = You();
             bool skills = SkillsToSpend(out int sp);
             bool attributes = AttributesToSpend(you);
-            if (skills) { _dockSkills.Show(PointsTag.Kind.Skill, sp.ToString(), PointsTag.DockPill); } else { _dockSkills.Hide(); }
-            if (attributes) { _dockAttributes.Show(PointsTag.Kind.Attribute, you.statusPoint.ToString(), PointsTag.DockPill); } else { _dockAttributes.Hide(); }
+            float th = PointsTag.OnScreen(dock);
+            if (skills) { _dockSkills.Show(PointsTag.Kind.Skill, sp.ToString(), th); } else { _dockSkills.Hide(); }
+            if (attributes) { _dockAttributes.Show(PointsTag.Kind.Attribute, you.statusPoint.ToString(), th); } else { _dockAttributes.Hide(); }
             if (!skills && !attributes)
             {
                 return;
@@ -91,14 +93,15 @@ namespace IslandUI
             const float gap = 1f;
             var face = details.Face.rectTransform;
             float corner = face.anchoredPosition.x + face.sizeDelta.x - 1f;
-            float y = -face.anchoredPosition.y - PointsTag.DockPill * 0.5f;
+            // riding with the chip's face as it lifts open or sinks pressed
+            float y = -face.anchoredPosition.y - th * 0.5f + (details.Cell != null ? details.Cell.FaceDy : 0f);
             // the rightmost tag is centred on the corner, the other laid to its left
             PointsTag last = skills ? _dockSkills : _dockAttributes;
             float x = corner - last.Width * 0.5f;
-            Theme.Place(last.Rect, x, y, last.Width, PointsTag.DockPill);
+            Theme.Place(last.Rect, x, y, last.Width, th);
             if (skills && attributes)
             {
-                Theme.Place(_dockAttributes.Rect, x - gap - _dockAttributes.Width, y, _dockAttributes.Width, PointsTag.DockPill);
+                Theme.Place(_dockAttributes.Rect, x - gap - _dockAttributes.Width, y, _dockAttributes.Width, th);
             }
             // a level-up bumps the tag it paid into (InventoryWindow.LevelUp.cs)
             if (skills) { ScaleFromMiddle(_dockSkills.Rect, PopScale(SkillBurst, .45f)); }

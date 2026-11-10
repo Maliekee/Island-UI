@@ -137,8 +137,6 @@ namespace IslandUI
         }
 
         private static readonly List<RosterEntry> Roster = new List<RosterEntry>();
-        private static int _rosterFollowers;
-        private static int _rosterCapacity;
 
         // THE ONE YOU ARE NOT PLAYING: vanilla's friend list never shows the
         // Yona and Man main characters; here the one not being played shows up.
@@ -147,9 +145,11 @@ namespace IslandUI
         // That list is saved, and jobs, housing and raids walk it, so they are
         // added where we draw - the roster and the vicinity's bags - and never to
         // the game's list. Present only when a switch to them would be allowed
-        // (GameManager.ChangePlayer: there, and dead == 0). They take jobs like
-        // anyone, so they sort with everyone; capacity is vanilla's and ignores
-        // them, as vanilla does.
+        // (GameManager.ChangePlayer: there, and dead == 0). They sort with
+        // everyone, but their Orders are only what vanilla gives them - stance,
+        // job, permissions and Call greyed out (IsPlayerCharacter, GitHub #24,
+        // Forgejo #239) unless Island Ex allows them (PartnerSwitches); capacity
+        // is vanilla's and ignores them, as vanilla does.
         internal static CommonStates Partner(ManagersScript mn)
         {
             CommonStates[] players = mn != null && mn.gameMN != null ? mn.gameMN.playerCommons : null;
@@ -186,17 +186,11 @@ namespace IslandUI
         private static void CollectRoster()
         {
             Roster.Clear();
-            _rosterFollowers = 0;
-            _rosterCapacity = 0;
             NPCManager npcs = _mn != null ? _mn.npcMN : null;
             if (npcs == null || npcs.friendList == null)
             {
                 return;
             }
-            _rosterFollowers = npcs.follower != null ? npcs.follower.Count : npcs.followerCount;
-            _rosterCapacity = npcs.baseFollowerCapa
-                + (_mn.skillMN != null && _mn.skillMN.skills != null && _mn.skillMN.skills.Length > 10
-                    ? _mn.skillMN.skills[10] : 0);
             Vector3 here = _mn.gameMN != null && _mn.gameMN.pMove != null
                 ? _mn.gameMN.pMove.transform.position : Vector3.zero;
             List<CommonStates> people = People(npcs);
@@ -562,12 +556,12 @@ namespace IslandUI
             row.Ring.preserveAspect = true;
             row.Ring.gameObject.SetActive(false);
             row.Sub = Theme.MakeKitText(row.Go.transform, "Where", RosterSmall, Theme.InkDim,
-                TextAlignmentOptions.MidlineLeft);
+                Theme.Words(TextAlignmentOptions.MidlineLeft));
             row.Sub.enableWordWrapping = false;
             row.Sub.overflowMode = TextOverflowModes.Overflow;
             row.Sub.gameObject.SetActive(false);
             row.Note = Theme.MakeKitText(row.Go.transform, "Cause", RosterSmall, MoralBad,
-                TextAlignmentOptions.MidlineLeft);
+                Theme.Words(TextAlignmentOptions.MidlineLeft));
             row.Note.enableWordWrapping = false;
             row.Note.overflowMode = TextOverflowModes.Overflow;
             row.Note.gameObject.SetActive(false);
@@ -943,7 +937,19 @@ namespace IslandUI
         // the sort in force does not crowd it
         private static float RosterPlankWord(SheetRow row, SheetLine line, int i)
         {
-            return Mathf.Ceil(row.PlankTexts[i].GetPreferredValues(line.Options[i]).x * 1.08f) + 8f;
+            // measured shown and in the face it is drawn in: on the cork that is
+            // the marker, which the shed only paints on after this layout, and a
+            // plank is only shown by the paint after it too. Measured hidden and in
+            // the game's font, "Send everyone home" got a plank a fifth of its
+            // width and spilled off the board until a later layout caught up
+            TextMeshProUGUI word = row.PlankTexts[i];
+            SetShown(row.Planks[i], true);
+            TMP_FontAsset marker = CorkRows ? ToolShed.MarkerFont : null;
+            if (marker != null && word.font != marker)
+            {
+                word.font = marker;
+            }
+            return Mathf.Ceil(word.GetPreferredValues(line.Options[i]).x * 1.08f) + 8f;
         }
 
         private static void PaintRosterBar(SheetRow row, SheetLine line)
@@ -1262,12 +1268,14 @@ namespace IslandUI
             }
             SheetRow row = TakeRosterRow(plate, line);
             Theme.Place(row.Go.transform, 0f, 0f, width, RosterBarH);
-            LayoutRosterBar(row, line, width, RosterBarH);
-            PaintSheetRow(row, line);
+            // shown before the layout: it measures the planks' words, and a hidden
+            // text measures next to nothing
             if (!row.Go.activeSelf)
             {
                 row.Go.SetActive(true);
             }
+            LayoutRosterBar(row, line, width, RosterBarH);
+            PaintSheetRow(row, line);
             _lastGroupBound = GroupReach;
             SheetPlates.Add(plate);
         }

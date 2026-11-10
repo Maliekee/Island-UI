@@ -487,6 +487,8 @@ namespace IslandUI
                 foreach (var fill in new[] { _animeEnemyHpFill, _animeEnemyStunFill })
                 { fill.type = Image.Type.Filled; fill.fillMethod = Image.FillMethod.Horizontal; fill.fillOrigin = 0; }
                 _animeEnemyName = PlayerVitalText(r, "Name", 8.5f, true);
+                // a long name shrinks before it is cut (FitPlaqueTop)
+                _animeEnemyName.enableAutoSizing = true; _animeEnemyName.fontSizeMin = 6.4f; _animeEnemyName.fontSizeMax = 8.5f;
                 AnimePieces.Place(_animeEnemyName, 200, 66, 250, 46, k);
                 _animeEnemyMeta = PlayerVitalText(r, "Details", 5.8f, false, TextAlignmentOptions.MidlineRight);
                 AnimePieces.Place(_animeEnemyMeta, 400, 66, 160, 46, k);
@@ -553,6 +555,7 @@ namespace IslandUI
                     meta = (meta + "  " + persons[person]).Trim();
                 }
                 _animeEnemyMeta.text = meta;
+                FitPlaqueTop();
                 _animeEnemyLevel.text = Observe.Sees(who, Observe.Level) ? who.level.ToString("0") : Observe.UnknownShort;
             }
             if (who.life != _plaqueLife || who.maxLife != _plaqueMaxLife)
@@ -656,13 +659,40 @@ namespace IslandUI
             AnimePieces.Place(_animeEnemyHpFill, 249, 124, 310 + x, 32, k);
             _animeEnemyStunFill.sprite = AnimePieces.Get(boss ? "combat_faint_fill_boss" : "combat_faint_fill");
             AnimePieces.Place(_animeEnemyStunFill, 258, 175, 300 + x, 30, k);
-            AnimePieces.Place(_animeEnemyName, 200, 66, 250 + x, 46, k);
-            AnimePieces.Place(_animeEnemyMeta, 400 + x, 66, 160, 46, k);
+            FitPlaqueTop();
             AnimePieces.Place(_animeEnemyLife, 262, 120, 286 + x, 40, k);
             AnimePieces.Place(_animeEnemyFaint, 272, 172, 276 + x, 34, k);
             _animeEnemyBossWord.enabled = boss && _plaqueSlain <= 0;
             _plaqueMore = -1;   // its plate moves out with the bars' end
         }
+        // THE TOP LINE IS ONE LINE (GitHub #23): the name, then the age and the
+        // personality at the right. As two boxes of fixed width (the name 250
+        // from x 200, the details 160 ending at 560) they overlapped by 50, so
+        // "Female Native" ran under "Age 29" and Shameless was cut to "Sham...".
+        // Now the details take what they need, the name the rest less a gap -
+        // and the name gives way first: it shrinks (its autosize) and only then
+        // is cut. The details are cut only past PlaqueNameRoom, which no
+        // personality reaches. The boss's plate is the same line, longer.
+        private const float PlaqueTopLeft = 200f, PlaqueTopRight = 560f, PlaqueTopGap = 12f, PlaqueNameRoom = 110f;
+
+        private static void FitPlaqueTop()
+        {
+            if (_animeEnemyName == null || _animeEnemyMeta == null) { return; }
+            const float k = CombatScale;
+            float right = PlaqueTopRight + _plaqueExtra, room = right - PlaqueTopLeft;
+            string meta = _animeEnemyMeta.text;
+            float metaW = 0f;
+            if (!string.IsNullOrEmpty(meta))
+            {
+                // the text's own width, in the plate's pixels
+                metaW = _animeEnemyMeta.GetPreferredValues(meta).x * AnimePieces.Px / k + 2f;
+                metaW = Mathf.Min(metaW, room - PlaqueNameRoom - PlaqueTopGap);
+            }
+            float nameW = room - (metaW > 0f ? metaW + PlaqueTopGap : 0f);
+            AnimePieces.Place(_animeEnemyName, PlaqueTopLeft, 66, nameW, 46, k);
+            AnimePieces.Place(_animeEnemyMeta, right - metaW, 66, metaW, 46, k);
+        }
+
         private static TextMeshProUGUI _animeEnemyMoreText;
         private static CommonStates _plaqueWho;
         private static double _plaqueLife, _plaqueMaxLife, _plaqueFaint, _plaqueMaxFaint;

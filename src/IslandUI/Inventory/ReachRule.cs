@@ -6,7 +6,8 @@ namespace IslandUI
     // surface that asks "can I handle this from here" asks it here - the vicinity
     // window, quick-stack, bench-less crafting, the recipes of benches and
     // crafters nearby, a person's unit and bag, the roster's "In reach", an item
-    // dropped on someone - so no two of them can disagree about the same chest.
+    // dropped on someone or on a chest - so no two of them can disagree about the
+    // same chest.
     //
     // The numbers are the game's own, not ours:
     //   5 m  a bench links your special crafting storages (Type.Material)

@@ -48,6 +48,7 @@ namespace IslandUI
         private const int CodeCombat = 3000;   // + the order type
 
         private const int StyleDropFacing = 1;  // a dropdown with the facing arrows beside it
+        private const int StyleSegGhostDrop = 2; // a refused segments row of one part, drawn as a dropdown's ghost
 
         private const float FormStandH = 34f;
         private const float StandTileS = 22f;       // the dock's Follow tile, as wide as a dock's
@@ -66,6 +67,11 @@ namespace IslandUI
 
         private static readonly Color PermTileFaint = Theme.ParseColor("#BEB4A0", Theme.DossierSoft);   // an off tile's rim and icon
         private static readonly Color PermTilePaper = Theme.ParseColor("#F5EDD9", Color.white);         // the paper a lit tile's wash is mixed into
+        // REFUSED (the partner's Follow, and every order the game does not give Man
+        // and Yona): fainter than an off tile, so it never reads as "off" - the rim
+        // and glyph at RefusedRim, the word struck through in RefusedWord
+        private static readonly Color RefusedRim = new Color(PermTileFaint.r, PermTileFaint.g, PermTileFaint.b, 0.45f);
+        private static readonly Color RefusedWord = new Color(Theme.DossierSoft.r, Theme.DossierSoft.g, Theme.DossierSoft.b, 0.6f);
         private static readonly Color SegWalnut = Theme.ParseColor("#583C28", Theme.DossierInk);
         // the world circles' colours, deepened to hold on paper, and both solid as
         // the rings on the ground are: the territory cyan, the chase range red
@@ -110,6 +116,9 @@ namespace IslandUI
                     case LineDropdown when line.Arg == 0:
                         lines.Add(CombatSegments(line));
                         break;
+                    case LineDropdown when line.Refused:
+                        lines.Add(RefusedField(line));   // the job, for Man and Yona
+                        break;
                     case LineDropdown when line.Arg == DropPose:
                         if (next.Kind == LineActions && next.Arg == ActionsRot)
                         {
@@ -147,7 +156,7 @@ namespace IslandUI
                     }
                     case LineActions:
                         // Call · Banish: the one act on the sheet that cannot be taken back
-                        if (line.Arg == 0 && line.Options != null && line.Options.Length > 1)
+                        if (line.Arg == 0 && !line.Refused && line.Options != null && line.Options.Length > 1)
                         {
                             line.Danger = 2;
                         }
@@ -186,10 +195,33 @@ namespace IslandUI
                 args[i] = CodeCombat + i;
                 tips[i] = i < CombatTips.Length ? CombatTips[i] : null;
             }
+            if (drop.Refused)
+            {
+                // none in force: a refused row must not read as a live setting
+                for (int i = 0; i < n; i++) { tips[i] = drop.Tip; }
+                return new SheetLine
+                {
+                    Kind = LineSegments, Label = drop.Label, Refused = true, Options = drop.Options, Index = -1,
+                    Args = args, Tips = tips,
+                };
+            }
             return new SheetLine
             {
                 Kind = LineSegments, Label = drop.Label, Enabled = true, Options = drop.Options, Index = drop.Index,
                 Args = args, Tips = tips,
+            };
+        }
+
+        // A DROPDOWN THE GAME DOES NOT GIVE THEM (the job, for Man and Yona): the
+        // kit's field is a live control, so the form prints a ghost of it in the
+        // same place and height instead - a segments row of one empty part, its
+        // chevron faint, saying nothing about what is set.
+        private static SheetLine RefusedField(SheetLine drop)
+        {
+            return new SheetLine
+            {
+                Kind = LineSegments, Label = drop.Label, Refused = true, Options = new[] { string.Empty }, Index = -1,
+                Args = new[] { 0 }, Tips = new[] { drop.Tip }, Style = StyleSegGhostDrop,
             };
         }
 
@@ -199,18 +231,20 @@ namespace IslandUI
         private static SheetLine StandBlock(CommonStates who, SheetLine follow, SheetLine acts)
         {
             bool following = follow.On;
+            bool canFollow = follow.Enabled;   // false for Man and Yona (WriteStanding)
             string[] words = acts.Options != null && acts.Options.Length > 1 ? acts.Options : new[] { Shared.Loc.Get("orders.set_place", "Set place"), Shared.Loc.Get("orders.warp_to_place", "Warp to place") };
             NPCMove move = who != null ? who.nMove : null;
             return new SheetLine
             {
                 Kind = LineStand, Enabled = true, On = following,
+                Cans = new[] { canFollow },
                 Options = new[] { Shared.Loc.Get("unit.act.follow", "Follow"), words[0], words[1] },
                 Value2 = Shared.Loc.Get("orders.set_place.line", "click the ground to move it"),
                 Fracs = new[] { move != null ? move.territoryRad : 0f, move != null ? move.chaseDist : 0f },
                 Args = new[] { ToggleFollow, CodeSetPlace, CodeWarp },
                 Tips = new[]
                 {
-                    (following ? TipFollowingOn : TipFollowingOff) + "\n" + TipFollowing,
+                    !canFollow ? follow.Tip : (following ? TipFollowingOn : TipFollowingOff) + "\n" + TipFollowing,
                     following ? TipStanding[0] + "\n" + TipPlaceWhileFollowing : TipStanding[0],
                     TipStanding[1],
                 },
@@ -220,9 +254,10 @@ namespace IslandUI
         private static SheetLine PermissionTiles(List<SheetLine> options)
         {
             int n = options.Count;
+            bool refused = n > 0 && options[0].Refused;
             var line = new SheetLine
             {
-                Kind = LineTiles, Enabled = true,
+                Kind = LineTiles, Enabled = !refused, Refused = refused,
                 Options = new string[n], Cans = new bool[n], Args = new int[n], Tips = new string[n],
             };
             for (int i = 0; i < n; i++)
@@ -230,9 +265,10 @@ namespace IslandUI
                 int id = options[i].Arg;
                 bool on = options[i].On;
                 line.Options[i] = PermissionWord(id, options[i].Label);
-                line.Cans[i] = on;
+                line.Cans[i] = on && !refused;
                 line.Args[i] = CheckOption + id;
-                string state = PermissionState(id, on);
+                // refused: no state, only why - the flag is not theirs to have
+                string state = refused ? null : PermissionState(id, on);
                 line.Tips[i] = (state != null ? "<b>" + state + "</b>\n" : string.Empty) + options[i].Tip;
             }
             return line;
@@ -313,6 +349,11 @@ namespace IslandUI
             float y = FormCaptionH;
             float sh = KitDropdown.Height;
             float cw = (right - left) / n;
+            if (line.Refused)
+            {
+                DrawRefusedSegments(row, line, n, left, y, right - left, sh);
+                return n;
+            }
             FormImage(row, "kit_dossier_field", 6, Color.white, left, y, right - left, sh);
             for (int i = 0; i < n; i++)
             {
@@ -354,8 +395,9 @@ namespace IslandUI
             float left = SheetPadX;
             float right = w - SheetPadX;
             bool following = line.On;
+            bool canFollow = line.Cans == null || line.Cans.Length == 0 || line.Cans[0];
             float tx = left + PermTileInset;
-            DrawFollowTile(row, 0, following, line.Options[0], tx, 2f);
+            DrawFollowTile(row, 0, following, line.Options[0], tx, 2f, canFollow);
             FormTip(row, line.Tips, 0, left, 0f, StandPlaceX - 2f, h);
             float wx = right - StandWarpW;
             float bx = left + StandPlaceX;
@@ -378,11 +420,25 @@ namespace IslandUI
         // line glyph - lit on a green wash with an ink rim and the dock's check
         // while they follow, faint on the paper when not. The dock's painted
         // wooden tile was tried here, and read too dark and brown on the paper.
-        private static void DrawFollowTile(SheetRow row, int k, bool on, string word, float x, float y)
+        //
+        // CAN'T FOLLOW (Man and Yona, GitHub #24) must not read as "not following",
+        // which is already the faint tile: the rim and glyph fade further, the word
+        // is struck through, and there is no hover, no press - only the tip.
+        private static void DrawFollowTile(SheetRow row, int k, bool on, string word, float x, float y, bool can = true)
         {
+            float s = StandTileS;
+            if (!can)
+            {
+                FormImage(row, "kit_dossier_button", 12, RefusedRim, x, y, s, s);
+                float gi = s * 0.62f;
+                FormSprite(row, HudGlyphs.Get("follow"), RefusedRim, x + (s - gi) * 0.5f, y + (s - gi) * 0.5f, gi, gi);
+                FormText(row, Struck(word), FieldLabelSize, RefusedWord,
+                    TextAlignmentOptions.Center, false, x - 2f * PermTileInset, y + s + 0.5f, s + 4f * PermTileInset, 8f);
+                FormNoHit(row, k);   // the row may be reused from someone who could
+                return;
+            }
             bool down = Down(row, k);
             bool hot = Hot(row, k);
-            float s = StandTileS;
             float dy = down ? 0.4f : 0f;
             if (on)
             {
@@ -491,6 +547,13 @@ namespace IslandUI
             {
                 int code = line.Args != null && i < line.Args.Length ? line.Args[i] : 0;
                 bool on = line.Cans != null && i < line.Cans.Length && line.Cans[i];
+                if (line.Refused)
+                {
+                    DrawRefusedTile(row, i, code, line.Options[i], x, 2f, PermTileS);
+                    FormTip(row, line.Tips, i, x - 4f, 0f, PermTileS + 8f, h);
+                    x += PermTileS + PermTileGap;
+                    continue;
+                }
                 DrawToggleTile(row, i, code, on, line.Options[i], x, 2f, PermTileS,
                     code == CheckOption + 9 && Pulsing(PulseSex));
                 FormTip(row, line.Tips, i, x - 4f, 0f, PermTileS + 8f, h);
@@ -547,20 +610,73 @@ namespace IslandUI
         // libido flame (hollow and grey when off)
         private static void DrawTileIcon(SheetRow row, int code, bool on, float x, float y, float s)
         {
+            DrawTileIcon(row, code, on, x, y, s, PermTileFaint);
+        }
+
+        // `off`: what an unlit icon wears - the faint ink, or RefusedRim on a refused tile
+        private static void DrawTileIcon(SheetRow row, int code, bool on, float x, float y, float s, Color off)
+        {
             switch (code)
             {
                 case CheckOption + 7:
-                    FormSprite(row, HudGlyphs.Get("home"), on ? PlaceHouseTint : PermTileFaint, x, y, s, s);
+                    FormSprite(row, HudGlyphs.Get("home"), on ? PlaceHouseTint : off, x, y, s, s);
                     break;
                 case CheckOption + 8:
-                    FormImage(row, on ? "kit_heart" : "kit_heart_hollow", 0, on ? LoveWidget.Pink : PermTileFaint, x, y, s, s);
+                    FormImage(row, on ? "kit_heart" : "kit_heart_hollow", 0, on ? LoveWidget.Pink : off, x, y, s, s);
                     break;
                 case CheckOption + 9:
-                    FormImage(row, on ? "kit_flame_pink" : "kit_flame", 0, on ? Color.white : PermTileFaint, x, y, s, s);
+                    FormImage(row, on ? "kit_flame_pink" : "kit_flame", 0, on ? Color.white : off, x, y, s, s);
                     break;
                 default:
-                    FormImage(row, "kit_flame", 0, on ? Theme.DossierRed : PermTileFaint, x, y, s, s);
+                    FormImage(row, "kit_flame", 0, on ? Theme.DossierRed : off, x, y, s, s);
                     break;
+            }
+        }
+
+        // ---------- refused: what the game does not give them (Forgejo #239) ----------
+
+        // the word as a refused control prints it
+        private static string Struck(string word)
+        {
+            return string.IsNullOrEmpty(word) ? string.Empty : "<s>" + word + "</s>";
+        }
+
+        // A PERMISSION THE GAME DOES NOT GIVE THEM: the tile's rim and its unlit
+        // icon at RefusedRim, and no "off" stroke across it - it is neither on nor
+        // off - the word struck through; no hover and no press, only the tip
+        private static void DrawRefusedTile(SheetRow row, int k, int code, string word, float x, float y, float s)
+        {
+            FormImage(row, "kit_dossier_button", 12, RefusedRim, x, y, s, s);
+            float ic = s * 0.58f;
+            DrawTileIcon(row, code, false, x + (s - ic) * 0.5f, y + (s - ic) * 0.5f, ic, RefusedRim);
+            FormText(row, Struck(word), FormTextSize, RefusedWord,
+                TextAlignmentOptions.Center, false, x - 2f * PermTileInset, y + s + 0.5f, s + 4f * PermTileInset, 8.5f);
+            FormNoHit(row, k);
+        }
+
+        // A ROW OF CHOICES THE GAME DOES NOT GIVE THEM: the field faint, none in
+        // force, every word struck; the job's single empty part wears the
+        // dropdown's chevron, faint, so it reads as the same field as anyone's
+        private static void DrawRefusedSegments(SheetRow row, SheetLine line, int n, float left, float y, float fw, float sh)
+        {
+            FormImage(row, "kit_dossier_field", 6, Alpha(Color.white, 0.45f), left, y, fw, sh);
+            float cw = fw / n;
+            for (int i = 0; i < n; i++)
+            {
+                float x = left + i * cw;
+                if (i > 0)
+                {
+                    FormImage(row, null, 0, RefusedRim, x - 0.25f, y + 4f, 0.5f, sh - 8f);
+                }
+                FormText(row, Struck(line.Options[i]), FormTextSize, RefusedWord,
+                    TextAlignmentOptions.Center, false, x + 1f, y, cw - 2f, sh, fit: true);
+                FormNoHit(row, i);
+                FormTip(row, line.Tips, i, x, y, cw, sh);
+            }
+            if (line.Style == StyleSegGhostDrop)
+            {
+                const float chw = 7.5f, chh = 5f;   // KitDropdown's chevron
+                FormImage(row, "kit_chevron", 0, RefusedRim, left + fw - 6f - chw, y + (sh - chh) * 0.5f, chw, chh);
             }
         }
 

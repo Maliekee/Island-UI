@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.9.5
+
+The fixes for your reports, and a few things you asked for.
+
+- **Loose items on the ground** show up in the vicinity, one row per pile. The Bodies filter is now **On the ground**: loose items, and the pockets of the downed and the dead, within reach. It has its own icon, and the filter for your people's bags shows a portrait.
+- **The vicinity list holds still** while your pointer is on it, so a row no longer moves just before you click it.
+- **New items are marked.** What came into your bags while the inventory was closed gets a blue rim.
+- **Drag items onto chests and storage** in the world, like onto people. When there's no room, it says so.
+- **Right-clicking an item in someone's bag** moves it to yours again. A worn item goes to your bag when the Shared Bag is full.
+- **The split dialog** shows that you can type the amount.
+- **Island UI's own hotkeys** stay put when you move the game's Backpack key.
+- **Crafting tables from other mods**, like the seed table, open their crafting menu again.
+- **The trader's shops** open from the dock as soon as she is your target, without walking to her first.
+- **Man's and Yona's Orders sheet** keeps its height, and the orders they can't take are greyed out. It offers only what the game lets them do.
+- **Someone knocked out on the ground** shows their personality, likes and dislikes.
+- **The combat panel:** a long name no longer runs into the age, and the personality is no longer cut off.
+- **A targeted well or food box** shows its area circle.
+- **In a boss fight** both rows of the dock stay, and the Map button is greyed while the map can't open.
+- **The item card** is drawn over every window, not under the one beside it.
+- **The roster's count** shows your party's room the way the game counts it.
+- **The title screen tells you** when Island UI hasn't been tested on your version of the game.
+- Many small fixes to the look: badges, spacing, and text that didn't fit.
+
+### Island Ex 0.2.3
+
+- **Man and Yona take orders**, off by default, on the new Orders page. Turn it on, and each of job, combat stance, permissions and calling them has a switch of its own. Their orders now survive saving and loading.
+- **Repairing a building** no longer leaves you in the hammer pose.
+
 ## 0.9.4
 
 The fixes for your reports.

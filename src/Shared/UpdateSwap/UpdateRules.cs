@@ -262,7 +262,7 @@ namespace Shared
                 line = Regex.Replace(line, @"\[([^\]]*)\]\([^)]*\)", "$1").Replace("**", "").Replace("`", "");
                 if (used + line.Length > maxChars)
                 {
-                    blocks.Add(new Block { Text = "..." });
+                    blocks.Add(new Block { Text = "…" });
                     break;
                 }
                 used += line.Length;

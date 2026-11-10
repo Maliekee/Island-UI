@@ -119,20 +119,22 @@ namespace IslandUI
             Transform dock = roster.Face.transform.parent;
             if (_rosterMoodTag == null || _rosterMoodTag.Rect == null)
             {
-                _rosterMoodTag = PointsTag.Create(dock, Shared.Loc.Get("roster.mood.unhappy", "Unhappy"), true);
+                // the sheet's tag, as every points tag on a dock wears: ruby, the bang
+                _rosterMoodTag = PointsTag.Create(dock, Shared.Loc.Get("roster.mood.unhappy", "Unhappy"));
             }
             if (_unhappy == 0)
             {
                 _rosterMoodTag.Hide();
                 return;
             }
-            _rosterMoodTag.Show(PointsTag.Kind.Mood, _unhappy.ToString(), PointsTag.PanelPill);
+            _rosterMoodTag.Show(PointsTag.Kind.Mood, _unhappy.ToString(), PointsTag.OnScreen(dock));
             var face = roster.Face.rectTransform;
-            // the board's "35": over the roster tile's top-right corner, a little in
-            // from it and hanging below the edge more than above it
-            float corner = face.anchoredPosition.x + face.sizeDelta.x - 2.5f;
+            // centred on the tile's top-right corner, as the right dock's points tags
+            float corner = face.anchoredPosition.x + face.sizeDelta.x - 1f;
             float h = _rosterMoodTag.H;
-            float y = -face.anchoredPosition.y - h * 0.5f + 1.5f;
+            // riding with the chip's face as it lifts open or sinks pressed, as the
+            // right dock's points tags do
+            float y = -face.anchoredPosition.y - h * 0.5f + (roster.Cell != null ? roster.Cell.FaceDy : 0f);
             Theme.Place(_rosterMoodTag.Rect, corner - _rosterMoodTag.Width * 0.5f, y, _rosterMoodTag.Width, h);
         }
 
@@ -300,7 +302,7 @@ namespace IslandUI
                 switch (f.Key)
                 {
                     case "sleep":
-                        if (who.sexInfo != null && who.sexInfo.Length > 7 && who.sexInfo[7] != 0)
+                        if (PartnerSwitches.Allows(who, PartnerSwitches.Permissions) && who.sexInfo != null && who.sexInfo.Length > 7 && who.sexInfo[7] != 0)
                         {
                             Add(Shared.Loc.Get("mood.fix.houses", "Allow houses"), Shared.Loc.Get("mood.fix.houses.help", "Let them go in and out of houses, and home to sleep"),
                                 () => { who.sexInfo[7] = 0; MoodChanged(); });
@@ -316,7 +318,7 @@ namespace IslandUI
                             CommonStates other = f.Other;
                             Add(Short(other.charaName), Shared.Loc.Get("mood.fix.open", "Open {0}", other.charaName), () => PressRosterRow(other));
                         }
-                        if (who.sexInfo != null && who.sexInfo.Length > 8 && who.sexInfo[8] == 0)
+                        if (PartnerSwitches.Allows(who, PartnerSwitches.Permissions) && who.sexInfo != null && who.sexInfo.Length > 8 && who.sexInfo[8] == 0)
                         {
                             Add(Shared.Loc.Get("mood.fix.love_off", "Love off"), Shared.Loc.Get("mood.fix.love_off.short", "Stop them building love - and grudges - with their neighbours"),
                                 () => { who.sexInfo[8] = 1; MoodChanged(); });
@@ -757,7 +759,7 @@ namespace IslandUI
             switch (f.Key)
             {
                 case "sleep":
-                    if (who.sexInfo[7] != 0)
+                    if (PartnerSwitches.Allows(who, PartnerSwitches.Permissions) && who.sexInfo[7] != 0)
                     {
                         Add(Shared.Loc.Get("mood.fix.houses", "Allow houses"), Shared.Loc.Get("mood.fix.houses.help", "Let them go in and out of houses, and home to sleep"),
                             () => { who.sexInfo[7] = 0; MoodChanged(); });
@@ -769,13 +771,13 @@ namespace IslandUI
                     }
                     break;
                 case "company":
-                    if (who.sexInfo[8] == 0)
+                    if (PartnerSwitches.Allows(who, PartnerSwitches.Permissions) && who.sexInfo[8] == 0)
                     {
                         Add(Shared.Loc.Get("mood.fix.love_off", "Love off"), Shared.Loc.Get("mood.fix.love_off.help", "Stop them building love - and grudges - with their neighbours. Their love for you stops growing too."),
                             () => { who.sexInfo[8] = 1; MoodChanged(); });
                     }
                     // the game skips a pair when either has Love off, so theirs does it too
-                    if (other != null && other.sexInfo != null && other.sexInfo.Length > 8 && other.sexInfo[8] == 0
+                    if (other != null && PartnerSwitches.Allows(other, PartnerSwitches.Permissions) && other.sexInfo != null && other.sexInfo.Length > 8 && other.sexInfo[8] == 0
                         && _mn != null && _mn.npcMN != null && _mn.npcMN.IsActiveFriend(other))
                     {
                         Add(Shared.Loc.Get("mood.fix.love_off_other", "Love off: {0}", Short(other.charaName)), Shared.Loc.Get("mood.fix.love_off_other.help", "Stop {0} building love - and grudges - with their neighbours. Their love for you stops growing too.", other.charaName),
@@ -787,7 +789,7 @@ namespace IslandUI
                 case "crush":
                     Add(Shared.Loc.Get("mood.fix.orders", "Orders"), other != null ? Shared.Loc.Get("mood.fix.orders.with", "Their area and house: put them in one with {0}", other.charaName)
                         : Shared.Loc.Get("mood.fix.orders.with_them", "Their area and house: put them in one with them"), () => OpenOrders());
-                    if (who.sexInfo[9] == 0)
+                    if (PartnerSwitches.Allows(who, PartnerSwitches.Permissions) && who.sexInfo[9] == 0)
                     {
                         Add(Shared.Loc.Get("mood.fix.sex_off", "Sex off"), Shared.Loc.Get("mood.fix.sex_off.help", "They stop asking, so no one turns them down - and no sex, so none of its +3 mood either"),
                             () => { who.sexInfo[9] = 1; MoodChanged(); });

@@ -44,8 +44,9 @@ namespace IslandUI
             }
             LandTabOpen();
             LandBodyAct();
+            LandShopDoor();
             KeyCode key = Settings.TargetKey.Value;
-            if (key == KeyCode.None || !Input.GetKeyDown(key) || !TabArmed(mn))
+            if (key == KeyCode.None || !RawInput.GetKeyDown(key) || !TabArmed(mn))
             {
                 return;
             }
@@ -101,7 +102,7 @@ namespace IslandUI
         internal static bool TabTakesTheKey()
         {
             KeyCode key = Settings.TargetKey.Value;
-            return key != KeyCode.None && Input.GetKeyDown(key) && _mn != null && TabArmed(_mn);
+            return key != KeyCode.None && RawInput.GetKeyDown(key) && _mn != null && TabArmed(_mn);
         }
 
         private static void TabTarget(Camera cam, Vector2 cursor)
@@ -662,6 +663,31 @@ namespace IslandUI
             }
             StandBy(p, at.transform);
             return "by " + at.name;
+        }
+
+        // ...where the nearest person called `name` stands on screen, in game pixels
+        // from the top left (a shot's own), for a real Tab or click to aim at
+        internal static string HarnessScreenOf(string name)
+        {
+            PlayerMove p = _mn != null && _mn.gameMN != null ? _mn.gameMN.pMove : null;
+            Camera cam = Camera.main;
+            CommonStates best = null;
+            float bestD = float.MaxValue;
+            foreach (CommonStates c in Object.FindObjectsOfType<CommonStates>())
+            {
+                if (p == null || c == null || !c.gameObject.activeInHierarchy || c.charaName != name)
+                {
+                    continue;
+                }
+                float d = (c.transform.position - p.transform.position).sqrMagnitude;
+                if (d < bestD) { bestD = d; best = c; }
+            }
+            if (best == null || cam == null)
+            {
+                return "no " + name;
+            }
+            Vector3 s = cam.WorldToScreenPoint(best.transform.position + Vector3.up);
+            return Mathf.RoundToInt(s.x) + "," + Mathf.RoundToInt(Screen.height - s.y);
         }
 
         // ...or `metres` from the nearest person called `name`, centre to centre

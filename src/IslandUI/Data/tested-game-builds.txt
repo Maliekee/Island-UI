@@ -1,0 +1,3 @@
+# The game builds this release of Island UI was tested on, one per line, as the title screen
+# shows them after "Build_". Embedded in the DLL; the release script writes it at release time.
+2026/09/03--11:45

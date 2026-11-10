@@ -480,7 +480,7 @@ namespace IslandUI
 
         // A free cell in your own bag. None while vanilla's panel holds a container:
         // the real array reads empty then (PickupCascade.CharacterBag).
-        private static ItemSlot FreeBagSlot(ManagersScript mn)
+        internal static ItemSlot FreeBagSlot(ManagersScript mn)
         {
             if (VanillaContainerUI.MirrorsLive(mn.inventory) || mn.gameMN == null || mn.gameMN.pMove == null)
             {

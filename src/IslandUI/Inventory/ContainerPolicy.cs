@@ -94,6 +94,10 @@ namespace IslandUI
             // game's own click would search.
             // Shown or hidden, like Bags: moved by hand, never swept.
             Bodies,
+            // Loose items lying on the ground, a pile to a row (GroundPiles,
+            // Forgejo #172). Shown or hidden, like Bodies: taken by hand or by All
+            // out through the game's own pickup, never written into by a sweep.
+            Ground,
             // Not filterable yet: benches, treasure, racks, props. They are not
             // in the pool at all, so there is nothing for a box to turn off.
             Other,
@@ -129,6 +133,7 @@ namespace IslandUI
                 case Family.Benches: mode = Settings.ReachBenches.Value; break;
                 case Family.Bags: mode = Settings.ReachBags.Value; break;
                 case Family.Bodies: mode = Settings.ReachBodies.Value; break;
+                case Family.Ground: mode = Settings.ReachGround.Value; break;
             }
             // a Stack left in the .cfg for a family that no longer offers it
             // reads as shown
@@ -140,7 +145,7 @@ namespace IslandUI
         // write, and BulkSafe says why that cannot be made whole there.
         internal static bool CanStack(Family f)
         {
-            return f != Family.Bags && f != Family.Bodies && f != Family.Breeding;
+            return f != Family.Bags && f != Family.Bodies && f != Family.Breeding && f != Family.Ground;
         }
 
         // Hidden -> Show -> Stack -> Hidden. One click, one step, and the cycle
@@ -174,6 +179,7 @@ namespace IslandUI
                 case Family.Benches: Settings.ReachBenches.Value = mode; break;
                 case Family.Bags: Settings.ReachBags.Value = mode; break;
                 case Family.Bodies: Settings.ReachBodies.Value = mode; break;
+                case Family.Ground: Settings.ReachGround.Value = mode; break;
             }
         }
 
@@ -202,6 +208,15 @@ namespace IslandUI
         {
             Family f = FamilyOf(c);
             return BulkSafe(c) && (f == Family.Materials || f == Family.Chests) && FamilyShown(f);
+        }
+
+        // What an item dropped on it in the world may go into (Forgejo #207): the
+        // same plain storage. Not asked whether the family is shown: that filter is
+        // what is worth seeing in a list, and a drop is about the one chest you see.
+        internal static bool TakesDrop(InventorySlot c)
+        {
+            Family f = FamilyOf(c);
+            return PoolEligible(c) && BulkSafe(c) && (f == Family.Materials || f == Family.Chests);
         }
 
         // ALL OUT TAKES THE HARVEST (fish traps holding fish are
@@ -320,6 +335,10 @@ namespace IslandUI
 
         internal static Family FamilyOf(InventorySlot c)
         {
+            if (GroundPiles.Is(c))
+            {
+                return Family.Ground;
+            }
             if (IsCharacterBag(c))
             {
                 return IsBodyBag(c) ? Family.Bodies : Family.Bags;

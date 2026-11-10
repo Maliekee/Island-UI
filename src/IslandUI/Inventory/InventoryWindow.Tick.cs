@@ -139,6 +139,7 @@ namespace IslandUI
             }
             NormalizeHover();
             TickPlaceFactors();   // the Set place pointer's factors, after vanilla moved its point
+            TickPropCircle(_mn);  // a well's or food box's reach while it is the target (Forgejo #182)
             ProbeFlash();
         }
 
@@ -246,7 +247,8 @@ namespace IslandUI
             ArcIdle();   // before any return: an arc nobody draws this frame goes
 
             KeyCode key = Settings.InventoryKey.Value;
-            if (key != KeyCode.None && Input.GetKeyDown(key) && !GameManager.nowEvent)
+            // the physical key: the keymap moves the game's Backpack, never ours (GitHub #21)
+            if (key != KeyCode.None && RawInput.GetKeyDown(key) && !GameManager.nowEvent)
             {
                 Toggle();
             }
@@ -272,6 +274,8 @@ namespace IslandUI
             // The Shared Bag is a plate in your column, so it opens with the rest of
             // your bags - the action bar is what is always reachable.
             _barShown = _ownOpen;
+            // new since the last open: diffed as the bags open, cleared as they close
+            NewItems.Tick(mn, _ownOpen);
             // _reachOpen stands on its own: the vicinity window is no longer a
             // section of your bag, so it can be the only thing on screen.
             bool anything = _ownOpen || _ownSheetOpen || _focusShown || _barShown || _reachOpen;
@@ -403,8 +407,9 @@ namespace IslandUI
                 return;
             }
             // an item released on someone is used on them (D141) - above the sheets,
-            // which would otherwise swallow a release over a roster strip
-            if (TickDropOnPerson(cam) || TickDropOnFoodBox(cam))
+            // which would otherwise swallow a release over a roster strip - and one
+            // released on a food box fills it, on a chest in the world goes into it
+            if (TickDropOnPerson(cam) || TickDropOnFoodBox(cam) || TickDropOnStore(cam))
             {
                 return;
             }
@@ -496,6 +501,7 @@ namespace IslandUI
             Plate closeHot = TickCloseChips(cam);
             CellView hoveredCell = closeHot != null ? null : HitCell(cam);
             _leatherHover = hoveredCell;
+            SeeNewItem(hoveredCell);   // pointing at a new item is seeing it (NewItems)
             ItemSlot hoveredSlot = hoveredCell != null && hoveredCell.Slot != null
                 && !string.IsNullOrEmpty(hoveredCell.Slot.itemKey) ? hoveredCell.Slot : null;
             _hover.text = ApplyEquipPreview(hoveredSlot, hoveredCell);
@@ -664,6 +670,19 @@ namespace IslandUI
             {
                 return;   // over a panel, merely not over a cell — keep it in hand
             }
+            PutDownHeld();
+        }
+
+        // The held item put on the ground at your feet: a drag let go over the
+        // world, or a held item put on a cell of a pile on the ground (GroundPiles).
+        private static void PutDownHeld()
+        {
+            InventoryManager inv = _mn.inventory;
+            if (inv == null || inv.hoverSlot == null || !inv.hoverSlot.gameObject.activeSelf
+                || string.IsNullOrEmpty(inv.hoverSlot.itemKey))
+            {
+                return;
+            }
             if (Favourites.IsFavourite(inv.hoverSlot))
             {
                 FavouriteRules.Refuse();   // a favourite is not dropped; home it goes
@@ -672,6 +691,7 @@ namespace IslandUI
             }
             inv.ItemDrop(inv.hoverSlot);
             NormalizeHover();
+            InvalidateReachScan();
             _nextRefresh = 0f;
             Refresh();
         }
@@ -767,7 +787,10 @@ namespace IslandUI
                 // You cannot pick out of what you cannot see. This asks the SCENE,
                 // not the arithmetic: HitCell answers from geometry, and geometry
                 // has no idea whether the thing it is measuring is switched on.
-                if (!plate.Window.Go.activeInHierarchy)
+                // A FROZEN ROW HAS NO CELLS to the pointer (Forgejo #237): out of
+                // reach or gone, nothing on it is taken, used or filled, and a press
+                // there is a press on the window's leather (VicFreeze.cs)
+                if (!plate.Window.Go.activeInHierarchy || plate.Frozen != 0)
                 {
                     continue;
                 }

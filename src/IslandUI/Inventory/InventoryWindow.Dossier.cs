@@ -343,8 +343,10 @@ namespace IslandUI
             string name = !string.IsNullOrEmpty(who.charaName) ? who.charaName : (kind ?? "?");
             // A STRANGER'S SHEET IS WHAT THE OBSERVATION SKILL TELLS YOU (Observe.cs):
             // the level, the age and the type one rank at a time, a "???" where it
-            // has not; their exp, attributes, combat and personality never
-            bool known = Observe.Known(who);
+            // has not; their exp, attributes, combat and personality never - but a
+            // body you may search shows all of it, as the game's status panel does
+            // for the one being searched (SearchedStranger, GitHub #25)
+            bool known = Observe.Known(who) || SearchedStranger(who);
             var head = new SheetLine
             {
                 Kind = LineFormHead, Label = name, Label2 = Shared.Loc.Get("dossier.level", "LEVEL"),
@@ -424,7 +426,8 @@ namespace IslandUI
                     caps[i] = StatCaption(i);
                     vals[i] = who.status[i].ToString();
                     foots[i] = Shared.Loc.Get("dossier.next_cost", "next {0} pt", cost);
-                    cans[i] = who.statusPoint >= cost;
+                    // their points are theirs to spend: read, never spent, on a stranger
+                    cans[i] = !SearchedStranger(who) && who.statusPoint >= cost;
                     args[i] = i;
                     boxTips[i] = i < TipAttributes.Length ? TipAttributes[i] + TipAttributeCost : null;
                 }
@@ -714,7 +717,7 @@ namespace IslandUI
             {
                 // UIManager.NPCOptionChange, on this carrier: 0 is ALLOWED
                 int id = code - CheckOption;
-                if (who.sexInfo != null && id >= 0 && id < who.sexInfo.Length)
+                if (who.sexInfo != null && id >= 0 && id < who.sexInfo.Length && PartnerSwitches.Allows(who, PartnerSwitches.Permissions))
                 {
                     who.sexInfo[id] = who.sexInfo[id] == 0 ? 1 : 0;
                 }
@@ -757,6 +760,16 @@ namespace IslandUI
         private const float MedalSize = 11.5f;
         private const float CaptionSpacing = 14f;   // em/100: the form's spaced capitals
         private const float Hair = 0.45f;            // a printed rule
+        // a section's count, and "N points" when nothing is affordable: the form's
+        // inked rounded rectangle, the same as its buttons' outline
+        private const string CountChip = "kit_dossier_button";
+        // where a box's rim lies in its sprite (make_dossier.py's _outline): the
+        // bold rim's ink from 1 to 4.5 kit px in from the edge, solid from 2, the
+        // plain one's solid at 1, to 2.4. A rule ending there ends inside the ink
+        private const float BoldRimOut = 2f * SheetPx;
+        private const float BoxRimOut = 1f * SheetPx;
+        private const float BoldRimIn = 4.5f * SheetPx;
+        private const float BoxRimIn = 2.4f * SheetPx;
 
         private static float BoxHeight(int style)
         {
@@ -980,6 +993,7 @@ namespace IslandUI
                 row.FormTexts.Add(t);
             }
             row.FormTextsUsed++;
+            align = Theme.WordsOrInk(text, align);
             if (t.text != text) { t.text = text; }
             if (t.fontSize != size) { t.fontSize = size; }
             if (t.color != color) { t.color = color; }
@@ -1534,7 +1548,9 @@ namespace IslandUI
                     0f, 0f, 10f, 9f);
                 float pw = TextWidth(pill) + 9f;
                 Theme.Place(pill, right - pw, cy - 4.5f, pw, 9f);
-                FormImage(row, "kit_dossier_pill", 15, pillInk, right - pw, cy - 4.5f, pw, 9f);
+                // a rounded rectangle, as the points tag beside it: the stadium
+                // (kit_dossier_pill) read as the one round thing on the page
+                FormImage(row, CountChip, 12, pillInk, right - pw, cy - 4.5f, pw, 9f);
                 FormTip(row, line.Tips, 0, right - pw, cy - 4.5f, pw, 9f);
                 ruleEnd = right - pw - 3f;
             }
@@ -1608,7 +1624,10 @@ namespace IslandUI
                         {
                             FormSprite(row, icon, Color.white, x + 2.5f, y + 2.5f, 9f, 9f);
                         }
-                        FormText(row, caption, 6f, Theme.DossierLabel, TextAlignmentOptions.MidlineLeft, false, x + 14f, y + 2f, bw - 16f, 10f);
+                        // the line's middle, not the ink's: a midline centres each word's
+                        // own ink, so one with a descender (Self-healing, Grapple) stood
+                        // higher than its neighbours in the row
+                        FormText(row, caption, 6f, Theme.DossierLabel, TextAlignmentOptions.Left, false, x + 14f, y + 2f, bw - 16f, 10f);
                         FormText(row, value, 8.4f, ink, TextAlignmentOptions.MidlineLeft, true, x + 3f, y + 12f, bw * 0.5f, 11f);
                         int pips = line.Pips != null && i < line.Pips.Length ? line.Pips[i] : 0;
                         int max = line.PipMax != null && i < line.PipMax.Length ? line.PipMax[i] : 0;
@@ -1658,18 +1677,26 @@ namespace IslandUI
                 {
                     bool can = line.Cans != null && i < line.Cans.Length && line.Cans[i];
                     float fy = y + bh - 11f;
-                    FormRule(row, ink, x, fy, bw);
+                    // the rim is inset in its sprite: the rule ends inside it
+                    // rather than poking past it, and the foot's words and + sit in
+                    // the middle of what is left between the rule and the rim
+                    bool heavy = bold || warn;
+                    float rimOut = heavy ? BoldRimOut : BoxRimOut;
+                    float rimIn = heavy ? BoldRimIn : BoxRimIn;
+                    FormRule(row, ink, x + rimOut, fy, bw - 2f * rimOut);
+                    float bandTop = fy + Hair * 0.5f;
+                    float bandH = y + bh - rimIn - bandTop;
                     // a capped skill: read from its pips, not from the word its foot prints
                     bool maxed = line.PipMax != null && i < line.PipMax.Length && line.PipMax[i] > 0
                         && line.Pips != null && i < line.Pips.Length && line.Pips[i] >= line.PipMax[i];
                     FormText(row, foot, maxed ? CaptionSize : 5.8f, can ? Theme.DossierLabel : soft,
                         maxed ? TextAlignmentOptions.Center : TextAlignmentOptions.MidlineLeft, maxed,
-                        x + 3f, fy + 0.5f, bw - (maxed ? 6f : 16f), 10f, maxed ? CaptionSpacing : 0f);
+                        x + 3f, bandTop, bw - (maxed ? 6f : 16f), bandH, maxed ? CaptionSpacing : 0f);
                     if (can)
                     {
                         const float cs = 8f;
-                        float cx = x + bw - cs - 2f;
-                        float cy = fy + (11f - cs) * 0.5f;
+                        float cx = x + bw - rimIn - cs - (bandH - cs) * 0.5f;
+                        float cy = bandTop + (bandH - cs) * 0.5f;
                         bool down = Down(row, planks);
                         bool hot = Hot(row, planks);
                         Color chip = down ? Theme.DossierFaded : hot ? Theme.DossierLabel : ink;
@@ -1957,6 +1984,17 @@ namespace IslandUI
             for (int i = 0; i < n; i++)
             {
                 float x = left + i * (bw + gap);
+                if (line.Refused)
+                {
+                    // an act the game does not give them (Call, for Man and Yona,
+                    // Forgejo #239): the ghost of the button, no hover, no press
+                    FormImage(row, "kit_dossier_button", 12, RefusedRim, x, by, bw, FormButtonH);
+                    FormText(row, Struck(line.Options[i]), FormTextSize, RefusedWord, TextAlignmentOptions.Center, false,
+                        x, by, bw, FormButtonH);
+                    FormNoHit(row, i);
+                    FormTip(row, line.Tips, i, x, by, bw, FormButtonH);
+                    continue;
+                }
                 DrawButton(row, i, line.Options[i], line.Danger == i + 1, x, by, bw);
                 FormTip(row, line.Tips, i, x, by, bw, FormButtonH);
             }

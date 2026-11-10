@@ -160,13 +160,25 @@ namespace IslandUI
             Parent(Shared.Loc.Get("bonds.family.mother", "mother"), 9);
             foreach (CommonStates c in ChildrenOf(npcs, who))
             {
-                family.Add(FamilyLine(Shared.Loc.Get("bonds.family.child", "child"), c, who));
+                SheetLine child = FamilyLine(Shared.Loc.Get("bonds.family.child", "child"), c, who);
+                if (who.npcID <= 1)
+                {
+                    // Man's and Yona's love is always 0: theirs alone, in the column
+                    // for theirs, as the relations under it print it
+                    child.Value = null;
+                }
+                family.Add(child);
             }
             if (family.Count == 0)
             {
                 return;
             }
             lines.Add(Section(Shared.Loc.Get("bonds.family.section", "FAMILY"), family.Count.ToString()));
+            if (who.npcID <= 1)
+            {
+                // one number per row, theirs for you: headed as the relations under it
+                lines.Add(ForYouHead());
+            }
             lines.AddRange(family);
         }
 
@@ -463,12 +475,18 @@ namespace IslandUI
                 if (groups[g] == null) { groups[g] = new List<List<SheetLine>>(); }
                 groups[g].Add(new List<SheetLine> { line });
             }
-            lines.Add(new SheetLine
+            lines.Add(ForYouHead());
+            WriteRelationGroups(lines, who, groups, rows.Count);
+        }
+
+        // the column head over a played character's rows: their love for you
+        private static SheetLine ForYouHead()
+        {
+            return new SheetLine
             {
                 Kind = LineMetHead, Enabled = true, Label2 = Shared.Loc.Get("bonds.you.head", "FOR YOU"),
                 Tip = Shared.Loc.Get("bonds.you.head.help", "Their love for you"),
-            });
-            WriteRelationGroups(lines, who, groups, rows.Count);
+            };
         }
 
         // a relation's row, and its why under it when it is open

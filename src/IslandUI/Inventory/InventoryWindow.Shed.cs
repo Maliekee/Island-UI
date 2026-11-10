@@ -531,9 +531,10 @@ namespace IslandUI
                 }
                 else
                 {
-                    // the camp verbs are buttons, the HUD's own chips: walnut, pine
-                    // under the pointer, the glyph cream on walnut and ink on pine
-                    Theme.KitSkin(face, hot ? "kit_plank_pine" : "kit_chip_walnut", hot ? 18 : 0);
+                    // the camp verbs are buttons, the kit's planks: walnut, pine
+                    // under the pointer, the glyph cream on walnut and ink on pine.
+                    // Sliced like the pine, so the plank keeps its ends at any width
+                    Theme.KitSkin(face, hot ? "kit_plank_pine" : "kit_plank_walnut", 18);
                     face.color = down ? PaperDown : Color.white;
                     row.PlankIcons[i].color = hot ? Theme.KitInk : Theme.KitCream;
                 }

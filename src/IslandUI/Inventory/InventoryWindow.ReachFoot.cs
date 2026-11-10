@@ -97,8 +97,10 @@ namespace IslandUI
             AddFootChip(ContainerPolicy.Family.Chests, "chest_01");
             AddFootChip(ContainerPolicy.Family.Breeding, "planter_01");
             AddFootChip(ContainerPolicy.Family.Benches, "bench_wood");
-            AddFootChip(ContainerPolicy.Family.Bags, null);
-            AddFootChip(ContainerPolicy.Family.Bodies, "kit_emblem_skull");
+            // your people's rows are portraits, so their chip is a portrait too;
+            // the bodies and loose items share the ground's mark with the pile rows
+            AddFootChip(ContainerPolicy.Family.Bags, "kit_vic_people");
+            AddFootChip(ContainerPolicy.Family.Bodies, "kit_vic_ground");
             _footRule = Theme.KitImage(_reachFoot.transform, "Rule", "kit_cross", 0, Facelift.VicFootRule);
             _footRule.sprite = null;
             _footRule.type = Image.Type.Simple;
@@ -119,7 +121,7 @@ namespace IslandUI
                 case ContainerPolicy.Family.Breeding: return Shared.Loc.Get("reach.chip.breeding", "Cages, traps, planters");
                 case ContainerPolicy.Family.Benches: return Shared.Loc.Get("reach.chip.benches", "Workbench strips");
                 case ContainerPolicy.Family.Bags: return Shared.Loc.Get("reach.chip.bags", "Your people's bags");
-                default: return Shared.Loc.Get("reach.chip.bodies", "Bodies");
+                default: return Shared.Loc.Get("reach.chip.bodies", "On the ground");
             }
         }
 
@@ -132,7 +134,7 @@ namespace IslandUI
                 case ContainerPolicy.Family.Breeding: return Shared.Loc.Get("reach.chip.breeding.help", "Cages, traps, planters, hives, poultry boxes, mushroom logs, herb boxes.");
                 case ContainerPolicy.Family.Benches: return Shared.Loc.Get("reach.chip.benches.help", "Each workbench's own ten-slot strip.");
                 case ContainerPolicy.Family.Bags: return Shared.Loc.Get("reach.chip.bags.help", "The bags of the people you employ, within reach.");
-                default: return Shared.Loc.Get("reach.chip.bodies.help", "The pockets of the downed and the dead, within reach.");
+                default: return Shared.Loc.Get("reach.chip.bodies.help", "Loose items lying on the ground, and the pockets of the downed and the dead, within reach.");
             }
         }
 
@@ -516,7 +518,8 @@ namespace IslandUI
                 case 1:
                     return "<b>" + ReachVerbLabel(1) + "</b>\n" + Shared.Loc.Get("reach.stack.help", "What a listed chest already holds goes to it. Favourites stay.") + only;
                 case 2:
-                    return "<b>" + ReachVerbLabel(2) + "</b>\n" + Shared.Loc.Get("reach.all_out.help", "Everything in the listed chests comes into your bags, nearest chest first, until they are full. Then the harvest: fish from the traps, eggs, honey, herbs and mushrooms.") + only;
+                    return "<b>" + ReachVerbLabel(2) + "</b>\n" + Shared.Loc.Get("reach.all_out.help", "Everything in the listed chests comes into your bags, nearest chest first, until they are full. Then the harvest: fish from the traps, eggs, honey, herbs and mushrooms.")
+                        + " " + Shared.Loc.Get("reach.all_out.ground", "Then what lies on the ground, picked up as by hand.") + only;
             }
             return null;
         }
@@ -560,12 +563,20 @@ namespace IslandUI
                     || ContainerPolicy.FamilyOf(c) != ContainerPolicy.Family.Bodies
                     || (VanillaContainerUI.MirrorsLive(inv) && ReferenceEquals(inv.tmpSubInventory, c)));
             }
+            // ...and picks up what lies loose on the ground (GroundPiles), each item
+            // through the game's own pickup, as a body's pockets are emptied by hand
+            var ground = new List<InventorySlot>();
+            if (which == 2)
+            {
+                ground.AddRange(targets);
+                ground.RemoveAll(c => c == null || c.slots == null || !GroundPiles.Is(c));
+            }
             targets.RemoveAll(c => c == null || c.slots == null || !ContainerPolicy.BulkTarget(c));
             if (which == 2)
             {
                 targets.AddRange(bodies);
             }
-            if (targets.Count == 0 && harvest.Count == 0)
+            if (targets.Count == 0 && harvest.Count == 0 && ground.Count == 0)
             {
                 return;
             }
@@ -620,6 +631,25 @@ namespace IslandUI
                         moved += n;
                     }
                 }
+                // the pickup shows its own notice, and refuses with its own caution:
+                // at the first item a full bag leaves lying, the rest are left too,
+                // so the caution is said once
+                bool full = false;
+                for (int c = 0; c < ground.Count && !full; c++)
+                {
+                    ItemSlot[] lying = (ItemSlot[])ground[c].slots.Clone();
+                    for (int i = 0; i < lying.Length && !full; i++)
+                    {
+                        ItemSlot slot = lying[i];
+                        if (!GroundPiles.IsLoose(_mn, slot) || (filtered && !filter.Matches(_mn, slot.itemKey)))
+                        {
+                            continue;
+                        }
+                        int n = GroundPiles.PickUp(_mn, slot);
+                        full = n <= 0 && GroundPiles.IsLoose(_mn, slot);
+                        moved += Mathf.Max(0, n);
+                    }
+                }
             }
             else
             {
@@ -665,6 +695,7 @@ namespace IslandUI
                 }
             }
             Plugin.Log.LogInfo($"Vicinity {ReachVerbWords[which]}: {moved} item(s) across {targets.Count + harvest.Count} storage(s)"
+                + (ground.Count > 0 ? $" and {ground.Count} pile(s) on the ground" : "")
                 + (filtered ? " (filtered '" + filter.Query + "')" : ""));
             if (moved > 0)
             {

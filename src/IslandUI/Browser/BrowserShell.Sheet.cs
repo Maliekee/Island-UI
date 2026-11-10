@@ -29,10 +29,6 @@ namespace IslandUI
             UI.Theme.KitSkin(_panelRail, "kit_bp_frame", 16);
             _panelRail.fillCenter = false;
             _panelRail.color = UI.Blueprint.Ink;
-            if (_cover != null)
-            {
-                _cover.color = UI.Blueprint.Ground;
-            }
             if (_scrollbar != null)
             {
                 // square, as everything on the sheet: a ruled track, a solid thumb

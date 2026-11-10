@@ -90,6 +90,22 @@ namespace Shared
             return items;
         }
 
+        // The menu's Check for updates line on its own, for a notice that stands beside the
+        // badges and points at the update. Null while an update is staged or a way back chosen,
+        // when the menu has no such line either. It is built as a menu line, so a press on it is
+        // the press tests/update/network-callers.ps1 holds every request to.
+        internal static TitleBadge.Item CheckLine()
+        {
+            if (_disk == null || _disk.Phase.Length != 0)
+            {
+                return null;
+            }
+            string found = Newer();
+            string check = found.Length > 0 ? Loc.Get("update.check_found", "Check for updates: {0} available", found)
+                : Loc.Get("update.check", "Check for updates");
+            return new TitleBadge.Item(check, OpenCheck);
+        }
+
         // what the check at startup found for this mod, while nothing else is under way. Empty:
         // nothing to tell.
         private static string Newer()
