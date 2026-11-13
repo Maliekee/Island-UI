@@ -1326,6 +1326,8 @@ settings.effects.none.help=Effekte werden aufgeführt, sobald das Spiel sie in d
 
 settings.fixes.repair_ends=Reparatur endet sauber
 settings.fixes.repair_ends.help=Ist eine Reparatur vorbei, stehst du wieder ruhig da. Ohne Mod schwingst du den Hammer weiter, bis du dich bewegst.
+settings.fixes.music_volume=Musik startet in deiner Lautstärke
+settings.fixes.music_volume.help=Nach dem Laden spielt die Musik von Anfang an in deiner Musiklautstärke. Ohne Mod ist sie die ersten Sekunden laut.
 
 settings.group.action_bar=Aktionsleiste
 settings.group.chests=Truhen
@@ -1769,3 +1771,7 @@ vitals.type=Typ
 vitals.water=Wasser
 vitals.wear=Zustand
 vitals.where=Wo
+freemode.badge=Aus seit dem freien Modus, der noch nicht unterstützt wird. Starte das Spiel neu, um es wieder einzuschalten.
+freemode.log={0}: im freien Modus vorerst aus. Starte das Spiel neu, um sie wieder zu nutzen.
+gamever.freemode_title=Aus seit dem freien Modus
+gamever.freemode_body=Beim Start des freien Modus ausgeschaltet: {0}. Der freie Modus wird noch nicht unterstützt. Starte das Spiel neu, um sie wieder zu nutzen. Deine Einstellungen bleiben unverändert.

@@ -129,7 +129,7 @@ namespace IslandUI
         private static bool KeepEquip(CommonStates common, ItemSlot slot)
         {
             ManagersScript mn = Favourites.Any ? Mn() : null;
-            if (mn == null || mn.gameMN == null || common == null || mn.gameMN.IsPlayer(common)
+            if (mn == null || mn.gameMN == null || common == null || mn.gameMN.IsPlayer(common) || PlayedAs.Is(mn.gameMN, common)
                 || !Favourites.IsFavourite(slot))
             {
                 return true;

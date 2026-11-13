@@ -156,6 +156,18 @@ Santa#5	33	Yes.	Nur Merry schließt sich an · Merrys Zuneigung +50 · du bekomm
 Santa#5	34	No.	Merry und das Reindeer schließen sich beide an · kein Reindeer barbecue und kein Zuneigungsgewinn (Yes gibt beides)	
 Sadako#1	yes	Yes	Verbraucht 1 Mandrake · startet einen Kampf · der Gegner lässt einen Curse Orb fallen (Wiki)	Deine Underground Woman stirbt im Brunnen, kehrt als feindliche Sadako zurück und verlässt deine Gruppe
 Sadako#1	no	No	Nichts passiert · keine bleibende Wirkung	
+PastBoss#1	44	Fight	Bosskampf gegen Jiera, Adon an ihrer Seite · bei einer Niederlage neu versuchen · ein Sieg öffnet neue Höhlengänge, Naotos Ereignis erscheint und die Ent Queen kann die Erinnerungen abspielen	Jiera und Adon töten sich gegenseitig · ein maskierter Naoto erschießt den Chief und flieht · ihre Leichen bleiben zum Plündern liegen
+PastBoss#1	3	Leave.	Keine bleibende Wirkung · das Ereignis bleibt, komm zum Kampf zurück, wenn du bereit bist	
+Naoto#1	4	Kill.	In der Nähe wird ein Haus für Naoto und Hanna gebaut · Naoto behält die Stammeskleidung, ein Mädchen tanzt für ihn · Hanna bleibt schmutzig, wie du sie gefunden hast	
+Naoto#1	23	Persuade.	In der Nähe wird ein Haus für Naoto und Hanna gebaut · Naoto trägt wieder seine eigene Kleidung · Hanna wird gewaschen und angezogen	
+PastGiant#1	33	Yes.	Die Nacht geht weiter: Mamoru und die Mutter landen in einem Bett · weitere Entscheidungen folgen · eine Erinnerung, keine bleibende Wirkung	
+PastGiant#1	34	No.	Mamoru weist sie ab und die Erinnerung endet · keine bleibende Wirkung	
+PastGiant#2	61	?	Mamoru umarmt sie · eine Wahl für eine Sexszene folgt · keine bleibende Wirkung	
+PastGiant#2	13	Observe.	Noch ein paar Worte von ihr, dann endet die Erinnerung · keine bleibende Wirkung	
+PastGiant#3	0	Do.	Sexszene mit der Mutter · keine bleibende Wirkung	
+PastGiant#3	1	Don't.	Die Erinnerung endet hier · keine bleibende Wirkung	
+PastGiant#4	0	Do.	Die Sexszene geht weiter, bis du Space drückst · keine bleibende Wirkung	
+PastGiant#4	1	Don't.	Noch ein Satz, dann endet die Sexszene · keine bleibende Wirkung	
 SubGiant00!1	click	[Left-Click] Leave.	Sie erholt sich und schließt sich als Freundin an · sie kann nicht eingeladen werden · kämpft im Kampf gegen den Ent King	Als Freundin wird sie nie von den Ents gefangen und ist nie in Gefahr
 SubGiant00!1	f	[F] Kill.	Das Ereignis endet · keine Begleiterin · ihr Körper kann zerlegt werden (Giant Orb laut Wiki)	Die Giant stirbt endgültig
 SubGiant00!1	r	[R] (versteckt)	Eine versteckte Option · danach die Wahl Kill oder Tie up · sie schließt sich nie an	Übergriffsszene

@@ -1308,6 +1308,8 @@ settings.effects.none.help=本次游戏中特效首次出现时会被列出。
 
 settings.fixes.repair_ends=修理后恢复站姿
 settings.fixes.repair_ends.help=修理结束后，你会恢复站立姿势。原版游戏中，你会一直挥着锤子，直到你移动为止。
+settings.fixes.music_volume=音乐从一开始就是你的音量
+settings.fixes.music_volume.help=读档后，音乐从一开始就按你的音乐音量播放。不装模组时，开头几秒会很响。
 
 settings.group.action_bar=动作栏
 settings.group.chests=箱子
@@ -1751,3 +1753,7 @@ vitals.type=种类
 vitals.water=水分
 vitals.wear=耐久
 vitals.where=位置
+freemode.badge=进入自由模式后已关闭，暂不支持该模式。重启游戏即可重新开启。
+freemode.log={0}：在自由模式中暂时关闭。重启游戏即可再次使用。
+gamever.freemode_title=因自由模式已关闭
+gamever.freemode_body=自由模式开始时已关闭：{0}。暂不支持自由模式。重启游戏即可再次使用。你的设置保持不变。

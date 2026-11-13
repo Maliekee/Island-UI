@@ -156,6 +156,18 @@ Santa#5	33	Yes.	Só Merry se junta · afeição de Merry +50 · você recebe Rei
 Santa#5	34	No.	Merry e o Reindeer se juntam · sem Reindeer BBQ e sem ganho de afeição (Yes dá os dois)	
 Sadako#1	yes	Yes	Gasta 1 Mandrake · começa uma luta · o inimigo dropa um Curse Orb (wiki)	Sua Underground Woman morre no poço, volta como Sadako hostil e sai do seu grupo
 Sadako#1	no	No	Nada acontece · sem efeito duradouro	
+PastBoss#1	44	Fight	Luta de chefe contra Jiera, com Adon ao lado dela · se perder, pode tentar de novo · vencer abre novas passagens da caverna, o evento de Naoto aparece e a Ent Queen pode rever as memórias	Jiera e Adon matam um ao outro · um Naoto mascarado mata o Chief a tiros e foge · os corpos ficam para saquear
+PastBoss#1	3	Leave.	Sem efeito duradouro · o evento continua lá, volte para lutar quando estiver pronto	
+Naoto#1	4	Kill.	Uma casa é construída por perto para Naoto e Hanna · Naoto continua com as roupas da tribo e uma garota dança para ele · Hanna continua suja, como você a encontrou	
+Naoto#1	23	Persuade.	Uma casa é construída por perto para Naoto e Hanna · Naoto volta às próprias roupas · Hanna é limpa e vestida	
+PastGiant#1	33	Yes.	A noite continua: Mamoru e a mãe acabam na mesma cama · mais escolhas vêm a seguir · é uma memória, sem efeito duradouro	
+PastGiant#1	34	No.	Mamoru a recusa e a memória acaba · sem efeito duradouro	
+PastGiant#2	61	?	Mamoru a abraça · vem uma escolha para uma cena de sexo · sem efeito duradouro	
+PastGiant#2	13	Observe.	Ela diz mais algumas palavras e a memória acaba · sem efeito duradouro	
+PastGiant#3	0	Do.	Cena de sexo com a mãe · sem efeito duradouro	
+PastGiant#3	1	Don't.	A memória acaba aqui · sem efeito duradouro	
+PastGiant#4	0	Do.	A cena de sexo continua até você apertar Space · sem efeito duradouro	
+PastGiant#4	1	Don't.	Mais uma fala e a cena de sexo acaba · sem efeito duradouro	
 SubGiant00!1	click	[Left-Click] Leave.	Ela se recupera e se junta como amiga · não pode ser convidada · luta na batalha do Ent King	Como amiga, ela nunca é capturada pelos Ents nem corre risco
 SubGiant00!1	f	[F] Kill.	O evento acaba · sem seguidora · o corpo dela pode ser destrinchado (Giant Orb, segundo a wiki)	A Giant morre para sempre
 SubGiant00!1	r	[R] (oculta)	Uma opção oculta · segue uma escolha entre Kill ou Tie up · ela nunca se junta	Cena de abuso

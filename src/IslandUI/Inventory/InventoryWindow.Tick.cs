@@ -228,6 +228,22 @@ namespace IslandUI
         // ---------- tick ----------
 
         private static bool _targetInReach;
+        private static CommonStates _lastPlayed;
+
+        // TAKING CONTROL OF A FRIEND ENDS THE TARGET, as a hero swap does
+        // (TargetPatches.SetPlayer_Prefix): the friend you took over was usually
+        // it, and would now be yourself. The beta's switch never passes SetPlayer
+        // (GameManager.CommitControlledCharacter), and a patch on it would fail on
+        // the public build, so the change of who you play is watched here.
+        private static void TickPlayedChange(ManagersScript mn)
+        {
+            CommonStates now = PlayedAs.Of(mn.gameMN);
+            if (_lastPlayed != null && now != null && !ReferenceEquals(now, _lastPlayed))
+            {
+                Untarget("change");
+            }
+            _lastPlayed = now;
+        }
 
         internal static void Tick(ManagersScript mn)
         {
@@ -236,6 +252,7 @@ namespace IslandUI
                 return;
             }
             _mn = mn;
+            TickPlayedChange(mn);
             // two presses that must outlast vanilla's own unwinding: a follow's
             // target, and a roster pick made during a body search
             RestoreKeptTarget();

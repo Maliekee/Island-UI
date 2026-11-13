@@ -160,7 +160,7 @@ namespace IslandUI
             get { return _build.Length > 0 ? _build : "unknown"; }
         }
 
-        private static bool IsTested()
+        internal static bool IsTested()
         {
             return _build.Length > 0 && _tested.Contains(_build);
         }
@@ -178,9 +178,14 @@ namespace IslandUI
                 + " census=[" + string.Join(", ", parts.ToArray()) + "] shows=" + Which();
         }
 
-        // "failed", "untested" or "" for none
+        // "freemode", "failed", "untested" or "" for none. Free mode first: it says the mods
+        // are off now, which outranks how they would fare on this build
         private static string Which()
         {
+            if (Shared.FreeModeGate.Dormant)
+            {
+                return "freemode";
+            }
             Preview preview = _preview != null ? _preview.Value : Preview.Off;
             if (preview == Preview.PatchFailed || Failures().Count > 0)
             {
@@ -361,10 +366,18 @@ namespace IslandUI
                 return;
             }
             bool failed = which == "failed";
+            bool freeMode = which == "freemode";
             string build = _build.Length > 0 ? _build : Shared.Loc.Get("gamever.build_unknown", "unknown");
 
             string heading, body;
-            if (failed)
+            if (freeMode)
+            {
+                heading = Shared.Loc.Get("gamever.freemode_title", "Off since free mode");
+                body = Shared.Loc.Get("gamever.freemode_body",
+                    "Switched off when free mode started: {0}. Free mode is not supported yet. Restart the game to use them again. Your settings are unchanged.",
+                    string.Join(Shared.Loc.Separator, Shared.FreeModeGate.InstalledNames().ToArray()));
+            }
+            else if (failed)
             {
                 var names = new List<string>();
                 foreach (PatchCensusLine line in Failures())
@@ -383,7 +396,10 @@ namespace IslandUI
                 body = Shared.Loc.Get("gamever.untested_body",
                     "It may work fine. If something looks wrong, a newer version of the mod may help.");
             }
-            body += "\n" + Shared.Loc.Get("gamever.build", "Game build: {0}", build);
+            if (!freeMode)
+            {
+                body += "\n" + Shared.Loc.Get("gamever.build", "Game build: {0}", build);
+            }
 
             // inside the row, right of the last icon whatever number of mods is there, and out of
             // its layout; the badge menus open upward from the icons, so they never cover it
@@ -412,7 +428,7 @@ namespace IslandUI
             var stripe = new GameObject("Stripe", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
             stripe.transform.SetParent(_plate.transform, false);
             Image stripeImage = stripe.GetComponent<Image>();
-            stripeImage.color = failed ? Coral : Wheat;
+            stripeImage.color = failed || freeMode ? Coral : Wheat;
             stripeImage.raycastTarget = false;
             stripe.GetComponent<LayoutElement>().preferredWidth = 6f;
 
@@ -429,7 +445,7 @@ namespace IslandUI
             column.childForceExpandWidth = true;
             column.childForceExpandHeight = false;
 
-            Label(paper.transform, heading, failed ? Coral : Wheat, 19);
+            Label(paper.transform, heading, failed || freeMode ? Coral : Wheat, 19);
             Label(paper.transform, body, Cream, 17);
 
             var buttons = new List<Shared.TitleBadge.Item>();
@@ -438,7 +454,7 @@ namespace IslandUI
             {
                 buttons.Add(check);
             }
-            if (!failed)
+            if (!failed && !freeMode)
             {
                 buttons.Add(new Shared.TitleBadge.Item(Shared.Loc.Get("gamever.dismiss", "Hide until the game updates"), Dismiss));
             }

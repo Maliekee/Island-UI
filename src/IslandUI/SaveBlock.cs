@@ -527,6 +527,23 @@ namespace IslandUI
                     }
                 }
             }
+            // the friend you play on the beta has her own bag and equipment
+            // (BindControlledCharacter): addressed by her friendID, "f5"
+            CommonStates played = PlayedAs.PlayingFriend(mn.gameMN) ? PlayedAs.Of(mn.gameMN) : null;
+            if (played != null && played.friendID >= 0)
+            {
+                ItemSlot[] bag = played.bag != null ? played.bag.slots : null;
+                int at = bag != null ? Array.IndexOf(bag, slot) : -1;
+                if (at >= 0)
+                {
+                    return "in=\"bag\" who=\"f" + played.friendID + "\" i=\"" + at + "\"";
+                }
+                at = played.equip != null ? Array.IndexOf(played.equip, slot) : -1;
+                if (at >= 0)
+                {
+                    return "in=\"equip\" who=\"f" + played.friendID + "\" i=\"" + at + "\"";
+                }
+            }
             return null;
         }
 
@@ -550,6 +567,13 @@ namespace IslandUI
                     return new[] { who.npcID };
                 }
             }
+            CommonStates played = PlayedAs.PlayingFriend(mn.gameMN) ? PlayedAs.Of(mn.gameMN) : null;
+            if (slot != null && played != null
+                && ((played.bag != null && played.bag.slots != null && Array.IndexOf(played.bag.slots, slot) >= 0)
+                    || (played.equip != null && Array.IndexOf(played.equip, slot) >= 0)))
+            {
+                return new[] { played.npcID };
+            }
             return new[] { 0, 1 };
         }
 
@@ -566,9 +590,21 @@ namespace IslandUI
                 InventoryManager inv = mn.inventory;
                 return i < inv.baseCount && i < inv.itemSlot.Length ? inv.itemSlot[i] : null;
             }
-            int p = Int(e, "who");
-            CommonStates[] players = mn.gameMN.playerCommons;
-            CommonStates who = players != null && p >= 0 && p < players.Length ? players[p] : null;
+            CommonStates who;
+            string owner = e.GetAttribute("who");
+            if (owner.StartsWith("f", StringComparison.Ordinal))
+            {
+                // a friend you played (AddressOf), found again by her friendID
+                int f;
+                who = int.TryParse(owner.Substring(1), NumberStyles.Integer, CultureInfo.InvariantCulture, out f)
+                    && mn.npcMN != null ? mn.npcMN.GetFriend(f) : null;
+            }
+            else
+            {
+                int p = Int(e, "who");
+                CommonStates[] players = mn.gameMN.playerCommons;
+                who = players != null && p >= 0 && p < players.Length ? players[p] : null;
+            }
             if (who == null)
             {
                 return null;

@@ -389,8 +389,7 @@ namespace IslandUI
                 return;
             }
             InventorySlot store = mn.inventory.tmpSubInventory;
-            CommonStates you = mn.gameMN.playerCommons != null && GameManager.selectPlayer < mn.gameMN.playerCommons.Length
-                ? mn.gameMN.playerCommons[GameManager.selectPlayer] : null;
+            CommonStates you = PlayedAs.Of(mn.gameMN); // as AutoUse: whoever drinks
             string icon = store != null ? AutoUse.IconFor(store.GetComponent<ItemInfo>(), states[id]) : null;
             if (you == null || icon == null)
             {
@@ -413,7 +412,8 @@ namespace IslandUI
                 return;
             }
             ManagersScript mn = __instance.mn;
-            CommonStates you = mn.gameMN.playerCommons[GameManager.selectPlayer];
+            CommonStates you = PlayedAs.Of(mn.gameMN);
+            if (you == null) { return; }
             float bar = __state.Water ? you.water : you.food;
             if (bar > __state.Bar + .01f || __state.Station.slots[0].itemLife < __state.Stock - .01f)
             {

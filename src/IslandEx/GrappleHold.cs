@@ -106,7 +106,7 @@ namespace IslandEx
         {
             try
             {
-                if (__instance == null || _enabled == null || !_enabled.Value || !Plugin.Enabled.Value)
+                if (__instance == null || _enabled == null || !_enabled.Value || !Plugin.Active)
                 {
                     return;
                 }

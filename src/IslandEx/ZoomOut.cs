@@ -68,7 +68,7 @@ namespace IslandEx
             // camera itself (CameraManager.CamZoomFocus, CameraZoomLayout; one
             // stands it at -35, past the wheel's own -25), and a limit held here
             // pulls such a shot back in. Off, the camera is the game's throughout.
-            float reach = Plugin.Enabled.Value && _override.Value ? Mathf.Clamp(_reach.Value, 1f, 4f) : 1f;
+            float reach = Plugin.Active && _override.Value ? Mathf.Clamp(_reach.Value, 1f, 4f) : 1f;
             // off it writes nothing (off means inert): only a rig this has pulled
             // back is brought back, once, and then left alone again
             if (reach <= 1f && !_touched)

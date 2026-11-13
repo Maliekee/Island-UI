@@ -4,7 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>IslandUI</AssemblyName>
     <RootNamespace>IslandUI</RootNamespace>
-    <Version>0.9.6</Version>
+    <Version>0.9.7</Version>
     <LangVersion>latest</LangVersion>
     <!-- Live Steam install: the game that actually runs. BepInEx and our plugin live here;
          binary/ is only a pristine reference copy for decompilation. -->
@@ -21,6 +21,7 @@
     <!-- Shared SOURCE compiled into this DLL: the mods share code, not an assembly -->
     <Compile Include="..\Shared\PatchCensus.cs" Link="Shared\PatchCensus.cs" />
     <Compile Include="..\Shared\TitleBadge.cs" Link="Shared\TitleBadge.cs" />
+    <Compile Include="..\Shared\FreeModeGate.cs" Link="Shared\FreeModeGate.cs" />
     <Compile Include="..\Shared\Update\ModUpdate.cs" Link="Shared\Update\ModUpdate.cs" />
     <Compile Include="..\Shared\Update\UpdateFlow.cs" Link="Shared\Update\UpdateFlow.cs" />
     <Compile Include="..\Shared\Update\UpdateNet.cs" Link="Shared\Update\UpdateNet.cs" />

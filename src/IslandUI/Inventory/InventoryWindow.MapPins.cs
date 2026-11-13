@@ -971,7 +971,7 @@ namespace IslandUI
                 var people = new List<CommonStates>();
                 foreach (CommonStates c in mn.npcMN != null && mn.npcMN.friendList != null ? mn.npcMN.friendList : new List<CommonStates>())
                 {
-                    if (c != null && c.dead == 0 && c.gameObject.activeInHierarchy && !players.Contains(c)
+                    if (c != null && c.dead == 0 && c.gameObject.activeInHierarchy && !players.Contains(c) && !PlayedAs.Is(mn.gameMN, c)
                         && !MapPins.Exists(p => p.Who == c))
                     {
                         people.Add(c);

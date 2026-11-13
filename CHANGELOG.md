@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.7
+
+More of the game's November beta, after the quick hotfix.
+
+- **Playing as Reika, Nami or Takumi.** Island UI follows the character you play. The health, food, water, level and XP on screen are hers, and auto-eat and auto-drink feed her. Her own sheet hides Orders, the favourite star and Banish while you play her, as the game does. The hero you left stays in your roster, and taking control clears your target.
+- **Story hints for the beta's new choices:** the fight in the past, Naoto's choice and the giant's memory. They're new, so tell me if one reads wrong.
+- **Free mode isn't supported yet,** so Island UI, Island Ex and Island AI switch themselves off when it starts: free mode plays as it does without mods. A line in the game says so, and the mods' icons on the title screen show it afterwards. Restart the game to get them back; your settings stay as they are. Free mode isn't open to everyone in the beta yet, but this is ready for when it is.
+- Works on both the current game and the beta. The title screen still says Island UI hasn't been tested on the beta: a full play through its new story is still ahead.
+
+### Island Ex 0.2.5
+
+- **The music starts at your volume** after you load a save. The game played it loud for a few seconds first. The switch for it is on the Fixes page.
+- Switches itself off in free mode, like Island UI.
+
 ## 0.9.6
 
 A quick hotfix for what we found right after the game's November beta update. It is not full support for that update yet: the beta adds new things, like playing as one of your friends and the free mode, that Island UI doesn't handle yet. A thorough update follows. Until then the title screen still says Island UI hasn't been tested on the beta, and that's true.

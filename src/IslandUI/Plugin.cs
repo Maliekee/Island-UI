@@ -30,7 +30,7 @@ namespace IslandUI
     {
         public const string PluginGuid = "madisland.islandui";
         public const string PluginName = "Island UI";
-        public const string PluginVersion = "0.9.6";
+        public const string PluginVersion = "0.9.7";
 
         internal static ManualLogSource Log;
 
@@ -91,6 +91,9 @@ namespace IslandUI
             QoL.Bind(Config);   // the keymap, hotkeys and tweaks that were QoLTweaks
             GameVersionNotice.Bind(Config);
             Log.LogInfo($"{PluginName} v{PluginVersion} loaded.");
+            // free mode is not supported yet: entering it switches Island UI off until the
+            // game restarts (Shared/FreeModeGate.cs). Before every sceneLoaded handler below
+            Shared.FreeModeGate.Install(PluginName, GoDormant);
 
             GameCursor.Init();   // nothing in the game competes for the cursor
 
@@ -166,6 +169,10 @@ namespace IslandUI
 
         private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
         {
+            if (!_running)
+            {
+                return;     // switched off for free mode in this same sceneLoaded
+            }
             VanillaContainerUI.ResetForSceneLoad();
             ReasonTip.ResetForSceneLoad();
             CursorBadge.ResetForSceneLoad();
@@ -495,14 +502,38 @@ namespace IslandUI
         private void Teardown()
         {
             Log.LogInfo(PluginName + ": tearing down for reload");
+            TakeDown(true);
+        }
+
+        // FREE MODE (Shared/FreeModeGate.cs): the same teardown, less what a reload hands to
+        // the next generation, and the title screen's icon and notice stay - they say Island
+        // UI is off and why. _running goes false, so Update, LateUpdate and the scene hook stop;
+        // it stays off until the game restarts (a fresh assembly is what the teardown is for).
+        private void GoDormant()
+        {
+            if (!_running)
+            {
+                return;
+            }
+            TakeDown(false);
+            _running = false;
+            Shared.TitleBadge.RefreshAll();
+        }
+
+        // Puts the game back the way a fresh instance (or the unmodded game) expects to find it.
+        private void TakeDown(bool reload)
+        {
             // 1. windows and vanilla panels close through their own paths - which is
             //    what puts mirror slots back into their containers
             try { CloseAll.Run(Mn); }
             catch (System.Exception e) { Log.LogWarning("Teardown: close-all threw: " + e); }
-            // ...and the bar, favourites and hooks go to the next generation
-            StoryChoices.HandOver();
-            try { SaveBlock.HandOver(); MoodLedger.HandOver(); LoveLedger.HandOver(); AutoUse.HandOver(); }
-            catch (System.Exception e) { Log.LogWarning("Teardown: handover threw: " + e); }
+            if (reload)
+            {
+                // ...and the bar, favourites and hooks go to the next generation
+                StoryChoices.HandOver();
+                try { SaveBlock.HandOver(); MoodLedger.HandOver(); LoveLedger.HandOver(); AutoUse.HandOver(); }
+                catch (System.Exception e) { Log.LogWarning("Teardown: handover threw: " + e); }
+            }
             // ...and the one vanilla rect the mod moves RELATIVELY goes back where it
             // was, or the next generation lifts it from a lifted place
             try { BrowserShell.RestoreVanillaPanel(); }
@@ -525,8 +556,11 @@ namespace IslandUI
             // 2. nothing of ours stays subscribed to anything that outlives us
             UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
             UI.DevConsole.Teardown();
-            Shared.TitleBadge.Remove();
-            GameVersionNotice.Remove();
+            if (reload)
+            {
+                Shared.TitleBadge.Remove();
+                GameVersionNotice.Remove();
+            }
             _reachMoveSub?.Dispose();
             _craftMoveSub?.Dispose();
             // 3. patches off: vanilla runs vanilla until the next instance patches
@@ -538,9 +572,12 @@ namespace IslandUI
             int destroyed = Owned.DestroyAll();
             // 5. globals we set
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-            Log.LogInfo(PluginName + ": teardown complete, " + destroyed + " objects destroyed");
+            Log.LogInfo(PluginName + ": " + (reload ? "teardown" : "switched off for free mode") + " complete, " + destroyed + " objects destroyed");
             // 6. our log source, or every reload adds a duplicate to BepInEx's list
-            BepInEx.Logging.Logger.Sources.Remove(Logger);
+            if (reload)
+            {
+                BepInEx.Logging.Logger.Sources.Remove(Logger);
+            }
         }
 
         private void LateUpdate()

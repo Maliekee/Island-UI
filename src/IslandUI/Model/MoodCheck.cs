@@ -59,7 +59,7 @@ namespace IslandUI
             Sleep(mn, who, found);
             Company(mn, who, found);
             Lover(mn, who, found);
-            TowardYou(who, found);
+            TowardYou(mn, who, found);
             found.Sort((a, b) => b.Severity.CompareTo(a.Severity));
             return found;
         }
@@ -327,7 +327,9 @@ namespace IslandUI
                     continue;
                 }
                 CommonStates friend = npcs.GetFriend(l.friendID);
-                if (friend == null)
+                // the friend you play is no partner for this (vanilla skips her:
+                // NPCManager.cs:1991, the beta)
+                if (friend == null || PlayedAs.IsControlledNpc(mn.gameMN, friend))
                 {
                     continue;
                 }
@@ -343,9 +345,16 @@ namespace IslandUI
 
         // ---------- you ----------
 
-        private static void TowardYou(CommonStates who, List<MoodFinding> found)
+        private static void TowardYou(ManagersScript mn, CommonStates who, List<MoodFinding> found)
         {
-            float love = LoveFor(null, who, GameManager.selectPlayer);
+            // "you" is the friend you play while you play one (the beta): love is
+            // kept per friendID, and CommonStates.LoveChange counts hers
+            int you = GameManager.selectPlayer;
+            if (PlayedAs.PlayingFriend(mn.gameMN))
+            {
+                you = PlayedAs.Of(mn.gameMN).friendID;
+            }
+            float love = LoveFor(null, who, you);
             if (love <= -10f)
             {
                 found.Add(new MoodFinding
@@ -492,6 +501,11 @@ namespace IslandUI
             if (partner != null)
             {
                 people.Add(partner);
+            }
+            CommonStates parked = InventoryWindow.Parked(mn);
+            if (parked != null && !people.Contains(parked))
+            {
+                people.Add(parked);
             }
             people.Sort((a, b) => a.moral.CompareTo(b.moral));
             int unhappy = 0;

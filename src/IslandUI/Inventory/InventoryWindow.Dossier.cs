@@ -368,7 +368,7 @@ namespace IslandUI
             // reaches this sheet from our roster now (Partner). Your run is the
             // SPEED caption's, under COMBAT (Forgejo #134).
             if (!own && (who.employ == CommonStates.Employ.Friend || who.employ == CommonStates.Employ.Favorite)
-                && who.npcID > 1)
+                && !IsPlayerCharacter(who))
             {
                 head.Cans = new[] { who.nameVisible != null, who.employ == CommonStates.Employ.Favorite };
                 head.Args = new[] { ToggleNameShown, ToggleFavourite };

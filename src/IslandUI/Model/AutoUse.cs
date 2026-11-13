@@ -182,8 +182,7 @@ namespace IslandUI
             {
                 return;
             }
-            CommonStates you = mn.gameMN.playerCommons != null && GameManager.selectPlayer < mn.gameMN.playerCommons.Length
-                ? mn.gameMN.playerCommons[GameManager.selectPlayer] : null;
+            CommonStates you = PlayedAs.Of(mn.gameMN); // the hero, or the friend you play
             if (you == null || you.life <= 0.0 || you.dead != 0)
             {
                 return;
@@ -366,7 +365,7 @@ namespace IslandUI
         internal static string SetBars(float water, float food)
         {
             ManagersScript mn = Mn();
-            CommonStates you = mn != null && mn.gameMN != null ? mn.gameMN.playerCommons[GameManager.selectPlayer] : null;
+            CommonStates you = mn != null ? PlayedAs.Of(mn.gameMN) : null;
             if (you == null)
             {
                 return "no player";
@@ -401,7 +400,7 @@ namespace IslandUI
         {
             ManagersScript mn = Mn();
             var sb = new StringBuilder();
-            CommonStates you = mn != null && mn.gameMN != null ? mn.gameMN.playerCommons[GameManager.selectPlayer] : null;
+            CommonStates you = mn != null ? PlayedAs.Of(mn.gameMN) : null;
             if (you != null)
             {
                 sb.Append("water ").Append(you.water.ToString("0.#")).Append(" food ").Append(you.food.ToString("0.#")).Append(" | ");

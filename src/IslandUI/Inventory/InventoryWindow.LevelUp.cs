@@ -41,10 +41,8 @@ namespace IslandUI
 
         internal static void OnCharacterLevelUp(CommonStates who)
         {
-            var gm = _mn != null ? _mn.gameMN : null;
-            var players = gm != null ? gm.playerCommons : null;
-            int selected = GameManager.selectPlayer;
-            if (players == null || selected < 0 || selected >= players.Length || players[selected] != who)
+            // the one you play: the hero, or the friend you took over (PlayedAs)
+            if (who == null || _mn == null || !PlayedAs.Is(_mn.gameMN, who))
             {
                 return;
             }

@@ -20,6 +20,9 @@ badge.turn_off=Turn off
 badge.turn_on=Turn on
 badge.visit_site=Visit the official site
 
+freemode.badge=Off since free mode, which it does not support yet. Restart the game to turn it back on.
+freemode.log={0}: off in free mode for now. Restart the game to use them again.
+
 keep_broken.broke={0} is broken. It waits in your bag for a repair kit.
 keep_broken.broke_dropped={0} is broken. No room in your bag, so it lies at your feet.
 keep_broken.refused={0} is broken. A repair kit mends it.

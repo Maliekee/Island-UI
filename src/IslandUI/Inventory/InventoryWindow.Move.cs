@@ -186,6 +186,30 @@ namespace IslandUI
             return null;
         }
 
+        // harness (GitHub #26): every plate in use, and where a seed's Ctrl+click would go
+        internal static string HarnessRoutes()
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.Append("platesUsed=").Append(_platesUsed);
+            for (int p = 0; p < _platesUsed; p++)
+            {
+                Plate plate = Plates[p];
+                InventorySlot c = plate.Container;
+                sb.Append(" | #").Append(p).Append(" col=").Append(plate.Column)
+                    .Append(plate.IsLoadout ? " loadout" : "")
+                    .Append(" c=").Append(c != null ? c.name + "/" + c.type : "-")
+                    .Append(c != null && ContainerPolicy.IsPlanter(c) ? " PLANTER" : "")
+                    .Append(c != null && CtrlMoves(c) ? " ctrl" : "")
+                    .Append(plate.Window != null && plate.Window.Go != null && plate.Window.Go.activeInHierarchy ? " shown" : " hidden");
+            }
+            Plate planter = TargetPlanter();
+            Plate store = TargetStore();
+            sb.Append(" || targetPlanter=").Append(planter != null && planter.Container != null ? planter.Container.name : "-")
+                .Append(" targetStore=").Append(store != null && store.Container != null ? store.Container.name : "-")
+                .Append(" sub=").Append(_mn != null && _mn.inventory != null && _mn.inventory.tmpSubInventory != null ? _mn.inventory.tmpSubInventory.name : "-");
+            return sb.ToString();
+        }
+
         // The target's planter, while its window is up.
         private static Plate TargetPlanter()
         {

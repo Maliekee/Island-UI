@@ -1308,6 +1308,8 @@ settings.effects.none.help=エフェクトは、このセッションでゲー�
 
 settings.fixes.repair_ends=修理後に構えを解く
 settings.fixes.repair_ends.help=修理が終わると、元の立ち姿に戻ります。MODなしでは、動くまでハンマーを振り続けます。
+settings.fixes.music_volume=BGMを最初から設定音量で
+settings.fixes.music_volume.help=ロード後、BGMが最初から設定した音量で流れます。MODなしでは、最初の数秒だけ大きな音で流れます。
 
 settings.group.action_bar=アクションバー
 settings.group.chests=チェスト
@@ -1751,3 +1753,7 @@ vitals.type=種類
 vitals.water=水分
 vitals.wear=耐久
 vitals.where=場所
+freemode.badge=フリーモードに入ったためオフです。まだ対応していません。ゲームを再起動すると元に戻ります。
+freemode.log={0}：フリーモードでは現在オフです。ゲームを再起動すると再び使えます。
+gamever.freemode_title=フリーモードのためオフ
+gamever.freemode_body=フリーモード開始時にオフになりました：{0}。フリーモードにはまだ対応していません。ゲームを再起動すると再び使えます。設定はそのままです。

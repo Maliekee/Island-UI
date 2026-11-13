@@ -86,7 +86,7 @@ namespace IslandEx
                     Plugin.Log.LogDebug($"FX {fxID} = {name}");
                 }
                 if (Gameplay.Contains(fxID)
-                    || _enabled == null || !_enabled.Value || !Plugin.Enabled.Value)
+                    || _enabled == null || !_enabled.Value || !Plugin.Active)
                 {
                     return false;
                 }

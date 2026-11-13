@@ -80,3 +80,5 @@ update.startup_on=Beim Start prüfen: an
 update.unpacking=Prüfen und Entpacken…
 update.update=Aktualisieren ({0})
 update.working_title=Aktualisierung auf Version {0}
+freemode.badge=Aus seit dem freien Modus, der noch nicht unterstützt wird. Starte das Spiel neu, um es wieder einzuschalten.
+freemode.log={0}: im freien Modus vorerst aus. Starte das Spiel neu, um sie wieder zu nutzen.

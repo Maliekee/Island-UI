@@ -39,7 +39,7 @@ namespace IslandUI
                 {
                     ItemData worn = _mn.itemMN.FindItem(hovered.itemKey);
                     string wornName = worn != null ? worn.GetItemName() : hovered.itemKey;
-                    string wornBy = wornOn.Owner == null || _mn.gameMN.IsPlayer(wornOn.Owner)
+                    string wornBy = wornOn.Owner == null || _mn.gameMN.IsPlayer(wornOn.Owner) || PlayedAs.Is(_mn.gameMN, wornOn.Owner)
                         ? Shared.Loc.Get("inv.hint.worn_by_you", "worn by you")
                         : string.IsNullOrEmpty(wornOn.Owner.charaName) ? Shared.Loc.Get("inv.hint.worn_by_them", "worn by them")
                         : Shared.Loc.Get("inv.hint.worn_by", "worn by {0}", wornOn.Owner.charaName);
@@ -274,7 +274,7 @@ namespace IslandUI
                     return;
                 }
                 // a favourite is worn by you or by no one (FavouriteRules)
-                if (Favourites.IsFavourite(inv.hoverSlot) && !_mn.gameMN.IsPlayer(owner))
+                if (Favourites.IsFavourite(inv.hoverSlot) && !_mn.gameMN.IsPlayer(owner) && !PlayedAs.Is(_mn.gameMN, owner))
                 {
                     FavouriteRules.Refuse();
                     HomeHeld();

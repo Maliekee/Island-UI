@@ -1255,7 +1255,7 @@ namespace IslandUI
                 CommonStates who = npcs.friendList[i];
                 if (who != null && who.charaName == name)
                 {
-                    bool check = mn.sexMN != null && mn.sexMN.SexCheck(mn.gameMN.playerCommons[GameManager.selectPlayer], who);
+                    bool check = mn.sexMN != null && mn.sexMN.SexCheck(PlayedAs.Of(mn.gameMN), who);
                     sb.Append(name).Append(" age ").Append(who.age).Append(" npcID ").Append(who.npcID)
                         .Append(" SexCheck ").Append(check).Append('\n');
                 }
@@ -1290,7 +1290,7 @@ namespace IslandUI
             }
             CommonStates who = mn.gameMN.menuNPC;
             string check = who != null && mn.sexMN != null
-                ? mn.sexMN.SexCheck(mn.gameMN.playerCommons[GameManager.selectPlayer], who).ToString() : "-";
+                ? mn.sexMN.SexCheck(PlayedAs.Of(mn.gameMN), who).ToString() : "-";
             return "lit " + TalkLit(mn.uiMN.talkPanel) + " | menuNPC " + (who != null ? who.charaName : "none") + " | SexCheck " + check;
         }
 

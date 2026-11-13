@@ -197,11 +197,9 @@ namespace IslandUI
             CombatList.Tick(gm, mn.npcMN);
             TickAnimeEnemy(gm);
             TickPortraitSkies();
-            // Same selected character as vanilla, including character switches.
-            var players = gm.playerCommons;
-            int selected = GameManager.selectPlayer;
-            var who = players != null && selected >= 0 && selected < players.Length
-                ? players[selected] : null;
+            // The character you play, as vanilla's HUD reads it: the hero, or the
+            // friend you took over on the beta (PlayedAs)
+            var who = PlayedAs.Of(gm);
             if (who == null)
             {
                 if (_playerVitals != null) { _playerVitals.gameObject.SetActive(false); }

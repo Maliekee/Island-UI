@@ -288,7 +288,8 @@ namespace IslandUI
                 case InventorySlot.Type.BuildManager: Predict(0, 24); break;
                 case InventorySlot.Type.Assault: Predict(0, 26); break;
                 case InventorySlot.Type.Slave:
-                    if (GameManager.selectPlayer == 1) { Predict(0, 10); }
+                    // vanilla offers it to the Man only, never to a friend you play (the beta)
+                    if (GameManager.selectPlayer == 1 && !PlayedAs.PlayingFriend(_mn.gameMN)) { Predict(0, 10); }
                     break;
                 case InventorySlot.Type.Bench:
                     if (prop.itemKey == "bench_workshop"
@@ -386,7 +387,7 @@ namespace IslandUI
                 case "flag_02":
                     return !_mn.gameMN.ChangePlayerEventLimit();
                 case "bed_delivery_01":
-                    return GameManager.selectPlayer == 0 && _mn.sexMN != null
+                    return GameManager.selectPlayer == 0 && !PlayedAs.PlayingFriend(_mn.gameMN) && _mn.sexMN != null
                         && _mn.sexMN.IsDueDate(_mn.gameMN.playerCommons[0]);
                 default:
                     return false;

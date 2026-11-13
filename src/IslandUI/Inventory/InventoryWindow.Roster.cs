@@ -166,8 +166,30 @@ namespace IslandUI
             return friends != null && friends.Contains(who) ? null : who;
         }
 
-        // Your people as this window lists them: the game's friend records, and
-        // the partner (Partner).
+        // THE HERO YOU LEFT, ON THE BETA. Taking control of a friend parks the hero
+        // as an NPC where you stood (GameManager.CommitControlledCharacter), and
+        // like the partner never in friendList, so the roster adds them the same
+        // way. The friend you play stays a friendList entry and stays listed, as
+        // in vanilla's friend list, with her Orders refused (IsPlayerCharacter).
+        internal static CommonStates Parked(ManagersScript mn)
+        {
+            if (mn == null || mn.gameMN == null || !PlayedAs.PlayingFriend(mn.gameMN))
+            {
+                return null;
+            }
+            CommonStates[] players = mn.gameMN.playerCommons;
+            int at = GameManager.selectPlayer;
+            CommonStates who = players != null && at >= 0 && at < players.Length ? players[at] : null;
+            if (who == null || who.dead != 0)
+            {
+                return null;
+            }
+            List<CommonStates> friends = mn.npcMN != null ? mn.npcMN.friendList : null;
+            return friends != null && friends.Contains(who) ? null : who;
+        }
+
+        // Your people as this window lists them: the game's friend records, the
+        // partner (Partner), and the hero you left while you play a friend (Parked).
         private static List<CommonStates> People(NPCManager npcs)
         {
             var people = new List<CommonStates>(npcs.friendList);
@@ -175,6 +197,11 @@ namespace IslandUI
             if (partner != null)
             {
                 people.Add(partner);
+            }
+            CommonStates parked = Parked(_mn);
+            if (parked != null && !people.Contains(parked))
+            {
+                people.Add(parked);
             }
             return people;
         }

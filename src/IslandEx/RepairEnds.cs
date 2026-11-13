@@ -36,7 +36,7 @@ namespace IslandEx
 
         private static bool On
         {
-            get { return _enabled != null && _enabled.Value && Plugin.Enabled.Value; }
+            get { return _enabled != null && _enabled.Value && Plugin.Active; }
         }
 
         [HarmonyPatch(typeof(PlayerMove), nameof(PlayerMove.Repair))]

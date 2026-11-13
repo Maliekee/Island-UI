@@ -158,6 +158,18 @@ Santa#5	33	Yes.	Only Merry joins · Merry affection +50 · you get Reindeer BBQ 
 Santa#5	34	No.	Merry and the Reindeer both join · no Reindeer BBQ and no affection gain (Yes gives both)	
 Sadako#1	yes	Yes	Uses 1 Mandrake · starts a fight · the foe drops a Curse Orb (wiki)	Your Underground Woman dies in the well, returns as hostile Sadako and leaves your group
 Sadako#1	no	No	Nothing happens · no lasting effect	
+PastBoss#1	44	Fight	Boss fight with Jiera, Adon at her side · lose to retry · win: new cave passages open, Naoto's event appears, the Ent Queen can replay the memories	Jiera and Adon kill each other · a masked Naoto shoots the Chief dead and runs · their bodies are left to loot
+PastBoss#1	3	Leave.	No lasting effect · the event stays, come back to fight when ready	
+Naoto#1	4	Kill.	A house is built nearby for Naoto and Hanna · Naoto keeps the tribal clothes, a girl dances for him · Hanna stays filthy, as you found her	
+Naoto#1	23	Persuade.	A house is built nearby for Naoto and Hanna · Naoto is back in his own clothes · Hanna is cleaned up and dressed	
+PastGiant#1	33	Yes.	The night goes on: Mamoru and the mother end up in one bed · more choices follow · a memory, no lasting effect	
+PastGiant#1	34	No.	Mamoru turns her down and the memory ends · no lasting effect	
+PastGiant#2	61	?	Mamoru holds her · a choice for a sex scene follows · no lasting effect	
+PastGiant#2	13	Observe.	A few more words from her, then the memory ends · no lasting effect	
+PastGiant#3	0	Do.	Sex scene with the mother · no lasting effect	
+PastGiant#3	1	Don't.	The memory ends here · no lasting effect	
+PastGiant#4	0	Do.	The sex scene goes on until you press Space · no lasting effect	
+PastGiant#4	1	Don't.	One more line, then the sex scene ends · no lasting effect	
 # Scene prompts: a control text and a wait for a key, not a panel (StoryManager's
 # ControlTextActive; site = coroutine!k, the k-th ControlTextActive call in it).
 # Ids are the input: click, f, r, q, and "wait" for what waiting brings.

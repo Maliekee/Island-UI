@@ -63,7 +63,7 @@ namespace IslandEx
         [HarmonyPostfix]
         private static void FindCraftReference_Postfix(InventoryManager __instance)
         {
-            if (!Plugin.Enabled.Value || !_on.Value || !(_chests.Value || _benches.Value))
+            if (!Plugin.Active || !_on.Value || !(_chests.Value || _benches.Value))
             {
                 return;
             }

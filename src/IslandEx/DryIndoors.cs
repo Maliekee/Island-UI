@@ -52,7 +52,7 @@ namespace IslandEx
             }
             FollowPosition grp = _game.weatherGrp;
             GameObject weather = grp != null ? grp.gameObject : null;
-            bool dry = _enabled.Value && Plugin.Enabled.Value && weather != null
+            bool dry = _enabled.Value && Plugin.Active && weather != null
                 && _game.tmpStage == 0 && _game.tmpHouse != 0;
             if (dry && weather.activeSelf)
             {

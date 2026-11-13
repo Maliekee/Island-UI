@@ -159,7 +159,7 @@ namespace IslandEx
         {
             bool game = IsGameWindow(hWnd);
             if (game) EnsureMinimiseBox(hWnd);
-            if (_enabled.Value && Plugin.Enabled.Value && IsMinimise(nCmdShow) && game)
+            if (_enabled.Value && Plugin.Active && IsMinimise(nCmdShow) && game)
             {
                 _swallowed++;
                 if (_swallowed == 1)
@@ -186,7 +186,7 @@ namespace IslandEx
             if (hWnd == IntPtr.Zero) return;
             long style = GetStyle(hWnd);
             bool has = (style & WS_MINIMIZEBOX) != 0;
-            bool want = _minimiseShortcuts.Value && Plugin.Enabled.Value;
+            bool want = _minimiseShortcuts.Value && Plugin.Active;
             if (has == want) return;
             SetStyle(hWnd, want ? style | WS_MINIMIZEBOX : style & ~WS_MINIMIZEBOX);
             Plugin.Log.LogDebug($"KeepFullscreen: WS_MINIMIZEBOX {(want ? "set" : "cleared")} on the game window.");

@@ -22,9 +22,14 @@ namespace IslandUI
         private static Func<string, bool> _takes;
 
         // whether `who` may be given this kind of order: anyone who isn't a player
-        // character, and Man or Yona while Island Ex allows it
+        // character, and Man or Yona while Island Ex allows it. Never the friend
+        // you play right now (the beta): an order to yourself is no order.
         internal static bool Allows(CommonStates who, string order)
         {
+            if (who != null && who.npcID > 1 && InventoryWindow.IsPlayerCharacter(who))
+            {
+                return false;
+            }
             return !InventoryWindow.IsPlayerCharacter(who) || IslandExAllows(order);
         }
 

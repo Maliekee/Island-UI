@@ -1117,6 +1117,13 @@ namespace IslandUI
                     y = ToggleRow(r, y, w, Shared.Loc.Get("settings.fixes.repair_ends", "Repair ends cleanly"), repair, null,
                         Shared.Loc.Get("settings.fixes.repair_ends.help", "When a repair is over, you stand at rest again. Unmodded, you keep swinging the hammer until you move."));
                 }
+                BepInEx.Configuration.ConfigEntry<bool> music;
+                cfg.TryGetEntry("Fixes", "Music Starts At Your Volume", out music);
+                if (music != null)
+                {
+                    y = ToggleRow(r, y, w, Shared.Loc.Get("settings.fixes.music_volume", "Music starts at your volume"), music, null,
+                        Shared.Loc.Get("settings.fixes.music_volume.help", "After a load, the music plays at your music volume from the start. Unmodded, it plays loud for a few seconds first."));
+                }
                 return y;
             }
             if (page == "Orders")

@@ -140,9 +140,8 @@ namespace IslandUI
         internal static string VitalsProbe(float life, float food, float water)
         {
             GameManager gm = _mn != null ? _mn.gameMN : null;
-            int at = GameManager.selectPlayer;
-            if (gm == null || gm.playerCommons == null || at < 0 || at >= gm.playerCommons.Length || gm.playerCommons[at] == null) return "no player";
-            CommonStates who = gm.playerCommons[at];
+            CommonStates who = PlayedAs.Of(gm);   // the hero, or the friend you play
+            if (who == null) return "no player";
             string before = who.life.ToString("0") + "," + who.food.ToString("0.##") + "," + who.water.ToString("0.##")
                 + " (max " + who.maxLife.ToString("0") + "," + who.maxFood.ToString("0") + "," + who.maxWater.ToString("0") + ")";
             if (life >= 0f) who.life = System.Math.Min(life, who.maxLife);

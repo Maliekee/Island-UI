@@ -228,9 +228,13 @@ namespace IslandUI
         // Island Ex can allow each of the four kinds (Forgejo #246): every row
         // and setter asks PartnerSwitches, and a kind it allows is live for them
         // like anyone's.
+        // On the beta the friend you have taken control of counts too: vanilla
+        // hides her Orders tab, star and Banish (UIManager.cs:1420-1449), since
+        // she is you for now (PlayedAs).
         internal static bool IsPlayerCharacter(CommonStates who)
         {
-            return who != null && (who.npcID == 0 || who.npcID == 1);
+            return who != null && (who.npcID == 0 || who.npcID == 1
+                || (_mn != null && PlayedAs.IsControlledNpc(_mn.gameMN, who)));
         }
 
         private static void WriteOrders(List<SheetLine> lines, CommonStates who)

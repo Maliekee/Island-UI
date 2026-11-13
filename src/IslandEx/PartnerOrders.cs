@@ -82,7 +82,7 @@ namespace IslandEx
         // the master on, and the kind's own switch on
         internal static bool Allows(string order)
         {
-            if (_master == null || !_master.Value || Plugin.Enabled == null || !Plugin.Enabled.Value)
+            if (_master == null || !_master.Value || Plugin.Enabled == null || !Plugin.Active)
             {
                 return false;
             }

@@ -1326,6 +1326,8 @@ settings.effects.none.help=Os efeitos são listados na primeira vez que o jogo o
 
 settings.fixes.repair_ends=O reparo termina direito
 settings.fixes.repair_ends.help=Quando um reparo termina, você volta a ficar parado. Sem o mod, você continua batendo o martelo até se mexer.
+settings.fixes.music_volume=A música começa no seu volume
+settings.fixes.music_volume.help=Ao carregar, a música toca no seu volume de música desde o início. Sem o mod, ela toca alta por alguns segundos.
 
 settings.group.action_bar=Barra de ações
 settings.group.chests=Baús
@@ -1769,3 +1771,7 @@ vitals.type=Tipo
 vitals.water=Água
 vitals.wear=Desgaste
 vitals.where=Onde
+freemode.badge=Desligado desde o modo livre, que ainda não é suportado. Reinicie o jogo para ligá-lo de novo.
+freemode.log={0}: desligados no modo livre por enquanto. Reinicie o jogo para usá-los de novo.
+gamever.freemode_title=Desligado desde o modo livre
+gamever.freemode_body=Desligado ao iniciar o modo livre: {0}. O modo livre ainda não é suportado. Reinicie o jogo para usá-los de novo. Suas configurações não mudam.

@@ -290,12 +290,11 @@ namespace IslandUI
         }
 
         // the one you play now: no one to target, so their name alone. The other
-        // one is targeted as the roster's Partner row is
+        // one is targeted as the roster's Partner row is; the friend you play on
+        // the beta is the one you play (PlayedAs)
         private static bool Played(CommonStates c)
         {
-            CommonStates[] players = _mn != null && _mn.gameMN != null ? _mn.gameMN.playerCommons : null;
-            int at = GameManager.selectPlayer;
-            return players != null && at >= 0 && at < players.Length && ReferenceEquals(players[at], c);
+            return _mn != null && PlayedAs.Is(_mn.gameMN, c);
         }
 
         private const int RelBoth = 0, RelOneWay = 1, RelNeither = 2, RelCantStand = 3;

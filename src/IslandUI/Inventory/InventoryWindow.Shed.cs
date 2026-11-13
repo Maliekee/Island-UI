@@ -290,10 +290,11 @@ namespace IslandUI
         }
 
         // who the Character page offers the star to: one of yours, not the two
-        // the game keeps off the friends list's heart (npcID 0 and 1)
+        // the game keeps off the friends list's heart (npcID 0 and 1, and on the
+        // beta the friend you play: IsPlayerCharacter)
         private static bool CanFavourite(CommonStates who)
         {
-            return who != null && who.npcID > 1
+            return who != null && !IsPlayerCharacter(who)
                 && (who.employ == CommonStates.Employ.Friend || who.employ == CommonStates.Employ.Favorite);
         }
 

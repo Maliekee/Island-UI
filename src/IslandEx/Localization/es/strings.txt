@@ -80,3 +80,5 @@ update.startup_on=Buscar al iniciar: activado
 update.unpacking=Comprobando y desempaquetando…
 update.update=Actualizar ({0})
 update.working_title=Actualizando a la versión {0}
+freemode.badge=Apagado desde el modo libre, que aún no admite. Reinicia el juego para volver a activarlo.
+freemode.log={0}: apagados en el modo libre por ahora. Reinicia el juego para volver a usarlos.

@@ -80,3 +80,5 @@ update.startup_on=启动时检查：开
 update.unpacking=正在校验并解压…
 update.update=更新（{0}）
 update.working_title=正在更新到版本 {0}
+freemode.badge=进入自由模式后已关闭，暂不支持该模式。重启游戏即可重新开启。
+freemode.log={0}：在自由模式中暂时关闭。重启游戏即可再次使用。

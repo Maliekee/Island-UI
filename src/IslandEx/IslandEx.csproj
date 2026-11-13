@@ -4,7 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>IslandEx</AssemblyName>
     <RootNamespace>IslandEx</RootNamespace>
-    <Version>0.2.4</Version>
+    <Version>0.2.5</Version>
     <LangVersion>latest</LangVersion>
     <GameDir>C:\Program Files (x86)\Steam\steamapps\common\Mad Island</GameDir>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -15,6 +15,7 @@
     <!-- Shared SOURCE compiled into this DLL: the mods share code, not an assembly -->
     <Compile Include="..\Shared\PatchCensus.cs" Link="Shared\PatchCensus.cs" />
     <Compile Include="..\Shared\TitleBadge.cs" Link="Shared\TitleBadge.cs" />
+    <Compile Include="..\Shared\FreeModeGate.cs" Link="Shared\FreeModeGate.cs" />
     <Compile Include="..\Shared\Update\ModUpdate.cs" Link="Shared\Update\ModUpdate.cs" />
     <Compile Include="..\Shared\Update\UpdateFlow.cs" Link="Shared\Update\UpdateFlow.cs" />
     <Compile Include="..\Shared\Update\UpdateNet.cs" Link="Shared\Update\UpdateNet.cs" />
@@ -39,6 +40,10 @@
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>$(GameDir)\Mad Island_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">

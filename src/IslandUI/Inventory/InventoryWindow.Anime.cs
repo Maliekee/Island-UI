@@ -196,11 +196,10 @@ namespace IslandUI
             return ReferenceEquals(PlayerNow(gm), who) || (followers != null && followers.Contains(who)) ? gm.tmpStage : 0;
         }
 
+        // the hero, or the friend you play on the beta (PlayedAs)
         private static CommonStates PlayerNow(GameManager gm)
         {
-            var players = gm != null ? gm.playerCommons : null;
-            int selected = GameManager.selectPlayer;
-            return players != null && selected >= 0 && selected < players.Length ? players[selected] : null;
+            return PlayedAs.Of(gm);
         }
 
         // the stage's light, its hue at full value, CaveTint of the way from white; a

@@ -205,6 +205,54 @@ namespace IslandUI
             }
             Plugin.Log.LogInfo("Story choices: " + Hints.Count + " choices in " + patched + " coroutines"
                 + (off.Count > 0 ? " - COUNTS DIFFER: " + string.Join(", ", off.ToArray()) : ", every count as written"));
+            // the count above only covers the coroutines the data knows; a game update
+            // that adds a story scene with choices is only found by looking - and only
+            // on a build Island UI was not tested on, since it reads every coroutine
+            if (!GameVersionNotice.IsTested())
+            {
+                ReportUnhinted(methods);
+            }
+        }
+
+        // STORY CHOICES THE DATA DOES NOT KNOW: every StoryManager coroutine outside the
+        // data, read for MultipleChoice / YesNoForStory calls (the beta 26642668 added
+        // Naoto, PastBoss and one in PastGiant; PastGiant's other three never had hints).
+        // Read only, never patched: a scene with no hints runs as vanilla.
+        private static void ReportUnhinted(HashSet<string> known)
+        {
+            MethodInfo multi = AccessTools.Method(typeof(UIManager), nameof(UIManager.MultipleChoice));
+            MethodInfo yesNo = AccessTools.Method(typeof(UIManager), nameof(UIManager.YesNoForStory));
+            var unhinted = new List<string>();
+            foreach (MethodInfo coroutine in AccessTools.GetDeclaredMethods(typeof(StoryManager)))
+            {
+                if (coroutine.ReturnType != typeof(System.Collections.IEnumerator) || known.Contains(coroutine.Name))
+                {
+                    continue;
+                }
+                try
+                {
+                    MethodInfo moveNext = AccessTools.EnumeratorMoveNext(coroutine);
+                    if (moveNext == null) { continue; }
+                    int n = 0;
+                    foreach (var ins in PatchProcessor.ReadMethodBody(moveNext))
+                    {
+                        if (ins.Value is MethodInfo called && (called == multi || called == yesNo)) { n++; }
+                    }
+                    if (n > 0) { unhinted.Add(coroutine.Name + " " + n); }
+                }
+                catch (System.Exception e)
+                {
+                    Plugin.Log.LogDebug("Story choices: could not read " + coroutine.Name + " - " + e.Message);
+                }
+            }
+            if (unhinted.Count > 0)
+            {
+                Plugin.Log.LogWarning("Story choices WITHOUT HINTS (a scene the data does not know): " + string.Join(", ", unhinted.ToArray()));
+            }
+            else
+            {
+                Plugin.Log.LogInfo("Story choices: every story scene with choices has hints");
+            }
         }
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions,

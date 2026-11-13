@@ -1326,6 +1326,8 @@ settings.effects.none.help=Los efectos aparecen la primera vez que el juego los 
 
 settings.fixes.repair_ends=La reparación termina bien
 settings.fixes.repair_ends.help=Al terminar una reparación, vuelves a quedarte en reposo. Sin el mod, sigues dando martillazos hasta que te mueves.
+settings.fixes.music_volume=La música empieza a tu volumen
+settings.fixes.music_volume.help=Al cargar, la música suena a tu volumen de música desde el principio. Sin el mod, suena fuerte unos segundos.
 
 settings.group.action_bar=Barra de acciones
 settings.group.chests=Cofres
@@ -1769,3 +1771,7 @@ vitals.type=Tipo
 vitals.water=Agua
 vitals.wear=Integridad
 vitals.where=Dónde
+freemode.badge=Apagado desde el modo libre, que aún no admite. Reinicia el juego para volver a activarlo.
+freemode.log={0}: apagados en el modo libre por ahora. Reinicia el juego para volver a usarlos.
+gamever.freemode_title=Apagado desde el modo libre
+gamever.freemode_body=Se apagó al empezar el modo libre: {0}. El modo libre aún no es compatible. Reinicia el juego para volver a usarlos. Tus ajustes no cambian.
