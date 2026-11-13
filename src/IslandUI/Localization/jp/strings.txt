@@ -1274,6 +1274,8 @@ settings.action_bar.shift=Shiftで移動
 settings.action_bar.shift.help=アクションバーの枠や腰の道具を動かすにはShiftを押し続ける必要があり、マウスの滑りで失うことがない。オフ: 自由にドラッグでき、バーの外に落とすと外れる。Shift+クリックはどちらでも外す。
 settings.apply_note=変更はすぐに反映されます。
 
+settings.camera.override=カメラの上書き
+settings.camera.override.help=Island Ex がカメラの限界を変えられるようにします。オフ：カメラはゲーム本来のまま（イベントシーンも含む）。\nオン：ズーム限界より遠くにカメラを置くイベントシーンが、近すぎて見えることがあります。
 settings.camera.zoom_out=ズームアウト
 settings.camera.zoom_out.help=マウスホイールでカメラをどこまで引けるか、ゲーム本来の最大距離に対する割合。カメラは引いた分だけ遠くまで描画するので、大きく引くとフレームレートが下がる。\n100%  未改造のゲームと同じ
 settings.crafting.benches=他の作業台

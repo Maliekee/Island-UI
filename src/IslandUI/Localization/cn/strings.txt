@@ -1274,6 +1274,8 @@ settings.action_bar.shift=按住Shift移动
 settings.action_bar.shift.help=移动动作栏的格子或腰带上的工具需要按住Shift，避免鼠标失手弄丢。关闭：可自由拖动，拖出动作栏即移除。Shift+点击在任何情况下都会移除。
 settings.apply_note=更改立即生效。
 
+settings.camera.override=镜头覆盖
+settings.camera.override.help=允许 Island Ex 改变镜头的限制。关闭：镜头与原版游戏相同，包括过场动画。\n开启：把镜头拉得比缩放上限更远的过场动画可能显得过近。
 settings.camera.zoom_out=拉远
 settings.camera.zoom_out.help=鼠标滚轮能把镜头拉多远，相对于游戏自身的最远距离。镜头拉多远就绘制多远，所以拉得很远会降低帧数。\n100%  与原版游戏相同
 settings.crafting.benches=其他工作台

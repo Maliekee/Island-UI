@@ -1292,6 +1292,8 @@ settings.action_bar.shift=Shift para mover
 settings.action_bar.shift.help=Mover um espaço da barra de ações, ou uma ferramenta do cinto, exige segurar Shift, para que um deslize do mouse não o perca. Desligado: arraste-os livremente, e solte um fora da barra para removê-lo. Shift+clique remove de qualquer forma.
 settings.apply_note=As mudanças valem na hora.
 
+settings.camera.override=Controle da câmera
+settings.camera.override.help=Permite que o Island Ex mude os limites da câmera. Desligado, a câmera é a do jogo, inclusive nas cenas.\nLigado, uma cena que afasta a câmera além do limite de zoom pode ficar perto demais.
 settings.camera.zoom_out=Afastar
 settings.camera.zoom_out.help=Quanto a roda do mouse afasta a câmera, comparado ao máximo do próprio jogo. A câmera desenha tão longe quanto se afasta, então um zoom distante custa quadros.\n100%  como no jogo sem mods
 settings.crafting.benches=Outras bancadas

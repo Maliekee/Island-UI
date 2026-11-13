@@ -18,7 +18,7 @@ namespace IslandEx
     {
         public const string PluginGuid = "madisland.islandex";
         public const string PluginName = "Island Ex";
-        public const string PluginVersion = "0.2.3";
+        public const string PluginVersion = "0.2.4";
 
         internal static ManualLogSource Log;
         internal static ConfigEntry<bool> Enabled;

@@ -1322,6 +1322,8 @@ settings.action_bar.shift.help=Moving an action bar slot, or a tool on the belt,
 
 settings.apply_note=Changes apply immediately.
 
+settings.camera.override=Camera override
+settings.camera.override.help=Lets Island Ex change the camera's limits. Off, the camera is the game's own, cutscenes included.\nOn, a cutscene that stands the camera further back than the zoom limit can come out too close.
 settings.camera.zoom_out=Zoom out
 settings.camera.zoom_out.help=How far the mouse wheel pulls the camera back, against the game's own farthest. The camera draws as far as it stands back, so a far zoom costs frames.\n100%  as in the unmodded game
 

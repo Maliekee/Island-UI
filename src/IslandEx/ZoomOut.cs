@@ -19,6 +19,7 @@ namespace IslandEx
     // limit is brought back to it.
     internal static class ZoomOut
     {
+        private static ConfigEntry<bool> _override;
         private static ConfigEntry<float> _reach;
         private static FollowTarget _rig;
         private static Camera _camera;
@@ -31,11 +32,14 @@ namespace IslandEx
         private const float VanillaFar = 150f;
         private static float _stretch = 1f;    // what the camera draws to now, over vanilla
         private static int _tick;
+        private static bool _touched;          // this rig's limit or zoom was moved by us
 
         internal static void Bind(ConfigFile cfg)
         {
+            _override = cfg.Bind("Camera", "Camera Override", false,
+                "Let Island Ex change the camera's limits (Zoom Out below). Off = the game's own camera, cutscenes included. On, a cutscene that stands the camera further back than the zoom limit can come out too close. Applies live.");
             _reach = cfg.Bind("Camera", "Zoom Out", 1f, new ConfigDescription(
-                "How far the mouse wheel pulls the camera back, as a multiple of the game's own farthest, 1-4. The camera draws as far as it stands back, so a far zoom costs frames. 1 = as in the unmodded game. Applies live.",
+                "With Camera Override on: how far the mouse wheel pulls the camera back, as a multiple of the game's own farthest, 1-4. The camera draws as far as it stands back, so a far zoom costs frames. 1 = as in the unmodded game. Applies live.",
                 new AcceptableValueRange<float>(1f, 4f)));
         }
 
@@ -60,7 +64,18 @@ namespace IslandEx
             {
                 return;
             }
-            float reach = Plugin.Enabled.Value ? Mathf.Clamp(_reach.Value, 1f, 4f) : 1f;
+            // THE CAMERA OVERRIDE IS OPT-IN, off by default. A cutscene places the
+            // camera itself (CameraManager.CamZoomFocus, CameraZoomLayout; one
+            // stands it at -35, past the wheel's own -25), and a limit held here
+            // pulls such a shot back in. Off, the camera is the game's throughout.
+            float reach = Plugin.Enabled.Value && _override.Value ? Mathf.Clamp(_reach.Value, 1f, 4f) : 1f;
+            // off it writes nothing (off means inert): only a rig this has pulled
+            // back is brought back, once, and then left alone again
+            if (reach <= 1f && !_touched)
+            {
+                return;
+            }
+            _touched = true;
             float min = _vanillaMin * reach;
             Vector3 limit = _rig.moveMin;
             if (!Mathf.Approximately(limit.z, min))
@@ -75,6 +90,10 @@ namespace IslandEx
                 at.z = min;
             }
             Stretch(Mathf.Max(1f, at.z / _vanillaMin));
+            if (reach <= 1f && _stretch <= 1f)
+            {
+                _touched = false;   // back to vanilla's: nothing more to undo
+            }
         }
 
         // a new scene, or the first tick: the rig and its camera, read as vanilla left them
@@ -83,6 +102,7 @@ namespace IslandEx
             _rig = null;
             _camera = null;
             _stretch = 1f;
+            _touched = false;   // a new scene's rig is as vanilla made it
             foreach (FollowTarget f in Object.FindObjectsOfType<FollowTarget>())
             {
                 Camera camera = f.zoom != null ? f.zoom.GetComponentInChildren<Camera>() : null;

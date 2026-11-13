@@ -1058,11 +1058,18 @@ namespace IslandUI
             }
             if (page == "Camera")
             {
+                BepInEx.Configuration.ConfigEntry<bool> camOverride;
                 BepInEx.Configuration.ConfigEntry<float> zoom;
+                cfg.TryGetEntry("Camera", "Camera Override", out camOverride);
                 cfg.TryGetEntry("Camera", "Zoom Out", out zoom);
+                if (camOverride != null)
+                {
+                    y = ToggleRow(r, y, w, Shared.Loc.Get("settings.camera.override", "Camera override"), camOverride, null,
+                        Shared.Loc.Get("settings.camera.override.help", "Lets Island Ex change the camera's limits. Off, the camera is the game's own, cutscenes included.\nOn, a cutscene that stands the camera further back than the zoom limit can come out too close."));
+                }
                 if (zoom != null)
                 {
-                    y = SliderRow(r, y, w, Shared.Loc.Get("settings.camera.zoom_out", "Zoom out"), zoom, 1f, 4f, 0.25f, Percent, null,
+                    y = SliderRow(r, y, w, Shared.Loc.Get("settings.camera.zoom_out", "Zoom out"), zoom, 1f, 4f, 0.25f, Percent, camOverride,
                         Shared.Loc.Get("settings.camera.zoom_out.help", "How far the mouse wheel pulls the camera back, against the game's own farthest. The camera draws as far as it stands back, so a far zoom costs frames.\n100%  as in the unmodded game"));
                 }
                 return y;

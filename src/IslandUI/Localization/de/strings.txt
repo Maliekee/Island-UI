@@ -1292,6 +1292,8 @@ settings.action_bar.shift=Shift zum Verschieben
 settings.action_bar.shift.help=Einen Platz der Aktionsleiste oder ein Werkzeug am Gürtel zu verschieben, braucht gehaltenes Shift, damit ein Ausrutscher der Maus keinen verliert. Aus: frei ziehen, und von der Leiste gezogen wird er entfernt. Shift+Klick entfernt ihn in jedem Fall.
 settings.apply_note=Änderungen gelten sofort.
 
+settings.camera.override=Kamera übersteuern
+settings.camera.override.help=Lässt Island Ex die Grenzen der Kamera verändern. Aus: Die Kamera ist die des Spiels, Zwischensequenzen eingeschlossen.\nAn: Eine Zwischensequenz, die die Kamera weiter zurückstellt als die Zoomgrenze, kann zu nah geraten.
 settings.camera.zoom_out=Herauszoomen
 settings.camera.zoom_out.help=Wie weit das Mausrad die Kamera zurückzieht, gemessen an der weitesten Stufe des Spiels. Die Kamera zeichnet so weit, wie sie zurücksteht, ein weiter Zoom kostet also Bilder pro Sekunde.\n100%  wie im unveränderten Spiel
 settings.crafting.benches=Andere Werkbänke

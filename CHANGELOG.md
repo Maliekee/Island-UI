@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.9.6
+
+A quick hotfix for what we found right after the game's November beta update. It is not full support for that update yet: the beta adds new things, like playing as one of your friends and the free mode, that Island UI doesn't handle yet. A thorough update follows. Until then the title screen still says Island UI hasn't been tested on the beta, and that's true.
+
+- **"Some parts did not load"** on the beta is fixed. Using ten items at once plays one sound again, not ten.
+- **Talking to a friend** on the beta no longer throws an error when they answer.
+- Works on both the current game and the beta.
+
+### Island Ex 0.2.4
+
+- **The camera is the game's own by default.** A cutscene's camera, like the one with the giant, came out too close. Zoom Out now sits behind a new **Camera override** switch on the Camera page, off by default: Island Ex doesn't touch the camera unless you turn it on. **If you used Zoom Out, turn the switch on to get it back.** With it on, a cutscene that shows a wide view can still come out too close.
+
 ## 0.9.5
 
 The fixes for your reports, and a few things you asked for.

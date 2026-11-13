@@ -194,8 +194,30 @@ namespace IslandUI
                 return !_quiet;
             }
 
+        }
+
+        // TWO GAME BUILDS: the beta (26642668) added Go3DSound(id, pos), which only
+        // calls the full one, so a patch by name alone is ambiguous there and took
+        // this whole class down with it. The overload with the most parameters is
+        // the one that plays, on both builds.
+        [HarmonyPatch]
+        private static class QuietSpatialUses
+        {
+            private static System.Reflection.MethodBase TargetMethod()
+            {
+                System.Reflection.MethodInfo full = null;
+                foreach (System.Reflection.MethodInfo m in AccessTools.GetDeclaredMethods(typeof(SoundManager)))
+                {
+                    if (m.Name == nameof(SoundManager.Go3DSound)
+                        && (full == null || m.GetParameters().Length > full.GetParameters().Length))
+                    {
+                        full = m;
+                    }
+                }
+                return full;
+            }
+
             [HarmonyPrefix]
-            [HarmonyPatch(nameof(SoundManager.Go3DSound))]
             private static bool Spatial()
             {
                 return !_quiet;

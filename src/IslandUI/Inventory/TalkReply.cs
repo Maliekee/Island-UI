@@ -78,13 +78,36 @@ namespace IslandUI
             NPCMove nMove = common.nMove;
             nMove.actType = NPCMove.ActType.Wait;
             nMove.Rot(mn.gameMN.player.transform.position);
-            yield return npcMN.TalkAction(common, NPCManager.TalkType.Friend);
+            yield return Talk(npcMN, common, NPCManager.TalkType.Friend);
             _speakingUntil.Remove(id);
             if (common != null && nMove != null && common.life > 0.0 && common.faint > 0.0
                 && nMove.actType == NPCMove.ActType.Wait && common.sex == CommonStates.SexState.None)
             {
                 nMove.actType = NPCMove.ActType.Idle;
             }
+        }
+
+        // TWO GAME BUILDS: the beta (26642668) gave TalkAction a third, optional
+        // parameter (actor). A direct call binds to the signature of the build it
+        // was compiled against and throws MissingMethodException on the other, so
+        // it goes by reflection, the optional parameters left at their defaults.
+        private static System.Reflection.MethodInfo _talkAction;
+
+        private static IEnumerator Talk(NPCManager npcMN, CommonStates common, NPCManager.TalkType type)
+        {
+            if (_talkAction == null)
+            {
+                _talkAction = AccessTools.Method(typeof(NPCManager), nameof(NPCManager.TalkAction));
+            }
+            System.Reflection.ParameterInfo[] ps = _talkAction.GetParameters();
+            object[] args = new object[ps.Length];
+            args[0] = common;
+            args[1] = type;
+            for (int i = 2; i < ps.Length; i++)
+            {
+                args[i] = ps[i].HasDefaultValue ? ps[i].DefaultValue : null;
+            }
+            return (IEnumerator)_talkAction.Invoke(npcMN, args);
         }
     }
 }
