@@ -128,8 +128,13 @@ namespace IslandUI
 
         private static string TipFollowing => Shared.Loc.Get("inv.tip.following", "They follow you and earn a quarter of your EXP. Each follower takes room in your party.");
         // NPCToPlayer: the one you switch away from becomes an NPC that waits, and
-        // the only way to make anyone follow is the follow button vanilla hides for them
-        private static string TipFollowingPartner => Shared.Loc.Get("inv.tip.following_partner", "Your partner can't be told to follow: the game doesn't allow it. When you switch characters, the one you leave stays at their place. Move it with Set place, or switch to them with Change.");
+        // the only way to make anyone follow is the follow button vanilla hides for them;
+        // for Man and Yona the second line names the way in, Island Ex's Follow switch
+        private static string TipFollowingPartner(CommonStates who)
+        {
+            string tip = Shared.Loc.Get("inv.tip.following_partner", "Your partner can't be told to follow: the game doesn't allow it. When you switch characters, the one you leave stays at their place. Move it with Set place, or switch to them with Change.");
+            return who != null && who.npcID <= 1 ? tip + "\n" + Shared.Loc.Get("inv.tip.refused_player.island_ex", "Island Ex can allow it.") : tip;
+        }
         // the orders vanilla never gives the players (IsPlayerCharacter), on their
         // greyed rows - named as the game names them, so no language guesses a name;
         // the second line names the way in, Island Ex's switches (PartnerSwitches)

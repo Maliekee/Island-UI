@@ -510,7 +510,13 @@ namespace IslandUI
         // silently. `from` is the hand, or a bag cell for Ctrl+click (InventoryWindow.Move).
         private static bool PlantOne(InventoryManager inv, ItemSlot from, ItemSlot slot)
         {
-            if (!string.IsNullOrEmpty(slot.itemKey) || from.toolType != ItemData.ToolType.Plant)
+            return from.toolType == ItemData.ToolType.Plant && PutOne(inv, from, slot);
+        }
+
+        // One of `from` into the empty `slot`.
+        private static bool PutOne(InventoryManager inv, ItemSlot from, ItemSlot slot)
+        {
+            if (!string.IsNullOrEmpty(slot.itemKey))
             {
                 return false;
             }

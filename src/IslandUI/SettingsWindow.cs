@@ -1146,19 +1146,20 @@ namespace IslandUI
         }
 
         // MAN AND YONA TAKE ORDERS (Forgejo #246): Island Ex's master switch, and
-        // under it the four kinds of order, each a detail of the master - greyed
+        // under it the kinds of order, each a detail of the master - greyed
         // and keeping its value while the master is off. The names are the game's
         // own once a save is loaded, so no language guesses them.
         private const string PartnerSection = "Man and Yona";
 
         private static float PartnerOrderRows(Transform r, float y, float w, BepInEx.Configuration.ConfigFile cfg)
         {
-            BepInEx.Configuration.ConfigEntry<bool> master, job, stance, flags, call;
+            BepInEx.Configuration.ConfigEntry<bool> master, job, stance, flags, call, follow;
             cfg.TryGetEntry(PartnerSection, "Take Orders", out master);
             cfg.TryGetEntry(PartnerSection, "Job", out job);
             cfg.TryGetEntry(PartnerSection, "Combat Stance", out stance);
             cfg.TryGetEntry(PartnerSection, "Permissions", out flags);
             cfg.TryGetEntry(PartnerSection, "Call", out call);
+            cfg.TryGetEntry(PartnerSection, "Follow", out follow);
             if (master == null)
             {
                 return y;
@@ -1187,6 +1188,11 @@ namespace IslandUI
             {
                 y = ToggleRow(r, y, w, Shared.Loc.Get("settings.partner.call", "Call"), call, master,
                     Shared.Loc.Get("settings.partner.call.help", "Call brings them to you."));
+            }
+            if (follow != null)
+            {
+                y = ToggleRow(r, y, w, Shared.Loc.Get("settings.partner.follow", "Following"), follow, master,
+                    Shared.Loc.Get("settings.partner.follow.help", "They follow you, and leave again, like anyone you employ, and take the game's room in your party. After a load they wait again. Off: they stop following."));
             }
             return y;
         }

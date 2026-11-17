@@ -568,7 +568,12 @@ namespace IslandUI
         // ItemToChest re-does the mirror test inline, so patching the accessor it
         // calls is not enough — the whole call has to run unmasked. This is the NPC
         // deposit path: harvesters and haulers filling storages.
-        [HarmonyPatch(typeof(ItemManager), nameof(ItemManager.ItemToChest))]
+        // Build 26692906 split it: the public (item, chest, count) only forwards to an
+        // internal overload with `automaticProduction`, which farms, milk and the NPC
+        // work payout call directly. Patch the overload that holds the body - by name
+        // alone the match is ambiguous, and the forwarder alone misses those callers.
+        [HarmonyPatch(typeof(ItemManager), nameof(ItemManager.ItemToChest),
+            new[] { typeof(ItemData), typeof(InventorySlot), typeof(int), typeof(bool) })]
         [HarmonyPrefix]
         private static void ItemToChest_Prefix(ItemManager __instance,
             InventorySlot tmpInventory, out InventorySlot __state)
@@ -576,7 +581,8 @@ namespace IslandUI
             __state = Unmask(InventoryOf(__instance), tmpInventory);
         }
 
-        [HarmonyPatch(typeof(ItemManager), nameof(ItemManager.ItemToChest))]
+        [HarmonyPatch(typeof(ItemManager), nameof(ItemManager.ItemToChest),
+            new[] { typeof(ItemData), typeof(InventorySlot), typeof(int), typeof(bool) })]
         [HarmonyPostfix]
         private static void ItemToChest_Postfix(ItemManager __instance, InventorySlot __state)
         {

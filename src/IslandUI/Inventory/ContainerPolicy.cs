@@ -67,6 +67,36 @@ namespace IslandUI
             return breed != null && breed.breedType == BreedInfo.BreedType.Planter;
         }
 
+        // The poultry farm: the one breeding prop a person fills. Its eggs come from
+        // the hens inside; the hive, herb and mushroom farms grow into empty slots.
+        internal static bool IsCoop(InventorySlot c)
+        {
+            var breed = c != null ? c.GetComponent<BreedInfo>() : null;
+            return breed != null && breed.breedType == BreedInfo.BreedType.Egg;
+        }
+
+        internal static bool IsChicken(string itemKey)
+        {
+            return itemKey != null && itemKey.StartsWith("animal_chicken_", StringComparison.Ordinal);
+        }
+
+        // FarmCheck's cap (GameManager.FarmCheck, Egg, breed false): a fourth bird
+        // standing in the coop is handed back with caution 18. The birds are the
+        // pos_NN children, so a full coop is three of them.
+        internal static bool CoopFull(InventorySlot c)
+        {
+            int birds = 0;
+            for (int k = 0; k < c.slots.Length; k++)
+            {
+                UnityEngine.Transform pos = c.transform.Find("pos_" + k.ToString("00"));
+                if (pos != null && pos.childCount != 0)
+                {
+                    birds++;
+                }
+            }
+            return birds >= 3;
+        }
+
         // What a container is FOR, which is the axis a person filters on. The
         // engine answers "can a write be made whole" and is about mechanism; this
         // answers "is this the kind of thing I want to see" and is about intent.

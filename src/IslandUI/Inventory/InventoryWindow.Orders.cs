@@ -425,13 +425,14 @@ namespace IslandUI
             NPCMove nm = move;
             bool following = nm != null && nm.npcType == NPCMove.NPCType.Follow;
             // Man and Yona: vanilla hides follow and goodbye for them, so the
-            // toggle is drawn but cannot be pressed, and says why (GitHub #24)
-            bool canFollow = !IsPlayerCharacter(who);
+            // toggle is drawn but cannot be pressed, and says why (GitHub #24);
+            // Island Ex's Follow switch lights those buttons for them again
+            bool canFollow = PartnerSwitches.Allows(who, PartnerSwitches.Follow) && !PlayedAs.Is(_mn.gameMN, who);
             lines.Add(new SheetLine
             {
                 Label = Shared.Loc.Get("orders.following", "Following"), Kind = LineToggle, Arg = ToggleFollow,
                 Value = following ? Shared.Loc.Get("orders.following.yes", "yes") : Shared.Loc.Get("orders.following.no", "no"), On = following,
-                Enabled = canFollow, Tip = canFollow ? TipFollowing : TipFollowingPartner,
+                Enabled = canFollow, Tip = canFollow ? TipFollowing : TipFollowingPartner(who),
             });
             // a click that arms a world pointer: vanilla's own coroutine, which
             // takes the controls for the length of the pick and gives them back
@@ -844,7 +845,7 @@ namespace IslandUI
 
         private static void ToggleFollowing(CommonStates who)
         {
-            if (who == null || _mn == null || IsPlayerCharacter(who))
+            if (who == null || _mn == null || PartnerSwitches.Refuses(who, PartnerSwitches.Follow))
             {
                 return;
             }

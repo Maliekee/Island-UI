@@ -1454,6 +1454,8 @@ settings.page.windows.about=Where Island UI's windows stand and what they show.
 
 settings.partner.call=Call
 settings.partner.call.help=Call brings them to you.
+settings.partner.follow=Following
+settings.partner.follow.help=They follow you, and leave again, like anyone you employ, and take the game's room in your party. After a load they wait again. Off: they stop following.
 settings.partner.group={0} and {1}
 settings.partner.job=Job
 settings.partner.job.help=They work at a work place within 10 m, mostly in their idle pose, and keep the job after a load. Off: no job.

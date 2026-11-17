@@ -19,7 +19,7 @@ namespace IslandEx
     {
         public const string PluginGuid = "madisland.islandex";
         public const string PluginName = "Island Ex";
-        public const string PluginVersion = "0.2.5";
+        public const string PluginVersion = "0.2.6";
 
         internal static ManualLogSource Log;
         internal static ConfigEntry<bool> Enabled;
@@ -93,7 +93,7 @@ namespace IslandEx
         }
 
         // Whether the player character you are not playing takes one kind of order:
-        // "job", "stance", "permissions" or "call" (PartnerOrders). Island UI finds
+        // "job", "stance", "permissions", "call" or "follow" (PartnerOrders). Island UI finds
         // it by name through the plugin instance; a build without it, or no Island
         // Ex at all, reads as no.
         public static bool PartnerTakes(string order)

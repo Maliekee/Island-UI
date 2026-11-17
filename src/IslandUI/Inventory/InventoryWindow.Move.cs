@@ -55,6 +55,7 @@ namespace IslandUI
             private string _name;
             internal InventorySlot Into;   // the target's bag or chest
             internal Plate Planter;        // the target's planter, drawn by this plate
+            internal Plate Coop;           // the target's poultry farm, drawn by this plate
             internal bool ToYours;
             internal bool ToReach;
             internal bool Drop;
@@ -66,6 +67,7 @@ namespace IslandUI
         // asked every hovered frame while Ctrl is down, so these are reused
         private static readonly MoveRoute IntoRoute = new MoveRoute();
         private static readonly MoveRoute PlantRoute = new MoveRoute();
+        private static readonly MoveRoute CoopRoute = new MoveRoute();
 
         private static bool CtrlMoves(InventorySlot c)
         {
@@ -89,7 +91,8 @@ namespace IslandUI
             if (!WearsFavourites(plate))
             {
                 return (plate.Column == CharacterColumn || plate.Column == ReachColumn)
-                    && (CtrlMoves(plate.Container) || ContainerPolicy.IsPlanter(plate.Container)) ? ToYoursRoute : null;
+                    && (CtrlMoves(plate.Container) || ContainerPolicy.IsPlanter(plate.Container)
+                        || ContainerPolicy.IsCoop(plate.Container)) ? ToYoursRoute : null;
             }
             Plate planter = slot != null && slot.toolType == ItemData.ToolType.Plant ? TargetPlanter() : null;
             if (planter != null)
@@ -97,6 +100,14 @@ namespace IslandUI
                 PlantRoute.Planter = planter;
                 PlantRoute.Name = StoreName(planter.Container);
                 return PlantRoute;
+            }
+            // into the poultry farm, as vanilla's Shift+click puts anything (QuickMove)
+            Plate coop = slot != null ? TargetCoop() : null;
+            if (coop != null)
+            {
+                CoopRoute.Coop = coop;
+                CoopRoute.Name = StoreName(coop.Container);
+                return CoopRoute;
             }
             Plate target = TargetStore();
             if (target != null)
@@ -147,7 +158,7 @@ namespace IslandUI
         private static int MoveCount(MoveRoute route, ItemSlot slot)
         {
             return ClickMap.Shift ? Mathf.Min(ItemUse.ManyUses, slot.stack)
-                : route.Planter != null ? 1 : slot.stack;
+                : route.Planter != null || (route.Coop != null && ContainerPolicy.IsChicken(slot.itemKey)) ? 1 : slot.stack;
         }
 
         // `move` run on only `count` of a stack: the rest of it stays behind, and
@@ -223,6 +234,69 @@ namespace IslandUI
                 }
             }
             return null;
+        }
+
+        // The target's poultry farm, while its window is up.
+        private static Plate TargetCoop()
+        {
+            for (int p = 0; p < _platesUsed; p++)
+            {
+                Plate plate = Plates[p];
+                if (plate.Column == CharacterColumn && !plate.IsLoadout && ContainerPolicy.IsCoop(plate.Container)
+                    && plate.Window.Go.activeInHierarchy)
+                {
+                    return plate;
+                }
+            }
+            return null;
+        }
+
+        // Into the coop's free cells, one bird to a cell, each write reported so
+        // FarmCheck stands the bird in its pen. Stops short of FarmCheck's cap
+        // rather than letting it hand a fourth bird back onto the cursor. Anything
+        // else goes as vanilla's QuickMove sends it: onto its own stacks, then into
+        // a free cell, each cell written reported all the same.
+        private static int Coop(InventoryManager inv, ItemSlot from, Plate coop, int count)
+        {
+            if (!ContainerPolicy.IsChicken(from.itemKey))
+            {
+                int n = Mathf.Min(coop.Shown, coop.Cells.Count);
+                var cells = new ItemSlot[n];
+                var before = new string[n];
+                for (int c = 0; c < n; c++)
+                {
+                    cells[c] = coop.Cells[c].Slot;
+                    before[c] = cells[c] != null ? cells[c].itemKey + "#" + cells[c].stack : null;
+                }
+                int sent = MoveSome(inv, from, count, part => MoveStack(inv, part, cells, n, false, out _));
+                for (int c = 0; c < n; c++)
+                {
+                    if (cells[c] != null && before[c] != cells[c].itemKey + "#" + cells[c].stack)
+                    {
+                        ReportWrite(coop, cells[c]);
+                    }
+                }
+                return sent;
+            }
+            int moved = 0;
+            for (int c = 0; c < coop.Shown && c < coop.Cells.Count; c++)
+            {
+                if (ContainerPolicy.CoopFull(coop.Container))
+                {
+                    break;
+                }
+                ItemSlot cell = coop.Cells[c].Slot;
+                if (cell != null && PutOne(inv, from, cell))
+                {
+                    ReportWrite(coop, cell);
+                    moved++;
+                    if (moved >= count || string.IsNullOrEmpty(from.itemKey))
+                    {
+                        break;
+                    }
+                }
+            }
+            return moved;
         }
 
         // Into the planter's free cells in order, one seed to a cell, `count` of
@@ -335,6 +409,10 @@ namespace IslandUI
             else if (route.Planter != null)
             {
                 moved = Plant(inv, slot, route.Planter, count);
+            }
+            else if (route.Coop != null)
+            {
+                moved = Coop(inv, slot, route.Coop, count);
             }
             else if (route.Into != null)
             {

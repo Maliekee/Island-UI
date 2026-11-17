@@ -16,6 +16,18 @@ namespace IslandEx
     // job's animation plays only if the skeleton has it (NPCManager.NPCWork), so
     // the partner mostly works in the idle pose.
     //
+    // FOLLOWING (asked on the beta, where you can play a friend). The one gate is
+    // the NPC menu: UIManager.NPCPanelStateChange hides follow and goodbye
+    // (npcPanelState 5 and 6) for the players. NPCFollow, GoodBye, the party room
+    // (FollowCapCheck: StatsData 0 and 1 exist, followCapacity 6 each) and the
+    // beta's switch back to a hero who follows (CommitControlledCharacter takes
+    // her out of the party) treat them as anyone. So while Follow is on, the two
+    // buttons are lit for them as for any friend; Island UI's toggle presses the
+    // same buttons. One gap of the game's is closed: the old Man/Yona swap
+    // (GameManager.ChangePlayer) never takes the one you swap to out of the
+    // party, so whoever becomes the player stops following first (NPCToPlayer).
+    // The game saves no follow for the players: after a load they wait again.
+    //
     // Island UI's Orders sheet draws those rows greyed for them; with these
     // switches on it makes them live. One master switch, off by default, and one
     // switch per kind of order under it, on by default, so one click on the master
@@ -43,16 +55,17 @@ namespace IslandEx
         internal const string Stance = "stance";
         internal const string Permissions = "permissions";
         internal const string Call = "call";
+        internal const string Follow = "follow";
 
         private const string Section = "Man and Yona";
 
         private static readonly int[] Flags = { 7, 8, 9, 10 };
         private static readonly int[] FlagDefaults = { 0, 0, 0, 1 };
 
-        private static ConfigEntry<bool> _master, _job, _stance, _permissions, _call;
+        private static ConfigEntry<bool> _master, _job, _stance, _permissions, _call, _follow;
 
         // what each kind was last read as, so a switch going off is seen once
-        private static bool _wasJob, _wasStance, _wasPermissions;
+        private static bool _wasJob, _wasStance, _wasPermissions, _wasFollow;
 
         internal static void Bind(ConfigFile cfg)
         {
@@ -66,15 +79,19 @@ namespace IslandEx
                 "The four permissions (houses, love, sex, force). Off = they go back to the game's defaults after every load.");
             _call = cfg.Bind(Section, "Call", true,
                 "Call: the partner comes to you.");
+            _follow = cfg.Bind(Section, "Follow", true,
+                "Following: the partner can be told to follow you, and to stop, like anyone you employ, taking the game's party room for them. Not kept after a load.");
             _wasJob = Allows(Job);
             _wasStance = Allows(Stance);
             _wasPermissions = Allows(Permissions);
+            _wasFollow = Allows(Follow);
             EventHandler changed = (s, e) => SwitchesChanged();
             _master.SettingChanged += changed;
             _job.SettingChanged += changed;
             _stance.SettingChanged += changed;
             _permissions.SettingChanged += changed;
             _call.SettingChanged += changed;
+            _follow.SettingChanged += changed;
             Plugin.Enabled.SettingChanged += changed;
         }
 
@@ -92,22 +109,25 @@ namespace IslandEx
                 case Stance: return _stance.Value;
                 case Permissions: return _permissions.Value;
                 case Call: return _call.Value;
+                case Follow: return _follow.Value;
                 default: return false;
             }
         }
 
         private static void SwitchesChanged()
         {
-            bool job = Allows(Job), stance = Allows(Stance), permissions = Allows(Permissions);
+            bool job = Allows(Job), stance = Allows(Stance), permissions = Allows(Permissions), follow = Allows(Follow);
             bool resetJob = _wasJob && !job, resetStance = _wasStance && !stance, resetFlags = _wasPermissions && !permissions;
+            bool resetFollow = _wasFollow && !follow;
             _wasJob = job;
             _wasStance = stance;
             _wasPermissions = permissions;
-            if (resetJob || resetStance || resetFlags)
+            _wasFollow = follow;
+            if (resetJob || resetStance || resetFlags || resetFollow)
             {
                 try
                 {
-                    Reset(resetJob, resetStance, resetFlags);
+                    Reset(resetJob, resetStance, resetFlags, resetFollow);
                 }
                 catch (Exception e)
                 {
@@ -124,7 +144,7 @@ namespace IslandEx
 
         // the game's defaults back, the way its own setters write them
         // (UIManager.OrderChange and WorkChange)
-        private static void Reset(bool job, bool stance, bool flags)
+        private static void Reset(bool job, bool stance, bool flags, bool follow)
         {
             ManagersScript mn = Managers();
             CommonStates[] players = mn != null && mn.gameMN != null ? mn.gameMN.playerCommons : null;
@@ -155,6 +175,10 @@ namespace IslandEx
                         mn.uiMN.FriendWorkCheck(pc);
                     }
                 }
+                if (follow && LetGo(mn, pc))
+                {
+                    changed.Add(pc.charaName + " stops following");
+                }
                 if (flags && pc.sexInfo != null)
                 {
                     for (int i = 0; i < Flags.Length; i++)
@@ -172,6 +196,72 @@ namespace IslandEx
             {
                 Plugin.Log.LogInfo("Partner orders: switched off, back to the game's defaults - " + string.Join(", ", changed.ToArray()));
             }
+        }
+
+        // ---------- following ----------
+
+        // vanilla's own two buttons, lit for the partner as NPCPanelStateChange
+        // lights them for any friend before its player check hides them
+        [HarmonyPatch(typeof(UIManager), nameof(UIManager.NPCPanelStateChange))]
+        [HarmonyPostfix]
+        private static void NPCPanelStateChange_Postfix(UIManager __instance, CommonStates common)
+        {
+            if (!Allows(Follow) || common == null || common.nMove == null
+                || __instance.npcPanelState == null || __instance.npcPanelState.Length < 7)
+            {
+                return;
+            }
+            ManagersScript mn = Managers();
+            if (mn == null || mn.gameMN == null || !mn.gameMN.IsPlayer(common) || mn.gameMN.IsCurrentPlayer(common)
+                || (common.employ != CommonStates.Employ.Friend && common.employ != CommonStates.Employ.Favorite))
+            {
+                return;
+            }
+            bool following = common.nMove.npcType == NPCMove.NPCType.Follow;
+            __instance.npcPanelState[5].SetActive(!following);
+            __instance.npcPanelState[6].SetActive(following);
+        }
+
+        // whoever becomes the player leaves the party first: the old Man/Yona swap
+        // (GameManager.ChangePlayer) would make a follower the player. Only a
+        // player character in the party is touched, and only Follow puts one there.
+        [HarmonyPatch(typeof(NPCManager), nameof(NPCManager.NPCToPlayer))]
+        [HarmonyPrefix]
+        private static void NPCToPlayer_Prefix(GameObject chara, bool state)
+        {
+            if (!state || chara == null)
+            {
+                return;
+            }
+            try
+            {
+                ManagersScript mn = Managers();
+                CommonStates who = chara.GetComponent<CommonStates>();
+                if (mn != null && mn.gameMN != null && who != null && mn.gameMN.IsPlayer(who) && LetGo(mn, who))
+                {
+                    Plugin.Log.LogInfo("Partner orders: " + who.charaName + " stops following, now played");
+                }
+            }
+            catch (Exception e)
+            {
+                Plugin.Log.LogWarning("Partner orders: follower not let go - " + e);
+            }
+        }
+
+        // NPCManager.GoodBye's own steps, for one who is in the party
+        private static bool LetGo(ManagersScript mn, CommonStates who)
+        {
+            if (mn.npcMN == null || mn.npcMN.follower == null || !mn.npcMN.follower.Contains(who) || who.nMove == null)
+            {
+                return false;
+            }
+            who.nMove.npcType = NPCMove.NPCType.Friend;
+            if (who.life > 0.0)
+            {
+                who.nMove.actType = NPCMove.ActType.Idle;
+            }
+            mn.npcMN.RemoveFollow(who);
+            return true;
         }
 
         // ---------- the save ----------

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.9.8
+
+A fix for the game's beta update of November 16, and what the poultry farm was missing.
+
+- **The beta's November 16 update** changed a part of the game Island UI hooks into. Island UI works on it again.
+- **Ctrl+click and the poultry farm.** Ctrl+click puts a hen, or anything else, into an open poultry farm, as the game's Shift+click does, and takes hens and eggs back out into your bags. It stops at three birds, as the farm does.
+- Works on both the current game and the beta. The title screen still says Island UI hasn't been tested on the beta.
+
+### Island Ex 0.2.6
+
+- **Man and Yona can follow you** while you play Reika, Nami or Takumi on the beta. It's a new **Following** switch under **Take orders** on the Orders page, and Island UI's Follow toggle works for them too. The game doesn't save it, so after a load they wait again.
+
 ## 0.9.7
 
 More of the game's November beta, after the quick hotfix.

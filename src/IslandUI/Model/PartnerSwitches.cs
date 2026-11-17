@@ -15,6 +15,7 @@ namespace IslandUI
         internal const string Stance = "stance";
         internal const string Permissions = "permissions";
         internal const string Call = "call";
+        internal const string Follow = "follow";
 
         private const string ExGuid = "madisland.islandex";
 
