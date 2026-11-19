@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Reflection;
 using HarmonyLib;
 using IslandUI.UI;
 using UnityEngine;
@@ -62,6 +63,26 @@ namespace IslandUI
         {
             return inv != null && inv.subInventory != null && inv.subInventory.activeSelf
                 && Intercepted == null;
+        }
+
+        // The slots a write into (or a read out of) `container` must use. While the
+        // vanilla panel has it open, its contents live in mirror slots 50+ and the
+        // panel copies them back over container.slots on closing, so anything written
+        // into container.slots meanwhile is erased. That is every container when this
+        // class fails to bind: 0.9.8 on the public build lost what Ctrl+click put into
+        // a chest. The mirror cells are the game's own objects, so a write through
+        // them is what the panel writes back.
+        internal static ItemSlot[] LiveSlots(InventoryManager inv, InventorySlot container)
+        {
+            if (container == null || container.slots == null || !MirrorsLive(inv)
+                || !ReferenceEquals(inv.tmpSubInventory, container))
+            {
+                return container != null ? container.slots : null;
+            }
+            int n = Mathf.Min(container.slots.Length, inv.itemSlot.Length - 50);
+            var mirror = new ItemSlot[Mathf.Max(0, n)];
+            System.Array.Copy(inv.itemSlot, 50, mirror, 0, mirror.Length);
+            return mirror;
         }
 
         // Plain storage is what we replace. Everything else keeps vanilla's panel.
@@ -572,21 +593,30 @@ namespace IslandUI
         // internal overload with `automaticProduction`, which farms, milk and the NPC
         // work payout call directly. Patch the overload that holds the body - by name
         // alone the match is ambiguous, and the forwarder alone misses those callers.
-        [HarmonyPatch(typeof(ItemManager), nameof(ItemManager.ItemToChest),
-            new[] { typeof(ItemData), typeof(InventorySlot), typeof(int), typeof(bool) })]
-        [HarmonyPrefix]
-        private static void ItemToChest_Prefix(ItemManager __instance,
-            InventorySlot tmpInventory, out InventorySlot __state)
+        // The public build still has only the three-argument one, so the target is
+        // looked up at patch time: the four-argument overload where it exists, else
+        // the three-argument one. A class of its own, because TargetMethod is per class.
+        [HarmonyPatch]
+        private static class ItemToChestPatch
         {
-            __state = Unmask(InventoryOf(__instance), tmpInventory);
-        }
+            private static MethodBase TargetMethod() =>
+                AccessTools.Method(typeof(ItemManager), nameof(ItemManager.ItemToChest),
+                    new[] { typeof(ItemData), typeof(InventorySlot), typeof(int), typeof(bool) })
+                ?? AccessTools.Method(typeof(ItemManager), nameof(ItemManager.ItemToChest),
+                    new[] { typeof(ItemData), typeof(InventorySlot), typeof(int) });
 
-        [HarmonyPatch(typeof(ItemManager), nameof(ItemManager.ItemToChest),
-            new[] { typeof(ItemData), typeof(InventorySlot), typeof(int), typeof(bool) })]
-        [HarmonyPostfix]
-        private static void ItemToChest_Postfix(ItemManager __instance, InventorySlot __state)
-        {
-            Remask(InventoryOf(__instance), __state);
+            [HarmonyPrefix]
+            private static void Prefix(ItemManager __instance,
+                InventorySlot tmpInventory, out InventorySlot __state)
+            {
+                __state = Unmask(InventoryOf(__instance), tmpInventory);
+            }
+
+            [HarmonyPostfix]
+            private static void Postfix(ItemManager __instance, InventorySlot __state)
+            {
+                Remask(InventoryOf(__instance), __state);
+            }
         }
 
         // The NPC work payout (harvest boxes, factories). Like ItemToChest it does

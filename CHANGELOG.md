@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.9
+
+The fix for items lost in chests, and Island UI on both versions of the game.
+
+- **Ctrl+click into a chest lost items** on the game's normal version with 0.9.8, and on the beta with 0.9.7. Island UI's hold on chests didn't load there, so the game wrote its own older copy of the chest back when it closed. Ctrl+click now writes through that copy, so this can't lose items again, even when a game update breaks a part of Island UI. The same fault showed some people's panels drawn wrong.
+- **Works on both the normal game and the beta**, including the beta's 0.6.0.5 update. Tested on both.
+- **Ctrl+right-click a tool in your target's own bag** and they put it on, as with one from your bags.
+- Known on the beta's 0.6.0.5 update: with a Fabrication Terminal built, the crafting window shows no recipes. Removing the terminal brings them back. It's next.
+
 ## 0.9.8
 
 A fix for the game's beta update of November 16, and what the poultry farm was missing.

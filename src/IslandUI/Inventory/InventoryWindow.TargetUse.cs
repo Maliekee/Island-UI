@@ -8,7 +8,8 @@ namespace IslandUI
     // use on someone else is only ever asked for. With no target Ctrl changes
     // nothing: a right-click is on you.
     //
-    // From your two bags only. What it does is what a drop on the target would do
+    // From your two bags, and a tool from the target's own bag: they put it on, as
+    // from yours (TheirOwnTool). What it does is what a drop on the target would do
     // with what can be used: they eat it or wear it, a food box fills, a planter
     // plants, a pocket expands a chest. Anything else does nothing.
     //
@@ -82,14 +83,26 @@ namespace IslandUI
             return aim.Box != null || aim.Chest != null || (aim.Who != null && IsGift(slot));
         }
 
+        // A TOOL IN THE TARGET'S OWN BAG is worn by them, as one from your bags is.
+        // Only what is worn: a use from a bag that is not yours runs only when it
+        // is done at once (ItemUse.Use's mayLeaveStaged), which eating is not. A
+        // drag from their bag onto them does the same.
+        private static bool TheirOwnTool(Plate plate, ItemSlot slot)
+        {
+            CommonStates who = Focus() as CommonStates;
+            return who != null && plate != null && plate.Container != null && !plate.IsLoadout
+                && ReferenceEquals(BagOwner(plate.Container), who) && Usable(slot) && !IsGift(slot);
+        }
+
         // True when this right-click was Ctrl's: the target's, done or refused.
         private static bool TargetUse(Plate plate, CellView cell)
         {
-            if (!ClickMap.Ctrl || !WearsFavourites(plate) || !HandEmpty() || !HasUseTarget())
+            ItemSlot slot = cell.Slot;
+            bool theirs = !WearsFavourites(plate) && TheirOwnTool(plate, slot);
+            if (!ClickMap.Ctrl || (!WearsFavourites(plate) && !theirs) || !HandEmpty() || !HasUseTarget())
             {
                 return false;
             }
-            ItemSlot slot = cell.Slot;
             if (!AimUse(slot, out UseAim aim))
             {
                 return true;   // something the target has no use for does nothing
@@ -100,7 +113,7 @@ namespace IslandUI
             }
             else if (aim.Who != null)
             {
-                GiveToPerson(aim.Who, cell, aim.Uses);
+                GiveToPerson(aim.Who, cell, aim.Uses, !theirs);
             }
             else if (aim.Box != null)
             {
@@ -119,11 +132,11 @@ namespace IslandUI
 
         // As a drop: in reach it goes from the cell, out of reach it is lifted and
         // you walk over with it on the cursor, a walk's only way to carry it.
-        private static void GiveToPerson(CommonStates who, CellView cell, int uses)
+        private static void GiveToPerson(CommonStates who, CellView cell, int uses, bool mine)
         {
             if (InReach(who))
             {
-                GiveFrom(who, cell, true, uses, false);
+                GiveFrom(who, cell, mine, uses, false);
             }
             else if (CanWalkTo(who))
             {
@@ -160,7 +173,7 @@ namespace IslandUI
         // For the badge: what Ctrl+right-click would do here, or null.
         private static string TargetUseWords(Plate plate, ItemSlot slot)
         {
-            if (!WearsFavourites(plate) || !HandEmpty() || !HasUseTarget() || !AimUse(slot, out UseAim aim)
+            if (!(WearsFavourites(plate) || TheirOwnTool(plate, slot)) || !HandEmpty() || !HasUseTarget() || !AimUse(slot, out UseAim aim)
                 || (Favourites.IsFavourite(slot) && !Consumes(slot, aim)))
             {
                 return null;

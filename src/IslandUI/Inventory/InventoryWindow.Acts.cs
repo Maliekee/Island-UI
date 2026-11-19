@@ -219,6 +219,51 @@ namespace IslandUI
 
         // Whose window is this the foot of: a chest's, or a bag's whose owner is
         // the target. The row moves only against what is in focus.
+        // For the harness: the open chest's own act (0 All in, 1 Stack, 2 All out),
+        // then what the chest holds in its OWN slots. ChestCloseProbe closes it the
+        // way vanilla's panel does (SubInventoryVisible, which writes the mirror back)
+        // and reads them again: what survives that is what the game keeps.
+        private static InventorySlot _probeChest;
+
+        internal static string ChestActProbe(int which)
+        {
+            InventoryManager inv = _mn != null ? _mn.inventory : null;
+            _probeChest = inv != null ? (VanillaContainerUI.Intercepted ?? inv.tmpSubInventory) : null;
+            if (_probeChest == null)
+            {
+                return "no open chest";
+            }
+            ContainerAct(_probeChest, which);
+            return "mirrorsLive=" + VanillaContainerUI.MirrorsLive(inv) + " own: " + ChestHolds(_probeChest);
+        }
+
+        internal static string ChestCloseProbe()
+        {
+            InventoryManager inv = _mn != null ? _mn.inventory : null;
+            if (inv == null || _probeChest == null)
+            {
+                return "no probed chest";
+            }
+            if (inv.subInventory != null && inv.subInventory.activeSelf)
+            {
+                inv.SubInventoryVisible();
+            }
+            return "closed, own: " + ChestHolds(_probeChest);
+        }
+
+        private static string ChestHolds(InventorySlot chest)
+        {
+            var sb = new System.Text.StringBuilder();
+            foreach (ItemSlot s in chest.slots)
+            {
+                if (s != null && !string.IsNullOrEmpty(s.itemKey))
+                {
+                    sb.Append(s.itemKey).Append('x').Append(s.stack).Append(' ');
+                }
+            }
+            return sb.Length > 0 ? sb.ToString() : "empty";
+        }
+
         private static bool ActsOnFocus(InventorySlot chest)
         {
             object focus = Focus();
@@ -272,11 +317,13 @@ namespace IslandUI
             // the same flight the quick-stack sweep flies: one notice per item
             // per direction, from the Shared Bag's cell to the chest, or back
             var log = new List<QuickStack.Deposit>();
+            // the game's copy while its own panel has the chest open (LiveSlots)
+            ItemSlot[] slots = VanillaContainerUI.LiveSlots(inv, chest);
             if (which == 2)
             {
-                for (int i = 0; i < chest.slots.Length; i++)
+                for (int i = 0; i < slots.Length; i++)
                 {
-                    string key = chest.slots[i] != null ? chest.slots[i].itemKey : null;
+                    string key = slots[i] != null ? slots[i].itemKey : null;
                     // the chest's cell, before the stack leaves it: afterwards no
                     // cell in the chest holds the item and the flight would start
                     // from the chest in the world instead
@@ -284,7 +331,7 @@ namespace IslandUI
                     RectTransform cell = CellFor(chest, before);
                     bool hasCell = cell != null;
                     Vector2 cellScreen = hasCell ? ItemFlight.ScreenPointOf(cell) : Vector2.zero;
-                    int n = MoveStackOut(inv, chest.slots[i], yours, out ItemData data);
+                    int n = MoveStackOut(inv, slots[i], yours, out ItemData data);
                     if (n > 0 && QuickStackFlight.SourceOf(_mn, key, out Vector2 landing))
                     {
                         NoteFlight(log, data, chest, n, landing, reverse: true, hasCell, cellScreen);
@@ -322,7 +369,7 @@ namespace IslandUI
                     Vector2 from = Vector2.zero;
                     bool seen = !string.IsNullOrEmpty(key) && QuickStackFlight.SourceOf(_mn, key, out from);
                     ItemData data;
-                    int n = MoveStack(inv, sources[i], chest.slots, chest.slots.Length, which == 1, out data);
+                    int n = MoveStack(inv, sources[i], slots, slots.Length, which == 1, out data);
                     if (n > 0 && seen)
                     {
                         NoteFlight(log, data, chest, n, from, reverse: false);

@@ -14,8 +14,8 @@ namespace IslandUI
     //   Ctrl+click    an item in a bag or chest      move it to the other side, or
     //                                                drop it (InventoryWindow.Move);
     //                                                with Shift too, up to ten of it
-    //   Ctrl+right-click  an item in your bags       use it on your target, up to
-    //                                                ten with Shift (TargetUse, D180)
+    //   Ctrl+right-click  an item in your bags,      use it on your target, up to
+    //                 or a tool in the target's bag  ten with Shift (TargetUse, D180)
     //   Shift+click   an action bar slot             remove the action
     //   drag          an action bar slot             move the action (ActionBar; shift too with ActionBarShiftToMove)
     //   Shift+right-click, or Shift on a drop on someone: food and consumables, up

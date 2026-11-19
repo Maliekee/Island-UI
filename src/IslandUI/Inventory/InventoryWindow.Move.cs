@@ -424,7 +424,8 @@ namespace IslandUI
                     return;
                 }
                 InventorySlot into = route.Into;
-                moved = MoveSome(inv, slot, count, part => MoveStack(inv, part, into.slots, into.slots.Length, false, out _));
+                ItemSlot[] intoSlots = VanillaContainerUI.LiveSlots(inv, into);
+                moved = MoveSome(inv, slot, count, part => MoveStack(inv, part, intoSlots, intoSlots.Length, false, out _));
             }
             else if (route.ToReach)
             {
@@ -434,11 +435,13 @@ namespace IslandUI
                     List<InventorySlot> targets = ReachStoresNow();
                     for (int c = 0; c < targets.Count && !string.IsNullOrEmpty(part.itemKey); c++)
                     {
-                        sent += MoveStack(inv, part, targets[c].slots, targets[c].slots.Length, true, out _);
+                        ItemSlot[] s = VanillaContainerUI.LiveSlots(inv, targets[c]);
+                        sent += MoveStack(inv, part, s, s.Length, true, out _);
                     }
                     for (int c = 0; c < targets.Count && !string.IsNullOrEmpty(part.itemKey); c++)
                     {
-                        sent += MoveStack(inv, part, targets[c].slots, targets[c].slots.Length, false, out _);
+                        ItemSlot[] s = VanillaContainerUI.LiveSlots(inv, targets[c]);
+                        sent += MoveStack(inv, part, s, s.Length, false, out _);
                     }
                     return sent;
                 });
